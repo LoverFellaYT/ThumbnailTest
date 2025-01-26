@@ -72,6 +72,7 @@
             border: 1px solid #ddd;
             font-size: 14px;
             vertical-align: top;
+            cursor: pointer;
         }
 
         th { 
@@ -136,63 +137,63 @@
         const rubricData = [
             ['Scroll-Stopping Power', [
                 'Basic colors/text. Blends into feed.',
-                'Bright colors OR faces OR danger/movement',
+                'Bright colors OR faces OR danger/movement.',
                 'Combines 2+ “scroll-stoppers” (e.g. money + faces).',
-                'Triggers “MUST CLICK” urgency (e.g. a mystery box + danger).'
+                'Triggers “MUST CLICK” urgency (e.g a mystery box + danger).'
             ]],
             ['Composition & Design', [
                 'Functional layout.',
                 'Rule of thirds / central alignment.',
                 'Leading lines + dynamic contrast.',
-                'Visually “readable” in under a second (especially on mobile).'
+                'The viewer’s eye is guided exactly where you want them to look, the layout is visually “readable” in under a second (especially on mobile).'
             ]],
             ['Simplicity vs. Clutter', [
-                'Some distracting elements.',
-                'Clean layout, minimal clutter.',
-                'Strong visual hierarchy.',
-                'Perfect negative space usage.'
+                'Some clarity; background elements may distract.',
+                'Clean layout, minimal clutter, text doesn’t clash with images.',
+                'Strong visual hierarchy with a clear focal point.',
+                'Perfect negative space usage; the subject pops immediately; no extraneous elements.'
             ]],
             ['Text Clarity', [
-                'Legible but too long/obscured.',
-                'Short text, mobile-readable.',
-                'Punchy text complements visuals.',
-                'Perfect text-image synergy.'
+                'Legible but possibly too long or partially obscured.',
+                'Short text, easy to read on mobile.',
+                'Minimal, punchy text that complements the visuals.',
+                'Perfectly balanced text & image synergy; zero wasted words, maximum intrigue.'
             ]],
             ['Curiosity Gap', [
-                'Hints at interest but weak pull.',
-                'Clear unanswered question.',
-                'Strong tease without over-explaining.',
-                '“What on earth?” scenario.'
+                'The thumbnail hints at something interesting but doesn’t strongly pull the viewer in.',
+                'The thumbnail conveys a clear unanswered question or tension.',
+                'The thumbnail strongly teases a surprising or unknown element without over-explaining.',
+                'The thumbnail is unignorable, framing a “What on earth?” scenario that leaves out just enough context to spark intense curiosity. The viewer genuinely can’t resist clicking to resolve the mystery.'
             ]],
             ['Emotional Impact', [
-                'Neutral/mild interest.',
-                'Sparks curiosity/excitement.',
-                'Triggers FOMO/shock/urgency.',
-                'Visceral reaction (fear/awe/hilarity).'
+                'Neutral or mild interest.',
+                'Sparks curiosity or excitement.',
+                'Triggers FOMO, shock, or urgency.',
+                'Evokes a visceral reaction (fear, awe hilarity) and is spot-on with what the video delivers, ensuring viewers don’t feel “baited.”'
             ]],
             ['Thumbnail–Title Synergy', [
-                'Doesn’t reinforce title.',
-                'Hints at title’s topic.',
-                'Combined hook effect.',
-                'Seamless “one-two punch”.'
+                'Thumbnail stands on its own but doesn’t reinforce the title.',
+                'Thumbnail hints at the title’s topic or vice versa.',
+                'Both thumbnail and title create a combined “hook” that draws people in.',
+                'The text, imagery, and title form a seamless “one-two punch,” so the viewer’s curiosity is ignited at a glance, and instantly reinforced by the title.'
             ]],
             ['Video Relevance', [
-                'Slightly clickbaity.',
-                'Accurate topic representation.',
-                'Compelling moment teased.',
-                'Perfect content alignment.'
+                'Some alignment to the video but might be slightly clickbairy.',
+                'Accurately represents main video topic.',
+                'Portrays the most compelling moment without giving everything away.',
+                'Perfect alignment between thumbnail promise and video content.'
             ]],
             ['Branding & Consistency', [
-                'Basic style consistency.',
-                'Recognizable brand elements.',
-                'Immediately identifiable.',
-                'Instant brand recognition.'
+                'Basic consistency with channel style (font/color).',
+                'Visible brand elements, recognizable style.',
+                'Immediately identifiable as your channel’s style at a glance.',
+                'Viewers instantly know it’s your content.'
             ]],
             ['Technical Polish', [
                 'No pixelation; basic sizing.',
-                'Mobile-friendly basics.',
-                'Studio-level precision.',
-                'Flawless execution.'
+                'Clean and platform-aware (mobile-friendly text, decent contrast).',
+                'Studio-level precision, zero tolerance for flaws.',
+                'Flawless (optimized file size, balanced saturation/hue, razor-shat focus).'
             ]]
         ];
 
@@ -238,14 +239,15 @@
         }
 
         function selectRating(cell) {
-            const category = cell.getAttribute('data-category');
+            const categoryIndex = cell.getAttribute('data-category');
             const rating = parseInt(cell.getAttribute('data-rating'));
             
-            const prevSelected = cell.parentElement.querySelector('.selected');
-            if (prevSelected) prevSelected.classList.remove('selected');
+            // Clear previous selection in this category
+            const row = cell.parentElement;
+            row.querySelectorAll('td').forEach(td => td.classList.remove('selected'));
             
             cell.classList.add('selected');
-            scores[category] = rating;
+            scores[categoryIndex] = rating;
             updateTotal();
         }
 
@@ -265,7 +267,7 @@
             
             if (totalCategories < 10) {
                 ranking.textContent = `Complete ${10 - totalCategories} more categories`;
-                header.style.backgroundColor = 'white';
+                header.style.backgroundColor = '';
                 return;
             }
 
@@ -320,8 +322,8 @@
             updateTotal();
         }
 
-        // Initialize on load
-        generateTable();
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', generateTable);
     </script>
 </body>
 </html>
