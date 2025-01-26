@@ -3,137 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thumbnail Quality Rubric</title>
+    <title>Pro Thumbnail Analyzer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --primary: #2b32b2;
-            --reject-red: #ff4444;
-            --approve-green: #00C851;
-            --neutral: #f8f9fa;
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --reject: #ef4444;
+            --approve: #10b981;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --border: #e2e8f0;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            line-height: 1.6;
+            margin: 1rem auto;
+            padding: 0 1.5rem;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.5;
         }
 
-        .score-header {
-            position: sticky;
-            top: -1px;
+        .analyzer-header {
             background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            position: sticky;
+            top: 0;
             z-index: 100;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
         }
 
-        .reject { background-color: #ffe6e6; border: 2px solid var(--reject-red); }
-        .approve { background-color: #e6ffe6; border: 2px solid var(--approve-green); }
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
 
         .total-score {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
         }
 
-        .score-ranking {
-            font-size: 18px;
-            margin-bottom: 15px;
-            min-height: 24px;
-        }
-
-        .feedback-section {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-            min-height: 120px;
-        }
-
-        .hidden { opacity: 0; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-            font-size: 14px;
-            vertical-align: top;
-            cursor: pointer;
-        }
-
-        th { 
-            background-color: var(--primary); 
-            color: white;
-            position: sticky;
-            top: 60px;
-            z-index: 50;
-        }
-        
-        .resources {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f1f8ff;
-            border-radius: 8px;
-        }
-
-        .selected { 
-            background-color: #e3f2fd !important; 
-            box-shadow: inset 0 0 0 2px var(--primary);
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         button {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
             cursor: pointer;
-            margin: 10px 0;
-            transition: opacity 0.2s ease;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
-        button:hover { opacity: 0.85; }
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-1px);
+        }
+
+        .preview-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            min-height: 240px;
+        }
+
+        #desktopPreview {
+            max-width: 320px;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1rem auto;
+            display: block;
+            background: #f1f5f9;
+            border: 2px dashed var(--border);
+            padding: 1rem;
+        }
+
+        .rubric-table {
+            background: white;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 6.5rem; /* Adjusted header position */
+            z-index: 50;
+        }
+
+        td {
+            cursor: pointer;
+            transition: background 0.2s ease;
+            background: white;
+        }
+
+        td:hover {
+            background: #f8fafc;
+        }
+
+        .selected {
+            background: #e0e7ff !important;
+            box-shadow: inset 4px 0 0 var(--primary);
+        }
+
+        .feedback-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .resources {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .status-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .reject { background: #fee2e2; color: #b91c1c; }
+        .approve { background: #dcfce7; color: #047857; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="score-header" id="scoreHeader">
-        <div class="total-score">Total Score: <span id="total">0</span>/40</div>
-        <div class="score-ranking" id="ranking">Complete all 10 categories</div>
-        <button onclick="resetScores()">Reset Scores</button>
+    <div class="analyzer-header">
+        <div class="score-display">
+            <div class="total-score">Score: <span id="total">0</span>/40</div>
+            <div class="status-indicator" id="ranking">Incomplete</div>
+        </div>
+        <div class="controls">
+            <button onclick="document.getElementById('thumbnailUpload').click()">
+                📁 Upload Thumbnail
+            </button>
+            <button onclick="resetScores()">🔄 Reset Scores</button>
+            <button onclick="exportPDF()">📥 Export Report</button>
+        </div>
     </div>
 
-    <div class="feedback-section hidden" id="feedback">
-        <h3>🚨 Improvement Recommendations</h3>
+    <div class="preview-section">
+        <h2>Thumbnail Preview</h2>
+        <input type="file" id="thumbnailUpload" accept="image/*">
+        <img id="desktopPreview" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+    </div>
+
+    <div class="rubric-table">
+        <table id="rubricTable">
+            <!-- Rubric generated by JavaScript -->
+        </table>
+    </div>
+
+    <div class="feedback-panel hidden" id="feedback">
+        <h3>Improvement Recommendations</h3>
         <div id="specificFeedback"></div>
     </div>
 
-    <table id="rubricTable"></table>
-
     <div class="resources">
-        <h3>🔧 Thumbnail Creation Resources</h3>
+        <h3>Creation Resources</h3>
         <ul>
-            <li><a href="https://creatoracademy.youtube.com/page/lesson/thumbnails" target="_blank" rel="noopener noreferrer">YouTube's Official Thumbnail Guide</a></li>
-            <li><a href="https://www.tubebuddy.com/thumbnail-tester" target="_blank" rel="noopener noreferrer">Thumbnail A/B Testing Tool</a></li>
-            <li><a href="https://www.canva.com/create/youtube-thumbnails/" target="_blank" rel="noopener noreferrer">Free Thumbnail Maker</a></li>
-            <li><a href="https://blog.hootsuite.com/how-to-make-a-youtube-thumbnail/" target="_blank" rel="noopener noreferrer">Design Tutorial</a></li>
+            <li><a href="https://creatoracademy.youtube.com/page/lesson/thumbnails" target="_blank">YouTube Thumbnail Guide</a></li>
+            <li><a href="https://www.canva.com/create/youtube-thumbnails/" target="_blank">Free Thumbnail Maker</a></li>
+            <li><a href="https://www.tubebuddy.com/thumbnail-tester" target="_blank">A/B Testing Tool</a></li>
         </ul>
     </div>
 
     <script>
+        // Rubric Data
         const rubricData = [
             ['Scroll-Stopping Power', [
                 'Basic colors/text. Blends into feed.',
@@ -145,69 +228,69 @@
                 'Functional layout.',
                 'Rule of thirds / central alignment.',
                 'Leading lines + dynamic contrast.',
-                'The viewer’s eye is guided exactly where you want them to look, the layout is visually “readable” in under a second (especially on mobile).'
+                'Visually “readable” in under a second (especially on mobile).'
             ]],
             ['Simplicity vs. Clutter', [
                 'Some clarity; background elements may distract.',
-                'Clean layout, minimal clutter, text doesn’t clash with images.',
-                'Strong visual hierarchy with a clear focal point.',
-                'Perfect negative space usage; the subject pops immediately; no extraneous elements.'
+                'Clean layout, minimal clutter.',
+                'Strong visual hierarchy with clear focal point.',
+                'Perfect negative space usage; subject pops immediately.'
             ]],
             ['Text Clarity', [
-                'Legible but possibly too long or partially obscured.',
+                'Legible but possibly too long.',
                 'Short text, easy to read on mobile.',
-                'Minimal, punchy text that complements the visuals.',
-                'Perfectly balanced text & image synergy; zero wasted words, maximum intrigue.'
+                'Minimal, punchy text that complements visuals.',
+                'Perfect text & image synergy; zero wasted words.'
             ]],
             ['Curiosity Gap', [
-                'The thumbnail hints at something interesting but doesn’t strongly pull the viewer in.',
-                'The thumbnail conveys a clear unanswered question or tension.',
-                'The thumbnail strongly teases a surprising or unknown element without over-explaining.',
-                'The thumbnail is unignorable, framing a “What on earth?” scenario that leaves out just enough context to spark intense curiosity. The viewer genuinely can’t resist clicking to resolve the mystery.'
+                'Hints at something interesting.',
+                'Conveys clear unanswered question.',
+                'Strongly teases surprising element.',
+                'Creates “What on earth?” scenario.'
             ]],
             ['Emotional Impact', [
                 'Neutral or mild interest.',
                 'Sparks curiosity or excitement.',
                 'Triggers FOMO, shock, or urgency.',
-                'Evokes a visceral reaction (fear, awe hilarity) and is spot-on with what the video delivers, ensuring viewers don’t feel “baited.”'
+                'Evokes visceral reaction (fear, awe, hilarity).'
             ]],
             ['Thumbnail–Title Synergy', [
-                'Thumbnail stands on its own but doesn’t reinforce the title.',
-                'Thumbnail hints at the title’s topic or vice versa.',
-                'Both thumbnail and title create a combined “hook” that draws people in.',
-                'The text, imagery, and title form a seamless “one-two punch,” so the viewer’s curiosity is ignited at a glance, and instantly reinforced by the title.'
+                'Doesn’t reinforce title.',
+                'Hints at title’s topic.',
+                'Combined “hook” effect.',
+                'Seamless “one-two punch” with title.'
             ]],
             ['Video Relevance', [
-                'Some alignment to the video but might be slightly clickbairy.',
-                'Accurately represents main video topic.',
-                'Portrays the most compelling moment without giving everything away.',
-                'Perfect alignment between thumbnail promise and video content.'
+                'Some alignment but potentially clickbaity.',
+                'Accurately represents main topic.',
+                'Shows compelling moment without spoilers.',
+                'Perfect alignment with video content.'
             ]],
             ['Branding & Consistency', [
-                'Basic consistency with channel style (font/color).',
-                'Visible brand elements, recognizable style.',
-                'Immediately identifiable as your channel’s style at a glance.',
-                'Viewers instantly know it’s your content.'
+                'Basic consistency with channel style.',
+                'Visible brand elements.',
+                'Immediately identifiable as your style.',
+                'Viewers instantly recognize your brand.'
             ]],
             ['Technical Polish', [
                 'No pixelation; basic sizing.',
-                'Clean and platform-aware (mobile-friendly text, decent contrast).',
-                'Studio-level precision, zero tolerance for flaws.',
-                'Flawless (optimized file size, balanced saturation/hue, razor-shat focus).'
+                'Mobile-friendly text and contrast.',
+                'Studio-level precision.',
+                'Flawless execution.'
             ]]
         ];
 
         const improvementTips = {
-            'Scroll-Stopping Power': 'Add 2+ attention-grabbing elements like faces, contrasting colors, or mystery elements.',
-            'Composition & Design': 'Use rule of thirds and ensure focal point is clear on mobile preview.',
-            'Simplicity vs. Clutter': 'Remove 1-2 elements and increase negative space around main subject.',
-            'Text Clarity': 'Reduce text to 3-5 words maximum with high contrast against background.',
-            'Curiosity Gap': 'Add an unanswered question or mysterious element that requires clicking to resolve.',
-            'Emotional Impact': 'Use facial expressions or dramatic imagery that triggers strong emotions.',
-            'Thumbnail–Title Synergy': 'Include visual elements that directly mirror keywords from the title.',
-            'Video Relevance': 'Use imagery from the most dramatic moment in the actual video content.',
-            'Branding & Consistency': 'Add consistent logo placement and color scheme matching previous videos.',
-            'Technical Polish': 'Zoom in 10-15% more and check pixelation at 100% scale.'
+            'Scroll-Stopping Power': 'Add 2+ attention-grabbing elements like faces or contrasting colors.',
+            'Composition & Design': 'Ensure focal point is clear on mobile preview.',
+            'Simplicity vs. Clutter': 'Remove 1-2 elements and increase negative space.',
+            'Text Clarity': 'Reduce text to 3-5 words with high contrast.',
+            'Curiosity Gap': 'Add unanswered question requiring click to resolve.',
+            'Emotional Impact': 'Use dramatic imagery triggering strong emotions.',
+            'Thumbnail–Title Synergy': 'Mirror title keywords in visuals.',
+            'Video Relevance': 'Use imagery from video\'s dramatic moment.',
+            'Branding & Consistency': 'Add consistent logo and color scheme.',
+            'Technical Polish': 'Check pixelation at 100% scale.'
         };
 
         let scores = {};
@@ -217,10 +300,10 @@
             let html = `
                 <tr>
                     <th>Category</th>
-                    <th>Good (1)</th>
-                    <th>Great (2)</th>
-                    <th>Excellent (3)</th>
-                    <th>Outstanding (4)</th>
+                    <th>Basic (1)</th>
+                    <th>Good (2)</th>
+                    <th>Great (3)</th>
+                    <th>Excellent (4)</th>
                 </tr>`;
 
             rubricData.forEach(([category, descriptions], index) => {
@@ -242,7 +325,6 @@
             const categoryIndex = cell.getAttribute('data-category');
             const rating = parseInt(cell.getAttribute('data-rating'));
             
-            // Clear previous selection in this category
             const row = cell.parentElement;
             row.querySelectorAll('td').forEach(td => td.classList.remove('selected'));
             
@@ -254,43 +336,27 @@
         function updateTotal() {
             const total = Object.values(scores).reduce((a, b) => a + b, 0);
             document.getElementById('total').textContent = total;
-            updateRanking(total);
-            showFeedback();
-        }
-
-        function updateRanking(total) {
+            
             const ranking = document.getElementById('ranking');
-            const header = document.getElementById('scoreHeader');
             const totalCategories = Object.keys(scores).length;
-
-            header.classList.remove('reject', 'approve');
             
             if (totalCategories < 10) {
-                ranking.textContent = `Complete ${10 - totalCategories} more categories`;
-                header.style.backgroundColor = '';
+                ranking.textContent = 'Incomplete';
+                ranking.className = 'status-indicator';
                 return;
             }
 
-            let rankText = '';
-            if (total <= 29) {
-                rankText = 'REJECT (Score ≤29)';
-                header.classList.add('reject');
-            } else {
-                rankText = total <= 35 ? 'APPROVE (Excellent)' : 'APPROVE (Outstanding)';
-                header.classList.add('approve');
-            }
-            
-            ranking.textContent = `Final Verdict: ${rankText}`;
+            ranking.className = total <= 29 ? 
+                'status-indicator reject' : 'status-indicator approve';
+            ranking.textContent = total <= 29 ? 
+                'Needs Improvement' : total <= 35 ? 'Good' : 'Excellent';
+                
+            showFeedback();
         }
 
         function showFeedback() {
             const feedback = document.getElementById('feedback');
-            const totalCategories = Object.keys(scores).length;
-            
-            if (totalCategories < 10) {
-                feedback.classList.add('hidden');
-                return;
-            }
+            feedback.classList.remove('hidden');
 
             let badCategories = [];
             rubricData.forEach(([category], index) => {
@@ -299,30 +365,65 @@
                 }
             });
 
-            if (badCategories.length > 0) {
-                document.getElementById('specificFeedback').innerHTML = `
-                    <p>⚠️ Low scores in: ${badCategories.join(', ')}</p>
-                    <ul>
-                        ${badCategories.map(cat => `
-                            <li><strong>${cat}:</strong> ${improvementTips[cat]}</li>
-                        `).join('')}
-                    </ul>
-                `;
-                feedback.classList.remove('hidden');
-            } else {
-                feedback.classList.add('hidden');
-            }
+            document.getElementById('specificFeedback').innerHTML = badCategories.length > 0 ? `
+                <p>Focus on improving:</p>
+                <ul>
+                    ${badCategories.map(cat => `
+                        <li><strong>${cat}:</strong> ${improvementTips[cat]}</li>
+                    `).join('')}
+                </ul>
+            ` : '<p>Great job! All categories meet quality standards.</p>';
         }
 
         function resetScores() {
             scores = {};
             document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-            document.getElementById('scoreHeader').className = 'score-header';
             document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('ranking').className = 'status-indicator';
             updateTotal();
         }
 
-        // Initialize when page loads
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text('Thumbnail Analysis Report', 14, 20);
+            
+            const imgData = document.getElementById('desktopPreview').src;
+            doc.addImage(imgData, 'JPEG', 14, 30, 80, 45);
+            
+            doc.setFontSize(12);
+            let y = 90;
+            rubricData.forEach(([category], index) => {
+                doc.text(`${category}: ${scores[index] || 0}/4`, 14, y);
+                y += 10;
+            });
+            
+            const feedback = document.getElementById('specificFeedback').innerText;
+            if(feedback) {
+                doc.setFontSize(12);
+                doc.text('Recommendations:', 14, y + 10);
+                doc.splitTextToSize(feedback, 180).forEach((line, i) => {
+                    doc.text(line, 14, y + 20 + (i * 7));
+                });
+            }
+            
+            doc.save(`thumbnail-report-${new Date().toISOString().slice(0,10)}.pdf`);
+        }
+
+        document.getElementById('thumbnailUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                document.getElementById('desktopPreview').src = e.target.result;
+                document.getElementById('desktopPreview').style.padding = '0';
+                document.getElementById('desktopPreview').style.border = 'none';
+            };
+            reader.readAsDataURL(file);
+        });
+
         document.addEventListener('DOMContentLoaded', generateTable);
     </script>
 </body>
