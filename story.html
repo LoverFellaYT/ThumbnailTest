@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryCraft Analyzer Pro+</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #2563eb;
+            --accent: #10b981;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            --glass: rgba(255, 255, 255, 0.98);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .analyzer-header {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .total-score {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.15);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .rubric-table {
+            background: var(--glass);
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .modern-table th {
+            background: var(--gradient);
+            color: white;
+            padding: 1.25rem;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .modern-table td {
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(224, 231, 255, 0.3);
+            transition: var(--transition);
+            vertical-align: top;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        .category-header {
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.08);
+            position: sticky;
+            left: 0;
+            min-width: 180px;
+            border-right: 1px solid rgba(224, 231, 255, 0.3);
+        }
+
+        .modern-table td:not(.category-header):hover {
+            background: rgba(224, 231, 255, 0.3);
+        }
+
+        .selected {
+            background: rgba(224, 231, 255, 0.5) !important;
+            box-shadow: inset 4px 0 0 var(--primary);
+        }
+
+        .feedback-panel {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .story-input {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .word-count {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .ai-suggestions {
+            background: rgba(16, 185, 129, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="analyzer-header">
+        <div class="score-display">
+            <div class="total-score">Score: <span id="total">0</span>/40</div>
+            <div class="status-indicator" id="ranking">Incomplete</div>
+        </div>
+        <div class="controls">
+            <button onclick="resetScores()">🔄 Reset Scores</button>
+            <button onclick="exportPDF()">📥 Export Report</button>
+            <button onclick="getAISuggestions()">🤖 Story Insights</button>
+        </div>
+    </div>
+
+    <div class="preview-section">
+        <h2>Story Input</h2>
+        <textarea id="storyInput" class="story-input" placeholder="Paste your story here..."></textarea>
+        <div class="word-count" id="wordCount">0 words</div>
+    </div>
+
+    <div class="rubric-table">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Good (1)</th>
+                    <th>Great (2)</th>
+                    <th>Excellent (3)</th>
+                    <th>Outstanding (4)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="category-header">Hook & Opening</td>
+                    <td data-category="0" data-rating="1">Slow start; no hook (e.g., "Hey guys!")</td>
+                    <td data-category="0" data-rating="2">Basic hook (e.g., "Today we're doing something crazy!")</td>
+                    <td data-category="0" data-rating="3">Intriguing hook (e.g., "I spent 24 hours in a haunted Minecraft server...")</td>
+                    <td data-category="0" data-rating="4">Unignorable opener (e.g., immediate action: "This glitch almost killed me..." with suspenseful editing)</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Clarity of Goal</td>
+                    <td data-category="1" data-rating="1">No clear purpose; viewers don't know why to watch</td>
+                    <td data-category="1" data-rating="2">Goal exists but gets lost mid-video</td>
+                    <td data-category="1" data-rating="3">Clear goal with minor tangents (e.g., "We're building X in 24 hours!")</td>
+                    <td data-category="1" data-rating="4">Crystal-clear "North Star"; every segment ties back to the core premise</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Audience Retention</td>
+                    <td data-category="2" data-rating="1">Drags or loses viewers quickly</td>
+                    <td data-category="2" data-rating="2">A few engaging moments but uneven pacing</td>
+                    <td data-category="2" data-rating="3">Strong pacing with peaks (e.g., challenges, reveals)</td>
+                    <td data-category="2" data-rating="4">Masterful tension arcs; cliffhangers, mid-roll payoffs, zero dead air</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Authenticity & Relatability</td>
+                    <td data-category="3" data-rating="1">Feels scripted/forced; no personal connection</td>
+                    <td data-category="3" data-rating="2">Occasional genuine moments (e.g., laughter)</td>
+                    <td data-category="3" data-rating="3">Strong relatability (e.g., sharing struggles, raw reactions)</td>
+                    <td data-category="3" data-rating="4">Deeply authentic; viewers feel like they're hanging out with friends</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Emotional Arc & Payoff</td>
+                    <td data-category="4" data-rating="1">Flat emotional tone; no highs/lows</td>
+                    <td data-category="4" data-rating="2">Moments of excitement but no resolution</td>
+                    <td data-category="4" data-rating="3">Clear emotional journey with a satisfying end</td>
+                    <td data-category="4" data-rating="4">Masterful peaks/valleys that leave viewers obsessed</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Conflict & Stakes</td>
+                    <td data-category="5" data-rating="1">Low energy; no urgency</td>
+                    <td data-category="5" data-rating="2">Basic stakes (e.g., "Can we finish this build?")</td>
+                    <td data-category="5" data-rating="3">High stakes (e.g., time limits, punishments)</td>
+                    <td data-category="5" data-rating="4">Unavoidable drama (e.g., betrayals, near-fails) with emotional payoff</td>
+                </tr>
+                <tr>
+                    <td class="category-header">CTA & Audience Interaction</td>
+                    <td data-category="6" data-rating="1">No CTA or weak ask (e.g., "Subscribe!")</td>
+                    <td data-category="6" data-rating="2">Basic CTA (e.g., "Like and subscribe!")</td>
+                    <td data-category="6" data-rating="3">Clear, creative CTA (e.g., "Comment your score below!")</td>
+                    <td data-category="6" data-rating="4">Actionable + emotional CTA (e.g., "Join our Discord to help us survive next week!")</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Originality & Trend-Jacking</td>
+                    <td data-category="7" data-rating="1">Cliché concept (e.g., generic challenge)</td>
+                    <td data-category="7" data-rating="2">Minor twist on trends (e.g., "Minecraft but...")</td>
+                    <td data-category="7" data-rating="3">Fresh angle (e.g., collabs, unexpected formats)</td>
+                    <td data-category="7" data-rating="4">Boundary-pushing; viewers think, "No one else does this!" (e.g., Dream's "Speedrunner vs Hunter")</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Replayability & Shareability</td>
+                    <td data-category="8" data-rating="1">Forgettable; no reason to reward/share</td>
+                    <td data-category="8" data-rating="2">A few quotable/memeable moments</td>
+                    <td data-category="8" data-rating="3">High shareability (e.g., shocking reveals, humor)</td>
+                    <td data-category="8" data-rating="4">"Clip-worthy" moments optimized for TikTok/Shorts</td>
+                </tr>
+                <tr>
+                    <td class="category-header">Branding Consistency</td>
+                    <td data-category="9" data-rating="1">No branding; generic</td>
+                    <td data-category="9" data-rating="2">Basic branding</td>
+                    <td data-category="9" data-rating="3">Consistent style (e.g., color schemes, recurring segments)</td>
+                    <td data-category="9" data-rating="4">Iconic branding; instantly recognizable (e.g., PewDiePie's intro, MtBeast's font)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="feedback-panel" id="feedback">
+        <h3>Story Enhancement Recommendations</h3>
+        <div id="specificFeedback"></div>
+        <div class="ai-suggestions" id="aiSuggestions"></div>
+    </div>
+
+    <script>
+        const improvementTips = {
+            0: {1: "Add contrasting colors or unexpected elements", 2: "Combine two attention-grabbing elements", 3: "Create visual urgency with mystery/danger", 4: "Perfect scroll-stopping power achieved!"},
+            1: {1: "Use rule of thirds for better composition", 2: "Implement leading lines", 3: "Optimize for mobile viewing", 4: "Excellent visual hierarchy!"},
+            2: {1: "Simplify background elements", 2: "Enhance visual hierarchy", 3: "Use negative space effectively", 4: "Perfect simplicity/clutter balance!"},
+            3: {1: "Shorten text length", 2: "Increase text contrast", 3: "Use bolder typography", 4: "Text/visual synergy perfect!"},
+            4: {1: "Add mystery element", 2: "Create clearer question", 3: "Use unexpected imagery", 4: "Perfect curiosity gap!"},
+            5: {1: "Add emotional triggers", 2: "Use facial expressions", 3: "Create urgency", 4: "Strong emotional impact!"},
+            6: {1: "Better align with title", 2: "Use complementary elements", 3: "Create combined hook", 4: "Perfect title synergy!"},
+            7: {1: "Improve content alignment", 2: "Show key moment", 3: "Avoid clickbait", 4: "Perfect content match!"},
+            8: {1: "Add brand colors", 2: "Include logo/watermark", 3: "Standardize style", 4: "Perfect brand recognition!"},
+            9: {1: "Check resolution", 2: "Optimize contrast", 3: "Verify mobile display", 4: "Technical perfection!"}
+        };
+
+        let scores = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+                cell.addEventListener('click', () => selectRating(cell));
+            });
+        });
+
+        function selectRating(cell) {
+            const categoryIndex = Number(cell.getAttribute('data-category'));
+            const rating = parseInt(cell.getAttribute('data-rating'));
+            
+            const row = cell.parentElement;
+            row.querySelectorAll('td').forEach(td => {
+                if(td !== row.firstElementChild) td.classList.remove('selected');
+            });
+            
+            cell.classList.add('selected');
+            scores[categoryIndex] = rating;
+            updateTotal();
+            showFeedback();
+        }
+
+        function updateTotal() {
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            document.getElementById('total').textContent = total;
+            const ranking = document.getElementById('ranking');
+            
+            if (Object.keys(scores).length < 10) {
+                ranking.textContent = 'Incomplete';
+                ranking.style.color = '#64748b';
+                return;
+            }
+
+            if(total <= 24) {
+                ranking.textContent = 'Needs Work 🔴';
+                ranking.style.color = '#ef4444';
+            } else if(total <= 32) {
+                ranking.textContent = 'Good Start 🟡';
+                ranking.style.color = '#eab308';
+            } else if(total <= 38) {
+                ranking.textContent = 'Great! 🟢';
+                ranking.style.color = '#22c55e';
+            } else {
+                ranking.textContent = 'Perfect! 🔵';
+                ranking.style.color = '#3b82f6';
+            }
+        }
+
+        function showFeedback() {
+            const feedbackDiv = document.getElementById('specificFeedback');
+            feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
+                const rating = scores[cat];
+                return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(99, 102, 241, 0.05); border-radius: 8px;">
+                    <strong style="color: ${getCategoryColor(cat)}">${document.querySelector(`[data-category="${cat}"].category-header`).textContent}:</strong>
+                    <span style="color: #475569;">${improvementTips[cat][rating]}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function getCategoryColor(cat) {
+            const colors = ['#6366f1', '#ec4899', '#eab308', '#10b981', '#3b82f6', 
+                          '#8b5cf6', '#ef4444', '#f97316', '#14b8a6', '#64748b'];
+            return colors[Number(cat)];
+        }
+
+        function resetScores() {
+            scores = {};
+            document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+            document.getElementById('specificFeedback').innerHTML = '';
+            updateTotal();
+            document.getElementById('ranking').textContent = 'Incomplete';
+            document.getElementById('ranking').style.color = '#64748b';
+        }
+
+        document.getElementById('storyInput').addEventListener('input', function(e) {
+            const text = e.target.value;
+            const wordCount = text.trim().split(/\s+/).length;
+            document.getElementById('wordCount').textContent = `${wordCount} words`;
+        });
+
+        async function getAISuggestions() {
+            const aiDiv = document.getElementById('aiSuggestions');
+            aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing story structure...';
+            
+            setTimeout(() => {
+                const suggestions = [
+                    "Consider adding a 'dark night of the soul' moment",
+                    "Increase character development in middle section",
+                    "Build higher stakes in the climax",
+                    "Add more sensory details in key scenes",
+                    "Consider a twist ending for memorability"
+                ];
+                aiDiv.innerHTML = '<strong>Narrative Insights:</strong><br>' + 
+                    suggestions.map(s => `• ${s}`).join('<br>');
+            }, 2000);
+        }
+
+        async function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            const elements = [
+                document.querySelector('.analyzer-header'),
+                document.querySelector('.preview-section'),
+                document.querySelector('.rubric-table'),
+                document.querySelector('.feedback-panel')
+            ];
+
+            let yPos = 10;
+            
+            for (const element of elements) {
+                const canvas = await html2canvas(element, { scale: 2 });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
+                    doc.addPage();
+                    yPos = 10;
+                }
+                
+                doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
+                yPos += pdfHeight + 10;
+            }
+
+            doc.save('story-analysis-report.pdf');
+        }
+    </script>
+</body>
+</html>
