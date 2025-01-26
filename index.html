@@ -9,11 +9,12 @@
         :root {
             --primary: #6366f1;
             --secondary: #4f46e5;
-            --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            --glass: rgba(255, 255, 255, 0.97);
+            --accent: #ec4899;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            --glass: rgba(255, 255, 255, 0.98);
             --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: 16px;
+            --radius: 20px;
         }
 
         body {
@@ -65,8 +66,8 @@
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 0.875rem 1.5rem;
-            border-radius: 1rem;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
             cursor: pointer;
             font-weight: 600;
             transition: var(--transition);
@@ -78,7 +79,8 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+            opacity: 0.9;
         }
 
         .preview-section {
@@ -88,6 +90,13 @@
             margin-bottom: 2rem;
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .upload-container {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
         }
 
         #desktopPreview {
@@ -101,6 +110,8 @@
             padding: 1rem;
             transition: var(--transition);
             cursor: pointer;
+            aspect-ratio: 16/9;
+            object-fit: cover;
         }
 
         .rubric-table {
@@ -116,7 +127,6 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            min-width: 800px;
         }
 
         .modern-table th {
@@ -135,7 +145,8 @@
             border-bottom: 1px solid rgba(224, 231, 255, 0.3);
             transition: var(--transition);
             vertical-align: top;
-            min-width: 220px;
+            min-width: 200px;
+            cursor: pointer;
         }
 
         .category-header {
@@ -143,30 +154,23 @@
             background: rgba(99, 102, 241, 0.08);
             position: sticky;
             left: 0;
-            min-width: 200px;
+            min-width: 180px;
             backdrop-filter: blur(5px);
             border-right: 1px solid rgba(224, 231, 255, 0.3);
         }
 
         .modern-table td:not(.category-header):hover {
             background: rgba(224, 231, 255, 0.3);
+            transform: scale(1.02);
         }
 
         .selected {
             background: rgba(224, 231, 255, 0.5) !important;
             box-shadow: inset 4px 0 0 var(--primary);
+            transform: scale(1.02);
         }
 
-        .feedback-panel {
-            background: var(--glass);
-            padding: 2rem;
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .resources {
+        .feedback-panel, .resources {
             background: var(--glass);
             padding: 2rem;
             border-radius: var(--radius);
@@ -181,6 +185,14 @@
             }
             .modern-table th, .modern-table td {
                 padding: 1rem;
+                min-width: 160px;
+            }
+            .category-header {
+                min-width: 140px;
+            }
+            .upload-container {
+                position: static;
+                margin-bottom: 1rem;
             }
         }
     </style>
@@ -192,7 +204,6 @@
             <div class="status-indicator" id="ranking">Incomplete</div>
         </div>
         <div class="controls">
-            <button onclick="document.getElementById('thumbnailUpload').click()">📁 Upload Thumbnail</button>
             <button onclick="resetScores()">🔄 Reset Scores</button>
             <button onclick="exportPDF()">📥 Export Report</button>
         </div>
@@ -200,7 +211,10 @@
 
     <div class="preview-section">
         <h2>Thumbnail Preview</h2>
-        <input type="file" id="thumbnailUpload" accept="image/*">
+        <div class="upload-container">
+            <button onclick="document.getElementById('thumbnailUpload').click()">📁 Upload Image</button>
+        </div>
+        <input type="file" id="thumbnailUpload" accept="image/*" hidden>
         <img id="desktopPreview" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
     </div>
 
@@ -229,9 +243,9 @@
                 <tr>
                     <td class="category-header">Composition & Design</td>
                     <td data-category="1" data-rating="1">Functional layout.</td>
-                    <td data-category="1" data-rating="2">Role of things / central alignment.</td>
+                    <td data-category="1" data-rating="2">Role of thirds / central alignment.</td>
                     <td data-category="1" data-rating="3">Leading lines + dynamic contrast.</td>
-                    <td data-category="1" data-rating="4">Visually “redouble” in under a second (especially on mobile).</td>
+                    <td data-category="1" data-rating="4">Visually “readable” in under a second (especially on mobile).</td>
                 </tr>
 
                 <!-- Simplicity vs. Clutter -->
@@ -323,17 +337,28 @@
         </ul>
     </div>
 
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        const rubricData = [
-            ['Scroll-Stopping Power', ['Basic colors/text...', /* ... */]],
-            // ... (keep existing rubricData structure)
-        ];
-
         const improvementTips = {
-            // ... (keep existing improvementTips)
+            0: {1: "Add contrasting colors or unexpected elements", 2: "Combine two attention-grabbing elements", 3: "Create visual urgency with mystery/danger", 4: "Perfect scroll-stopping power achieved!"},
+            1: {1: "Use rule of thirds for better composition", 2: "Implement leading lines", 3: "Optimize for mobile viewing", 4: "Excellent visual hierarchy!"},
+            2: {1: "Simplify background elements", 2: "Enhance visual hierarchy", 3: "Use negative space effectively", 4: "Perfect simplicity/clutter balance!"},
+            3: {1: "Shorten text length", 2: "Increase text contrast", 3: "Use bolder typography", 4: "Text/visual synergy perfect!"},
+            4: {1: "Add mystery element", 2: "Create clearer question", 3: "Use unexpected imagery", 4: "Perfect curiosity gap!"},
+            5: {1: "Add emotional triggers", 2: "Use facial expressions", 3: "Create urgency", 4: "Strong emotional impact!"},
+            6: {1: "Better align with title", 2: "Use complementary elements", 3: "Create combined hook", 4: "Perfect title synergy!"},
+            7: {1: "Improve content alignment", 2: "Show key moment", 3: "Avoid clickbait", 4: "Perfect content match!"},
+            8: {1: "Add brand colors", 2: "Include logo/watermark", 3: "Standardize style", 4: "Perfect brand recognition!"},
+            9: {1: "Check resolution", 2: "Optimize contrast", 3: "Verify mobile display", 4: "Technical perfection!"}
         };
 
         let scores = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+                cell.addEventListener('click', () => selectRating(cell));
+            });
+        });
 
         function selectRating(cell) {
             const categoryIndex = cell.getAttribute('data-category');
@@ -347,6 +372,39 @@
             cell.classList.add('selected');
             scores[categoryIndex] = rating;
             updateTotal();
+            showFeedback();
+        }
+
+        async function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            const elements = [
+                document.querySelector('.analyzer-header'),
+                document.querySelector('.preview-section'),
+                document.querySelector('.rubric-table'),
+                document.querySelector('.feedback-panel')
+            ];
+
+            let yPos = 10;
+            
+            for (const element of elements) {
+                const canvas = await html2canvas(element, { scale: 2 });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
+                    doc.addPage();
+                    yPos = 10;
+                }
+                
+                doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
+                yPos += pdfHeight + 10;
+            }
+
+            doc.save('thumbnail-analysis-report.pdf');
         }
 
         function updateTotal() {
@@ -356,25 +414,48 @@
             
             if (Object.keys(scores).length < 10) {
                 ranking.textContent = 'Incomplete';
-                ranking.className = 'status-indicator';
+                ranking.style.color = '#64748b';
                 return;
             }
 
-            ranking.className = total <= 29 ? 'status-indicator reject' : 'status-indicator approve';
-            ranking.textContent = total <= 29 ? 'Needs Improvement' : total <= 35 ? 'Good' : 'Excellent';
-            showFeedback();
+            if(total <= 24) {
+                ranking.textContent = 'Needs Work 🔴';
+                ranking.style.color = '#ef4444';
+            } else if(total <= 32) {
+                ranking.textContent = 'Good Start 🟡';
+                ranking.style.color = '#eab308';
+            } else if(total <= 38) {
+                ranking.textContent = 'Great! 🟢';
+                ranking.style.color = '#22c55e';
+            } else {
+                ranking.textContent = 'Perfect! 🔵';
+                ranking.style.color = '#3b82f6';
+            }
+        }
+
+        function showFeedback() {
+            const feedbackDiv = document.getElementById('specificFeedback');
+            feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
+                const rating = scores[cat];
+                return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(99, 102, 241, 0.05); border-radius: 8px;">
+                    <strong style="color: ${getCategoryColor(cat)}">${document.querySelector(`[data-category="${cat}"].category-header`).textContent}:</strong>
+                    <span style="color: #475569;">${improvementTips[cat][rating]}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function getCategoryColor(cat) {
+            const colors = ['#6366f1', '#ec4899', '#eab308', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#f97316', '#14b8a6', '#64748b'];
+            return colors[cat];
         }
 
         function resetScores() {
             scores = {};
             document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+            document.getElementById('specificFeedback').innerHTML = '';
             updateTotal();
-        }
-
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            // ... (keep existing PDF export code)
+            document.getElementById('ranking').textContent = 'Incomplete';
+            document.getElementById('ranking').style.color = '#64748b';
         }
 
         document.getElementById('thumbnailUpload').addEventListener('change', function(e) {
@@ -385,12 +466,6 @@
                 document.getElementById('desktopPreview').style.padding = '0';
             };
             reader.readAsDataURL(file);
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-                cell.addEventListener('click', () => selectRating(cell));
-            });
         });
     </script>
 </body>
