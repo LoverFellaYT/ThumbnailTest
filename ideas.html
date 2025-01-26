@@ -1,14 +1,543 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Ideas Page</title>
-    <!-- Copy the same CSS/style links from your index.html -->
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea Forge Pro | Viral Content Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --secondary: #059669;
+            --accent: #F59E0B;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            --glass: rgba(255, 255, 255, 0.98);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 16px;
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            background: #F3F4F6;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .analyzer-header {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .total-score {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.15);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .brainstorm-section {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brainstorm-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .brainstorm-header h2 {
+            margin: 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #ideaInput {
+            width: 100%;
+            height: 150px;
+            padding: 1.5rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-size: 1rem;
+            resize: vertical;
+            transition: var(--transition);
+            background: rgba(249, 250, 251, 0.8);
+        }
+
+        #ideaInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .prompt-generator {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .rubric-table {
+            background: var(--glass);
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 800px;
+        }
+
+        .modern-table th {
+            background: var(--gradient);
+            color: white;
+            padding: 1.25rem;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .modern-table td {
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+            transition: var(--transition);
+            vertical-align: top;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        .category-header {
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.08);
+            position: sticky;
+            left: 0;
+            min-width: 180px;
+            backdrop-filter: blur(5px);
+            border-right: 1px solid rgba(229, 231, 235, 0.3);
+        }
+
+        .modern-table td:not(.category-header):hover {
+            background: rgba(209, 250, 229, 0.3);
+            transform: scale(1.02);
+        }
+
+        .selected {
+            background: rgba(209, 250, 229, 0.5) !important;
+            box-shadow: inset 4px 0 0 var(--primary);
+            transform: scale(1.02);
+        }
+
+        .feedback-panel, .resources {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-suggestions {
+            background: rgba(245, 158, 11, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .spark-icon {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0 1rem;
+            }
+            .modern-table th, .modern-table td {
+                padding: 1rem;
+                min-width: 160px;
+            }
+            .category-header {
+                min-width: 140px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>My Ideas Page</h1>
-    <p>Add your content here...</p>
-    <!-- Optional: Add a link back to home -->
-    <a href="index.html">Home</a>
+    <div class="analyzer-header">
+        <div class="score-display">
+            <div class="total-score">Score: <span id="total">0</span>/40</div>
+            <div class="status-indicator" id="ranking">Incomplete</div>
+        </div>
+        <div class="controls">
+            <button onclick="resetScores()">🔄 Reset Scores</button>
+            <button onclick="exportPDF()">📥 Export Report</button>
+            <button onclick="getAISuggestions()">🤖 AI Suggestions</button>
+        </div>
+    </div>
+
+    <div class="brainstorm-section">
+        <div class="brainstorm-header">
+            <svg class="spark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <h2>Idea Incubator</h2>
+        </div>
+        <textarea id="ideaInput" placeholder="✨ Describe your video concept here..."></textarea>
+        
+        <div class="prompt-generator">
+            <button onclick="generatePrompt()">🎲 Random Prompt</button>
+            <div id="randomPrompt" class="idea-prompt"></div>
+        </div>
+    </div>
+
+    <div class="rubric-table">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Good (1)</th>
+                    <th>Great (2)</th>
+                    <th>Excellent (3)</th>
+                    <th>Outstanding (4)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Originality & Concept -->
+                <tr>
+                    <td class="category-header">Originality & Concept</td>
+                    <td data-category="0" data-rating="1">Basic, generic idea</td>
+                    <td data-category="0" data-rating="2">Some intrigue but needs refinement</td>
+                    <td data-category="0" data-rating="3">Engaging with clear potential</td>
+                    <td data-category="0" data-rating="4">Exceptionally bold & entertaining</td>
+                </tr>
+
+                <!-- Transformation/Progression -->
+                <tr>
+                    <td class="category-header">Transformation/Progression</td>
+                    <td data-category="1" data-rating="1">No clear growth</td>
+                    <td data-category="1" data-rating="2">Mild progression</td>
+                    <td data-category="1" data-rating="3">Clear transformation</td>
+                    <td data-category="1" data-rating="4">Dramatic, impactful progression</td>
+                </tr>
+
+                <!-- Engagement Potential -->
+                <tr>
+                    <td class="category-header">Engagement Potential</td>
+                    <td data-category="2" data-rating="1">No interaction triggers</td>
+                    <td data-category="2" data-rating="2">Might get likes</td>
+                    <td data-category="2" data-rating="3">Encourages interaction</td>
+                    <td data-category="2" data-rating="4">High engagement factor</td>
+                </tr>
+
+                <!-- Binge & Algorithm Fuel -->
+                <tr>
+                    <td class="category-header">Binge & Algorithm Fuel</td>
+                    <td data-category="3" data-rating="1">One-off video</td>
+                    <td data-category="3" data-rating="2">Basic teaser</td>
+                    <td data-category="3" data-rating="3">Multi-part cliffhanger</td>
+                    <td data-category="3" data-rating="4">Unfinished business hook</td>
+                </tr>
+
+                <!-- WOW Factor -->
+                <tr>
+                    <td class="category-header">WOW Factor</td>
+                    <td data-category="4" data-rating="1">Standard presentation</td>
+                    <td data-category="4" data-rating="2">Some cool moments</td>
+                    <td data-category="4" data-rating="3">Standout moments</td>
+                    <td data-category="4" data-rating="4">Mind-blowing moments</td>
+                </tr>
+
+                <!-- Emotional Impact -->
+                <tr>
+                    <td class="category-header">Emotional Impact</td>
+                    <td data-category="5" data-rating="1">Flat tone</td>
+                    <td data-category="5" data-rating="2">Occasional laughs</td>
+                    <td data-category="5" data-rating="3">Emotional rollercoaster</td>
+                    <td data-category="5" data-rating="4">Visceral reactions</td>
+                </tr>
+
+                <!-- Trend Potential -->
+                <tr>
+                    <td class="category-header">Trend Potential</td>
+                    <td data-category="6" data-rating="1">Misses trends</td>
+                    <td data-category="6" data-rating="2">Loosely aligned</td>
+                    <td data-category="6" data-rating="3">Viral alignment</td>
+                    <td data-category="6" data-rating="4">Trend-setting</td>
+                </tr>
+
+                <!-- Replayability -->
+                <tr>
+                    <td class="category-header">Replayability</td>
+                    <td data-category="7" data-rating="1">Forgettable</td>
+                    <td data-category="7" data-rating="2">Somewhat shareable</td>
+                    <td data-category="7" data-rating="3">Highly shareable</td>
+                    <td data-category="7" data-rating="4">Meme-worthy</td>
+                </tr>
+
+                <!-- Audience Alignment -->
+                <tr>
+                    <td class="category-header">Audience Alignment</td>
+                    <td data-category="8" data-rating="1">Too generic</td>
+                    <td data-category="8" data-rating="2">Mildly resonates</td>
+                    <td data-category="8" data-rating="3">Clear alignment</td>
+                    <td data-category="8" data-rating="4">Perfect alignment</td>
+                </tr>
+
+                <!-- Execution Feasibility -->
+                <tr>
+                    <td class="category-header">Execution Feasibility</td>
+                    <td data-category="9" data-rating="1">Impractical</td>
+                    <td data-category="9" data-rating="2">Possible but difficult</td>
+                    <td data-category="9" data-rating="3">Practical with ROI</td>
+                    <td data-category="9" data-rating="4">Easy & high ROI</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="feedback-panel" id="feedback">
+        <h3>Improvement Recommendations</h3>
+        <div id="specificFeedback"></div>
+        <div class="ai-suggestions" id="aiSuggestions"></div>
+    </div>
+
+    <div class="resources">
+        <h3>Idea Generation Resources</h3>
+        <ul>
+            <li><a href="https://trends.google.com/trends/" target="_blank">Google Trends</a></li>
+            <li><a href="https://answerthepublic.com/" target="_blank">Audience Questions</a></li>
+            <li><a href="https://www.reddit.com/r/VideoIdeas/" target="_blank">Idea Community</a></li>
+        </ul>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        const improvementTips = {
+            0: {1: "Add unexpected twist to concept", 2: "Combine two popular concepts", 3: "Introduce mystery element", 4: "Perfect originality achieved!"},
+            1: {1: "Add clear beginning-middle-end", 2: "Create progression milestones", 3: "Build dramatic arc", 4: "Perfect story structure!"},
+            2: {1: "Add call-to-action", 2: "Include debate question", 3: "Create shareable moment", 4: "Built-in virality!"},
+            3: {1: "Add series potential", 2: "Create character continuity", 3: "Add unresolved mystery", 4: "Perfect binge factor!"},
+            4: {1: "Add visual spectacle", 2: "Include surprise element", 3: "Create 'holy cow' moment", 4: "Multiple WOW factors!"},
+            5: {1: "Add personal story", 2: "Include triumph/failure", 3: "Create suspense", 4: "Powerful emotional journey!"},
+            6: {1: "Research current trends", 2: "Add trending audio/meme", 3: "Predict upcoming trend", 4: "Trend-setting potential!"},
+            7: {1: "Add meme template", 2: "Create quotable moment", 3: "Add inside joke", 4: "Built-in replay value!"},
+            8: {1: "Analyze audience demographics", 2: "Check community polls", 3: "Align with top-performing content", 4: "Perfect audience match!"},
+            9: {1: "Simplify production needs", 2: "Find cost-effective solutions", 3: "Plan resource allocation", 4: "Optimal execution plan!"}
+        };
+
+        let scores = {};
+        const prompts = [
+            "What if you combined [trend1] with [unexpected element]?",
+            "How would [famous person] approach [common problem]?",
+            "The ultimate challenge: [difficult task] in 24 hours",
+            "Mystery box challenge with [twist]",
+            "Testing viral [hack/myth] with scientific approach"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+                cell.addEventListener('click', () => selectRating(cell));
+            });
+            generatePrompt();
+        });
+
+        function selectRating(cell) {
+            const categoryIndex = Number(cell.getAttribute('data-category'));
+            const rating = parseInt(cell.getAttribute('data-rating'));
+            
+            const row = cell.parentElement;
+            row.querySelectorAll('td').forEach(td => {
+                if(td !== row.firstElementChild) td.classList.remove('selected');
+            });
+            
+            cell.classList.add('selected');
+            scores[categoryIndex] = rating;
+            updateTotal();
+            showFeedback();
+        }
+
+        async function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            const elements = [
+                document.querySelector('.analyzer-header'),
+                document.querySelector('.brainstorm-section'),
+                document.querySelector('.rubric-table'),
+                document.querySelector('.feedback-panel')
+            ];
+
+            let yPos = 10;
+            
+            for (const element of elements) {
+                const canvas = await html2canvas(element, { scale: 2 });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
+                    doc.addPage();
+                    yPos = 10;
+                }
+                
+                doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
+                yPos += pdfHeight + 10;
+            }
+
+            doc.save('idea-analysis-report.pdf');
+        }
+
+        function updateTotal() {
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            document.getElementById('total').textContent = total;
+            const ranking = document.getElementById('ranking');
+            
+            if (Object.keys(scores).length < 10) {
+                ranking.textContent = 'Incomplete';
+                ranking.style.color = '#64748b';
+                return;
+            }
+
+            if(total <= 24) {
+                ranking.textContent = 'Needs Work 🔴';
+                ranking.style.color = '#ef4444';
+            } else if(total <= 32) {
+                ranking.textContent = 'Good Start 🟡';
+                ranking.style.color = '#eab308';
+            } else if(total <= 38) {
+                ranking.textContent = 'Great! 🟢';
+                ranking.style.color = '#22c55e';
+            } else {
+                ranking.textContent = 'Perfect! 🔵';
+                ranking.style.color = '#3b82f6';
+            }
+        }
+
+        function showFeedback() {
+            const feedbackDiv = document.getElementById('specificFeedback');
+            feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
+                const rating = scores[cat];
+                return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 8px;">
+                    <strong style="color: ${getCategoryColor(cat)}">${document.querySelector(`[data-category="${cat}"].category-header`).textContent}:</strong>
+                    <span style="color: #475569;">${improvementTips[cat][rating]}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function getCategoryColor(cat) {
+            const colors = ['#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', '#EC4899', 
+                          '#EF4444', '#14B8A6', '#84CC16', '#64748B', '#6366F1'];
+            return colors[Number(cat)];
+        }
+
+        function resetScores() {
+            scores = {};
+            document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+            document.getElementById('specificFeedback').innerHTML = '';
+            updateTotal();
+            document.getElementById('ranking').textContent = 'Incomplete';
+            document.getElementById('ranking').style.color = '#64748b';
+        }
+
+        function generatePrompt() {
+            const random = prompts[Math.floor(Math.random() * prompts.length)];
+            document.getElementById('randomPrompt').textContent = random;
+        }
+
+        async function getAISuggestions() {
+            const aiDiv = document.getElementById('aiSuggestions');
+            aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing concept...';
+            
+            setTimeout(() => {
+                const suggestions = [
+                    "Add a personal story to increase relatability",
+                    "Include a surprising twist in the first 30 seconds",
+                    "Create a recurring character for series potential",
+                    "Add data visualization for credibility",
+                    "Use trending audio to boost discoverability"
+                ];
+                aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' + 
+                    suggestions.map(s => `• ${s}`).join('<br>');
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
