@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StoryCraft Analyzer Pro+</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary: #3b82f6;
-            --secondary: #2563eb;
+            --primary: #6366f1;
+            --secondary: #4f46e5;
             --accent: #10b981;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            
             --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            --glass: rgba(255, 255, 255, 0.98);
-            --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: 20px;
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+            --radius: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -22,25 +27,24 @@
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 2rem;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.5;
         }
 
         .analyzer-header {
-            background: var(--glass);
+            background: var(--surface);
             padding: 2rem;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             margin-bottom: 2rem;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.1);
         }
 
         .score-display {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
@@ -63,105 +67,150 @@
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: var(--radius);
+            padding: 0.875rem 1.5rem;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.15);
+            box-shadow: var(--shadow);
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+            opacity: 0.9;
         }
 
         .rubric-table {
-            background: var(--glass);
+            background: var(--surface);
             border-radius: var(--radius);
             margin: 2rem 0;
             box-shadow: var(--shadow);
             overflow-x: auto;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.1);
         }
 
         .modern-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
+            min-width: 800px;
         }
 
         .modern-table th {
-            background: var(--gradient);
+            background: var(--primary);
             color: white;
-            padding: 1.25rem;
-            font-weight: 600;
+            padding: 1rem;
+            font-weight: 500;
+            text-align: left;
             position: sticky;
             top: 0;
         }
 
         .modern-table td {
-            padding: 1.25rem;
-            background: rgba(255, 255, 255, 0.85);
-            border-bottom: 1px solid rgba(224, 231, 255, 0.3);
+            padding: 1rem;
+            background: var(--surface);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.05);
             transition: var(--transition);
             vertical-align: top;
-            min-width: 200px;
-            cursor: pointer;
         }
 
         .category-header {
             font-weight: 600;
-            background: rgba(99, 102, 241, 0.08);
+            background: rgba(99, 102, 241, 0.03);
             position: sticky;
             left: 0;
             min-width: 180px;
-            border-right: 1px solid rgba(224, 231, 255, 0.3);
         }
 
-        .modern-table td:not(.category-header):hover {
-            background: rgba(224, 231, 255, 0.3);
+        .modern-table tr:hover td:not(.category-header) {
+            background: rgba(99, 102, 241, 0.03);
         }
 
         .selected {
-            background: rgba(224, 231, 255, 0.5) !important;
-            box-shadow: inset 4px 0 0 var(--primary);
+            background: rgba(99, 102, 241, 0.08) !important;
+            border-left: 4px solid var(--primary);
         }
 
-        .feedback-panel {
-            background: var(--glass);
+        .input-section {
+            background: var(--surface);
             padding: 2rem;
             border-radius: var(--radius);
             margin: 2rem 0;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            color: var(--primary);
         }
 
         .story-input {
             width: 100%;
             height: 200px;
             padding: 1rem;
-            border: 2px solid #e2e8f0;
+            border: 2px solid rgba(99, 102, 241, 0.1);
             border-radius: 10px;
             margin: 1rem 0;
             font-size: 1rem;
             resize: vertical;
+            transition: var(--transition);
+            background: var(--background);
+        }
+
+        .story-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .word-count {
-            color: #64748b;
-            font-size: 0.9rem;
+            color: var(--muted);
+            font-size: 0.875rem;
             text-align: right;
+            margin-top: -0.5rem;
         }
 
         .ai-suggestions {
-            background: rgba(16, 185, 129, 0.05);
-            padding: 1rem;
+            background: rgba(16, 185, 129, 0.03);
+            padding: 1.5rem;
             border-radius: 10px;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .feedback-panel {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0 1rem;
+            }
+            
+            .analyzer-header {
+                padding: 1.5rem;
+            }
+            
+            .controls {
+                gap: 0.75rem;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .input-section {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -172,16 +221,26 @@
             <div class="status-indicator" id="ranking">Incomplete</div>
         </div>
         <div class="controls">
-            <button onclick="resetScores()">🔄 Reset Scores</button>
-            <button onclick="exportPDF()">📥 Export Report</button>
-            <button onclick="getAISuggestions()">🤖 Story Insights</button>
+            <button onclick="resetScores()">🔄 Reset</button>
+            <button onclick="exportPDF()">📥 Export PDF</button>
+            <button onclick="getAISuggestions()">🤖 AI Insights</button>
         </div>
     </div>
 
-    <div class="preview-section">
-        <h2>Story Input</h2>
-        <textarea id="storyInput" class="story-input" placeholder="Paste your story here..."></textarea>
+    <div class="input-section">
+        <h2>Your Story</h2>
+        <textarea id="storyInput" class="story-input" placeholder="Start typing or paste your story here..."></textarea>
         <div class="word-count" id="wordCount">0 words</div>
+    </div>
+
+    <div class="input-section">
+        <h2>Human Feedback</h2>
+        <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="height: 150px;"></textarea>
+    </div>
+
+    <div class="input-section">
+        <h2>AI Suggestions</h2>
+        <textarea id="aiFeedback" class="story-input" placeholder="Paste AI-generated feedback here..." style="height: 150px;"></textarea>
     </div>
 
     <div class="rubric-table">
@@ -271,8 +330,8 @@
     </div>
 
     <div class="feedback-panel" id="feedback">
-        <h3>Story Enhancement Recommendations</h3>
-        <div id="specificFeedback"></div>
+        <h2>Improvement Recommendations</h2>
+        <div id="specificFeedback" style="margin-top: 1rem;"></div>
         <div class="ai-suggestions" id="aiSuggestions"></div>
     </div>
 
@@ -360,6 +419,15 @@
             scores = {};
             document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
             document.getElementById('specificFeedback').innerHTML = '';
+            
+            // Clear all text inputs
+            document.getElementById('storyInput').value = '';
+            document.getElementById('humanFeedback').value = '';
+            document.getElementById('aiFeedback').value = '';
+            document.getElementById('aiSuggestions').innerHTML = '';
+            
+            // Reset word count
+            document.getElementById('wordCount').textContent = '0 words';
             updateTotal();
             document.getElementById('ranking').textContent = 'Incomplete';
             document.getElementById('ranking').style.color = '#64748b';
@@ -392,32 +460,44 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             
+            // Capture all relevant elements
             const elements = [
                 document.querySelector('.analyzer-header'),
-                document.querySelector('.preview-section'),
+                ...document.querySelectorAll('.input-section'),
                 document.querySelector('.rubric-table'),
                 document.querySelector('.feedback-panel')
             ];
 
             let yPos = 10;
             
-            for (const element of elements) {
-                const canvas = await html2canvas(element, { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
-                const imgProps = doc.getImageProperties(imgData);
-                const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                
-                if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
-                    doc.addPage();
-                    yPos = 10;
+            try {
+                for (const element of elements) {
+                    const canvas = await html2canvas(element, { 
+                        scale: 2,
+                        useCORS: true,
+                        windowHeight: element.scrollHeight,
+                        scrollY: -window.scrollY
+                    });
+                    
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgProps = doc.getImageProperties(imgData);
+                    const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    
+                    if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
+                        doc.addPage();
+                        yPos = 10;
+                    }
+                    
+                    doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
+                    yPos += pdfHeight + 10;
                 }
-                
-                doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
-                yPos += pdfHeight + 10;
-            }
 
-            doc.save('story-analysis-report.pdf');
+                doc.save('storycraft-analysis-report.pdf');
+            } catch (error) {
+                console.error('PDF generation failed:', error);
+                alert('Error generating PDF. Please try again.');
+            }
         }
     </script>
 </body>
