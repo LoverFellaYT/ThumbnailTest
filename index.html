@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Thumbnail Analyzer Pro+ (Upgraded)</title>
-  
+
+  <!-- Roboto Font (Used by YouTube) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
   <!-- Optional: Color Thief for palette extraction -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 
@@ -40,6 +45,14 @@
       --radius: 12px;
       --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
       --gradient-dark: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
+
+      /* Additional table colors for dark mode */
+      --table-cell-bg-light: rgba(255, 255, 255, 0.85);
+      --table-cell-bg-dark: rgba(30, 30, 30, 0.85);
+
+      /* YouTube Title Colors in light/dark mode */
+      --yt-title-color-light: #030303;
+      --yt-title-color-dark: #ffffff;
     }
 
     /* Default (light) theme values */
@@ -76,6 +89,8 @@
       --gradient-light: var(--gradient-dark);
       --primary-light: var(--primary-dark);
       --accent-light: var(--accent-dark);
+      --table-cell-bg-light: var(--table-cell-bg-dark);
+      --yt-title-color-light: var(--yt-title-color-dark);
     }
 
     /* ========== Header & Sticky Score ========== */
@@ -164,11 +179,13 @@
       transition: var(--transition);
     }
 
-    /* Actual-size YouTube previews 
-       - Approx. sizes (16:9 aspect ratio)
+    /* Actual-size YouTube previews
+       Approximations:
          Home feed: ~210 x 118
          Suggested: ~168 x 94
-         Mobile:   ~320 x 180 or smaller on some screens
+         Mobile:   ~320 x 180
+       We'll replicate standard YouTube Title styling with Roboto font, ~14px, #030303 in light, #fff in dark.
+       We'll also truncate text to certain character counts. 
     */
     .previews-container {
       display: flex;
@@ -200,13 +217,11 @@
       object-fit: cover;
     }
 
-    /* Simulating YouTube Title under thumbnail:
-       - Typically about 2 lines or truncated. We'll approximate style. */
     .youtube-title {
+      font-family: 'Roboto', sans-serif;
       font-size: 14px;
-      color: #111;
       margin-top: 0.5rem;
-      max-width: 210px; /* match or approximate thumbnail width */
+      max-width: 210px; /* We'll override in inline style for each if needed */
       line-height: 1.4;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -214,6 +229,7 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       white-space: normal;
+      color: var(--yt-title-color-light);
     }
 
     /* ========== Upload Button ========== */
@@ -254,7 +270,7 @@
       vertical-align: top;
       min-width: 160px;
       cursor: pointer;
-      background: rgba(255, 255, 255, 0.85);
+      background: var(--table-cell-bg-light);
     }
     .category-header {
       font-weight: 600;
@@ -277,7 +293,9 @@
     }
 
     /* ========== Feedback Panels ========== */
-    .feedback-panel, .resources, .auto-insights {
+    .feedback-panel,
+    .resources,
+    .auto-insights {
       padding: 2rem;
       margin: 2rem 0;
     }
@@ -297,6 +315,33 @@
       background: rgba(236, 72, 153, 0.1);
       padding: 2px 4px;
       border-radius: 4px;
+    }
+
+    /* Manual & AI feedback text areas */
+    .manual-inputs {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .flex-label {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 1rem;
+      resize: vertical;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     }
 
     /* ========== Automatic Insights (Color Palette, etc.) ========== */
@@ -379,7 +424,7 @@
       
       <!-- Actual-size YouTube Previews -->
       <div class="previews-container">
-        <!-- HOME PAGE SIZE (Approx. 210 x 118) -->
+        <!-- HOME PAGE SIZE (~66 char limit) -->
         <div class="preview-box">
           <div class="preview-label">YouTube Home</div>
           <div class="thumbnail-wrap" style="width:210px; height:118px;">
@@ -392,10 +437,10 @@
               height="118" 
             />
           </div>
-          <div id="homeTitle" class="youtube-title"></div>
+          <div id="homeTitle" class="youtube-title" style="max-width:210px;"></div>
         </div>
 
-        <!-- SUGGESTED SIZE (Approx. 168 x 94) -->
+        <!-- SUGGESTED SIZE (~60 char limit) -->
         <div class="preview-box">
           <div class="preview-label">Suggested Video</div>
           <div class="thumbnail-wrap" style="width:168px; height:94px;">
@@ -411,7 +456,7 @@
           <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
         </div>
 
-        <!-- MOBILE SIZE (Approx. 320 x 180) -->
+        <!-- MOBILE SIZE (~72 char limit) -->
         <div class="preview-box">
           <div class="preview-label">Mobile View</div>
           <div class="thumbnail-wrap" style="width:320px; height:180px;">
@@ -531,6 +576,18 @@
       <h3>Improvement Recommendations</h3>
       <div id="specificFeedback"></div>
       <div class="ai-suggestions" id="aiSuggestions"></div>
+
+      <!-- Additional manual & AI feedback textareas -->
+      <div class="manual-inputs">
+        <div>
+          <label for="manualFeedback" class="flex-label">Manual Feedback</label>
+          <textarea id="manualFeedback" placeholder="Enter your manual feedback here..."></textarea>
+        </div>
+        <div>
+          <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
+          <textarea id="artistAIFeedback" placeholder="Paste AI feedback or notes here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <!-- ========== AUTOMATIC INSIGHTS (Color Palette, etc.) ========== -->
@@ -550,17 +607,21 @@
         <li><a href="https://creatoracademy.youtube.com/page/lesson/thumbnails" target="_blank">YouTube Thumbnail Guide</a></li>
         <li><a href="https://www.canva.com/create/youtube-thumbnails/" target="_blank">Free Thumbnail Maker</a></li>
         <li><a href="https://www.tubebuddy.com/thumbnail-tester" target="_blank">A/B Testing Tool</a></li>
+        <li><a href="https://photopea.com/" target="_blank">Photopea (Free Online Photoshop)</a></li>
+        <li><a href="https://leonardo.ai/" target="_blank">Leonardo.ai (AI Image Generation)</a></li>
+        <li><a href="https://clipdrop.co/" target="_blank">Clipdrop (Background Remover, etc.)</a></li>
+        <li><a href="https://contrast-ratio.com" target="_blank">Contrast Ratio Checker</a></li>
+        <li><a href="https://coolors.co/" target="_blank">Coolors (Color Palette Generator)</a></li>
+        <li><a href="https://wave.webaim.org/" target="_blank">WAVE Accessibility Evaluation</a></li>
       </ul>
-      
       <!-- Optional: Heatmapping / Eye tracking embed or script 
            For example, you could add a snippet from Hotjar, Mouseflow, 
-           or another service to visualize user interactions. -->
-      <!-- 
-      <script>
+           or another service to visualize user interactions.
+      -->
+      <!-- <script>
         // Example placeholder for heatmapping
         // Insert your third-party code here
-      </script>
-      -->
+      </script> -->
     </div>
   </div>
 
@@ -629,6 +690,11 @@
     };
 
     let scores = {};
+
+    // Character limits per layout (approx. matching YouTube)
+    const HOME_LIMIT = 66;
+    const SUGGESTED_LIMIT = 60;
+    const MOBILE_LIMIT = 72;
 
     // On page load, attach click handlers for the rubric
     document.addEventListener("DOMContentLoaded", () => {
@@ -720,26 +786,32 @@
         const title = document.getElementById('videoTitle').value;
         const preview = document.getElementById('titlePreview');
         // Simple highlight of each word as 'keyword'
-        preview.innerHTML = title.replace(/(\w+)/g, '<span class="keyword">$1</span>');
+        preview.innerHTML = title.replace(/(\\w+)/g, '<span class="keyword">$1</span>');
 
-        // Update the actual-size previews to replicate how YouTube might display
-        document.getElementById('homeTitle').textContent = title;
-        document.getElementById('suggestedTitle').textContent = title;
-        document.getElementById('mobileTitle').textContent = title;
+        // Now set truncated titles for each YouTube preview
+        const homeTitleEl = document.getElementById('homeTitle');
+        const suggestedTitleEl = document.getElementById('suggestedTitle');
+        const mobileTitleEl = document.getElementById('mobileTitle');
+
+        homeTitleEl.textContent = truncateTitle(title, HOME_LIMIT);
+        suggestedTitleEl.textContent = truncateTitle(title, SUGGESTED_LIMIT);
+        mobileTitleEl.textContent = truncateTitle(title, MOBILE_LIMIT);
       }, 300);
+    }
+
+    function truncateTitle(str, limit) {
+      if (str.length <= limit) return str;
+      return str.slice(0, limit - 3) + '...';
     }
 
     function checkTitleThumbnailSynergy() {
       // Just a naive synergy check—number of overlapping words
       const title = document.getElementById('videoTitle').value.toLowerCase();
       const synergyScore = title ? 1 : 0; 
-      // You could parse text from the thumbnail if needed or more advanced checks
-      // If synergyScore < some threshold => highlight synergy category
-      // E.g.:
+      // Could parse text from the thumbnail if needed or more advanced checks
       if (synergyScore < 1) {
-        // Mark synergy as low, or something similar
-        // For example, color the synergy row:
-        // document.querySelector('[data-category="6"].category-header').style.backgroundColor = "#ffd6d6";
+        // e.g. highlight synergy row if needed
+        // document.querySelector('[data-category=\"6\"].category-header').style.backgroundColor = '#ffd6d6';
       }
     }
 
@@ -758,7 +830,6 @@
         extractColors(dataUrl);
 
         // We can also do simple brightness/contrast checks
-        // after the image is loaded into an <img> or a canvas, etc.
         setTimeout(() => {
           checkContrastAndBrightness(dataUrl);
         }, 300);
@@ -828,9 +899,8 @@
           brightnessMessage.textContent += " (Bright).";
         }
 
-        // If you wanted to check contrast with a typical background color or text color, 
-        // you'd do a ratio check here. We’ll just do a placeholder message:
-        contrastMessage.textContent = "Check text vs. background colors to ensure 4.5:1 contrast ratio if text is small.";
+        // Placeholder for further checks:
+        contrastMessage.textContent = "Check text vs. background colors to ensure ~4.5:1 contrast ratio if text is small.";
       };
     }
 
