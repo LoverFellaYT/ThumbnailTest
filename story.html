@@ -1,504 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StoryCraft Analyzer Pro+</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #4f46e5;
-            --accent: #10b981;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --muted: #64748b;
-            
-            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            --shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
-            --radius: 16px;
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StoryCraft Analyzer Pro+</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    /* 
+      --------------------------------------------------------------
+      Custom Properties & Theme 
+      --------------------------------------------------------------
+    */
+    :root {
+      --primary: #6366f1;
+      --secondary: #4f46e5;
+      --accent: #10b981;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-        }
+      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      --shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+      --radius: 16px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        .analyzer-header {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-        }
+    /* 
+      --------------------------------------------------------------
+      Base Styling
+      --------------------------------------------------------------
+    */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+    button {
+      cursor: pointer;
+    }
 
-        .score-display {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
+    /*
+      --------------------------------------------------------------
+      Header & Score Display 
+      --------------------------------------------------------------
+    */
+    .analyzer-header {
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    .score-display {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .total-score {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .status-indicator {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    button {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 0.875rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: var(--shadow);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
 
-        .total-score {
-            font-size: 1.75rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    /*
+      --------------------------------------------------------------
+      Input Sections 
+      --------------------------------------------------------------
+    */
+    .input-section {
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: var(--radius);
+      margin: 2rem 0;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    .input-section h2 {
+      margin-bottom: 1.25rem;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+    .story-input {
+      width: 100%;
+      min-height: 120px;
+      max-height: 600px; /* Just a max to prevent infinite stretching if user pastes a huge text */
+      padding: 1rem;
+      border: 2px solid rgba(99, 102, 241, 0.1);
+      border-radius: 10px;
+      font-size: 1rem;
+      background: var(--background);
+      resize: none; /* We'll auto-resize via JS */
+      transition: var(--transition);
+      margin-bottom: 0.5rem;
+    }
+    .story-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .word-count {
+      color: var(--muted);
+      font-size: 0.875rem;
+      text-align: right;
+      margin-top: -0.5rem;
+    }
 
-        .controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
+    /*
+      --------------------------------------------------------------
+      Table & Rubric 
+      --------------------------------------------------------------
+    */
+    .rubric-table {
+      background: var(--surface);
+      border-radius: var(--radius);
+      margin: 2rem 0;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+    .modern-table th {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      font-weight: 500;
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+    .modern-table td {
+      padding: 1rem;
+      background: var(--surface);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.05);
+      transition: var(--transition);
+      vertical-align: top;
+    }
+    .category-header {
+      font-weight: 600;
+      background: rgba(99, 102, 241, 0.03);
+      position: sticky;
+      left: 0;
+      min-width: 180px;
+    }
+    .modern-table tr:hover td:not(.category-header) {
+      background: rgba(99, 102, 241, 0.03);
+    }
+    .selected {
+      background: rgba(99, 102, 241, 0.08) !important;
+      border-left: 4px solid var(--primary);
+    }
 
-        button {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 0.875rem 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: var(--shadow);
-        }
+    /*
+      --------------------------------------------------------------
+      Feedback Panel 
+      --------------------------------------------------------------
+    */
+    .feedback-panel {
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: var(--radius);
+      margin: 2rem 0;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    .feedback-panel h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .ai-suggestions {
+      background: rgba(16, 185, 129, 0.03);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-top: 1.5rem;
+      border: 1px solid rgba(16, 185, 129, 0.1);
+    }
 
-        button:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        .rubric-table {
-            background: var(--surface);
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            box-shadow: var(--shadow);
-            overflow-x: auto;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-        }
-
-        .modern-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
-        }
-
-        .modern-table th {
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            font-weight: 500;
-            text-align: left;
-            position: sticky;
-            top: 0;
-        }
-
-        .modern-table td {
-            padding: 1rem;
-            background: var(--surface);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.05);
-            transition: var(--transition);
-            vertical-align: top;
-        }
-
-        .category-header {
-            font-weight: 600;
-            background: rgba(99, 102, 241, 0.03);
-            position: sticky;
-            left: 0;
-            min-width: 180px;
-        }
-
-        .modern-table tr:hover td:not(.category-header) {
-            background: rgba(99, 102, 241, 0.03);
-        }
-
-        .selected {
-            background: rgba(99, 102, 241, 0.08) !important;
-            border-left: 4px solid var(--primary);
-        }
-
-        .input-section {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            box-shadow: var(--shadow);
-        }
-
-        .input-section h2 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .story-input {
-            width: 100%;
-            height: 200px;
-            padding: 1rem;
-            border: 2px solid rgba(99, 102, 241, 0.1);
-            border-radius: 10px;
-            margin: 1rem 0;
-            font-size: 1rem;
-            resize: vertical;
-            transition: var(--transition);
-            background: var(--background);
-        }
-
-        .story-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .word-count {
-            color: var(--muted);
-            font-size: 0.875rem;
-            text-align: right;
-            margin-top: -0.5rem;
-        }
-
-        .ai-suggestions {
-            background: rgba(16, 185, 129, 0.03);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-top: 1.5rem;
-            border: 1px solid rgba(16, 185, 129, 0.1);
-        }
-
-        .feedback-panel {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            box-shadow: var(--shadow);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 0 1rem;
-            }
-            
-            .analyzer-header {
-                padding: 1.5rem;
-            }
-            
-            .controls {
-                gap: 0.75rem;
-            }
-            
-            button {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .input-section {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+    /*
+      --------------------------------------------------------------
+      Responsive 
+      --------------------------------------------------------------
+    */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 1rem;
+      }
+      .analyzer-header {
+        padding: 1.5rem;
+      }
+      .controls {
+        gap: 0.75rem;
+      }
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+      .input-section {
+        padding: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="analyzer-header">
-        <div class="score-display">
-            <div class="total-score">Score: <span id="total">0</span>/40</div>
-            <div class="status-indicator" id="ranking">Incomplete</div>
-        </div>
-        <div class="controls">
-            <button onclick="resetScores()">🔄 Reset</button>
-            <button onclick="exportPDF()">📥 Export PDF</button>
-            <button onclick="getAISuggestions()">🤖 AI Insights</button>
-        </div>
+
+  <div class="analyzer-header">
+    <div class="score-display">
+      <div class="total-score">Score: <span id="total">0</span>/40</div>
+      <div class="status-indicator" id="ranking">Incomplete</div>
     </div>
-
-    <div class="input-section">
-        <h2>Your Story</h2>
-        <textarea id="storyInput" class="story-input" placeholder="Start typing or paste your story here..."></textarea>
-        <div class="word-count" id="wordCount">0 words</div>
+    <div class="controls">
+      <button onclick="resetScores()">🔄 Reset</button>
+      <button onclick="exportPDF()">📥 Export PDF</button>
+      <button onclick="getAISuggestions()">🤖 AI Insights</button>
     </div>
+  </div>
 
-    <div class="input-section">
-        <h2>Human Feedback</h2>
-        <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="height: 150px;"></textarea>
-    </div>
+  <!-- Optional quick summary field for story reviews -->
+  <div class="input-section">
+    <h2>Quick Summary</h2>
+    <textarea 
+      id="quickSummary" 
+      class="story-input" 
+      placeholder="Summarize the story or video in a few lines (e.g., main plot points, key message)...">
+    </textarea>
+  </div>
 
-    <div class="input-section">
-        <h2>AI Suggestions</h2>
-        <textarea id="aiFeedback" class="story-input" placeholder="Paste AI-generated feedback here..." style="height: 150px;"></textarea>
-    </div>
+  <div class="input-section">
+    <h2>Your Story</h2>
+    <textarea 
+      id="storyInput" 
+      class="story-input" 
+      placeholder="Start typing or paste your story here...">
+    </textarea>
+    <div class="word-count" id="wordCount">0 words</div>
+  </div>
 
-    <div class="rubric-table">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Good (1)</th>
-                    <th>Great (2)</th>
-                    <th>Excellent (3)</th>
-                    <th>Outstanding (4)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="category-header">Hook & Opening</td>
-                    <td data-category="0" data-rating="1">Slow start; no hook (e.g., "Hey guys!")</td>
-                    <td data-category="0" data-rating="2">Basic hook (e.g., "Today we're doing something crazy!")</td>
-                    <td data-category="0" data-rating="3">Intriguing hook (e.g., "I spent 24 hours in a haunted Minecraft server...")</td>
-                    <td data-category="0" data-rating="4">Unignorable opener (e.g., immediate action: "This glitch almost killed me..." with suspenseful editing)</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Clarity of Goal</td>
-                    <td data-category="1" data-rating="1">No clear purpose; viewers don't know why to watch</td>
-                    <td data-category="1" data-rating="2">Goal exists but gets lost mid-video</td>
-                    <td data-category="1" data-rating="3">Clear goal with minor tangents (e.g., "We're building X in 24 hours!")</td>
-                    <td data-category="1" data-rating="4">Crystal-clear "North Star"; every segment ties back to the core premise</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Audience Retention</td>
-                    <td data-category="2" data-rating="1">Drags or loses viewers quickly</td>
-                    <td data-category="2" data-rating="2">A few engaging moments but uneven pacing</td>
-                    <td data-category="2" data-rating="3">Strong pacing with peaks (e.g., challenges, reveals)</td>
-                    <td data-category="2" data-rating="4">Masterful tension arcs; cliffhangers, mid-roll payoffs, zero dead air</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Authenticity & Relatability</td>
-                    <td data-category="3" data-rating="1">Feels scripted/forced; no personal connection</td>
-                    <td data-category="3" data-rating="2">Occasional genuine moments (e.g., laughter)</td>
-                    <td data-category="3" data-rating="3">Strong relatability (e.g., sharing struggles, raw reactions)</td>
-                    <td data-category="3" data-rating="4">Deeply authentic; viewers feel like they're hanging out with friends</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Emotional Arc & Payoff</td>
-                    <td data-category="4" data-rating="1">Flat emotional tone; no highs/lows</td>
-                    <td data-category="4" data-rating="2">Moments of excitement but no resolution</td>
-                    <td data-category="4" data-rating="3">Clear emotional journey with a satisfying end</td>
-                    <td data-category="4" data-rating="4">Masterful peaks/valleys that leave viewers obsessed</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Conflict & Stakes</td>
-                    <td data-category="5" data-rating="1">Low energy; no urgency</td>
-                    <td data-category="5" data-rating="2">Basic stakes (e.g., "Can we finish this build?")</td>
-                    <td data-category="5" data-rating="3">High stakes (e.g., time limits, punishments)</td>
-                    <td data-category="5" data-rating="4">Unavoidable drama (e.g., betrayals, near-fails) with emotional payoff</td>
-                </tr>
-                <tr>
-                    <td class="category-header">CTA & Audience Interaction</td>
-                    <td data-category="6" data-rating="1">No CTA or weak ask (e.g., "Subscribe!")</td>
-                    <td data-category="6" data-rating="2">Basic CTA (e.g., "Like and subscribe!")</td>
-                    <td data-category="6" data-rating="3">Clear, creative CTA (e.g., "Comment your score below!")</td>
-                    <td data-category="6" data-rating="4">Actionable + emotional CTA (e.g., "Join our Discord to help us survive next week!")</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Originality & Trend-Jacking</td>
-                    <td data-category="7" data-rating="1">Cliché concept (e.g., generic challenge)</td>
-                    <td data-category="7" data-rating="2">Minor twist on trends (e.g., "Minecraft but...")</td>
-                    <td data-category="7" data-rating="3">Fresh angle (e.g., collabs, unexpected formats)</td>
-                    <td data-category="7" data-rating="4">Boundary-pushing; viewers think, "No one else does this!" (e.g., Dream's "Speedrunner vs Hunter")</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Replayability & Shareability</td>
-                    <td data-category="8" data-rating="1">Forgettable; no reason to reward/share</td>
-                    <td data-category="8" data-rating="2">A few quotable/memeable moments</td>
-                    <td data-category="8" data-rating="3">High shareability (e.g., shocking reveals, humor)</td>
-                    <td data-category="8" data-rating="4">"Clip-worthy" moments optimized for TikTok/Shorts</td>
-                </tr>
-                <tr>
-                    <td class="category-header">Branding Consistency</td>
-                    <td data-category="9" data-rating="1">No branding; generic</td>
-                    <td data-category="9" data-rating="2">Basic branding</td>
-                    <td data-category="9" data-rating="3">Consistent style (e.g., color schemes, recurring segments)</td>
-                    <td data-category="9" data-rating="4">Iconic branding; instantly recognizable (e.g., PewDiePie's intro, MtBeast's font)</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="input-section">
+    <h2>Human Feedback</h2>
+    <textarea 
+      id="humanFeedback" 
+      class="story-input" 
+      placeholder="Add your own notes and feedback here..."
+      style="min-height: 100px;">
+    </textarea>
+  </div>
 
-    <div class="feedback-panel" id="feedback">
-        <h2>Improvement Recommendations</h2>
-        <div id="specificFeedback" style="margin-top: 1rem;"></div>
-        <div class="ai-suggestions" id="aiSuggestions"></div>
-    </div>
+  <div class="input-section">
+    <h2>AI Suggestions</h2>
+    <textarea 
+      id="aiFeedback" 
+      class="story-input" 
+      placeholder="Paste AI-generated feedback here..."
+      style="min-height: 100px;">
+    </textarea>
+  </div>
 
-    <script>
-        const improvementTips = {
-            0: {1: "Add contrasting colors or unexpected elements", 2: "Combine two attention-grabbing elements", 3: "Create visual urgency with mystery/danger", 4: "Perfect scroll-stopping power achieved!"},
-            1: {1: "Use rule of thirds for better composition", 2: "Implement leading lines", 3: "Optimize for mobile viewing", 4: "Excellent visual hierarchy!"},
-            2: {1: "Simplify background elements", 2: "Enhance visual hierarchy", 3: "Use negative space effectively", 4: "Perfect simplicity/clutter balance!"},
-            3: {1: "Shorten text length", 2: "Increase text contrast", 3: "Use bolder typography", 4: "Text/visual synergy perfect!"},
-            4: {1: "Add mystery element", 2: "Create clearer question", 3: "Use unexpected imagery", 4: "Perfect curiosity gap!"},
-            5: {1: "Add emotional triggers", 2: "Use facial expressions", 3: "Create urgency", 4: "Strong emotional impact!"},
-            6: {1: "Better align with title", 2: "Use complementary elements", 3: "Create combined hook", 4: "Perfect title synergy!"},
-            7: {1: "Improve content alignment", 2: "Show key moment", 3: "Avoid clickbait", 4: "Perfect content match!"},
-            8: {1: "Add brand colors", 2: "Include logo/watermark", 3: "Standardize style", 4: "Perfect brand recognition!"},
-            9: {1: "Check resolution", 2: "Optimize contrast", 3: "Verify mobile display", 4: "Technical perfection!"}
-        };
+  <div class="rubric-table">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Good (1)</th>
+          <th>Great (2)</th>
+          <th>Excellent (3)</th>
+          <th>Outstanding (4)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="category-header">Hook & Opening</td>
+          <td data-category="0" data-rating="1">Slow start; no hook</td>
+          <td data-category="0" data-rating="2">Basic hook</td>
+          <td data-category="0" data-rating="3">Intriguing hook</td>
+          <td data-category="0" data-rating="4">Unignorable opener</td>
+        </tr>
+        <tr>
+          <td class="category-header">Clarity of Goal</td>
+          <td data-category="1" data-rating="1">No clear purpose</td>
+          <td data-category="1" data-rating="2">Goal exists but gets lost</td>
+          <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
+          <td data-category="1" data-rating="4">Crystal-clear premise</td>
+        </tr>
+        <tr>
+          <td class="category-header">Audience Retention</td>
+          <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
+          <td data-category="2" data-rating="2">A few engaging moments</td>
+          <td data-category="2" data-rating="3">Strong pacing & reveals</td>
+          <td data-category="2" data-rating="4">Masterful tension arcs</td>
+        </tr>
+        <tr>
+          <td class="category-header">Authenticity & Relatability</td>
+          <td data-category="3" data-rating="1">Feels forced; no connection</td>
+          <td data-category="3" data-rating="2">Some genuine moments</td>
+          <td data-category="3" data-rating="3">Relatable & sincere</td>
+          <td data-category="3" data-rating="4">Deeply authentic</td>
+        </tr>
+        <tr>
+          <td class="category-header">Emotional Arc & Payoff</td>
+          <td data-category="4" data-rating="1">Flat; no highs/lows</td>
+          <td data-category="4" data-rating="2">Moments of excitement</td>
+          <td data-category="4" data-rating="3">Clear emotional journey</td>
+          <td data-category="4" data-rating="4">Masterful peaks/valleys</td>
+        </tr>
+        <tr>
+          <td class="category-header">Conflict & Stakes</td>
+          <td data-category="5" data-rating="1">Low urgency</td>
+          <td data-category="5" data-rating="2">Basic stakes</td>
+          <td data-category="5" data-rating="3">High stakes/punishments</td>
+          <td data-category="5" data-rating="4">Unavoidable drama</td>
+        </tr>
+        <tr>
+          <td class="category-header">CTA & Audience Interaction</td>
+          <td data-category="6" data-rating="1">No or weak CTA</td>
+          <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
+          <td data-category="6" data-rating="3">Clear creative CTA</td>
+          <td data-category="6" data-rating="4">Actionable & emotional CTA</td>
+        </tr>
+        <tr>
+          <td class="category-header">Originality & Trend-Jacking</td>
+          <td data-category="7" data-rating="1">Cliché concept</td>
+          <td data-category="7" data-rating="2">Minor twist on trends</td>
+          <td data-category="7" data-rating="3">Fresh angle</td>
+          <td data-category="7" data-rating="4">Boundary-pushing</td>
+        </tr>
+        <tr>
+          <td class="category-header">Replayability & Shareability</td>
+          <td data-category="8" data-rating="1">Forgettable</td>
+          <td data-category="8" data-rating="2">Some memeable moments</td>
+          <td data-category="8" data-rating="3">Highly shareable</td>
+          <td data-category="8" data-rating="4">Clip-worthy highlights</td>
+        </tr>
+        <tr>
+          <td class="category-header">Branding Consistency</td>
+          <td data-category="9" data-rating="1">No branding</td>
+          <td data-category="9" data-rating="2">Basic branding</td>
+          <td data-category="9" data-rating="3">Consistent style</td>
+          <td data-category="9" data-rating="4">Iconic brand identity</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-        let scores = {};
+  <div class="feedback-panel" id="feedback">
+    <h2>Improvement Recommendations</h2>
+    <div id="specificFeedback" style="margin-top: 1rem;"></div>
+    <div class="ai-suggestions" id="aiSuggestions" style="margin-top: 1rem;"></div>
+  </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-                cell.addEventListener('click', () => selectRating(cell));
-            });
-        });
+  <script>
+    /*
+      --------------------------------------------------------------
+      Improvement Tips for Each Category/Rating
+      --------------------------------------------------------------
+    */
+    const improvementTips = {
+      0: {
+        1: "Open with a strong statement or immediate action scene.",
+        2: "Hook is decent, but try adding an element of mystery/surprise.",
+        3: "Strong opener—amp it up with quick visuals or an attention-grabbing fact.",
+        4: "Outstanding! Keep layering tension in the first seconds."
+      },
+      1: {
+        1: "Establish or restate a clear goal earlier.",
+        2: "Tie main points back to the goal more frequently.",
+        3: "Goal is clear, just ensure no segment drifts off-topic.",
+        4: "Perfect clarity—everything ties neatly to the objective!"
+      },
+      2: {
+        1: "Edit out slower sections or unnecessary filler.",
+        2: "Insert mini-challenges or interactions to maintain pacing.",
+        3: "Use chapter-like segments to sustain engagement.",
+        4: "Nailed it! Tension arcs & reveals keep viewers hooked."
+      },
+      3: {
+        1: "Bring more natural personality or honest reactions.",
+        2: "Show behind-the-scenes or personal anecdotes.",
+        3: "Great authenticity—keep sharing relatable moments.",
+        4: "Flawlessly real. Audience feels like they're with you."
+      },
+      4: {
+        1: "Build stronger emotional beats or turning points.",
+        2: "Add a resolution or reflection at the end.",
+        3: "Solid emotional arc—consider a final 'lesson learned.'",
+        4: "Masterpiece arcs: every high/low carefully orchestrated."
+      },
+      5: {
+        1: "Increase tension or introduce a meaningful challenge.",
+        2: "Add time constraints or higher penalties for failing.",
+        3: "Audience must sense real consequences—good job!",
+        4: "Peak drama—fantastic payoff for each conflict."
+      },
+      6: {
+        1: "Try a direct CTA: ask a question or request input.",
+        2: "Link the CTA to the story content or theme.",
+        3: "Creative CTA that fosters real interaction—excellent.",
+        4: "Truly compelling CTA that resonates on emotional level."
+      },
+      7: {
+        1: "Combine niche trends with personal flair.",
+        2: "Experiment with new angles or fresh crossovers.",
+        3: "Your originality stands out—keep brainstorming unique ideas.",
+        4: "Innovative & bold—you're setting trends, not just following!"
+      },
+      8: {
+        1: "Add distinctive moments or comedic bits for replay/share.",
+        2: "Sprinkle in surprising or jaw-dropping scenes.",
+        3: "People will want to share this—good job!",
+        4: "Highly viral potential. Perfectly timed shareable peaks."
+      },
+      9: {
+        1: "Use consistent on-screen elements & styling.",
+        2: "Try a short brand intro or recurring motif.",
+        3: "Brand theme is recognizable—well done!",
+        4: "Iconic brand identity—instantly recognizable!"
+      }
+    };
 
-        function selectRating(cell) {
-            const categoryIndex = Number(cell.getAttribute('data-category'));
-            const rating = parseInt(cell.getAttribute('data-rating'));
-            
-            const row = cell.parentElement;
-            row.querySelectorAll('td').forEach(td => {
-                if(td !== row.firstElementChild) td.classList.remove('selected');
-            });
-            
-            cell.classList.add('selected');
-            scores[categoryIndex] = rating;
-            updateTotal();
-            showFeedback();
+    /*
+      --------------------------------------------------------------
+      Score Tracking & Interaction 
+      --------------------------------------------------------------
+    */
+    let scores = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+        cell.addEventListener('click', () => selectRating(cell));
+      });
+
+      // Add auto-resize functionality to textareas
+      const autoResizeTextareas = document.querySelectorAll('.story-input');
+      autoResizeTextareas.forEach(textarea => {
+        textarea.addEventListener('input', autoResize);
+        // Trigger initial resize if there's existing text
+        autoResize({ target: textarea });
+      });
+    });
+
+    function selectRating(cell) {
+      const categoryIndex = Number(cell.getAttribute('data-category'));
+      const rating = parseInt(cell.getAttribute('data-rating'));
+
+      const row = cell.parentElement;
+      row.querySelectorAll('td').forEach(td => {
+        if(td !== row.firstElementChild) td.classList.remove('selected');
+      });
+
+      cell.classList.add('selected');
+      scores[categoryIndex] = rating;
+      updateTotal();
+      showFeedback();
+    }
+
+    function updateTotal() {
+      const total = Object.values(scores).reduce((a, b) => a + b, 0);
+      document.getElementById('total').textContent = total;
+      const ranking = document.getElementById('ranking');
+
+      if (Object.keys(scores).length < 10) {
+        ranking.textContent = 'Incomplete';
+        ranking.style.color = '#64748b';
+        return;
+      }
+      // Adjust the thresholds as needed
+      if (total <= 24) {
+        ranking.textContent = 'Needs Work 🔴';
+        ranking.style.color = '#ef4444';
+      } else if (total <= 32) {
+        ranking.textContent = 'Good Start 🟡';
+        ranking.style.color = '#eab308';
+      } else if (total <= 38) {
+        ranking.textContent = 'Great! 🟢';
+        ranking.style.color = '#22c55e';
+      } else {
+        ranking.textContent = 'Perfect! 🔵';
+        ranking.style.color = '#3b82f6';
+      }
+    }
+
+    function showFeedback() {
+      const feedbackDiv = document.getElementById('specificFeedback');
+      feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
+        const rating = scores[cat];
+        return `
+          <div class="feedback-item" 
+               style="margin: 0.5rem 0; padding: 1rem; background: rgba(99, 102, 241, 0.05); border-radius: 8px;">
+            <strong style="color: ${getCategoryColor(cat)}">
+              ${document.querySelectorAll('.category-header')[cat].textContent}:
+            </strong>
+            <span style="color: #475569;">
+              ${improvementTips[cat][rating]}
+            </span>
+          </div>`;
+      }).join('');
+    }
+
+    function getCategoryColor(cat) {
+      const colors = [
+        '#6366f1', '#ec4899', '#eab308', '#10b981',
+        '#3b82f6', '#8b5cf6', '#ef4444', '#f97316',
+        '#14b8a6', '#64748b'
+      ];
+      return colors[Number(cat)];
+    }
+
+    function resetScores() {
+      scores = {};
+      document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+      document.getElementById('specificFeedback').innerHTML = '';
+
+      // Clear all text inputs
+      ['storyInput','humanFeedback','aiFeedback','quickSummary'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('aiSuggestions').innerHTML = '';
+
+      // Reset word count
+      document.getElementById('wordCount').textContent = '0 words';
+      updateTotal();
+      document.getElementById('ranking').textContent = 'Incomplete';
+      document.getElementById('ranking').style.color = '#64748b';
+
+      // Auto-resize textareas after resetting
+      const autoResizeTextareas = document.querySelectorAll('.story-input');
+      autoResizeTextareas.forEach(textarea => {
+        autoResize({ target: textarea });
+      });
+    }
+
+    /*
+      --------------------------------------------------------------
+      Auto-Resize Textareas so all content is visible 
+      (Important for html2canvas to capture entire text)
+      --------------------------------------------------------------
+    */
+    function autoResize(e) {
+      const textarea = e.target;
+      // Reset the height so scrollHeight will be calculated accurately
+      textarea.style.height = 'auto';
+      // Set to scrollHeight plus a little padding
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    /*
+      --------------------------------------------------------------
+      Word Count for the main story input
+      --------------------------------------------------------------
+    */
+    document.getElementById('storyInput').addEventListener('input', function(e) {
+      const text = e.target.value;
+      let wordCount = 0;
+      const trimmed = text.trim();
+      if (trimmed) {
+        wordCount = trimmed.split(/\s+/).length;
+      }
+      document.getElementById('wordCount').textContent = `${wordCount} words`;
+    });
+
+    /*
+      --------------------------------------------------------------
+      AI Suggestions Simulation 
+      --------------------------------------------------------------
+    */
+    async function getAISuggestions() {
+      const aiDiv = document.getElementById('aiSuggestions');
+      aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing story structure...';
+
+      setTimeout(() => {
+        const suggestions = [
+          "Consider adding a dramatic turning point around the midpoint.",
+          "Reveal deeper motivations for your main character.",
+          "Add more sensory details to immerse the reader.",
+          "Emphasize a strong conclusion to leave a lasting impact."
+        ];
+        aiDiv.innerHTML = '<strong>Narrative Insights:</strong><br>' + 
+          suggestions.map(s => `• ${s}`).join('<br>');
+      }, 1500);
+    }
+
+    /*
+      --------------------------------------------------------------
+      PDF Export 
+      --------------------------------------------------------------
+    */
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+
+      // Identify the sections we want to capture
+      const elements = [
+        document.querySelector('.analyzer-header'),
+        document.querySelector('#quickSummary').parentElement,
+        document.querySelector('#storyInput').parentElement,
+        document.querySelector('#humanFeedback').parentElement,
+        document.querySelector('#aiFeedback').parentElement,
+        document.querySelector('.rubric-table'),
+        document.querySelector('.feedback-panel')
+      ];
+
+      let yPos = 10;
+      try {
+        for (const element of elements) {
+          // Expand the element fully so textareas show all content
+          const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            windowHeight: element.scrollHeight,
+            scrollY: -window.scrollY
+          });
+
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth() - 20; 
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+          // If the next element won't fit on this page, add a new page
+          if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
+            doc.addPage();
+            yPos = 10;
+          }
+
+          doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
+          yPos += pdfHeight + 10;
         }
-
-        function updateTotal() {
-            const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            document.getElementById('total').textContent = total;
-            const ranking = document.getElementById('ranking');
-            
-            if (Object.keys(scores).length < 10) {
-                ranking.textContent = 'Incomplete';
-                ranking.style.color = '#64748b';
-                return;
-            }
-
-            if(total <= 24) {
-                ranking.textContent = 'Needs Work 🔴';
-                ranking.style.color = '#ef4444';
-            } else if(total <= 32) {
-                ranking.textContent = 'Good Start 🟡';
-                ranking.style.color = '#eab308';
-            } else if(total <= 38) {
-                ranking.textContent = 'Great! 🟢';
-                ranking.style.color = '#22c55e';
-            } else {
-                ranking.textContent = 'Perfect! 🔵';
-                ranking.style.color = '#3b82f6';
-            }
-        }
-
-        function showFeedback() {
-            const feedbackDiv = document.getElementById('specificFeedback');
-            feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
-                const rating = scores[cat];
-                return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(99, 102, 241, 0.05); border-radius: 8px;">
-                    <strong style="color: ${getCategoryColor(cat)}">${document.querySelector(`[data-category="${cat}"].category-header`).textContent}:</strong>
-                    <span style="color: #475569;">${improvementTips[cat][rating]}</span>
-                </div>`;
-            }).join('');
-        }
-
-        function getCategoryColor(cat) {
-            const colors = ['#6366f1', '#ec4899', '#eab308', '#10b981', '#3b82f6', 
-                          '#8b5cf6', '#ef4444', '#f97316', '#14b8a6', '#64748b'];
-            return colors[Number(cat)];
-        }
-
-        function resetScores() {
-            scores = {};
-            document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-            document.getElementById('specificFeedback').innerHTML = '';
-            
-            // Clear all text inputs
-            document.getElementById('storyInput').value = '';
-            document.getElementById('humanFeedback').value = '';
-            document.getElementById('aiFeedback').value = '';
-            document.getElementById('aiSuggestions').innerHTML = '';
-            
-            // Reset word count
-            document.getElementById('wordCount').textContent = '0 words';
-            updateTotal();
-            document.getElementById('ranking').textContent = 'Incomplete';
-            document.getElementById('ranking').style.color = '#64748b';
-        }
-
-        document.getElementById('storyInput').addEventListener('input', function(e) {
-            const text = e.target.value;
-            const wordCount = text.trim().split(/\s+/).length;
-            document.getElementById('wordCount').textContent = `${wordCount} words`;
-        });
-
-        async function getAISuggestions() {
-            const aiDiv = document.getElementById('aiSuggestions');
-            aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing story structure...';
-            
-            setTimeout(() => {
-                const suggestions = [
-                    "Consider adding a 'dark night of the soul' moment",
-                    "Increase character development in middle section",
-                    "Build higher stakes in the climax",
-                    "Add more sensory details in key scenes",
-                    "Consider a twist ending for memorability"
-                ];
-                aiDiv.innerHTML = '<strong>Narrative Insights:</strong><br>' + 
-                    suggestions.map(s => `• ${s}`).join('<br>');
-            }, 2000);
-        }
-
-        async function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            
-            // Capture all relevant elements
-            const elements = [
-                document.querySelector('.analyzer-header'),
-                ...document.querySelectorAll('.input-section'),
-                document.querySelector('.rubric-table'),
-                document.querySelector('.feedback-panel')
-            ];
-
-            let yPos = 10;
-            
-            try {
-                for (const element of elements) {
-                    const canvas = await html2canvas(element, { 
-                        scale: 2,
-                        useCORS: true,
-                        windowHeight: element.scrollHeight,
-                        scrollY: -window.scrollY
-                    });
-                    
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgProps = doc.getImageProperties(imgData);
-                    const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                    
-                    if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
-                        doc.addPage();
-                        yPos = 10;
-                    }
-                    
-                    doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
-                    yPos += pdfHeight + 10;
-                }
-
-                doc.save('storycraft-analysis-report.pdf');
-            } catch (error) {
-                console.error('PDF generation failed:', error);
-                alert('Error generating PDF. Please try again.');
-            }
-        }
-    </script>
+        doc.save('storycraft-analysis-report.pdf');
+      } catch (error) {
+        console.error('PDF generation failed:', error);
+        alert('Error generating PDF. Please try again.');
+      }
+    }
+  </script>
 </body>
 </html>
