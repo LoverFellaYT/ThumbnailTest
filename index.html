@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thumbnail Analyzer Pro+ (Enhanced)</title>
+  <title>Thumbnail Analyzer Pro+ (Final)</title>
 
   <!-- Roboto Font (Used by YouTube) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,8 +20,7 @@
   <style>
     :root {
       /* Colors & Theme Variables */
-      --primary-light: #7c3aed; /* A bit more vibrant purple */
-      --secondary-light: #9333ea;
+      --primary-light: #7e22ce; /* Vibrant purple */
       --accent-light: #ec4899;
       --bg-light: #f9fafb;
       --text-light: #1e293b;
@@ -29,7 +28,6 @@
       --border-light: rgba(255, 255, 255, 0.2);
 
       --primary-dark: #a78bfa;
-      --secondary-dark: #8b5cf6;
       --accent-dark: #ec4899;
       --bg-dark: #1f1f1f;
       --text-dark: #f3f3f3;
@@ -42,9 +40,9 @@
       --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
       --gradient-dark: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
 
+      /* Table & Title Colors */
       --table-cell-bg-light: rgba(255, 255, 255, 0.85);
       --table-cell-bg-dark: rgba(30, 30, 30, 0.85);
-
       --yt-title-color-light: #030303;
       --yt-title-color-dark: #ffffff;
     }
@@ -80,25 +78,21 @@
       --yt-title-color-light: var(--yt-title-color-dark);
     }
 
-    /* STICKY HEADER */
+    /* HEADER */
     .analyzer-header {
       position: sticky;
       top: 0;
-      z-index: 1000;
-      padding: 2rem;
+      z-index: 999;
+      padding: 1.5rem 2rem;
       margin-bottom: 2rem;
-    }
-    .header-content {
       display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
       align-items: center;
       justify-content: space-between;
     }
-    .score-display {
+    .header-left {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
     .total-score {
       font-size: 1.75rem;
@@ -106,20 +100,22 @@
       background: var(--gradient-light);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      transition: var(--transition);
     }
     .status-indicator {
       font-weight: 600;
     }
-    .controls {
+    .header-right {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
     }
+
     .btn {
       background: var(--gradient-light);
       color: #fff;
       border: none;
-      padding: 0.75rem 1.5rem;
+      padding: 0.6rem 1.2rem;
       border-radius: var(--radius);
       cursor: pointer;
       font-weight: 600;
@@ -127,90 +123,83 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+      box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
     }
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       opacity: 0.9;
     }
 
     /* MAIN CONTAINER */
     .analyzer-container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 2rem;
       display: flex;
+      max-width: 1300px;
+      margin: 0 auto;
       gap: 2rem;
+      align-items: flex-start;
+      padding: 0 2rem 2rem;
     }
 
-    /* SIDEBAR - offset so it's not hidden by header */
+    /* SIDEBAR */
     .sidebar {
-      width: 350px;
       position: sticky;
-      top: 6.5rem; /* offset below header */
-      align-self: flex-start;
+      top: 7.8rem; /* aligned with top header in mind */
+      width: 340px;
+      flex-shrink: 0;
       height: fit-content;
-    }
-
-    /* MAIN CONTENT */
-    .main-content {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 2rem;
     }
-
     .preview-section {
-      padding: 2rem;
-      position: relative;
+      padding: 1.5rem;
     }
     .preview-section h2 {
-      margin-top: 0;
+      margin: 0 0 1rem 0;
     }
     .title-input {
       width: 100%;
-      padding: 1rem;
+      padding: 0.8rem;
       border: 2px solid #e2e8f0;
       border-radius: var(--radius);
       font-size: 1rem;
       transition: var(--transition);
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
     .title-input:focus {
       outline: none;
       border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+      box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+    }
+    .upload-container {
+      margin-bottom: 1rem;
     }
 
     .previews-container {
       display: flex;
       flex-direction: column;
+      gap: 1.75rem;
       align-items: center;
-      gap: 2rem;
+      justify-content: center;
       margin-top: 1rem;
     }
     .preview-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       text-align: center;
     }
     .preview-label {
       font-weight: 600;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
     }
     .thumbnail-wrap {
-      position: relative;
       background: #f1f5f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px dashed rgba(124, 58, 237, 0.2);
+      border: 2px dashed rgba(126, 34, 206, 0.2);
       border-radius: var(--radius);
       overflow: hidden;
       cursor: pointer;
       transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .thumbnail-wrap:hover {
       border-color: var(--accent-light);
@@ -234,7 +223,150 @@
       color: var(--yt-title-color-light);
     }
 
-    /* LIGHTBOX MODAL */
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .rubric-table,
+    .feedback-panel,
+    .auto-insights,
+    .resources {
+      margin: 0;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    /* TABLE */
+    .rubric-table {
+      overflow-x: auto;
+    }
+    .modern-table {
+      width: 100%;
+      min-width: 800px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .modern-table thead th {
+      background: var(--gradient-light);
+      color: #fff;
+      padding: 1.2rem;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+    .modern-table tbody td {
+      padding: 1.2rem;
+      border-bottom: 1px solid rgba(224, 231, 255, 0.3);
+      transition: var(--transition);
+      vertical-align: top;
+      min-width: 160px;
+      cursor: pointer;
+      background: var(--table-cell-bg-light);
+    }
+    .category-header {
+      font-weight: 600;
+      background: rgba(126, 34, 206, 0.1);
+      position: sticky;
+      left: 0;
+      min-width: 180px;
+      backdrop-filter: blur(6px);
+      border-right: 1px solid rgba(224, 231, 255, 0.3);
+      z-index: 9;
+    }
+    .modern-table td:not(.category-header):hover {
+      background: rgba(224, 231, 255, 0.3);
+      transform: scale(1.02);
+    }
+    .selected {
+      background: rgba(224, 231, 255, 0.5) !important;
+      box-shadow: inset 4px 0 0 var(--primary-light);
+      transform: scale(1.02);
+    }
+
+    /* FEEDBACK */
+    .feedback-panel h3 {
+      margin-top: 0;
+    }
+    .feedback-item {
+      margin: 0.4rem 0;
+      padding: 0.8rem;
+      border-radius: var(--radius);
+      background: rgba(126, 34, 206, 0.07);
+    }
+    .ai-suggestions {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: var(--radius);
+      background: rgba(236, 72, 153, 0.07);
+    }
+    .keyword {
+      background: rgba(236, 72, 153, 0.1);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    /* TEXTAREA FOR FEEDBACK */
+    .manual-inputs {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .flex-label {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 0.8rem;
+      resize: none;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+    }
+
+    /* INSIGHTS */
+    .palette-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .color-swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+    }
+    .insight-message {
+      margin-top: 0.5rem;
+    }
+
+    /* RESOURCES */
+    .resources h3 {
+      margin-top: 0;
+    }
+    .resources ul {
+      margin: 1rem 0 0 1.5rem;
+    }
+
+    /* MODAL (LIGHTBOX) */
     .modal-bg {
       position: fixed;
       top: 0;
@@ -284,236 +416,137 @@
       background: rgba(255,255,255,1);
     }
 
-    /* TABLE + FEEDBACK + INSIGHTS */
-    .rubric-table,
-    .feedback-panel,
-    .auto-insights,
-    .resources {
-      margin: 0;
-      margin-top: 2rem;
-      padding: 2rem;
-    }
-    .rubric-table {
-      overflow-x: auto;
-    }
-    .modern-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      min-width: 800px;
-    }
-    .modern-table th {
-      background: var(--gradient-light);
-      color: white;
-      padding: 1.25rem;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      backdrop-filter: blur(10px);
-      z-index: 10;
-    }
-    .modern-table td {
-      padding: 1.25rem;
-      border-bottom: 1px solid rgba(224, 231, 255, 0.3);
-      transition: var(--transition);
-      vertical-align: top;
-      min-width: 160px;
-      cursor: pointer;
-      background: var(--table-cell-bg-light);
-    }
-    .category-header {
-      font-weight: 600;
-      background: rgba(124, 58, 237, 0.1);
-      position: sticky;
-      left: 0;
-      min-width: 180px;
-      backdrop-filter: blur(5px);
-      border-right: 1px solid rgba(224, 231, 255, 0.3);
-      z-index: 9;
-    }
-    .modern-table td:not(.category-header):hover {
-      background: rgba(224, 231, 255, 0.3);
-      transform: scale(1.02);
-    }
-    .selected {
-      background: rgba(224, 231, 255, 0.5) !important;
-      box-shadow: inset 4px 0 0 var(--primary-light);
-      transform: scale(1.02);
-    }
-    .feedback-item {
-      margin: 0.5rem 0;
-      padding: 1rem;
-      border-radius: var(--radius);
-      background: rgba(124, 58, 237, 0.07);
-    }
-    .ai-suggestions {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: var(--radius);
-      background: rgba(236, 72, 153, 0.07);
-    }
-    .keyword {
-      background: rgba(236, 72, 153, 0.1);
-      padding: 2px 4px;
-      border-radius: 4px;
-    }
-
-    /* TEXTAREAS (HUMAN + AI FEEDBACK) */
-    .manual-inputs {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .flex-label {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-    textarea {
-      width: 100%;
-      min-height: 80px;
-      padding: 1rem;
-      resize: none; /* We'll manually auto-size in JS so PDF sees full content */
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
-      border: 2px solid #e2e8f0;
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    textarea:focus {
-      outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-    }
-
-    /* INSIGHTS + COLOR PALETTE */
-    .palette-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-    .color-swatch {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius);
-      border: 1px solid #ccc;
-    }
-    .insight-message {
-      margin-top: 1rem;
-    }
-
-    /* LOADING SPINNER */
-    .loading-spinner {
-      animation: spin 1s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    /* Responsive smaller screens */
+    /* RESPONSIVE */
     @media (max-width: 992px) {
       .analyzer-container {
         flex-direction: column;
+        padding: 0 1rem 2rem;
       }
       .sidebar {
         position: static;
         width: 100%;
+        top: auto;
+      }
+      .main-content {
+        margin-top: 0;
       }
     }
   </style>
 </head>
 <body>
-  <!-- STICKY HEADER -->
+  <!-- HEADER -->
   <div class="analyzer-header glass-panel">
-    <div class="header-content">
-      <div class="score-display">
-        <div class="total-score">Score: <span id="total">0</span>/40</div>
-        <div class="status-indicator" id="ranking">Incomplete</div>
-      </div>
-      <div class="controls">
-        <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
-        <button class="btn" onclick="resetScores()">🔄 Reset</button>
-        <button class="btn" onclick="exportPDF()">📥 Export PDF</button>
-        <button class="btn" onclick="getAISuggestions()">🤖 AI Help</button>
-      </div>
+    <div class="header-left">
+      <div class="total-score">Score: <span id="total">0</span>/40</div>
+      <div class="status-indicator" id="ranking">Incomplete</div>
+    </div>
+    <div class="header-right">
+      <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
+      <button class="btn" onclick="resetScores()">🔄 Reset</button>
+      <button class="btn" onclick="exportPDF()">📥 Export PDF</button>
+      <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
+      <button class="btn" onclick="getAISuggestions()">🤖 AI Help</button>
     </div>
   </div>
 
-  <!-- MAIN WRAPPER -->
+  <!-- WRAPPER -->
   <div class="analyzer-container">
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (left) -->
     <div class="sidebar glass-panel">
       <div class="preview-section">
         <h2>Video Title &amp; Thumbnails</h2>
+
         <input
           type="text"
           id="videoTitle"
           class="title-input"
           placeholder="Enter video title here..."
         />
-        <!-- Single Upload Button -->
-        <button class="btn" onclick="document.getElementById('thumbnailUpload').click()">
-          📁 Upload Image
-        </button>
-        <input type="file" id="thumbnailUpload" accept="image/*" style="display: none;" />
 
-        <!-- Previews -->
+        <div class="upload-container">
+          <button class="btn" onclick="document.getElementById('thumbnailUpload').click()">
+            📁 Upload Image
+          </button>
+          <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
+        </div>
+
         <div class="previews-container">
-          <!-- Home -->
+          <!-- HOME -->
           <div class="preview-box">
             <div class="preview-label">YouTube Home</div>
-            <div class="thumbnail-wrap" style="width:210px; height:118px;" onclick="enlargeImage('homePreview')">
+            <div
+              class="thumbnail-wrap"
+              style="width:210px; height:118px;"
+              onclick="enlargeImage('homePreview')"
+            >
               <img
                 id="homePreview"
                 class="youtube-thumb"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                alt="home preview"
+                alt="Home Preview"
                 width="210"
                 height="118"
               />
             </div>
-            <div id="homeTitle" class="youtube-title" style="max-width:210px;"></div>
+            <div
+              id="homeTitle"
+              class="youtube-title"
+              style="max-width:210px;"
+            ></div>
           </div>
 
-          <!-- Suggested -->
+          <!-- SUGGESTED -->
           <div class="preview-box">
             <div class="preview-label">Suggested Video</div>
-            <div class="thumbnail-wrap" style="width:168px; height:94px;" onclick="enlargeImage('suggestedPreview')">
+            <div
+              class="thumbnail-wrap"
+              style="width:168px; height:94px;"
+              onclick="enlargeImage('suggestedPreview')"
+            >
               <img
                 id="suggestedPreview"
                 class="youtube-thumb"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                alt="suggested preview"
+                alt="Suggested Preview"
                 width="168"
                 height="94"
               />
             </div>
-            <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
+            <div
+              id="suggestedTitle"
+              class="youtube-title"
+              style="max-width:168px;"
+            ></div>
           </div>
 
-          <!-- Mobile -->
+          <!-- MOBILE -->
           <div class="preview-box">
             <div class="preview-label">Mobile View</div>
-            <div class="thumbnail-wrap" style="width:320px; height:180px;" onclick="enlargeImage('mobilePreview')">
+            <div
+              class="thumbnail-wrap"
+              style="width:320px; height:180px;"
+              onclick="enlargeImage('mobilePreview')"
+            >
               <img
                 id="mobilePreview"
                 class="youtube-thumb"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                alt="mobile preview"
+                alt="Mobile Preview"
                 width="320"
                 height="180"
               />
             </div>
-            <div id="mobileTitle" class="youtube-title" style="max-width:320px;"></div>
+            <div
+              id="mobileTitle"
+              class="youtube-title"
+              style="max-width:320px;"
+            ></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT (right) -->
     <div class="main-content">
       <!-- Rubric Table -->
       <div class="rubric-table glass-panel">
@@ -528,7 +561,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- ALL 10 CATEGORIES -->
             <!-- 0: Scroll-Stopping Power -->
             <tr>
               <td class="category-header" data-category="0">Scroll-Stopping Power</td>
@@ -613,7 +645,7 @@
         </table>
       </div>
 
-      <!-- Feedback Section -->
+      <!-- Feedback Panel -->
       <div class="feedback-panel glass-panel" id="feedback">
         <h3>Improvement Recommendations</h3>
         <div id="specificFeedback"></div>
@@ -622,16 +654,24 @@
         <div class="manual-inputs">
           <div>
             <label for="humanFeedback" class="flex-label">Human Feedback</label>
-            <textarea id="humanFeedback" placeholder="Enter your human feedback here..." oninput="autoGrow(this)"></textarea>
+            <textarea
+              id="humanFeedback"
+              placeholder="Enter your human feedback here..."
+              oninput="autoGrow(this)"
+            ></textarea>
           </div>
           <div>
             <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
-            <textarea id="artistAIFeedback" placeholder="Paste AI feedback or notes here..." oninput="autoGrow(this)"></textarea>
+            <textarea
+              id="artistAIFeedback"
+              placeholder="Paste AI feedback or notes here..."
+              oninput="autoGrow(this)"
+            ></textarea>
           </div>
         </div>
       </div>
 
-      <!-- Automatic Insights -->
+      <!-- Insights -->
       <div class="auto-insights glass-panel">
         <h3>Design Insights</h3>
         <div class="insight-message" id="contrastMessage"></div>
@@ -677,10 +717,10 @@
         4: "You’re hitting MUST-CLICK levels; keep testing new combos."
       },
       1: {
-        1: "Consider rule of thirds or central alignment to guide the eye.",
-        2: "Use leading lines or shapes to draw attention to your subject.",
-        3: "Check color contrast & negative space for a dynamic layout.",
-        4: "Visually readable quickly, even on mobile."
+        1: "Functional layout.",
+        2: "Rule of thirds / central alignment.",
+        3: "Leading lines + dynamic contrast.",
+        4: "Visually readable in under a second on any device."
       },
       2: {
         1: "Some clarity; background might distract.",
@@ -709,7 +749,7 @@
       6: {
         1: "Doesn’t reinforce title.",
         2: "Hints at title’s topic.",
-        3: "Combined ‘hook’ effect.",
+        3: "Combined ‘hook’ effect with the title.",
         4: "Seamless ‘one-two punch’ with title."
       },
       7: {
@@ -720,9 +760,9 @@
       },
       8: {
         1: "Basic consistency with channel style.",
-        2: "Visible brand elements.",
+        2: "Visible brand elements used.",
         3: "Immediately identifiable as your style.",
-        4: "Instant brand recognition."
+        4: "Instant brand recognition from a glance."
       },
       9: {
         1: "No pixelation, basic sizing.",
@@ -740,13 +780,10 @@
     const MOBILE_LIMIT = 72;
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Rubric ratings
       document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
         cell.addEventListener('click', () => selectRating(cell));
       });
-      // Upload
       document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
-      // Title
       document.getElementById('videoTitle').addEventListener('input', () => {
         updateTitlePreview();
         checkTitleThumbnailSynergy();
@@ -815,7 +852,7 @@
       ranking.style.color = '#64748b';
     }
 
-    // Title Previews
+    /* Title Previews */
     let debounceTimer;
     function updateTitlePreview() {
       clearTimeout(debounceTimer);
@@ -834,11 +871,11 @@
       const title = document.getElementById('videoTitle').value.toLowerCase();
       const synergyScore = title ? 1 : 0;
       if (synergyScore < 1) {
-        // optional highlight synergy row or do nothing
+        // optional highlight synergy row
       }
     }
 
-    // Upload & image preview
+    /* Upload & image preview */
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -854,7 +891,7 @@
       reader.readAsDataURL(file);
     }
 
-    // Color palette extraction
+    /* Color palette extraction */
     function extractColors(imageSrc) {
       const paletteContainer = document.getElementById('paletteContainer');
       paletteContainer.innerHTML = 'Detecting palette…';
@@ -875,7 +912,7 @@
       };
     }
 
-    // Brightness & Contrast check
+    /* Brightness & Contrast check */
     function checkContrastAndBrightness(imageSrc) {
       const brightnessMessage = document.getElementById('brightnessMessage');
       const contrastMessage = document.getElementById('contrastMessage');
@@ -909,7 +946,7 @@
       };
     }
 
-    // AI Suggestions (simulated)
+    /* AI Suggestions (simulated) */
     async function getAISuggestions() {
       const aiDiv = document.getElementById('aiSuggestions');
       aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
@@ -926,13 +963,13 @@
       }, 2000);
     }
 
-    // PDF Export
+    /* EXPORT TO PDF */
     async function exportPDF() {
       // Expand textareas
       autoGrow(document.getElementById('humanFeedback'));
       autoGrow(document.getElementById('artistAIFeedback'));
 
-      // Temporarily remove sticky positions for a clean, continuous capture
+      // Temporarily remove sticky positions
       const header = document.querySelector('.analyzer-header');
       const sidebar = document.querySelector('.sidebar');
       const oldHeaderPos = header.style.position;
@@ -940,12 +977,12 @@
       header.style.position = 'static';
       sidebar.style.position = 'static';
 
-      // Give the layout a moment to update
+      // Wait a moment
       await new Promise(r => setTimeout(r, 300));
 
-      // Capture the entire body
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
+
       const canvas = await html2canvas(document.body, {
         scale: 2,
         scrollY: 0,
@@ -953,7 +990,7 @@
         windowHeight: document.body.scrollHeight
       });
 
-      // Restore sticky positions
+      // Restore sticky
       header.style.position = oldHeaderPos;
       sidebar.style.position = oldSidebarPos;
 
@@ -961,11 +998,8 @@
       const imgProps = doc.getImageProperties(imgData);
       const pdfWidth = doc.internal.pageSize.getWidth() - 20;
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
       let yPos = 10;
       const totalPages = Math.ceil((pdfHeight + 10) / doc.internal.pageSize.getHeight());
-
-      // We'll add pages as needed
       for (let page = 0; page < totalPages; page++) {
         if (page > 0) {
           doc.addPage();
@@ -983,14 +1017,50 @@
       doc.save('thumbnail-analysis-report.pdf');
     }
 
-    // Textarea autoGrow
+    /* EXPORT TO PNG */
+    async function exportPNG() {
+      // Expand textareas
+      autoGrow(document.getElementById('humanFeedback'));
+      autoGrow(document.getElementById('artistAIFeedback'));
+
+      // Temporarily remove sticky
+      const header = document.querySelector('.analyzer-header');
+      const sidebar = document.querySelector('.sidebar');
+      const oldHeaderPos = header.style.position;
+      const oldSidebarPos = sidebar.style.position;
+      header.style.position = 'static';
+      sidebar.style.position = 'static';
+
+      await new Promise(r => setTimeout(r, 300));
+
+      const canvas = await html2canvas(document.body, {
+        scale: 2,
+        scrollY: 0,
+        windowWidth: document.body.scrollWidth,
+        windowHeight: document.body.scrollHeight
+      });
+
+      // Restore sticky
+      header.style.position = oldHeaderPos;
+      sidebar.style.position = oldSidebarPos;
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'thumbnail-analysis.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    /* TEXTAREA AUTO GROW */
     function autoGrow(el) {
       if (!el) return;
       el.style.height = 'auto';
       el.style.height = el.scrollHeight + 'px';
     }
 
-    // THEME TOGGLE
+    /* THEME TOGGLE */
     function toggleTheme() {
       const htmlEl = document.documentElement;
       if (htmlEl.getAttribute('data-theme') === 'dark') {
@@ -1000,7 +1070,7 @@
       }
     }
 
-    // LIGHTBOX
+    /* LIGHTBOX */
     function enlargeImage(imgId) {
       const src = document.getElementById(imgId).src;
       document.getElementById('modalImg').src = src;
