@@ -13,8 +13,10 @@
   <!-- Optional: Color Thief for palette extraction -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 
-  <!-- PDF export libraries -->
+  <!-- For PNG export only -->
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <!-- PDF export (via doc.html) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <style>
@@ -335,9 +337,11 @@
       border-radius: 8px;
       overflow: visible;
       transition: var(--transition);
+
+      /* Critical for preserving line breaks in PDF and on screen */
       white-space: pre-wrap;
+      word-wrap: break-word;
       overflow-wrap: break-word;
-      word-wrap: break-word; 
     }
     textarea:focus {
       outline: none;
@@ -444,6 +448,7 @@
       <div class="total-score">Score: <span id="total">0</span>/40</div>
       <div class="status-indicator" id="ranking">Incomplete</div>
     </div>
+    
     <div class="header-right">
       <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
       <button class="btn" onclick="resetScores()">🔄 Reset</button>
@@ -712,7 +717,9 @@
   </div>
 
   <script>
-    /* Full improvementTips object for all 10 categories */
+    /*========================================================
+      Full improvementTips for all 10 categories
+    ========================================================*/
     const improvementTips = {
       0: {
         1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.",
@@ -776,6 +783,9 @@
       }
     };
 
+    /*========================================================
+      Global Score Tracking
+    ========================================================*/
     let scores = {};
 
     // Character limits
@@ -784,10 +794,15 @@
     const MOBILE_LIMIT = 72;
 
     document.addEventListener("DOMContentLoaded", () => {
+      // Table rating selection
       document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
         cell.addEventListener('click', () => selectRating(cell));
       });
+
+      // Image upload
       document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
+
+      // Title input synergy
       document.getElementById('videoTitle').addEventListener('input', () => {
         updateTitlePreview();
         checkTitleThumbnailSynergy();
@@ -812,12 +827,14 @@
       document.getElementById('total').textContent = total;
       const ranking = document.getElementById('ranking');
 
+      // Incomplete if not all 10 categories
       if (Object.keys(scores).length < 10) {
         ranking.textContent = 'Incomplete';
         ranking.style.color = '#64748b';
         return;
       }
 
+      // Score thresholds
       if (total <= 24) {
         ranking.textContent = 'Needs Work 🔴';
         ranking.style.color = '#ef4444';
@@ -856,46 +873,49 @@
       ranking.style.color = '#64748b';
     }
 
-    /* Title Previews */
+    /*========================================================
+      Title Previews
+    ========================================================*/
     let debounceTimer;
     function updateTitlePreview() {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         const title = document.getElementById('videoTitle').value || '';
-        document.getElementById('homeTitle').textContent       = truncateTitle(title, HOME_LIMIT);
-        document.getElementById('suggestedTitle').textContent  = truncateTitle(title, SUGGESTED_LIMIT);
-        document.getElementById('mobileTitle').textContent     = truncateTitle(title, MOBILE_LIMIT);
+        document.getElementById('homeTitle').textContent = truncateTitle(title, HOME_LIMIT);
+        document.getElementById('suggestedTitle').textContent = truncateTitle(title, SUGGESTED_LIMIT);
+        document.getElementById('mobileTitle').textContent = truncateTitle(title, MOBILE_LIMIT);
       }, 300);
     }
+
     function truncateTitle(str, limit) {
       return (str.length <= limit) ? str : str.slice(0, limit - 3) + '...';
     }
+
     function checkTitleThumbnailSynergy() {
-      // naive synergy check
+      // For potential synergy checks; kept minimal
       const title = document.getElementById('videoTitle').value.toLowerCase();
       const synergyScore = title ? 1 : 0;
-      if (synergyScore < 1) {
-        // optional highlight synergy row
-      }
+      // do something if synergyScore < 1, etc.
     }
 
-    /* Upload & image preview */
+    /*========================================================
+      Image Upload & Color Extraction
+    ========================================================*/
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = ev => {
         const dataUrl = ev.target.result;
-        document.getElementById('homePreview').src      = dataUrl;
+        document.getElementById('homePreview').src = dataUrl;
         document.getElementById('suggestedPreview').src = dataUrl;
-        document.getElementById('mobilePreview').src    = dataUrl;
+        document.getElementById('mobilePreview').src = dataUrl;
         extractColors(dataUrl);
         setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
       };
       reader.readAsDataURL(file);
     }
 
-    /* Color palette extraction */
     function extractColors(imageSrc) {
       const paletteContainer = document.getElementById('paletteContainer');
       paletteContainer.innerHTML = 'Detecting palette…';
@@ -916,7 +936,9 @@
       };
     }
 
-    /* Brightness & Contrast check */
+    /*========================================================
+      Brightness & Contrast Check
+    ========================================================*/
     function checkContrastAndBrightness(imageSrc) {
       const brightnessMessage = document.getElementById('brightnessMessage');
       const contrastMessage = document.getElementById('contrastMessage');
@@ -950,7 +972,9 @@
       };
     }
 
-    /* AI Suggestions (simulated) */
+    /*========================================================
+      AI Suggestions (Simulated)
+    ========================================================*/
     async function getAISuggestions() {
       const aiDiv = document.getElementById('aiSuggestions');
       aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
@@ -967,88 +991,36 @@
       }, 2000);
     }
 
-    /* EXPORT TO PDF */
+    /*========================================================
+      EXPORT PDF (Uses doc.html)
+    ========================================================*/
     async function exportPDF() {
-      // Expand textareas
-      autoGrow(document.getElementById('humanFeedback'));
-      autoGrow(document.getElementById('artistAIFeedback'));
-
-      // Temporarily remove sticky positions
-      const header = document.querySelector('.analyzer-header');
-      const sidebar = document.querySelector('.sidebar');
-      const oldHeaderPos = header.style.position;
-      const oldSidebarPos = sidebar.style.position;
-      header.style.position = 'static';
-      sidebar.style.position = 'static';
-
-      // Wait a moment
-      await new Promise(r => setTimeout(r, 300));
-
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
 
-      const canvas = await html2canvas(document.body, {
-        scale: 2,
-        scrollY: 0,
+      // Convert the entire body (or you could target a specific container, e.g. '#feedback')
+      await doc.html(document.body, {
+        x: 10,
+        y: 10,
+        width: 190, // 210mm wide page - 20mm margin = 190
         windowWidth: document.body.scrollWidth,
-        windowHeight: document.body.scrollHeight
-      });
-
-      // Restore sticky
-      header.style.position = oldHeaderPos;
-      sidebar.style.position = oldSidebarPos;
-
-      const imgData = canvas.toDataURL('image/png');
-      const imgProps = doc.getImageProperties(imgData);
-      const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      let yPos = 10;
-      const totalPages = Math.ceil((pdfHeight + 10) / doc.internal.pageSize.getHeight());
-      for (let page = 0; page < totalPages; page++) {
-        if (page > 0) {
-          doc.addPage();
-          yPos = 10;
+        callback: function (doc) {
+          doc.save('thumbnail-analysis-report.pdf');
         }
-        doc.addImage(
-          imgData,
-          'PNG',
-          10,
-          yPos - page * doc.internal.pageSize.getHeight(),
-          pdfWidth,
-          pdfHeight
-        );
-      }
-      doc.save('thumbnail-analysis-report.pdf');
+      });
     }
 
-    /* EXPORT TO PNG */
+    /*========================================================
+      EXPORT PNG (Uses html2canvas screenshot)
+    ========================================================*/
     async function exportPNG() {
-      // Expand textareas
-      autoGrow(document.getElementById('humanFeedback'));
-      autoGrow(document.getElementById('artistAIFeedback'));
-
-      // Temporarily remove sticky
-      const header = document.querySelector('.analyzer-header');
-      const sidebar = document.querySelector('.sidebar');
-      const oldHeaderPos = header.style.position;
-      const oldSidebarPos = sidebar.style.position;
-      header.style.position = 'static';
-      sidebar.style.position = 'static';
-
-      await new Promise(r => setTimeout(r, 300));
-
+      // Let’s screenshot the entire body (you can restrict if needed)
       const canvas = await html2canvas(document.body, {
-        scale: 2,
-        scrollY: 0,
-        windowWidth: document.body.scrollWidth,
-        windowHeight: document.body.scrollHeight
+        scale: 2
       });
-
-      // Restore sticky
-      header.style.position = oldHeaderPos;
-      sidebar.style.position = oldSidebarPos;
-
       const dataUrl = canvas.toDataURL('image/png');
+
+      // Trigger download
       const link = document.createElement('a');
       link.download = 'thumbnail-analysis.png';
       link.href = dataUrl;
@@ -1057,14 +1029,18 @@
       document.body.removeChild(link);
     }
 
-    /* TEXTAREA AUTO GROW */
+    /*========================================================
+      TEXTAREA AUTO GROW
+    ========================================================*/
     function autoGrow(el) {
       if (!el) return;
       el.style.height = 'auto';
       el.style.height = el.scrollHeight + 'px';
     }
 
-    /* THEME TOGGLE */
+    /*========================================================
+      THEME TOGGLE
+    ========================================================*/
     function toggleTheme() {
       const htmlEl = document.documentElement;
       if (htmlEl.getAttribute('data-theme') === 'dark') {
@@ -1074,7 +1050,9 @@
       }
     }
 
-    /* LIGHTBOX */
+    /*========================================================
+      LIGHTBOX
+    ========================================================*/
     function enlargeImage(imgId) {
       const src = document.getElementById(imgId).src;
       document.getElementById('modalImg').src = src;
