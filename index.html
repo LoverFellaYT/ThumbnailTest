@@ -80,19 +80,6 @@
       --yt-title-color-light: var(--yt-title-color-dark);
     }
 
-    /*
-      -------------------------------------------------------------
-      PDF WRAPPER
-      -------------------------------------------------------------
-      We confine the entire page content in #pdfWrapper, so doc.html
-      doesn't try to compress a 1300px-wide page into 190mm.
-      ~800-900px ensures text is still readable at 100% in PDF.
-    */
-    #pdfWrapper {
-      width: 900px;
-      margin: 0 auto; /* center if you like */
-    }
-
     /* HEADER */
     .analyzer-header {
       position: sticky;
@@ -351,7 +338,7 @@
       overflow: visible;
       transition: var(--transition);
 
-      /* Ensure line breaks get preserved (no endless lines) */
+      /* Critical for preserving line breaks in PDF and on screen */
       white-space: pre-wrap;
       word-wrap: break-word;
       overflow-wrap: break-word;
@@ -451,15 +438,10 @@
       .main-content {
         margin-top: 0;
       }
-      #pdfWrapper {
-        width: 100%; /* if you want it fully responsive on mobile */
-      }
     }
   </style>
 </head>
 <body>
-<!-- Wrap entire page content in #pdfWrapper so doc.html sees narrower layout -->
-<div id="pdfWrapper">
   <!-- HEADER -->
   <div class="analyzer-header glass-panel">
     <div class="header-left">
@@ -724,376 +706,361 @@
         </ul>
       </div>
     </div>
-  </div><!-- /.analyzer-container -->
-</div><!-- /#pdfWrapper -->
-
-<!-- Lightbox Modal -->
-<div class="modal-bg" id="imgModal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">✕</span>
-    <img id="modalImg" src="" alt="enlarged thumbnail" />
   </div>
-</div>
 
-<script>
-  /*========================================================
-    Full improvementTips for all 10 categories
-  ========================================================*/
-  const improvementTips = {
-    0: {
-      1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.",
-      2: "Add bright color(s) or a face/danger element to stand out.",
-      3: "Combine multiple ‘scroll-stoppers’ (e.g. big text + dramatic photo).",
-      4: "You’re hitting MUST-CLICK levels; keep testing new combos."
-    },
-    1: {
-      1: "Functional layout.",
-      2: "Rule of thirds / central alignment.",
-      3: "Leading lines + dynamic contrast.",
-      4: "Visually readable in under a second on any device."
-    },
-    2: {
-      1: "Some clarity; background might distract.",
-      2: "Clean layout, minimal clutter.",
-      3: "Strong hierarchy, clear focal point.",
-      4: "Perfect negative space usage; subject pops."
-    },
-    3: {
-      1: "Legible but possibly too long.",
-      2: "Short text, easy to read on mobile.",
-      3: "Minimal, punchy text complements visuals.",
-      4: "Perfect synergy; zero wasted words."
-    },
-    4: {
-      1: "Hints at something interesting.",
-      2: "Clear unanswered question.",
-      3: "Strongly teases surprising element.",
-      4: "Creates ‘What on earth?’ scenario."
-    },
-    5: {
-      1: "Neutral or mild interest.",
-      2: "Sparks curiosity or excitement.",
-      3: "Triggers FOMO, shock, or urgency.",
-      4: "Visceral reaction (fear, awe, hilarity)."
-    },
-    6: {
-      1: "Doesn’t reinforce title.",
-      2: "Hints at title’s topic.",
-      3: "Combined ‘hook’ effect with the title.",
-      4: "Seamless ‘one-two punch’ with title."
-    },
-    7: {
-      1: "Some alignment but somewhat clickbaity.",
-      2: "Accurately represents main topic.",
-      3: "Compelling moment without spoilers.",
-      4: "Perfect alignment with content."
-    },
-    8: {
-      1: "Basic consistency with channel style.",
-      2: "Visible brand elements used.",
-      3: "Immediately identifiable as your style.",
-      4: "Instant brand recognition from a glance."
-    },
-    9: {
-      1: "No pixelation, basic sizing.",
-      2: "Mobile-friendly text/contrast.",
-      3: "Studio-level precision.",
-      4: "Flawless execution."
+  <!-- Lightbox Modal -->
+  <div class="modal-bg" id="imgModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">✕</span>
+      <img id="modalImg" src="" alt="enlarged thumbnail" />
+    </div>
+  </div>
+
+  <script>
+    /*========================================================
+      Full improvementTips for all 10 categories
+    ========================================================*/
+    const improvementTips = {
+      0: {
+        1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.",
+        2: "Add bright color(s) or a face/danger element to stand out.",
+        3: "Combine multiple ‘scroll-stoppers’ (e.g. big text + dramatic photo).",
+        4: "You’re hitting MUST-CLICK levels; keep testing new combos."
+      },
+      1: {
+        1: "Functional layout.",
+        2: "Rule of thirds / central alignment.",
+        3: "Leading lines + dynamic contrast.",
+        4: "Visually readable in under a second on any device."
+      },
+      2: {
+        1: "Some clarity; background might distract.",
+        2: "Clean layout, minimal clutter.",
+        3: "Strong hierarchy, clear focal point.",
+        4: "Perfect negative space usage; subject pops."
+      },
+      3: {
+        1: "Legible but possibly too long.",
+        2: "Short text, easy to read on mobile.",
+        3: "Minimal, punchy text complements visuals.",
+        4: "Perfect synergy; zero wasted words."
+      },
+      4: {
+        1: "Hints at something interesting.",
+        2: "Clear unanswered question.",
+        3: "Strongly teases surprising element.",
+        4: "Creates ‘What on earth?’ scenario."
+      },
+      5: {
+        1: "Neutral or mild interest.",
+        2: "Sparks curiosity or excitement.",
+        3: "Triggers FOMO, shock, or urgency.",
+        4: "Visceral reaction (fear, awe, hilarity)."
+      },
+      6: {
+        1: "Doesn’t reinforce title.",
+        2: "Hints at title’s topic.",
+        3: "Combined ‘hook’ effect with the title.",
+        4: "Seamless ‘one-two punch’ with title."
+      },
+      7: {
+        1: "Some alignment but somewhat clickbaity.",
+        2: "Accurately represents main topic.",
+        3: "Compelling moment without spoilers.",
+        4: "Perfect alignment with content."
+      },
+      8: {
+        1: "Basic consistency with channel style.",
+        2: "Visible brand elements used.",
+        3: "Immediately identifiable as your style.",
+        4: "Instant brand recognition from a glance."
+      },
+      9: {
+        1: "No pixelation, basic sizing.",
+        2: "Mobile-friendly text/contrast.",
+        3: "Studio-level precision.",
+        4: "Flawless execution."
+      }
+    };
+
+    /*========================================================
+      Global Score Tracking
+    ========================================================*/
+    let scores = {};
+
+    // Character limits
+    const HOME_LIMIT = 66;
+    const SUGGESTED_LIMIT = 60;
+    const MOBILE_LIMIT = 72;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Table rating selection
+      document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+        cell.addEventListener('click', () => selectRating(cell));
+      });
+
+      // Image upload
+      document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
+
+      // Title input synergy
+      document.getElementById('videoTitle').addEventListener('input', () => {
+        updateTitlePreview();
+        checkTitleThumbnailSynergy();
+      });
+    });
+
+    function selectRating(cell) {
+      const categoryIndex = Number(cell.getAttribute('data-category'));
+      const rating = parseInt(cell.getAttribute('data-rating'));
+      const row = cell.parentElement;
+      row.querySelectorAll('td').forEach(td => {
+        if (td !== row.firstElementChild) td.classList.remove('selected');
+      });
+      cell.classList.add('selected');
+      scores[categoryIndex] = rating;
+      updateTotal();
+      showFeedback();
     }
-  };
 
-  /*========================================================
-    Global Score Tracking
-  ========================================================*/
-  let scores = {};
+    function updateTotal() {
+      const total = Object.values(scores).reduce((a, b) => a + b, 0);
+      document.getElementById('total').textContent = total;
+      const ranking = document.getElementById('ranking');
 
-  // Character limits
-  const HOME_LIMIT = 66;
-  const SUGGESTED_LIMIT = 60;
-  const MOBILE_LIMIT = 72;
+      // Incomplete if not all 10 categories
+      if (Object.keys(scores).length < 10) {
+        ranking.textContent = 'Incomplete';
+        ranking.style.color = '#64748b';
+        return;
+      }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // Table rating selection
-    document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-      cell.addEventListener('click', () => selectRating(cell));
-    });
+      // Score thresholds
+      if (total <= 24) {
+        ranking.textContent = 'Needs Work 🔴';
+        ranking.style.color = '#ef4444';
+      } else if (total <= 32) {
+        ranking.textContent = 'Good Start 🟡';
+        ranking.style.color = '#eab308';
+      } else if (total <= 38) {
+        ranking.textContent = 'Great! 🟢';
+        ranking.style.color = '#22c55e';
+      } else {
+        ranking.textContent = 'Perfect! 🔵';
+        ranking.style.color = '#3b82f6';
+      }
+    }
 
-    // Image upload
-    document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
+    function showFeedback() {
+      const feedbackDiv = document.getElementById('specificFeedback');
+      feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
+        const rating = scores[cat];
+        const categoryName = document.querySelector(`[data-category="${cat}"].category-header`)?.textContent || '';
+        return `
+          <div class="feedback-item">
+            <strong>${categoryName}</strong>:
+            <span>${improvementTips[cat][rating]}</span>
+          </div>`;
+      }).join('');
+    }
 
-    // Title input synergy
-    document.getElementById('videoTitle').addEventListener('input', () => {
-      updateTitlePreview();
-      checkTitleThumbnailSynergy();
-    });
-  });
-
-  function selectRating(cell) {
-    const categoryIndex = Number(cell.getAttribute('data-category'));
-    const rating = parseInt(cell.getAttribute('data-rating'));
-    const row = cell.parentElement;
-    row.querySelectorAll('td').forEach(td => {
-      if (td !== row.firstElementChild) td.classList.remove('selected');
-    });
-    cell.classList.add('selected');
-    scores[categoryIndex] = rating;
-    updateTotal();
-    showFeedback();
-  }
-
-  function updateTotal() {
-    const total = Object.values(scores).reduce((a, b) => a + b, 0);
-    document.getElementById('total').textContent = total;
-    const ranking = document.getElementById('ranking');
-
-    // Incomplete if not all 10 categories
-    if (Object.keys(scores).length < 10) {
+    function resetScores() {
+      scores = {};
+      document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+      document.getElementById('specificFeedback').innerHTML = '';
+      updateTotal();
+      const ranking = document.getElementById('ranking');
       ranking.textContent = 'Incomplete';
       ranking.style.color = '#64748b';
-      return;
     }
 
-    // Score thresholds
-    if (total <= 24) {
-      ranking.textContent = 'Needs Work 🔴';
-      ranking.style.color = '#ef4444';
-    } else if (total <= 32) {
-      ranking.textContent = 'Good Start 🟡';
-      ranking.style.color = '#eab308';
-    } else if (total <= 38) {
-      ranking.textContent = 'Great! 🟢';
-      ranking.style.color = '#22c55e';
-    } else {
-      ranking.textContent = 'Perfect! 🔵';
-      ranking.style.color = '#3b82f6';
+    /*========================================================
+      Title Previews
+    ========================================================*/
+    let debounceTimer;
+    function updateTitlePreview() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const title = document.getElementById('videoTitle').value || '';
+        document.getElementById('homeTitle').textContent = truncateTitle(title, HOME_LIMIT);
+        document.getElementById('suggestedTitle').textContent = truncateTitle(title, SUGGESTED_LIMIT);
+        document.getElementById('mobileTitle').textContent = truncateTitle(title, MOBILE_LIMIT);
+      }, 300);
     }
-  }
 
-  function showFeedback() {
-    const feedbackDiv = document.getElementById('specificFeedback');
-    feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
-      const rating = scores[cat];
-      const categoryName = document.querySelector(`[data-category="${cat}"].category-header`)?.textContent || '';
-      return `
-        <div class="feedback-item">
-          <strong>${categoryName}</strong>:
-          <span>${improvementTips[cat][rating]}</span>
-        </div>`;
-    }).join('');
-  }
+    function truncateTitle(str, limit) {
+      return (str.length <= limit) ? str : str.slice(0, limit - 3) + '...';
+    }
 
-  function resetScores() {
-    scores = {};
-    document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-    document.getElementById('specificFeedback').innerHTML = '';
-    updateTotal();
-    const ranking = document.getElementById('ranking');
-    ranking.textContent = 'Incomplete';
-    ranking.style.color = '#64748b';
-  }
+    function checkTitleThumbnailSynergy() {
+      // For potential synergy checks; kept minimal
+      const title = document.getElementById('videoTitle').value.toLowerCase();
+      const synergyScore = title ? 1 : 0;
+      // do something if synergyScore < 1, etc.
+    }
 
-  /*========================================================
-    Title Previews
-  ========================================================*/
-  let debounceTimer;
-  function updateTitlePreview() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const title = document.getElementById('videoTitle').value || '';
-      document.getElementById('homeTitle').textContent = truncateTitle(title, HOME_LIMIT);
-      document.getElementById('suggestedTitle').textContent = truncateTitle(title, SUGGESTED_LIMIT);
-      document.getElementById('mobileTitle').textContent = truncateTitle(title, MOBILE_LIMIT);
-    }, 300);
-  }
+    /*========================================================
+      Image Upload & Color Extraction
+    ========================================================*/
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const dataUrl = ev.target.result;
+        document.getElementById('homePreview').src = dataUrl;
+        document.getElementById('suggestedPreview').src = dataUrl;
+        document.getElementById('mobilePreview').src = dataUrl;
+        extractColors(dataUrl);
+        setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
+      };
+      reader.readAsDataURL(file);
+    }
 
-  function truncateTitle(str, limit) {
-    return (str.length <= limit) ? str : str.slice(0, limit - 3) + '...';
-  }
+    function extractColors(imageSrc) {
+      const paletteContainer = document.getElementById('paletteContainer');
+      paletteContainer.innerHTML = 'Detecting palette…';
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.src = imageSrc;
+      img.onload = () => {
+        const colorThief = new ColorThief();
+        try {
+          const palette = colorThief.getPalette(img, 6);
+          paletteContainer.innerHTML = palette.map(color => {
+            const rgb = `rgb(${color[0]},${color[1]},${color[2]})`;
+            return `<div class='color-swatch' style='background-color:${rgb}' title='${rgb}'></div>`;
+          }).join('');
+        } catch {
+          paletteContainer.innerHTML = 'Unable to extract palette.';
+        }
+      };
+    }
 
-  function checkTitleThumbnailSynergy() {
-    // For potential synergy checks; kept minimal
-    const title = document.getElementById('videoTitle').value.toLowerCase();
-    const synergyScore = title ? 1 : 0;
-    // do something if synergyScore < 1, etc.
-  }
+    /*========================================================
+      Brightness & Contrast Check
+    ========================================================*/
+    function checkContrastAndBrightness(imageSrc) {
+      const brightnessMessage = document.getElementById('brightnessMessage');
+      const contrastMessage = document.getElementById('contrastMessage');
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.src = imageSrc;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let total = 0, count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i+1], b = data[i+2];
+          const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+          total += brightness;
+          count++;
+        }
+        const avg = total / count;
+        brightnessMessage.textContent = `Average Brightness: ${Math.round(avg)}/255`;
+        if (avg < 80) {
+          brightnessMessage.textContent += ' (Very Dark).';
+        } else if (avg < 160) {
+          brightnessMessage.textContent += ' (Moderate).';
+        } else {
+          brightnessMessage.textContent += ' (Bright).';
+        }
+        contrastMessage.textContent = 'Check text vs. background colors for ~4.5:1 contrast ratio if text is small.';
+      };
+    }
 
-  /*========================================================
-    Image Upload & Color Extraction
-  ========================================================*/
-  function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const dataUrl = ev.target.result;
-      document.getElementById('homePreview').src = dataUrl;
-      document.getElementById('suggestedPreview').src = dataUrl;
-      document.getElementById('mobilePreview').src = dataUrl;
-      extractColors(dataUrl);
-      setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
-    };
-    reader.readAsDataURL(file);
-  }
+    /*========================================================
+      AI Suggestions (Simulated)
+    ========================================================*/
+    async function getAISuggestions() {
+      const aiDiv = document.getElementById('aiSuggestions');
+      aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
+      setTimeout(() => {
+        const suggestions = [
+          "Add a large, expressive face for immediate emotional hook.",
+          "Emphasize a single word in your text with a contrasting color.",
+          "Use a bold arrow or shape pointing to the focal subject.",
+          "Consider adding a brand watermark or consistent corner element.",
+          "Crop the background to remove any distracting edges."
+        ];
+        aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' +
+          suggestions.map(s => `• ${s}`).join('<br>');
+      }, 2000);
+    }
 
-  function extractColors(imageSrc) {
-    const paletteContainer = document.getElementById('paletteContainer');
-    paletteContainer.innerHTML = 'Detecting palette…';
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.src = imageSrc;
-    img.onload = () => {
-      const colorThief = new ColorThief();
-      try {
-        const palette = colorThief.getPalette(img, 6);
-        paletteContainer.innerHTML = palette.map(color => {
-          const rgb = `rgb(${color[0]},${color[1]},${color[2]})`;
-          return `<div class='color-swatch' style='background-color:${rgb}' title='${rgb}'></div>`;
-        }).join('');
-      } catch {
-        paletteContainer.innerHTML = 'Unable to extract palette.';
-      }
-    };
-  }
+    /*========================================================
+      EXPORT PDF (Uses doc.html)
+    ========================================================*/
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
 
-  /*========================================================
-    Brightness & Contrast Check
-  ========================================================*/
-  function checkContrastAndBrightness(imageSrc) {
-    const brightnessMessage = document.getElementById('brightnessMessage');
-    const contrastMessage = document.getElementById('contrastMessage');
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.src = imageSrc;
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      let total = 0, count = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i], g = data[i+1], b = data[i+2];
-        const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
-        total += brightness;
-        count++;
-      }
-      const avg = total / count;
-      brightnessMessage.textContent = `Average Brightness: ${Math.round(avg)}/255`;
-      if (avg < 80) {
-        brightnessMessage.textContent += ' (Very Dark).';
-      } else if (avg < 160) {
-        brightnessMessage.textContent += ' (Moderate).';
+      // Convert the entire body (or you could target a specific container, e.g. '#feedback')
+      await doc.html(document.body, {
+        x: 10,
+        y: 10,
+        width: 190, // 210mm wide page - 20mm margin = 190
+        windowWidth: document.body.scrollWidth,
+        callback: function (doc) {
+          doc.save('thumbnail-analysis-report.pdf');
+        }
+      });
+    }
+
+    /*========================================================
+      EXPORT PNG (Uses html2canvas screenshot)
+    ========================================================*/
+    async function exportPNG() {
+      // Let’s screenshot the entire body (you can restrict if needed)
+      const canvas = await html2canvas(document.body, {
+        scale: 2
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+
+      // Trigger download
+      const link = document.createElement('a');
+      link.download = 'thumbnail-analysis.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    /*========================================================
+      TEXTAREA AUTO GROW
+    ========================================================*/
+    function autoGrow(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
+    /*========================================================
+      THEME TOGGLE
+    ========================================================*/
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      if (htmlEl.getAttribute('data-theme') === 'dark') {
+        htmlEl.removeAttribute('data-theme');
       } else {
-        brightnessMessage.textContent += ' (Bright).';
+        htmlEl.setAttribute('data-theme', 'dark');
       }
-      contrastMessage.textContent = 'Check text vs. background colors for ~4.5:1 contrast ratio if text is small.';
-    };
-  }
-
-  /*========================================================
-    AI Suggestions (Simulated)
-  ========================================================*/
-  async function getAISuggestions() {
-    const aiDiv = document.getElementById('aiSuggestions');
-    aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
-
-    setTimeout(() => {
-      const suggestions = [
-        "Add a large, expressive face for immediate emotional hook.",
-        "Emphasize a single word in your text with a contrasting color.",
-        "Use a bold arrow or shape pointing to the focal subject.",
-        "Consider adding a brand watermark or consistent corner element.",
-        "Crop the background to remove any distracting edges."
-      ];
-
-      // Show suggestions in the panel
-      aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' +
-        suggestions.map(s => `• ${s}`).join('<br>');
-
-      // ALSO auto-populate AI Feedback Entry
-      const aiFeedbackEl = document.getElementById('artistAIFeedback');
-      aiFeedbackEl.value = suggestions.join('\n');
-      autoGrow(aiFeedbackEl);
-      
-    }, 2000);
-  }
-
-  /*========================================================
-    EXPORT PDF (Uses doc.html)
-  ========================================================*/
-  async function exportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-
-    // We'll only convert the #pdfWrapper (so it doesn't shrink text)
-    const wrapper = document.getElementById('pdfWrapper');
-
-    await doc.html(wrapper, {
-      x: 10,
-      y: 10,
-      width: 190,              // A4 = 210mm - 20mm margin
-      windowWidth: 900,        // match #pdfWrapper so lines wrap properly
-      autoPaging: 'text',      // allow multiple pages
-      // optional: html2canvas: { scale: 2 }, // if you want sharper images
-      callback: function (doc) {
-        doc.save('thumbnail-analysis-report.pdf');
-      }
-    });
-  }
-
-  /*========================================================
-    EXPORT PNG (Uses html2canvas screenshot)
-  ========================================================*/
-  async function exportPNG() {
-    // We'll screenshot the same #pdfWrapper
-    const wrapper = document.getElementById('pdfWrapper');
-    const canvas = await html2canvas(wrapper, {
-      scale: 2
-    });
-    const dataUrl = canvas.toDataURL('image/png');
-
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = 'thumbnail-analysis.png';
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  /*========================================================
-    TEXTAREA AUTO GROW
-  ========================================================*/
-  function autoGrow(el) {
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-  }
-
-  /*========================================================
-    THEME TOGGLE
-  ========================================================*/
-  function toggleTheme() {
-    const htmlEl = document.documentElement;
-    if (htmlEl.getAttribute('data-theme') === 'dark') {
-      htmlEl.removeAttribute('data-theme');
-    } else {
-      htmlEl.setAttribute('data-theme', 'dark');
     }
-  }
 
-  /*========================================================
-    LIGHTBOX
-  ========================================================*/
-  function enlargeImage(imgId) {
-    const src = document.getElementById(imgId).src;
-    document.getElementById('modalImg').src = src;
-    document.getElementById('imgModal').classList.add('show');
-  }
-  function closeModal() {
-    document.getElementById('imgModal').classList.remove('show');
-  }
-</script>
+    /*========================================================
+      LIGHTBOX
+    ========================================================*/
+    function enlargeImage(imgId) {
+      const src = document.getElementById(imgId).src;
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imgModal').classList.add('show');
+    }
+    function closeModal() {
+      document.getElementById('imgModal').classList.remove('show');
+    }
+  </script>
 </body>
 </html>
