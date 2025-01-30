@@ -296,17 +296,32 @@
     .feedback-panel h3 {
       margin-top: 0;
     }
+
+    /* Layout for improvement items */
+    #specificFeedback {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
     .feedback-item {
-      margin: 0.4rem 0;
       padding: 0.8rem;
       border-radius: var(--radius);
       background: rgba(126, 34, 206, 0.07);
+      border: 1px solid rgba(126, 34, 206, 0.15);
     }
+    .feedback-item strong {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
     .ai-suggestions {
       margin-top: 1rem;
       padding: 1rem;
       border-radius: var(--radius);
       background: rgba(236, 72, 153, 0.07);
+      border: 1px solid rgba(236,72,153, 0.2);
     }
     .keyword {
       background: rgba(236, 72, 153, 0.1);
@@ -330,17 +345,17 @@
       max-width: 600px;
       min-height: 80px;
       padding: 0.8rem;
-      /* Removed resize:none; to ensure autoExpand + capturing works well */
-      resize: none;
+      /* Allow vertical resize so multi-line text is fully visible. */
+      resize: vertical;
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
       border: 2px solid #e2e8f0;
       border-radius: 8px;
-      /* Ensure content is fully visible in PDF and PNG exports */
+      /* Ensure typed line breaks are preserved. */
       white-space: pre-wrap;
       word-wrap: break-word;
       overflow-wrap: break-word;
-      overflow: hidden;
+      overflow: visible;
       transition: var(--transition);
     }
     textarea:focus {
@@ -855,12 +870,17 @@
       feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
         const rating = scores[cat];
         // Attempt to get category name from the table header
-        const catHeader = document.querySelector(`[data-category="${cat}"]`);
+        const catHeader = document.querySelector(`[data-category=\"${cat}\"]`);
         let categoryName = '';
         if (catHeader && catHeader.classList.contains('category-header')) {
           categoryName = catHeader.textContent.trim();
         }
-        return `\n          <div class="feedback-item">\n            <strong>${categoryName}</strong>:\n            <span>${improvementTips[cat][rating]}</span>\n          </div>`;
+        return (
+          `<div class="feedback-item">
+             <strong>${categoryName}</strong>
+             <span>${improvementTips[cat][rating]}</span>
+           </div>`
+        );
       }).join('');
     }
 
@@ -893,7 +913,7 @@
     }
 
     function checkTitleThumbnailSynergy() {
-      // Potential synergy checks; minimal demo
+      // Potential synergy checks; minimal example
       const title = document.getElementById('videoTitle').value.toLowerCase();
       const synergyScore = title ? 1 : 0;
       // Additional logic if needed
