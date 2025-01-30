@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thumbnail Analyzer Pro+ (Final)</title>
+  <title>Thumbnail Analyzer Pro+ (Improved Export)</title>
 
   <!-- Roboto Font (Used by YouTube) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
 
   <!-- PDF export (via doc.html) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  
+
   <style>
     :root {
       /* Colors & Theme Variables */
@@ -330,18 +330,18 @@
       max-width: 600px;
       min-height: 80px;
       padding: 0.8rem;
+      /* Removed resize:none; to ensure autoExpand + capturing works well */
       resize: none;
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
       border: 2px solid #e2e8f0;
       border-radius: 8px;
-      overflow: visible;
-      transition: var(--transition);
-
-      /* Critical for preserving line breaks in PDF and on screen */
+      /* Ensure content is fully visible in PDF and PNG exports */
       white-space: pre-wrap;
       word-wrap: break-word;
       overflow-wrap: break-word;
+      overflow: hidden;
+      transition: var(--transition);
     }
     textarea:focus {
       outline: none;
@@ -448,7 +448,7 @@
       <div class="total-score">Score: <span id="total">0</span>/40</div>
       <div class="status-indicator" id="ranking">Incomplete</div>
     </div>
-    
+
     <div class="header-right">
       <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
       <button class="btn" onclick="resetScores()">🔄 Reset</button>
@@ -854,12 +854,13 @@
       const feedbackDiv = document.getElementById('specificFeedback');
       feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
         const rating = scores[cat];
-        const categoryName = document.querySelector(`[data-category="${cat}"].category-header`)?.textContent || '';
-        return `
-          <div class="feedback-item">
-            <strong>${categoryName}</strong>:
-            <span>${improvementTips[cat][rating]}</span>
-          </div>`;
+        // Attempt to get category name from the table header
+        const catHeader = document.querySelector(`[data-category="${cat}"]`);
+        let categoryName = '';
+        if (catHeader && catHeader.classList.contains('category-header')) {
+          categoryName = catHeader.textContent.trim();
+        }
+        return `\n          <div class="feedback-item">\n            <strong>${categoryName}</strong>:\n            <span>${improvementTips[cat][rating]}</span>\n          </div>`;
       }).join('');
     }
 
@@ -892,10 +893,10 @@
     }
 
     function checkTitleThumbnailSynergy() {
-      // For potential synergy checks; kept minimal
+      // Potential synergy checks; minimal demo
       const title = document.getElementById('videoTitle').value.toLowerCase();
       const synergyScore = title ? 1 : 0;
-      // do something if synergyScore < 1, etc.
+      // Additional logic if needed
     }
 
     /*========================================================
@@ -998,12 +999,16 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
 
-      // Convert the entire body (or you could target a specific container, e.g. '#feedback')
+      // To better capture expanded text, ensure autoGrow has set all textareas.
+      document.querySelectorAll('textarea').forEach(autoGrow);
+
+      // Convert the entire body. The windowWidth helps with scaling.
       await doc.html(document.body, {
         x: 10,
         y: 10,
         width: 190, // 210mm wide page - 20mm margin = 190
         windowWidth: document.body.scrollWidth,
+        autoPaging: 'text',
         callback: function (doc) {
           doc.save('thumbnail-analysis-report.pdf');
         }
@@ -1014,9 +1019,13 @@
       EXPORT PNG (Uses html2canvas screenshot)
     ========================================================*/
     async function exportPNG() {
-      // Let’s screenshot the entire body (you can restrict if needed)
+      // Let’s auto-expand all textareas first so content is visible.
+      document.querySelectorAll('textarea').forEach(autoGrow);
+
       const canvas = await html2canvas(document.body, {
-        scale: 2
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
       });
       const dataUrl = canvas.toDataURL('image/png');
 
