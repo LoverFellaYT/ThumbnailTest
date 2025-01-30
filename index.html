@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thumbnail Analyzer Pro+ (Improved Export)</title>
+  <title>Thumbnail Analyzer Pro+ (ContentEditable)</title>
 
   <!-- Roboto Font (Used by YouTube) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -329,7 +329,7 @@
       border-radius: 4px;
     }
 
-    /* TEXTAREA FOR FEEDBACK */
+    /* CONTENTEDITABLE FOR FEEDBACK */
     .manual-inputs {
       margin-top: 1rem;
       display: flex;
@@ -340,28 +340,30 @@
       font-weight: 600;
       margin-bottom: 0.25rem;
     }
-    textarea {
-      width: 100%;
-      max-width: 600px;
+
+    .contentedit {
       min-height: 80px;
-      padding: 0.8rem;
-      /* Allow vertical resize so multi-line text is fully visible. */
-      resize: vertical;
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
       border: 2px solid #e2e8f0;
       border-radius: 8px;
-      /* Ensure typed line breaks are preserved. */
+      padding: 0.8rem;
+      width: 100%;
+      max-width: 600px;
       white-space: pre-wrap;
       word-wrap: break-word;
       overflow-wrap: break-word;
-      overflow: visible;
+      resize: vertical;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
       transition: var(--transition);
     }
-    textarea:focus {
+    .contentedit:focus {
       outline: none;
       border-color: var(--primary-light);
       box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+    }
+    .contentedit:empty::before {
+      content: attr(data-placeholder);
+      color: #9ca3af;
     }
 
     /* INSIGHTS */
@@ -678,19 +680,21 @@
         <div class="manual-inputs">
           <div>
             <label for="humanFeedback" class="flex-label">Human Feedback</label>
-            <textarea
+            <div
               id="humanFeedback"
-              placeholder="Enter your human feedback here..."
-              oninput="autoGrow(this)"
-            ></textarea>
+              class="contentedit"
+              contenteditable="true"
+              data-placeholder="Enter your human feedback here..."
+            ></div>
           </div>
           <div>
             <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
-            <textarea
+            <div
               id="artistAIFeedback"
-              placeholder="Paste AI feedback or notes here..."
-              oninput="autoGrow(this)"
-            ></textarea>
+              class="contentedit"
+              contenteditable="true"
+              data-placeholder="Paste AI feedback or notes here..."
+            ></div>
           </div>
         </div>
       </div>
@@ -870,16 +874,13 @@
       feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
         const rating = scores[cat];
         // Attempt to get category name from the table header
-        const catHeader = document.querySelector(`[data-category=\"${cat}\"]`);
+        const catHeader = document.querySelector(`[data-category="${cat}"]`);
         let categoryName = '';
         if (catHeader && catHeader.classList.contains('category-header')) {
           categoryName = catHeader.textContent.trim();
         }
         return (
-          `<div class="feedback-item">
-             <strong>${categoryName}</strong>
-             <span>${improvementTips[cat][rating]}</span>
-           </div>`
+          `<div class="feedback-item">\n             <strong>${categoryName}</strong>\n             <span>${improvementTips[cat][rating]}</span>\n           </div>`
         );
       }).join('');
     }
@@ -1019,10 +1020,9 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
 
-      // To better capture expanded text, ensure autoGrow has set all textareas.
-      document.querySelectorAll('textarea').forEach(autoGrow);
+      // We'll simply render the entire body using doc.html
+      // The content inside contentEditable divs will appear as multiline.
 
-      // Convert the entire body. The windowWidth helps with scaling.
       await doc.html(document.body, {
         x: 10,
         y: 10,
@@ -1039,9 +1039,7 @@
       EXPORT PNG (Uses html2canvas screenshot)
     ========================================================*/
     async function exportPNG() {
-      // Let’s auto-expand all textareas first so content is visible.
-      document.querySelectorAll('textarea').forEach(autoGrow);
-
+      // The contentEditable divs should be captured as multiple lines.
       const canvas = await html2canvas(document.body, {
         scale: 2,
         useCORS: true,
@@ -1056,15 +1054,6 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
-
-    /*========================================================
-      TEXTAREA AUTO GROW
-    ========================================================*/
-    function autoGrow(el) {
-      if (!el) return;
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
     }
 
     /*========================================================
