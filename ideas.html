@@ -524,18 +524,69 @@
   <script>
     /***************************************************
      * Improvement Tips for Rubric (10 Categories)
+     * Each recommendation now provides actionable steps.
      ***************************************************/
     const improvementTips = {
-      0: {1: "Add an unexpected twist to your concept.", 2: "Combine two popular ideas for added intrigue.", 3: "Introduce a mystery element that hooks curiosity.", 4: "Your idea is exceptionally original!"},
-      1: {1: "Outline a clear beginning, middle, and end.", 2: "Establish progression milestones.", 3: "Build a dramatic arc for transformation.", 4: "Perfect structure – your idea evolves powerfully!"},
-      2: {1: "Include a clear call-to-action.", 2: "Pose a provocative question to spark debate.", 3: "Design a shareable moment.", 4: "This idea is built-in for virality!"},
-      3: {1: "Consider series potential.", 2: "Show character continuity.", 3: "Incorporate an unresolved mystery.", 4: "This idea begs for binge-watching!"},
-      4: {1: "Add a visual spectacle.", 2: "Include a surprising element.", 3: "Create that 'holy cow' moment.", 4: "Multiple WOW factors present!"},
-      5: {1: "Include a personal anecdote.", 2: "Showcase triumphs or failures.", 3: "Build suspense.", 4: "This will take viewers on an emotional rollercoaster!"},
-      6: {1: "Research current trends.", 2: "Incorporate trending audio or memes.", 3: "Anticipate the next big trend.", 4: "Your idea is trend-setting!"},
-      7: {1: "Use a popular meme template.", 2: "Craft a quotable moment.", 3: "Include an inside joke.", 4: "This idea has built-in replay value!"},
-      8: {1: "Analyze your target demographics.", 2: "Check community polls.", 3: "Align with top-performing content.", 4: "Perfect audience match!"},
-      9: {1: "Simplify production needs.", 2: "Find cost-effective solutions.", 3: "Plan resource allocation carefully.", 4: "Optimal execution with high ROI!"}
+      0: {
+        1: "Your idea appears too generic. Brainstorm by listing 'what if' scenarios to add an unexpected twist. Explore examples from various genres to find unconventional angles.",
+        2: "There’s some uniqueness here. Try merging two unrelated concepts or subverting a common trope. Sketch out a mind-map to see new connections.",
+        3: "Great originality! Enhance the concept by refining details and establishing a clear hook. Consider early surprises that capture attention.",
+        4: "Outstanding originality! Focus on fine-tuning every element. Develop detailed visuals and consider how innovative storytelling can amplify the concept."
+      },
+      1: {
+        1: "The idea lacks clear progression. Outline a basic three-act structure (beginning, middle, end) and consider using storyboards to visualize the flow.",
+        2: "The narrative shows growth but needs depth. Identify key turning points and add tension by introducing obstacles and conflicts.",
+        3: "Solid progression. Elevate it by incorporating dynamic character arcs and unexpected plot twists that deepen the narrative.",
+        4: "Excellent progression! Enhance by mapping out subplots and secondary conflicts that enrich the storyline and maintain momentum."
+      },
+      2: {
+        1: "The concept doesn’t encourage interaction. Introduce open-ended questions or dilemmas that invite viewers to share their thoughts.",
+        2: "There is some engagement potential. Consider adding relatable characters or dilemmas that prompt audience discussion, perhaps through social media challenges.",
+        3: "Good engagement. Boost it by integrating interactive segments—think polls, Q&As, or live feedback moments.",
+        4: "High engagement potential! Optimize by designing interactive storytelling techniques and call-to-action moments that directly involve your audience."
+      },
+      3: {
+        1: "The idea feels like a one-off. Brainstorm ways to expand it into a series, maybe by introducing ongoing mysteries or unresolved storylines.",
+        2: "There’s a teaser quality but it lacks depth. Develop cliffhangers or episodic arcs that compel viewers to return for more.",
+        3: "Solid series potential. Plan character development and overarching storylines that can evolve over multiple episodes.",
+        4: "Outstanding for series development! Consider creating a detailed episodic roadmap and weaving subplots that maintain long-term interest."
+      },
+      4: {
+        1: "The WOW factor is minimal. Experiment with creative visuals or narrative twists that defy expectations, such as surprise cameos or plot reversals.",
+        2: "Some impressive moments are present. Amplify these by emphasizing high-impact visuals or sound design that create memorable moments.",
+        3: "Strong WOW moments! Enhance them by polishing your standout elements through innovative editing and creative production techniques.",
+        4: "Incredible WOW factor! Keep pushing boundaries—use avant-garde techniques and challenge conventional storytelling to leave viewers amazed."
+      },
+      5: {
+        1: "The emotional impact is flat. Introduce personal anecdotes, real stakes, or high-drama moments that evoke empathy.",
+        2: "There's a hint of emotion. Deepen the impact by exploring character vulnerabilities and conflicts that touch on universal themes.",
+        3: "A powerful emotional journey. Enhance by adding dynamic tone shifts and moments of genuine human connection.",
+        4: "Deeply moving and impactful! Refine by injecting authenticity and real-life stakes, ensuring every emotional beat is deliberate and resonant."
+      },
+      6: {
+        1: "Your idea isn’t tapping into trends. Research emerging topics and think about how current events or cultural shifts can inform your concept.",
+        2: "The idea loosely aligns with trends. Strengthen it by integrating popular elements with your unique twist—maybe reference viral challenges or memes.",
+        3: "Good trend alignment. Forecast upcoming trends and subtly weave them into your narrative to give your content a timely edge.",
+        4: "Trend-setting! Continue to innovate by blending current trends with original concepts that could redefine your genre."
+      },
+      7: {
+        1: "The idea isn’t very shareable. Reflect on what makes content go viral—emotion, surprise, and relatability—and incorporate these elements.",
+        2: "There’s potential for shareability. Create memorable, quotable moments and striking visuals that encourage viewers to spread the word.",
+        3: "Highly shareable concept. Optimize by ensuring your content is easily digestible and formatted for social sharing, with clear takeaways.",
+        4: "Exceptionally shareable! Consider adding interactive challenges or call-to-actions that actively invite your audience to share and engage."
+      },
+      8: {
+        1: "The idea might be too generic for your audience. Revisit your audience research and tailor the content to their interests and language.",
+        2: "There’s some audience alignment. Strengthen it by integrating community feedback and referencing topics that your viewers are passionate about.",
+        3: "Good alignment with your audience. Fine-tune by using familiar references, humor, or language that resonates directly with your demographic.",
+        4: "Perfect alignment! Engage with your community to co-create elements of the narrative, ensuring your idea remains both relevant and authentic."
+      },
+      9: {
+        1: "The execution appears impractical. Simplify the concept and focus on what can realistically be produced given your resources.",
+        2: "Execution is challenging. Look for ways to streamline production—consider using affordable tools, outsourcing certain elements, or planning a minimalistic approach.",
+        3: "Practical with clear ROI. Enhance by mapping out a detailed production plan, including timelines, budgets, and contingency strategies.",
+        4: "Effortless execution with high ROI! Consider innovative production techniques or strategic collaborations that can elevate your final product without overextending resources."
+      }
     };
     
     /***************************************************
@@ -545,12 +596,33 @@
     let revisions = [];
     let saveDraftTimeout;
     
+    /***************************************************
+     * Expanded Random Prompts for Creative Inspiration
+     ***************************************************/
     const prompts = [
-      "What if you combined [trend1] with [unexpected element]?",
-      "How would [famous person] approach [common problem]?",
-      "The ultimate challenge: [difficult task] in 24 hours",
-      "Mystery box challenge with [twist]",
-      "Testing viral [hack/myth] with a scientific approach"
+      "What if you combined an unexpected historical event with futuristic technology?",
+      "Imagine a world where your video genre is completely inverted—what fresh perspective emerges?",
+      "How could you tell your story if you started at the climax and unraveled the events backwards?",
+      "What if you introduced a mysterious character whose secret changes everything?",
+      "Imagine blending two completely different genres—what unique narrative could form?",
+      "What would your story look like if told by an unreliable narrator with hidden motives?",
+      "Consider a twist where the villain becomes the hero. How would that reshape your narrative?",
+      "What if your content involved interactive viewer choices that shape the storyline in real time?",
+      "How can you incorporate elements of mystery and suspense to hook your audience from the start?",
+      "What if you used a non-linear narrative to reveal different perspectives on the same event?",
+      "Imagine your idea as a serialized mystery—what cliffhanger would you end each episode with?",
+      "How would your concept change if you mixed reality with surreal, dream-like sequences?",
+      "What if your video opened with a controversial statement and then built credibility through evidence?",
+      "Imagine your content as a journey of transformation. What key stages would your character experience?",
+      "How could you incorporate user-generated content to make your narrative more dynamic and relatable?",
+      "What if you narrated your idea from an unexpected perspective, such as an inanimate object?",
+      "Consider a scenario where every decision has a visible consequence. How would you structure that?",
+      "How can you integrate a live element into your content to create authentic real-time engagement?",
+      "What if you challenged a common stereotype or myth—how would you flip the narrative?",
+      "Imagine your narrative as a puzzle with clues scattered throughout. How would you arrange them?",
+      "How would you use visual metaphors to add layers of meaning to your concept?",
+      "What if you reimagined a familiar story in a futuristic setting with a radical twist?",
+      "Consider a scenario where technology and raw emotion collide—how would that shape your story?"
     ];
     
     document.addEventListener('DOMContentLoaded', () => {
