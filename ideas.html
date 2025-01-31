@@ -1,543 +1,1100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Idea Forge Pro | Viral Content Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        :root {
-            --primary: #10B981;
-            --secondary: #059669;
-            --accent: #F59E0B;
-            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            --glass: rgba(255, 255, 255, 0.98);
-            --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: 16px;
-            --text-primary: #1F2937;
-            --text-secondary: #4B5563;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thumbnail Analyzer Pro+ (ContentEditable)</title>
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-            background: #F3F4F6;
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
+  <!-- Roboto Font (Used by YouTube) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-        .analyzer-header {
-            background: var(--glass);
-            padding: 2rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: sticky;
-            top: 1rem;
-            z-index: 100;
-        }
+  <!-- Optional: Color Thief for palette extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 
-        .score-display {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-        }
+  <!-- For PNG export only -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
-        .total-score {
-            font-size: 1.75rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
+  <!-- PDF export (via doc.html) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-        .controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
+  <style>
+    :root {
+      /* Colors & Theme Variables */
+      --primary-light: #7e22ce; /* Vibrant purple */
+      --accent-light: #ec4899;
+      --bg-light: #f9fafb;
+      --text-light: #1e293b;
+      --panel-light: rgba(255, 255, 255, 0.96);
+      --border-light: rgba(255, 255, 255, 0.2);
 
-        button {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.15);
-        }
+      --primary-dark: #a78bfa;
+      --accent-dark: #ec4899;
+      --bg-dark: #1f1f1f;
+      --text-dark: #f3f3f3;
+      --panel-dark: rgba(18, 18, 18, 0.98);
+      --border-dark: rgba(255, 255, 255, 0.2);
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-        }
+      --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+      --transition: all 0.3s ease;
+      --radius: 14px;
+      --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+      --gradient-dark: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
 
-        .brainstorm-section {
-            background: var(--glass);
-            padding: 2rem;
-            border-radius: var(--radius);
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+      /* Table & Title Colors */
+      --table-cell-bg-light: rgba(255, 255, 255, 0.85);
+      --table-cell-bg-dark: rgba(30, 30, 30, 0.85);
+      --yt-title-color-light: #030303;
+      --yt-title-color-dark: #ffffff;
+    }
 
-        .brainstorm-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
+    /* Default (light) theme */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: var(--transition);
+    }
 
-        .brainstorm-header h2 {
-            margin: 0;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .glass-panel {
+      background: var(--panel-light);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      transition: var(--transition);
+      padding: 1rem;
+    }
 
-        #ideaInput {
-            width: 100%;
-            height: 150px;
-            padding: 1.5rem;
-            border: 2px solid #E5E7EB;
-            border-radius: 12px;
-            margin: 1rem 0;
-            font-size: 1rem;
-            resize: vertical;
-            transition: var(--transition);
-            background: rgba(249, 250, 251, 0.8);
-        }
+    html[data-theme="dark"] {
+      --bg-light: var(--bg-dark);
+      --text-light: var(--text-dark);
+      --panel-light: var(--panel-dark);
+      --border-light: var(--border-dark);
+      --gradient-light: var(--gradient-dark);
+      --primary-light: var(--primary-dark);
+      --accent-light: var(--accent-dark);
+      --table-cell-bg-light: var(--table-cell-bg-dark);
+      --yt-title-color-light: var(--yt-title-color-dark);
+    }
 
-        #ideaInput:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
-        }
+    /* HEADER */
+    .analyzer-header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .total-score {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: var(--gradient-light);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: var(--transition);
+    }
+    .status-indicator {
+      font-weight: 600;
+    }
+    .header-right {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: var(--gradient-light);
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
+      opacity: 0.9;
+    }
 
-        .prompt-generator {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: rgba(245, 158, 11, 0.05);
-            border-radius: var(--radius);
-            border: 1px solid rgba(245, 158, 11, 0.1);
-        }
+    /* MAIN CONTAINER */
+    .analyzer-container {
+      display: flex;
+      max-width: 1300px;
+      margin: 0 auto;
+      gap: 2rem;
+      align-items: flex-start;
+      padding: 0 2rem 2rem;
+    }
 
-        .rubric-table {
-            background: var(--glass);
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            box-shadow: var(--shadow);
-            overflow-x: auto;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    /* SIDEBAR */
+    .sidebar {
+      position: sticky;
+      top: 7.8rem;
+      width: 340px;
+      flex-shrink: 0;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-section {
+      padding: 1.5rem;
+    }
+    .preview-section h2 {
+      margin: 0 0 1rem 0;
+    }
+    .title-input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: var(--transition);
+      margin-bottom: 0.75rem;
+    }
+    .title-input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+    }
+    .upload-container {
+      margin-bottom: 1rem;
+    }
+    /* Drag-and-Drop styling for upload area */
+    .thumbnail-wrap {
+      background: #f1f5f9;
+      border: 2px dashed rgba(126, 34, 206, 0.2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .thumbnail-wrap.dragover {
+      border-color: var(--accent-light);
+      background: rgba(236,72,153, 0.05);
+    }
+    .youtube-thumb {
+      display: block;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    .youtube-title {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      margin-top: 0.5rem;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal;
+      color: var(--yt-title-color-light);
+    }
 
-        .modern-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            min-width: 800px;
-        }
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    .rubric-table,
+    .feedback-panel,
+    .auto-insights,
+    .resources {
+      margin: 0;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    /* TABLE */
+    .rubric-table {
+      overflow-x: auto;
+    }
+    .modern-table {
+      width: 100%;
+      min-width: 800px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .modern-table thead th {
+      background: var(--gradient-light);
+      color: #fff;
+      padding: 1.2rem;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+    .modern-table tbody td {
+      padding: 1.2rem;
+      border-bottom: 1px solid rgba(224, 231, 255, 0.3);
+      transition: var(--transition);
+      vertical-align: top;
+      min-width: 160px;
+      cursor: pointer;
+      background: var(--table-cell-bg-light);
+    }
+    .category-header {
+      font-weight: 600;
+      background: rgba(126, 34, 206, 0.1);
+      position: sticky;
+      left: 0;
+      min-width: 180px;
+      backdrop-filter: blur(6px);
+      border-right: 1px solid rgba(224, 231, 255, 0.3);
+      z-index: 9;
+      /* Added tooltips for extra guidance */
+      cursor: help;
+    }
+    .modern-table td:not(.category-header):hover {
+      background: rgba(224, 231, 255, 0.3);
+      transform: scale(1.02);
+    }
+    .selected {
+      background: rgba(224, 231, 255, 0.5) !important;
+      box-shadow: inset 4px 0 0 var(--primary-light);
+      transform: scale(1.02);
+    }
 
-        .modern-table th {
-            background: var(--gradient);
-            color: white;
-            padding: 1.25rem;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(10px);
-        }
+    /* FEEDBACK */
+    .feedback-panel h3 {
+      margin-top: 0;
+    }
+    #specificFeedback {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .feedback-item {
+      padding: 0.8rem;
+      border-radius: var(--radius);
+      background: rgba(126, 34, 206, 0.07);
+      border: 1px solid rgba(126, 34, 206, 0.15);
+    }
+    .feedback-item strong {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .ai-suggestions {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: var(--radius);
+      background: rgba(236, 72, 153, 0.07);
+      border: 1px solid rgba(236,72,153, 0.2);
+    }
+    .keyword {
+      background: rgba(236, 72, 153, 0.1);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
 
-        .modern-table td {
-            padding: 1.25rem;
-            background: rgba(255, 255, 255, 0.85);
-            border-bottom: 1px solid rgba(229, 231, 235, 0.3);
-            transition: var(--transition);
-            vertical-align: top;
-            min-width: 200px;
-            cursor: pointer;
-        }
+    /* CONTENTEDITABLE FOR FEEDBACK */
+    .manual-inputs {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .flex-label {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .contentedit {
+      min-height: 80px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.8rem;
+      width: 100%;
+      max-width: 600px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      resize: vertical;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+    }
+    .contentedit:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+    }
+    .contentedit:empty::before {
+      content: attr(data-placeholder);
+      color: #9ca3af;
+    }
+    .clear-btn {
+      background: #f87171;
+      border: none;
+      color: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      align-self: flex-start;
+    }
+    .clear-btn:hover {
+      background: #ef4444;
+    }
 
-        .category-header {
-            font-weight: 600;
-            background: rgba(16, 185, 129, 0.08);
-            position: sticky;
-            left: 0;
-            min-width: 180px;
-            backdrop-filter: blur(5px);
-            border-right: 1px solid rgba(229, 231, 235, 0.3);
-        }
+    /* INSIGHTS */
+    .palette-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .color-swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+    }
+    .insight-message {
+      margin-top: 0.5rem;
+    }
 
-        .modern-table td:not(.category-header):hover {
-            background: rgba(209, 250, 229, 0.3);
-            transform: scale(1.02);
-        }
+    /* RESOURCES */
+    .resources h3 {
+      margin-top: 0;
+    }
+    .resources ul {
+      margin: 1rem 0 0 1.5rem;
+    }
 
-        .selected {
-            background: rgba(209, 250, 229, 0.5) !important;
-            box-shadow: inset 4px 0 0 var(--primary);
-            transform: scale(1.02);
-        }
+    /* MODAL (LIGHTBOX & HOW-TO) */
+    .modal-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1rem;
+    }
+    .modal-bg.show {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      background: #fff;
+      border-radius: var(--radius);
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+    .modal-content img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      background: rgba(255,255,255,1);
+    }
 
-        .feedback-panel, .resources {
-            background: var(--glass);
-            padding: 2rem;
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .ai-suggestions {
-            background: rgba(245, 158, 11, 0.05);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-top: 1.5rem;
-            border: 1px solid rgba(245, 158, 11, 0.1);
-        }
-
-        .spark-icon {
-            width: 24px;
-            height: 24px;
-            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
-        }
-
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 0 1rem;
-            }
-            .modern-table th, .modern-table td {
-                padding: 1rem;
-                min-width: 160px;
-            }
-            .category-header {
-                min-width: 140px;
-            }
-        }
-    </style>
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      .analyzer-container {
+        flex-direction: column;
+        padding: 0 1rem 2rem;
+      }
+      .sidebar {
+        position: static;
+        width: 100%;
+        top: auto;
+      }
+      .main-content {
+        margin-top: 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="analyzer-header">
-        <div class="score-display">
-            <div class="total-score">Score: <span id="total">0</span>/40</div>
-            <div class="status-indicator" id="ranking">Incomplete</div>
+  <!-- HEADER -->
+  <div class="analyzer-header glass-panel">
+    <div class="header-left">
+      <div class="total-score">Score: <span id="total">0</span>/40</div>
+      <div class="status-indicator" id="ranking">Incomplete</div>
+    </div>
+    <div class="header-right">
+      <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
+      <button class="btn" onclick="resetScores()">🔄 Reset</button>
+      <button class="btn" onclick="exportPDF()">📥 Export PDF</button>
+      <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
+      <button class="btn" onclick="getAISuggestions()">🤖 AI Help</button>
+      <button class="btn" onclick="openHowTo()">❓ How To</button>
+    </div>
+  </div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="analyzer-container">
+    <!-- SIDEBAR (left) -->
+    <div class="sidebar glass-panel">
+      <div class="preview-section">
+        <h2>Video Title &amp; Thumbnails</h2>
+        <input
+          type="text"
+          id="videoTitle"
+          class="title-input"
+          placeholder="Enter video title here..."
+        />
+        <div class="upload-container">
+          <button class="btn" onclick="document.getElementById('thumbnailUpload').click()">
+            📁 Upload Image
+          </button>
+          <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
+          <p style="font-size:0.9rem; color:#555;">Or drag & drop image below</p>
         </div>
-        <div class="controls">
-            <button onclick="resetScores()">🔄 Reset Scores</button>
-            <button onclick="exportPDF()">📥 Export Report</button>
-            <button onclick="getAISuggestions()">🤖 AI Suggestions</button>
+        <!-- Drag & Drop Area -->
+        <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" 
+             ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+          <img
+            id="homePreview"
+            class="youtube-thumb"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+            alt="Home Preview"
+            width="320"
+            height="180"
+          />
         </div>
+        <div class="previews-container">
+          <!-- HOME -->
+          <div class="preview-box">
+            <div class="preview-label">YouTube Home</div>
+            <div class="thumbnail-wrap" style="width:210px; height:118px;" onclick="enlargeImage('homePreview')">
+              <img
+                id="homePreviewSmall"
+                class="youtube-thumb"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                alt="Home Preview"
+                width="210"
+                height="118"
+              />
+            </div>
+            <div id="homeTitle" class="youtube-title" style="max-width:210px;"></div>
+          </div>
+
+          <!-- SUGGESTED -->
+          <div class="preview-box">
+            <div class="preview-label">Suggested Video</div>
+            <div class="thumbnail-wrap" style="width:168px; height:94px;" onclick="enlargeImage('suggestedPreview')">
+              <img
+                id="suggestedPreview"
+                class="youtube-thumb"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                alt="Suggested Preview"
+                width="168"
+                height="94"
+              />
+            </div>
+            <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
+          </div>
+
+          <!-- MOBILE -->
+          <div class="preview-box">
+            <div class="preview-label">Mobile View</div>
+            <div class="thumbnail-wrap" style="width:320px; height:180px;" onclick="enlargeImage('mobilePreview')">
+              <img
+                id="mobilePreview"
+                class="youtube-thumb"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                alt="Mobile Preview"
+                width="320"
+                height="180"
+              />
+            </div>
+            <div id="mobileTitle" class="youtube-title" style="max-width:320px;"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="brainstorm-section">
-        <div class="brainstorm-header">
-            <svg class="spark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            <h2>Idea Incubator</h2>
-        </div>
-        <textarea id="ideaInput" placeholder="✨ Describe your video concept here..."></textarea>
-        
-        <div class="prompt-generator">
-            <button onclick="generatePrompt()">🎲 Random Prompt</button>
-            <div id="randomPrompt" class="idea-prompt"></div>
-        </div>
-    </div>
-
-    <div class="rubric-table">
+    <!-- MAIN CONTENT (right) -->
+    <div class="main-content">
+      <!-- Rubric Table -->
+      <div class="rubric-table glass-panel">
         <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Good (1)</th>
-                    <th>Great (2)</th>
-                    <th>Excellent (3)</th>
-                    <th>Outstanding (4)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Originality & Concept -->
-                <tr>
-                    <td class="category-header">Originality & Concept</td>
-                    <td data-category="0" data-rating="1">Basic, generic idea</td>
-                    <td data-category="0" data-rating="2">Some intrigue but needs refinement</td>
-                    <td data-category="0" data-rating="3">Engaging with clear potential</td>
-                    <td data-category="0" data-rating="4">Exceptionally bold & entertaining</td>
-                </tr>
-
-                <!-- Transformation/Progression -->
-                <tr>
-                    <td class="category-header">Transformation/Progression</td>
-                    <td data-category="1" data-rating="1">No clear growth</td>
-                    <td data-category="1" data-rating="2">Mild progression</td>
-                    <td data-category="1" data-rating="3">Clear transformation</td>
-                    <td data-category="1" data-rating="4">Dramatic, impactful progression</td>
-                </tr>
-
-                <!-- Engagement Potential -->
-                <tr>
-                    <td class="category-header">Engagement Potential</td>
-                    <td data-category="2" data-rating="1">No interaction triggers</td>
-                    <td data-category="2" data-rating="2">Might get likes</td>
-                    <td data-category="2" data-rating="3">Encourages interaction</td>
-                    <td data-category="2" data-rating="4">High engagement factor</td>
-                </tr>
-
-                <!-- Binge & Algorithm Fuel -->
-                <tr>
-                    <td class="category-header">Binge & Algorithm Fuel</td>
-                    <td data-category="3" data-rating="1">One-off video</td>
-                    <td data-category="3" data-rating="2">Basic teaser</td>
-                    <td data-category="3" data-rating="3">Multi-part cliffhanger</td>
-                    <td data-category="3" data-rating="4">Unfinished business hook</td>
-                </tr>
-
-                <!-- WOW Factor -->
-                <tr>
-                    <td class="category-header">WOW Factor</td>
-                    <td data-category="4" data-rating="1">Standard presentation</td>
-                    <td data-category="4" data-rating="2">Some cool moments</td>
-                    <td data-category="4" data-rating="3">Standout moments</td>
-                    <td data-category="4" data-rating="4">Mind-blowing moments</td>
-                </tr>
-
-                <!-- Emotional Impact -->
-                <tr>
-                    <td class="category-header">Emotional Impact</td>
-                    <td data-category="5" data-rating="1">Flat tone</td>
-                    <td data-category="5" data-rating="2">Occasional laughs</td>
-                    <td data-category="5" data-rating="3">Emotional rollercoaster</td>
-                    <td data-category="5" data-rating="4">Visceral reactions</td>
-                </tr>
-
-                <!-- Trend Potential -->
-                <tr>
-                    <td class="category-header">Trend Potential</td>
-                    <td data-category="6" data-rating="1">Misses trends</td>
-                    <td data-category="6" data-rating="2">Loosely aligned</td>
-                    <td data-category="6" data-rating="3">Viral alignment</td>
-                    <td data-category="6" data-rating="4">Trend-setting</td>
-                </tr>
-
-                <!-- Replayability -->
-                <tr>
-                    <td class="category-header">Replayability</td>
-                    <td data-category="7" data-rating="1">Forgettable</td>
-                    <td data-category="7" data-rating="2">Somewhat shareable</td>
-                    <td data-category="7" data-rating="3">Highly shareable</td>
-                    <td data-category="7" data-rating="4">Meme-worthy</td>
-                </tr>
-
-                <!-- Audience Alignment -->
-                <tr>
-                    <td class="category-header">Audience Alignment</td>
-                    <td data-category="8" data-rating="1">Too generic</td>
-                    <td data-category="8" data-rating="2">Mildly resonates</td>
-                    <td data-category="8" data-rating="3">Clear alignment</td>
-                    <td data-category="8" data-rating="4">Perfect alignment</td>
-                </tr>
-
-                <!-- Execution Feasibility -->
-                <tr>
-                    <td class="category-header">Execution Feasibility</td>
-                    <td data-category="9" data-rating="1">Impractical</td>
-                    <td data-category="9" data-rating="2">Possible but difficult</td>
-                    <td data-category="9" data-rating="3">Practical with ROI</td>
-                    <td data-category="9" data-rating="4">Easy & high ROI</td>
-                </tr>
-            </tbody>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Basic (1)</th>
+              <th>Good (2)</th>
+              <th>Great (3)</th>
+              <th>Excellent (4)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 0: Scroll-Stopping Power -->
+            <tr>
+              <td class="category-header" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">Scroll-Stopping Power</td>
+              <td data-category="0" data-rating="1">Basic colors/text. Blends into feed.</td>
+              <td data-category="0" data-rating="2">Bright colors OR faces OR danger/movement.</td>
+              <td data-category="0" data-rating="3">Combines 2+ “scroll-stoppers” (e.g. money + shoes).</td>
+              <td data-category="0" data-rating="4">Triggers “MUST CLICK” urgency (e.g. mystery + danger).</td>
+            </tr>
+            <!-- 1: Composition & Design -->
+            <tr>
+              <td class="category-header" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">Composition &amp; Design</td>
+              <td data-category="1" data-rating="1">Functional layout.</td>
+              <td data-category="1" data-rating="2">Rule of thirds / central alignment.</td>
+              <td data-category="1" data-rating="3">Leading lines + dynamic contrast.</td>
+              <td data-category="1" data-rating="4">Visually “readable” in under a second (especially on mobile).</td>
+            </tr>
+            <!-- 2: Simplicity vs. Clutter -->
+            <tr>
+              <td class="category-header" data-category="2" title="Balance between simplicity and clutter. Less is more if the focal point stands out.">Simplicity vs. Clutter</td>
+              <td data-category="2" data-rating="1">Some clarity; background elements distract.</td>
+              <td data-category="2" data-rating="2">Clean layout, minimal clutter.</td>
+              <td data-category="2" data-rating="3">Strong hierarchy, clear focal point.</td>
+              <td data-category="2" data-rating="4">Perfect negative space usage; subject pops.</td>
+            </tr>
+            <!-- 3: Text Clarity -->
+            <tr>
+              <td class="category-header" data-category="3" title="How legible and concise is the text?">Text Clarity</td>
+              <td data-category="3" data-rating="1">Legible but possibly too long.</td>
+              <td data-category="3" data-rating="2">Short text, easy to read on mobile.</td>
+              <td data-category="3" data-rating="3">Minimal, punchy text complements visuals.</td>
+              <td data-category="3" data-rating="4">Perfect synergy; zero wasted words.</td>
+            </tr>
+            <!-- 4: Curiosity Gap -->
+            <tr>
+              <td class="category-header" data-category="4" title="Does the thumbnail create an irresistible mystery?">Curiosity Gap</td>
+              <td data-category="4" data-rating="1">Hints at something interesting.</td>
+              <td data-category="4" data-rating="2">Clear unanswered question.</td>
+              <td data-category="4" data-rating="3">Strongly teases a surprising element.</td>
+              <td data-category="4" data-rating="4">Creates a “What on earth?” scenario.</td>
+            </tr>
+            <!-- 5: Emotional Impact -->
+            <tr>
+              <td class="category-header" data-category="5" title="How much emotion does the thumbnail evoke?">Emotional Impact</td>
+              <td data-category="5" data-rating="1">Neutral or mild interest.</td>
+              <td data-category="5" data-rating="2">Sparks curiosity or excitement.</td>
+              <td data-category="5" data-rating="3">Triggers FOMO, shock, or urgency.</td>
+              <td data-category="5" data-rating="4">Visceral reaction (fear, awe, hilarity).</td>
+            </tr>
+            <!-- 6: Thumbnail–Title Synergy -->
+            <tr>
+              <td class="category-header" data-category="6" title="How well does the thumbnail reinforce the title?">Thumbnail–Title Synergy</td>
+              <td data-category="6" data-rating="1">Doesn’t reinforce title.</td>
+              <td data-category="6" data-rating="2">Hints at title’s topic.</td>
+              <td data-category="6" data-rating="3">Combined “hook” effect with the title.</td>
+              <td data-category="6" data-rating="4">Seamless “one-two punch” with title.</td>
+            </tr>
+            <!-- 7: Video Relevance -->
+            <tr>
+              <td class="category-header" data-category="7" title="Does the thumbnail represent the video content accurately?">Video Relevance</td>
+              <td data-category="7" data-rating="1">Some alignment but somewhat clickbaity.</td>
+              <td data-category="7" data-rating="2">Accurately represents main topic.</td>
+              <td data-category="7" data-rating="3">Compelling moment without spoilers.</td>
+              <td data-category="7" data-rating="4">Perfect alignment with content.</td>
+            </tr>
+            <!-- 8: Branding & Consistency -->
+            <tr>
+              <td class="category-header" data-category="8" title="Is your channel’s style immediately identifiable?">Branding &amp; Consistency</td>
+              <td data-category="8" data-rating="1">Basic consistency with channel style.</td>
+              <td data-category="8" data-rating="2">Visible brand elements used.</td>
+              <td data-category="8" data-rating="3">Immediately identifiable as your style.</td>
+              <td data-category="8" data-rating="4">Instant brand recognition from a glance.</td>
+            </tr>
+            <!-- 9: Technical Polish -->
+            <tr>
+              <td class="category-header" data-category="9" title="How well-executed and refined is the thumbnail?">Technical Polish</td>
+              <td data-category="9" data-rating="1">No pixelation, basic sizing.</td>
+              <td data-category="9" data-rating="2">Mobile-friendly text/contrast.</td>
+              <td data-category="9" data-rating="3">Studio-level precision.</td>
+              <td data-category="9" data-rating="4">Flawless execution.</td>
+            </tr>
+          </tbody>
         </table>
-    </div>
+      </div>
 
-    <div class="feedback-panel" id="feedback">
+      <!-- Feedback Panel -->
+      <div class="feedback-panel glass-panel" id="feedback">
         <h3>Improvement Recommendations</h3>
         <div id="specificFeedback"></div>
         <div class="ai-suggestions" id="aiSuggestions"></div>
-    </div>
+        <div class="manual-inputs">
+          <div>
+            <label for="humanFeedback" class="flex-label">Human Feedback</label>
+            <div id="humanFeedback" class="contentedit" contenteditable="true" data-placeholder="Enter your human feedback here..."></div>
+          </div>
+          <div>
+            <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
+            <div id="artistAIFeedback" class="contentedit" contenteditable="true" data-placeholder="Paste AI feedback or notes here..."></div>
+          </div>
+          <button class="clear-btn" onclick="clearFeedback()">Clear Feedback</button>
+        </div>
+      </div>
 
-    <div class="resources">
-        <h3>Idea Generation Resources</h3>
+      <!-- Insights -->
+      <div class="auto-insights glass-panel">
+        <h3>Design Insights</h3>
+        <div class="insight-message" id="brightnessMessage"></div>
+        <div class="insight-message" id="contrastMessage"></div>
+        <h4>Color Palette</h4>
+        <p style="margin:0;">Dominant Colors Extracted:</p>
+        <div id="paletteContainer" class="palette-container"></div>
+      </div>
+
+      <!-- Resources -->
+      <div class="resources glass-panel">
+        <h3>Creation Resources</h3>
         <ul>
-            <li><a href="https://trends.google.com/trends/" target="_blank">Google Trends</a></li>
-            <li><a href="https://answerthepublic.com/" target="_blank">Audience Questions</a></li>
-            <li><a href="https://www.reddit.com/r/VideoIdeas/" target="_blank">Idea Community</a></li>
+          <li><a href="https://creatoracademy.youtube.com/page/lesson/thumbnails" target="_blank">YouTube Thumbnail Guide</a></li>
+          <li><a href="https://www.canva.com/create/youtube-thumbnails/" target="_blank">Free Thumbnail Maker</a></li>
+          <li><a href="https://www.tubebuddy.com/thumbnail-tester" target="_blank">A/B Testing Tool</a></li>
+          <li><a href="https://photopea.com/" target="_blank">Photopea (Free Online Photoshop)</a></li>
+          <li><a href="https://leonardo.ai/" target="_blank">Leonardo.ai (AI Image Generation)</a></li>
+          <li><a href="https://clipdrop.co/" target="_blank">Clipdrop (Background Remover, etc.)</a></li>
+          <li><a href="https://contrast-ratio.com" target="_blank">Contrast Ratio Checker</a></li>
+          <li><a href="https://coolors.co/" target="_blank">Coolors (Color Palette Generator)</a></li>
+          <li><a href="https://wave.webaim.org/" target="_blank">WAVE Accessibility Evaluation</a></li>
         </ul>
+      </div>
     </div>
+  </div>
 
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script>
-        const improvementTips = {
-            0: {1: "Add unexpected twist to concept", 2: "Combine two popular concepts", 3: "Introduce mystery element", 4: "Perfect originality achieved!"},
-            1: {1: "Add clear beginning-middle-end", 2: "Create progression milestones", 3: "Build dramatic arc", 4: "Perfect story structure!"},
-            2: {1: "Add call-to-action", 2: "Include debate question", 3: "Create shareable moment", 4: "Built-in virality!"},
-            3: {1: "Add series potential", 2: "Create character continuity", 3: "Add unresolved mystery", 4: "Perfect binge factor!"},
-            4: {1: "Add visual spectacle", 2: "Include surprise element", 3: "Create 'holy cow' moment", 4: "Multiple WOW factors!"},
-            5: {1: "Add personal story", 2: "Include triumph/failure", 3: "Create suspense", 4: "Powerful emotional journey!"},
-            6: {1: "Research current trends", 2: "Add trending audio/meme", 3: "Predict upcoming trend", 4: "Trend-setting potential!"},
-            7: {1: "Add meme template", 2: "Create quotable moment", 3: "Add inside joke", 4: "Built-in replay value!"},
-            8: {1: "Analyze audience demographics", 2: "Check community polls", 3: "Align with top-performing content", 4: "Perfect audience match!"},
-            9: {1: "Simplify production needs", 2: "Find cost-effective solutions", 3: "Plan resource allocation", 4: "Optimal execution plan!"}
-        };
+  <!-- Lightbox Modal for Image Enlargement -->
+  <div class="modal-bg" id="imgModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">✕</span>
+      <img id="modalImg" src="" alt="Enlarged thumbnail" />
+    </div>
+  </div>
 
-        let scores = {};
-        const prompts = [
-            "What if you combined [trend1] with [unexpected element]?",
-            "How would [famous person] approach [common problem]?",
-            "The ultimate challenge: [difficult task] in 24 hours",
-            "Mystery box challenge with [twist]",
-            "Testing viral [hack/myth] with scientific approach"
-        ];
+  <!-- How-To Modal -->
+  <div class="modal-bg" id="howToModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeHowTo()">✕</span>
+      <h2>How to Use Thumbnail Analyzer Pro+</h2>
+      <ul>
+        <li>Enter your video title; previews update live.</li>
+        <li>Upload a thumbnail image or simply drag & drop it into the upload area.</li>
+        <li>Click on the preview boxes to enlarge the thumbnail.</li>
+        <li>Rate your thumbnail on various criteria using the rubric table.</li>
+        <li>View improvement recommendations and AI suggestions.</li>
+        <li>Use the resources for additional help and inspiration.</li>
+      </ul>
+    </div>
+  </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-                cell.addEventListener('click', () => selectRating(cell));
-            });
-            generatePrompt();
-        });
+  <script>
+    /***************************************************
+     * Improvement Tips for Rubric (10 Categories)
+     ***************************************************/
+    const improvementTips = {
+      0: {
+        1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.",
+        2: "Add bright color(s) or a face/danger element to stand out.",
+        3: "Combine multiple ‘scroll-stoppers’ (e.g. big text + dramatic photo).",
+        4: "You’re hitting MUST-CLICK levels; keep testing new combos."
+      },
+      1: {
+        1: "Functional layout.",
+        2: "Rule of thirds / central alignment.",
+        3: "Leading lines + dynamic contrast.",
+        4: "Visually readable in under a second on any device."
+      },
+      2: {
+        1: "Some clarity; background might distract.",
+        2: "Clean layout, minimal clutter.",
+        3: "Strong hierarchy, clear focal point.",
+        4: "Perfect negative space usage; subject pops."
+      },
+      3: {
+        1: "Legible but possibly too long.",
+        2: "Short text, easy to read on mobile.",
+        3: "Minimal, punchy text complements visuals.",
+        4: "Perfect synergy; zero wasted words."
+      },
+      4: {
+        1: "Hints at something interesting.",
+        2: "Clear unanswered question.",
+        3: "Strongly teases a surprising element.",
+        4: "Creates a ‘What on earth?’ scenario."
+      },
+      5: {
+        1: "Neutral or mild interest.",
+        2: "Sparks curiosity or excitement.",
+        3: "Triggers FOMO, shock, or urgency.",
+        4: "Visceral reaction (fear, awe, hilarity)."
+      },
+      6: {
+        1: "Doesn’t reinforce title.",
+        2: "Hints at title’s topic.",
+        3: "Combined ‘hook’ effect with the title.",
+        4: "Seamless ‘one-two punch’ with title."
+      },
+      7: {
+        1: "Some alignment but somewhat clickbaity.",
+        2: "Accurately represents main topic.",
+        3: "Compelling moment without spoilers.",
+        4: "Perfect alignment with content."
+      },
+      8: {
+        1: "Basic consistency with channel style.",
+        2: "Visible brand elements used.",
+        3: "Immediately identifiable as your style.",
+        4: "Instant brand recognition from a glance."
+      },
+      9: {
+        1: "No pixelation, basic sizing.",
+        2: "Mobile-friendly text/contrast.",
+        3: "Studio-level precision.",
+        4: "Flawless execution."
+      }
+    };
 
-        function selectRating(cell) {
-            const categoryIndex = Number(cell.getAttribute('data-category'));
-            const rating = parseInt(cell.getAttribute('data-rating'));
-            
-            const row = cell.parentElement;
-            row.querySelectorAll('td').forEach(td => {
-                if(td !== row.firstElementChild) td.classList.remove('selected');
-            });
-            
-            cell.classList.add('selected');
-            scores[categoryIndex] = rating;
-            updateTotal();
-            showFeedback();
-        }
+    /***************************************************
+     * Global Score Tracking
+     ***************************************************/
+    let scores = {};
 
-        async function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            
-            const elements = [
-                document.querySelector('.analyzer-header'),
-                document.querySelector('.brainstorm-section'),
-                document.querySelector('.rubric-table'),
-                document.querySelector('.feedback-panel')
-            ];
+    // Character limits for title preview truncation
+    const HOME_LIMIT = 66;
+    const SUGGESTED_LIMIT = 60;
+    const MOBILE_LIMIT = 72;
 
-            let yPos = 10;
-            
-            for (const element of elements) {
-                const canvas = await html2canvas(element, { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
-                const imgProps = doc.getImageProperties(imgData);
-                const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                
-                if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
-                    doc.addPage();
-                    yPos = 10;
-                }
-                
-                doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
-                yPos += pdfHeight + 10;
-            }
+    document.addEventListener("DOMContentLoaded", () => {
+      // Table rating selection
+      document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+        cell.addEventListener('click', () => selectRating(cell));
+      });
+      // Image upload change event
+      document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
+      // Title input synergy
+      document.getElementById('videoTitle').addEventListener('input', () => {
+        updateTitlePreview();
+        checkTitleThumbnailSynergy();
+      });
+    });
 
-            doc.save('idea-analysis-report.pdf');
-        }
+    /***************************************************
+     * Rubric Functions
+     ***************************************************/
+    function selectRating(cell) {
+      const categoryIndex = Number(cell.getAttribute('data-category'));
+      const rating = parseInt(cell.getAttribute('data-rating'));
+      const row = cell.parentElement;
+      row.querySelectorAll('td').forEach(td => {
+        if (td !== row.firstElementChild) td.classList.remove('selected');
+      });
+      cell.classList.add('selected');
+      scores[categoryIndex] = rating;
+      updateTotal();
+      showFeedback();
+    }
 
-        function updateTotal() {
-            const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            document.getElementById('total').textContent = total;
-            const ranking = document.getElementById('ranking');
-            
-            if (Object.keys(scores).length < 10) {
-                ranking.textContent = 'Incomplete';
-                ranking.style.color = '#64748b';
-                return;
-            }
+    function updateTotal() {
+      const total = Object.values(scores).reduce((a, b) => a + b, 0);
+      document.getElementById('total').textContent = total;
+      const ranking = document.getElementById('ranking');
+      if (Object.keys(scores).length < 10) {
+        ranking.textContent = 'Incomplete';
+        ranking.style.color = '#64748b';
+        return;
+      }
+      if (total <= 24) {
+        ranking.textContent = 'Needs Work 🔴';
+        ranking.style.color = '#ef4444';
+      } else if (total <= 32) {
+        ranking.textContent = 'Good Start 🟡';
+        ranking.style.color = '#eab308';
+      } else if (total <= 38) {
+        ranking.textContent = 'Great! 🟢';
+        ranking.style.color = '#22c55e';
+      } else {
+        ranking.textContent = 'Perfect! 🔵';
+        ranking.style.color = '#3b82f6';
+      }
+    }
 
-            if(total <= 24) {
-                ranking.textContent = 'Needs Work 🔴';
-                ranking.style.color = '#ef4444';
-            } else if(total <= 32) {
-                ranking.textContent = 'Good Start 🟡';
-                ranking.style.color = '#eab308';
-            } else if(total <= 38) {
-                ranking.textContent = 'Great! 🟢';
-                ranking.style.color = '#22c55e';
-            } else {
-                ranking.textContent = 'Perfect! 🔵';
-                ranking.style.color = '#3b82f6';
-            }
-        }
-
-        function showFeedback() {
-            const feedbackDiv = document.getElementById('specificFeedback');
-            feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
-                const rating = scores[cat];
-                return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 8px;">
-                    <strong style="color: ${getCategoryColor(cat)}">${document.querySelector(`[data-category="${cat}"].category-header`).textContent}:</strong>
-                    <span style="color: #475569;">${improvementTips[cat][rating]}</span>
+    function showFeedback() {
+      const feedbackDiv = document.getElementById('specificFeedback');
+      feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
+        const rating = scores[cat];
+        // Get category name from the corresponding header cell
+        const catHeader = document.querySelector(`.category-header[data-category="${cat}"]`);
+        const categoryName = catHeader ? catHeader.textContent.trim() : 'Category ' + cat;
+        return `<div class="feedback-item">
+                  <strong>${categoryName}</strong>
+                  <span>${improvementTips[cat][rating]}</span>
                 </div>`;
-            }).join('');
-        }
+      }).join('');
+    }
 
-        function getCategoryColor(cat) {
-            const colors = ['#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', '#EC4899', 
-                          '#EF4444', '#14B8A6', '#84CC16', '#64748B', '#6366F1'];
-            return colors[Number(cat)];
-        }
+    function resetScores() {
+      scores = {};
+      document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+      document.getElementById('specificFeedback').innerHTML = '';
+      updateTotal();
+      const ranking = document.getElementById('ranking');
+      ranking.textContent = 'Incomplete';
+      ranking.style.color = '#64748b';
+    }
 
-        function resetScores() {
-            scores = {};
-            document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-            document.getElementById('specificFeedback').innerHTML = '';
-            updateTotal();
-            document.getElementById('ranking').textContent = 'Incomplete';
-            document.getElementById('ranking').style.color = '#64748b';
-        }
+    /***************************************************
+     * Title Preview & Synergy Functions
+     ***************************************************/
+    let debounceTimer;
+    function updateTitlePreview() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const title = document.getElementById('videoTitle').value || '';
+        document.getElementById('homeTitle').textContent = truncateTitle(title, HOME_LIMIT);
+        document.getElementById('suggestedTitle').textContent = truncateTitle(title, SUGGESTED_LIMIT);
+        document.getElementById('mobileTitle').textContent = truncateTitle(title, MOBILE_LIMIT);
+      }, 300);
+    }
 
-        function generatePrompt() {
-            const random = prompts[Math.floor(Math.random() * prompts.length)];
-            document.getElementById('randomPrompt').textContent = random;
-        }
+    function truncateTitle(str, limit) {
+      return (str.length <= limit) ? str : str.slice(0, limit - 3) + '...';
+    }
 
-        async function getAISuggestions() {
-            const aiDiv = document.getElementById('aiSuggestions');
-            aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing concept...';
-            
-            setTimeout(() => {
-                const suggestions = [
-                    "Add a personal story to increase relatability",
-                    "Include a surprising twist in the first 30 seconds",
-                    "Create a recurring character for series potential",
-                    "Add data visualization for credibility",
-                    "Use trending audio to boost discoverability"
-                ];
-                aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' + 
-                    suggestions.map(s => `• ${s}`).join('<br>');
-            }, 2000);
+    function checkTitleThumbnailSynergy() {
+      // Placeholder for synergy check logic
+      // For example, warn if title is too long compared to thumbnail preview space.
+      // You can update this function to provide specific recommendations.
+    }
+
+    /***************************************************
+     * Image Upload & Drag-and-Drop Functions
+     ***************************************************/
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const dataUrl = ev.target.result;
+        updateAllPreviews(dataUrl);
+        extractColors(dataUrl);
+        setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateAllPreviews(dataUrl) {
+      document.getElementById('homePreview').src = dataUrl;
+      document.getElementById('suggestedPreview').src = dataUrl;
+      document.getElementById('mobilePreview').src = dataUrl;
+      // Also update the small preview in the sidebar if needed:
+      document.getElementById('homePreviewSmall').src = dataUrl;
+    }
+
+    // Drag & drop events for the upload area
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('uploadArea').classList.add('dragover');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('uploadArea').classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const dataUrl = ev.target.result;
+          updateAllPreviews(dataUrl);
+          extractColors(dataUrl);
+          setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    /***************************************************
+     * Color Extraction & Brightness/Contrast Check
+     ***************************************************/
+    function extractColors(imageSrc) {
+      const paletteContainer = document.getElementById('paletteContainer');
+      paletteContainer.innerHTML = 'Detecting palette…';
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.src = imageSrc;
+      img.onload = () => {
+        const colorThief = new ColorThief();
+        try {
+          const palette = colorThief.getPalette(img, 6);
+          paletteContainer.innerHTML = palette.map(color => {
+            const rgb = `rgb(${color[0]},${color[1]},${color[2]})`;
+            return `<div class='color-swatch' style='background-color:${rgb}' title='${rgb}'></div>`;
+          }).join('');
+        } catch {
+          paletteContainer.innerHTML = 'Unable to extract palette.';
         }
-    </script>
+      };
+    }
+
+    function checkContrastAndBrightness(imageSrc) {
+      const brightnessMessage = document.getElementById('brightnessMessage');
+      const contrastMessage = document.getElementById('contrastMessage');
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.src = imageSrc;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let total = 0, count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i+1], b = data[i+2];
+          const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+          total += brightness;
+          count++;
+        }
+        const avg = total / count;
+        brightnessMessage.textContent = `Average Brightness: ${Math.round(avg)}/255`;
+        if (avg < 80) {
+          brightnessMessage.textContent += ' (Very Dark)';
+        } else if (avg < 160) {
+          brightnessMessage.textContent += ' (Moderate)';
+        } else {
+          brightnessMessage.textContent += ' (Bright)';
+        }
+        contrastMessage.textContent = 'Ensure text overlay meets accessibility contrast standards (~4.5:1).';
+      };
+    }
+
+    /***************************************************
+     * AI Suggestions Simulation
+     ***************************************************/
+    async function getAISuggestions() {
+      const aiDiv = document.getElementById('aiSuggestions');
+      aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
+      setTimeout(() => {
+        const suggestions = [
+          "Add a large, expressive face for immediate emotional hook.",
+          "Emphasize a single word in your text with a contrasting color.",
+          "Use a bold arrow or shape pointing to the focal subject.",
+          "Consider adding a brand watermark or consistent corner element.",
+          "Crop the background to remove any distracting edges.",
+          "Test different color combinations to improve contrast."
+        ];
+        aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' +
+          suggestions.map(s => `• ${s}`).join('<br>');
+      }, 2000);
+    }
+
+    /***************************************************
+     * EXPORT FUNCTIONS (PDF & PNG)
+     ***************************************************/
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+      await doc.html(document.body, {
+        x: 10,
+        y: 10,
+        width: 190,
+        windowWidth: document.body.scrollWidth,
+        autoPaging: 'text',
+        callback: function (doc) {
+          doc.save('thumbnail-analysis-report.pdf');
+        }
+      });
+    }
+
+    async function exportPNG() {
+      const canvas = await html2canvas(document.body, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'thumbnail-analysis.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    /***************************************************
+     * THEME TOGGLE
+     ***************************************************/
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      if (htmlEl.getAttribute('data-theme') === 'dark') {
+        htmlEl.removeAttribute('data-theme');
+      } else {
+        htmlEl.setAttribute('data-theme', 'dark');
+      }
+    }
+
+    /***************************************************
+     * LIGHTBOX FUNCTIONS
+     ***************************************************/
+    function enlargeImage(imgId) {
+      const src = document.getElementById(imgId).src;
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imgModal').classList.add('show');
+    }
+    function closeModal() {
+      document.getElementById('imgModal').classList.remove('show');
+    }
+
+    /***************************************************
+     * CLEAR FEEDBACK FIELDS
+     ***************************************************/
+    function clearFeedback() {
+      document.getElementById('humanFeedback').innerHTML = '';
+      document.getElementById('artistAIFeedback').innerHTML = '';
+    }
+
+    /***************************************************
+     * HOW-TO MODAL FUNCTIONS
+     ***************************************************/
+    function openHowTo() {
+      document.getElementById('howToModal').classList.add('show');
+    }
+    function closeHowTo() {
+      document.getElementById('howToModal').classList.remove('show');
+    }
+  </script>
 </body>
 </html>
