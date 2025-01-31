@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Idea Forge Pro | Viral Content Generator</title>
+  <!-- Added html2canvas library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
@@ -322,6 +324,17 @@
       background: rgba(255,255,255,1);
     }
     
+    /* Loading spinner for AI suggestions */
+    .loading-spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
     @media (max-width: 768px) {
       body {
         padding: 0 1rem;
@@ -361,9 +374,13 @@
     </div>
     <textarea id="ideaInput" placeholder="✨ Describe your video concept here..."></textarea>
     <div class="word-count" id="ideaWordCount">0 words, 0 characters</div>
-    <button class="clear-btn" onclick="clearIdea()">Clear Idea</button>
-    <button class="clear-btn" onclick="saveRevision()">💾 Save Revision</button>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button class="clear-btn" onclick="clearIdea()">Clear Idea</button>
+      <button class="clear-btn" onclick="copyIdea()">📋 Copy Idea</button>
+      <button class="clear-btn" onclick="saveRevision()">💾 Save Revision</button>
+    </div>
     <ul class="revision-history" id="revisionHistory"></ul>
+    <button class="clear-btn" onclick="clearRevisions()">Clear Revision History</button>
     <div class="idea-preview" id="ideaPreview">Live Preview: Your idea will appear here as you type.</div>
     
     <div class="prompt-generator">
@@ -387,15 +404,15 @@
       <tbody>
         <!-- Originality & Concept -->
         <tr>
-          <td class="category-header" title="How unique and intriguing is the idea?">Originality & Concept</td>
+          <td class="category-header" data-category="0" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
           <td data-category="0" data-rating="1">Basic, generic idea</td>
           <td data-category="0" data-rating="2">Some intrigue but needs refinement</td>
           <td data-category="0" data-rating="3">Engaging with clear potential</td>
-          <td data-category="0" data-rating="4">Exceptionally bold & entertaining</td>
+          <td data-category="0" data-rating="4">Exceptionally bold &amp; entertaining</td>
         </tr>
         <!-- Transformation/Progression -->
         <tr>
-          <td class="category-header" title="How well does the idea develop or transform?">Transformation/Progression</td>
+          <td class="category-header" data-category="1" title="How well does the idea develop or transform?">Transformation/Progression</td>
           <td data-category="1" data-rating="1">No clear growth</td>
           <td data-category="1" data-rating="2">Mild progression</td>
           <td data-category="1" data-rating="3">Clear transformation</td>
@@ -403,7 +420,7 @@
         </tr>
         <!-- Engagement Potential -->
         <tr>
-          <td class="category-header" title="Will the idea trigger interactions?">Engagement Potential</td>
+          <td class="category-header" data-category="2" title="Will the idea trigger interactions?">Engagement Potential</td>
           <td data-category="2" data-rating="1">No interaction triggers</td>
           <td data-category="2" data-rating="2">Might get likes</td>
           <td data-category="2" data-rating="3">Encourages interaction</td>
@@ -411,7 +428,7 @@
         </tr>
         <!-- Binge & Algorithm Fuel -->
         <tr>
-          <td class="category-header" title="Does the idea lend itself to series or algorithm boosting?">Binge & Algorithm Fuel</td>
+          <td class="category-header" data-category="3" title="Does the idea lend itself to series or algorithm boosting?">Binge &amp; Algorithm Fuel</td>
           <td data-category="3" data-rating="1">One-off video</td>
           <td data-category="3" data-rating="2">Basic teaser</td>
           <td data-category="3" data-rating="3">Multi-part cliffhanger</td>
@@ -419,7 +436,7 @@
         </tr>
         <!-- WOW Factor -->
         <tr>
-          <td class="category-header" title="How many 'aha' moments does the idea offer?">WOW Factor</td>
+          <td class="category-header" data-category="4" title="How many 'aha' moments does the idea offer?">WOW Factor</td>
           <td data-category="4" data-rating="1">Standard presentation</td>
           <td data-category="4" data-rating="2">Some cool moments</td>
           <td data-category="4" data-rating="3">Standout moments</td>
@@ -427,7 +444,7 @@
         </tr>
         <!-- Emotional Impact -->
         <tr>
-          <td class="category-header" title="How emotionally resonant is the idea?">Emotional Impact</td>
+          <td class="category-header" data-category="5" title="How emotionally resonant is the idea?">Emotional Impact</td>
           <td data-category="5" data-rating="1">Flat tone</td>
           <td data-category="5" data-rating="2">Occasional laughs</td>
           <td data-category="5" data-rating="3">Emotional rollercoaster</td>
@@ -435,7 +452,7 @@
         </tr>
         <!-- Trend Potential -->
         <tr>
-          <td class="category-header" title="Does the idea tap into current or future trends?">Trend Potential</td>
+          <td class="category-header" data-category="6" title="Does the idea tap into current or future trends?">Trend Potential</td>
           <td data-category="6" data-rating="1">Misses trends</td>
           <td data-category="6" data-rating="2">Loosely aligned</td>
           <td data-category="6" data-rating="3">Viral alignment</td>
@@ -443,7 +460,7 @@
         </tr>
         <!-- Replayability -->
         <tr>
-          <td class="category-header" title="Will viewers want to revisit or share this idea?">Replayability</td>
+          <td class="category-header" data-category="7" title="Will viewers want to revisit or share this idea?">Replayability</td>
           <td data-category="7" data-rating="1">Forgettable</td>
           <td data-category="7" data-rating="2">Somewhat shareable</td>
           <td data-category="7" data-rating="3">Highly shareable</td>
@@ -451,7 +468,7 @@
         </tr>
         <!-- Audience Alignment -->
         <tr>
-          <td class="category-header" title="How well does the idea match the target audience?">Audience Alignment</td>
+          <td class="category-header" data-category="8" title="How well does the idea match the target audience?">Audience Alignment</td>
           <td data-category="8" data-rating="1">Too generic</td>
           <td data-category="8" data-rating="2">Mildly resonates</td>
           <td data-category="8" data-rating="3">Clear alignment</td>
@@ -459,11 +476,11 @@
         </tr>
         <!-- Execution Feasibility -->
         <tr>
-          <td class="category-header" title="How realistic is it to execute the idea?">Execution Feasibility</td>
+          <td class="category-header" data-category="9" title="How realistic is it to execute the idea?">Execution Feasibility</td>
           <td data-category="9" data-rating="1">Impractical</td>
           <td data-category="9" data-rating="2">Possible but difficult</td>
           <td data-category="9" data-rating="3">Practical with ROI</td>
-          <td data-category="9" data-rating="4">Easy & high ROI</td>
+          <td data-category="9" data-rating="4">Easy &amp; high ROI</td>
         </tr>
       </tbody>
     </table>
@@ -526,6 +543,7 @@
      ***************************************************/
     let scores = {};
     let revisions = [];
+    let saveDraftTimeout;
     
     const prompts = [
       "What if you combined [trend1] with [unexpected element]?",
@@ -536,11 +554,31 @@
     ];
     
     document.addEventListener('DOMContentLoaded', () => {
+      // Load saved draft (if any)
+      const savedDraft = localStorage.getItem('ideaDraft');
+      if(savedDraft) {
+        document.getElementById('ideaInput').value = savedDraft;
+        updateIdea();
+      }
+      // Load saved revisions
+      const savedRevisions = localStorage.getItem('ideaRevisions');
+      if(savedRevisions) {
+        revisions = JSON.parse(savedRevisions);
+        updateRevisionHistory();
+      }
+      // Set up event listeners
       document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
         cell.addEventListener('click', () => selectRating(cell));
       });
       document.getElementById('ideaInput').addEventListener('input', updateIdea);
       generatePrompt();
+      
+      // Close How-To modal on Escape key press
+      document.addEventListener('keydown', function(e) {
+        if(e.key === "Escape" && document.getElementById('howToModal').classList.contains('show')) {
+          closeHowTo();
+        }
+      });
     });
     
     /***************************************************
@@ -589,11 +627,12 @@
       const feedbackDiv = document.getElementById('specificFeedback');
       feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
         const rating = scores[cat];
+        // Look up the category header using the data-category attribute
         const header = document.querySelector(`.category-header[data-category="${cat}"]`);
         const categoryName = header ? header.textContent.trim() : 'Category ' + cat;
         return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 8px;">
                   <strong style="color: ${getCategoryColor(cat)}">${categoryName}:</strong>
-                  <span style="color: #475569;">${improvementTips[cat][rating]}</span>
+                  <span style="color: #475569;"> ${improvementTips[cat][rating]}</span>
                 </div>`;
       }).join('');
     }
@@ -622,12 +661,17 @@
     }
     
     /***************************************************
-     * Idea Input: Live Word/Character Count, Preview & Revision History
+     * Idea Input: Live Word/Character Count, Preview & Auto-save Draft
      ***************************************************/
     function updateIdea() {
       const ideaText = document.getElementById('ideaInput').value;
       updateWordCount(ideaText);
       updateIdeaPreview(ideaText);
+      // Auto-save draft after 500ms of inactivity
+      clearTimeout(saveDraftTimeout);
+      saveDraftTimeout = setTimeout(() => {
+        localStorage.setItem('ideaDraft', ideaText);
+      }, 500);
     }
     
     function updateWordCount(text) {
@@ -651,6 +695,7 @@
       if(!ideaText.trim()) return;
       const timestamp = new Date().toLocaleString();
       revisions.push({ text: ideaText, time: timestamp });
+      localStorage.setItem('ideaRevisions', JSON.stringify(revisions));
       updateRevisionHistory();
     }
     
@@ -663,6 +708,14 @@
       if(confirm("Load this revision? Unsaved changes will be lost.")) {
         document.getElementById('ideaInput').value = revisions[index].text;
         updateIdea();
+      }
+    }
+    
+    function clearRevisions() {
+      if(confirm("Are you sure you want to clear all revision history?")) {
+        revisions = [];
+        updateRevisionHistory();
+        localStorage.removeItem('ideaRevisions');
       }
     }
     
@@ -688,30 +741,35 @@
      * EXPORT PDF
      ***************************************************/
     async function exportPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'mm', 'a4');
-      const elements = [
-        document.querySelector('.analyzer-header'),
-        document.querySelector('.brainstorm-section'),
-        document.querySelector('.rubric-table'),
-        document.querySelector('.feedback-panel')
-      ];
-      
-      let yPos = 10;
-      for(const element of elements) {
-        const canvas = await html2canvas(element, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
-        const imgProps = doc.getImageProperties(imgData);
-        const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        if(yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
-          doc.addPage();
-          yPos = 10;
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const elements = [
+          document.querySelector('.analyzer-header'),
+          document.querySelector('.brainstorm-section'),
+          document.querySelector('.rubric-table'),
+          document.querySelector('.feedback-panel')
+        ];
+        
+        let yPos = 10;
+        for(const element of elements) {
+          const canvas = await html2canvas(element, { scale: 2 });
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          if(yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
+            doc.addPage();
+            yPos = 10;
+          }
+          doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
+          yPos += pdfHeight + 10;
         }
-        doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
-        yPos += pdfHeight + 10;
+        doc.save('idea-analysis-report.pdf');
+      } catch (error) {
+        console.error("Error exporting PDF: ", error);
+        alert("Failed to export PDF. Please try again.");
       }
-      doc.save('idea-analysis-report.pdf');
     }
     
     /***************************************************
@@ -723,6 +781,18 @@
     
     function closeHowTo() {
       document.getElementById('howToModal').classList.remove('show');
+    }
+    
+    /***************************************************
+     * Copy Idea Functionality
+     ***************************************************/
+    function copyIdea() {
+      const ideaText = document.getElementById('ideaInput').value;
+      if(ideaText.trim()) {
+        navigator.clipboard.writeText(ideaText)
+          .then(() => alert('Idea copied to clipboard!'))
+          .catch(err => alert('Failed to copy text: ' + err));
+      }
     }
   </script>
 </body>
