@@ -66,6 +66,7 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
       transition: var(--transition);
+      padding: 1rem;
     }
 
     html[data-theme="dark"] {
@@ -112,7 +113,6 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
-
     .btn {
       background: var(--gradient-light);
       color: #fff;
@@ -146,7 +146,7 @@
     /* SIDEBAR */
     .sidebar {
       position: sticky;
-      top: 7.8rem; /* aligned with top header in mind */
+      top: 7.8rem;
       width: 340px;
       flex-shrink: 0;
       height: fit-content;
@@ -176,22 +176,7 @@
     .upload-container {
       margin-bottom: 1rem;
     }
-
-    .previews-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1.75rem;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    .preview-box {
-      text-align: center;
-    }
-    .preview-label {
-      font-weight: 600;
-      margin-bottom: 0.35rem;
-    }
+    /* Drag-and-Drop styling for upload area */
     .thumbnail-wrap {
       background: #f1f5f9;
       border: 2px dashed rgba(126, 34, 206, 0.2);
@@ -202,9 +187,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
-    .thumbnail-wrap:hover {
+    .thumbnail-wrap.dragover {
       border-color: var(--accent-light);
+      background: rgba(236,72,153, 0.05);
     }
     .youtube-thumb {
       display: block;
@@ -233,7 +220,6 @@
       gap: 2rem;
       margin-top: 1rem;
     }
-
     .rubric-table,
     .feedback-panel,
     .auto-insights,
@@ -242,7 +228,6 @@
       padding: 1.5rem;
       margin-top: 1rem;
     }
-
     /* TABLE */
     .rubric-table {
       overflow-x: auto;
@@ -281,6 +266,8 @@
       backdrop-filter: blur(6px);
       border-right: 1px solid rgba(224, 231, 255, 0.3);
       z-index: 9;
+      /* Added tooltips for extra guidance */
+      cursor: help;
     }
     .modern-table td:not(.category-header):hover {
       background: rgba(224, 231, 255, 0.3);
@@ -296,15 +283,12 @@
     .feedback-panel h3 {
       margin-top: 0;
     }
-
-    /* Layout for improvement items */
     #specificFeedback {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
       margin-top: 1rem;
     }
-
     .feedback-item {
       padding: 0.8rem;
       border-radius: var(--radius);
@@ -315,7 +299,6 @@
       display: block;
       margin-bottom: 0.3rem;
     }
-
     .ai-suggestions {
       margin-top: 1rem;
       padding: 1rem;
@@ -340,7 +323,6 @@
       font-weight: 600;
       margin-bottom: 0.25rem;
     }
-
     .contentedit {
       min-height: 80px;
       border: 2px solid #e2e8f0;
@@ -364,6 +346,19 @@
     .contentedit:empty::before {
       content: attr(data-placeholder);
       color: #9ca3af;
+    }
+    .clear-btn {
+      background: #f87171;
+      border: none;
+      color: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      align-self: flex-start;
+    }
+    .clear-btn:hover {
+      background: #ef4444;
     }
 
     /* INSIGHTS */
@@ -391,7 +386,7 @@
       margin: 1rem 0 0 1.5rem;
     }
 
-    /* MODAL (LIGHTBOX) */
+    /* MODAL (LIGHTBOX & HOW-TO) */
     .modal-bg {
       position: fixed;
       top: 0;
@@ -403,20 +398,19 @@
       align-items: center;
       justify-content: center;
       z-index: 9999;
+      padding: 1rem;
     }
     .modal-bg.show {
       display: flex;
     }
     .modal-content {
       position: relative;
-      background: #000;
+      background: #fff;
       border-radius: var(--radius);
       max-width: 90%;
       max-height: 90%;
-      overflow: visible;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow-y: auto;
+      padding: 1.5rem;
     }
     .modal-content img {
       max-width: 100%;
@@ -465,48 +459,54 @@
       <div class="total-score">Score: <span id="total">0</span>/40</div>
       <div class="status-indicator" id="ranking">Incomplete</div>
     </div>
-
     <div class="header-right">
       <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
       <button class="btn" onclick="resetScores()">🔄 Reset</button>
       <button class="btn" onclick="exportPDF()">📥 Export PDF</button>
       <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
       <button class="btn" onclick="getAISuggestions()">🤖 AI Help</button>
+      <button class="btn" onclick="openHowTo()">❓ How To</button>
     </div>
   </div>
 
-  <!-- WRAPPER -->
+  <!-- MAIN WRAPPER -->
   <div class="analyzer-container">
     <!-- SIDEBAR (left) -->
     <div class="sidebar glass-panel">
       <div class="preview-section">
         <h2>Video Title &amp; Thumbnails</h2>
-
         <input
           type="text"
           id="videoTitle"
           class="title-input"
           placeholder="Enter video title here..."
         />
-
         <div class="upload-container">
           <button class="btn" onclick="document.getElementById('thumbnailUpload').click()">
             📁 Upload Image
           </button>
           <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
+          <p style="font-size:0.9rem; color:#555;">Or drag & drop image below</p>
         </div>
-
+        <!-- Drag & Drop Area -->
+        <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" 
+             ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+          <img
+            id="homePreview"
+            class="youtube-thumb"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+            alt="Home Preview"
+            width="320"
+            height="180"
+          />
+        </div>
         <div class="previews-container">
           <!-- HOME -->
           <div class="preview-box">
             <div class="preview-label">YouTube Home</div>
-            <div
-              class="thumbnail-wrap"
-              style="width:210px; height:118px;"
-              onclick="enlargeImage('homePreview')"
-            >
+            <div class="thumbnail-wrap" style="width:210px; height:118px;" onclick="enlargeImage('homePreview')">
               <img
-                id="homePreview"
+                id="homePreviewSmall"
                 class="youtube-thumb"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                 alt="Home Preview"
@@ -514,21 +514,13 @@
                 height="118"
               />
             </div>
-            <div
-              id="homeTitle"
-              class="youtube-title"
-              style="max-width:210px;"
-            ></div>
+            <div id="homeTitle" class="youtube-title" style="max-width:210px;"></div>
           </div>
 
           <!-- SUGGESTED -->
           <div class="preview-box">
             <div class="preview-label">Suggested Video</div>
-            <div
-              class="thumbnail-wrap"
-              style="width:168px; height:94px;"
-              onclick="enlargeImage('suggestedPreview')"
-            >
+            <div class="thumbnail-wrap" style="width:168px; height:94px;" onclick="enlargeImage('suggestedPreview')">
               <img
                 id="suggestedPreview"
                 class="youtube-thumb"
@@ -538,21 +530,13 @@
                 height="94"
               />
             </div>
-            <div
-              id="suggestedTitle"
-              class="youtube-title"
-              style="max-width:168px;"
-            ></div>
+            <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
           </div>
 
           <!-- MOBILE -->
           <div class="preview-box">
             <div class="preview-label">Mobile View</div>
-            <div
-              class="thumbnail-wrap"
-              style="width:320px; height:180px;"
-              onclick="enlargeImage('mobilePreview')"
-            >
+            <div class="thumbnail-wrap" style="width:320px; height:180px;" onclick="enlargeImage('mobilePreview')">
               <img
                 id="mobilePreview"
                 class="youtube-thumb"
@@ -562,11 +546,7 @@
                 height="180"
               />
             </div>
-            <div
-              id="mobileTitle"
-              class="youtube-title"
-              style="max-width:320px;"
-            ></div>
+            <div id="mobileTitle" class="youtube-title" style="max-width:320px;"></div>
           </div>
         </div>
       </div>
@@ -589,23 +569,23 @@
           <tbody>
             <!-- 0: Scroll-Stopping Power -->
             <tr>
-              <td class="category-header" data-category="0">Scroll-Stopping Power</td>
+              <td class="category-header" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">Scroll-Stopping Power</td>
               <td data-category="0" data-rating="1">Basic colors/text. Blends into feed.</td>
               <td data-category="0" data-rating="2">Bright colors OR faces OR danger/movement.</td>
               <td data-category="0" data-rating="3">Combines 2+ “scroll-stoppers” (e.g. money + shoes).</td>
-              <td data-category="0" data-rating="4">Triggers “MUST CLICK” urgency (e.g. a mystery box + danger).</td>
+              <td data-category="0" data-rating="4">Triggers “MUST CLICK” urgency (e.g. mystery + danger).</td>
             </tr>
             <!-- 1: Composition & Design -->
             <tr>
-              <td class="category-header" data-category="1">Composition &amp; Design</td>
+              <td class="category-header" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">Composition &amp; Design</td>
               <td data-category="1" data-rating="1">Functional layout.</td>
               <td data-category="1" data-rating="2">Rule of thirds / central alignment.</td>
               <td data-category="1" data-rating="3">Leading lines + dynamic contrast.</td>
-              <td data-category="1" data-rating="4">Visually “readable” in under a second (esp. on mobile).</td>
+              <td data-category="1" data-rating="4">Visually “readable” in under a second (especially on mobile).</td>
             </tr>
             <!-- 2: Simplicity vs. Clutter -->
             <tr>
-              <td class="category-header" data-category="2">Simplicity vs. Clutter</td>
+              <td class="category-header" data-category="2" title="Balance between simplicity and clutter. Less is more if the focal point stands out.">Simplicity vs. Clutter</td>
               <td data-category="2" data-rating="1">Some clarity; background elements distract.</td>
               <td data-category="2" data-rating="2">Clean layout, minimal clutter.</td>
               <td data-category="2" data-rating="3">Strong hierarchy, clear focal point.</td>
@@ -613,7 +593,7 @@
             </tr>
             <!-- 3: Text Clarity -->
             <tr>
-              <td class="category-header" data-category="3">Text Clarity</td>
+              <td class="category-header" data-category="3" title="How legible and concise is the text?">Text Clarity</td>
               <td data-category="3" data-rating="1">Legible but possibly too long.</td>
               <td data-category="3" data-rating="2">Short text, easy to read on mobile.</td>
               <td data-category="3" data-rating="3">Minimal, punchy text complements visuals.</td>
@@ -621,15 +601,15 @@
             </tr>
             <!-- 4: Curiosity Gap -->
             <tr>
-              <td class="category-header" data-category="4">Curiosity Gap</td>
+              <td class="category-header" data-category="4" title="Does the thumbnail create an irresistible mystery?">Curiosity Gap</td>
               <td data-category="4" data-rating="1">Hints at something interesting.</td>
               <td data-category="4" data-rating="2">Clear unanswered question.</td>
-              <td data-category="4" data-rating="3">Strongly teases surprising element.</td>
-              <td data-category="4" data-rating="4">Creates “What on earth?” scenario.</td>
+              <td data-category="4" data-rating="3">Strongly teases a surprising element.</td>
+              <td data-category="4" data-rating="4">Creates a “What on earth?” scenario.</td>
             </tr>
             <!-- 5: Emotional Impact -->
             <tr>
-              <td class="category-header" data-category="5">Emotional Impact</td>
+              <td class="category-header" data-category="5" title="How much emotion does the thumbnail evoke?">Emotional Impact</td>
               <td data-category="5" data-rating="1">Neutral or mild interest.</td>
               <td data-category="5" data-rating="2">Sparks curiosity or excitement.</td>
               <td data-category="5" data-rating="3">Triggers FOMO, shock, or urgency.</td>
@@ -637,15 +617,15 @@
             </tr>
             <!-- 6: Thumbnail–Title Synergy -->
             <tr>
-              <td class="category-header" data-category="6">Thumbnail–Title Synergy</td>
+              <td class="category-header" data-category="6" title="How well does the thumbnail reinforce the title?">Thumbnail–Title Synergy</td>
               <td data-category="6" data-rating="1">Doesn’t reinforce title.</td>
               <td data-category="6" data-rating="2">Hints at title’s topic.</td>
-              <td data-category="6" data-rating="3">Combined “hook” effect.</td>
+              <td data-category="6" data-rating="3">Combined “hook” effect with the title.</td>
               <td data-category="6" data-rating="4">Seamless “one-two punch” with title.</td>
             </tr>
             <!-- 7: Video Relevance -->
             <tr>
-              <td class="category-header" data-category="7">Video Relevance</td>
+              <td class="category-header" data-category="7" title="Does the thumbnail represent the video content accurately?">Video Relevance</td>
               <td data-category="7" data-rating="1">Some alignment but somewhat clickbaity.</td>
               <td data-category="7" data-rating="2">Accurately represents main topic.</td>
               <td data-category="7" data-rating="3">Compelling moment without spoilers.</td>
@@ -653,15 +633,15 @@
             </tr>
             <!-- 8: Branding & Consistency -->
             <tr>
-              <td class="category-header" data-category="8">Branding &amp; Consistency</td>
+              <td class="category-header" data-category="8" title="Is your channel’s style immediately identifiable?">Branding &amp; Consistency</td>
               <td data-category="8" data-rating="1">Basic consistency with channel style.</td>
-              <td data-category="8" data-rating="2">Visible brand elements.</td>
+              <td data-category="8" data-rating="2">Visible brand elements used.</td>
               <td data-category="8" data-rating="3">Immediately identifiable as your style.</td>
-              <td data-category="8" data-rating="4">Instant brand recognition.</td>
+              <td data-category="8" data-rating="4">Instant brand recognition from a glance.</td>
             </tr>
             <!-- 9: Technical Polish -->
             <tr>
-              <td class="category-header" data-category="9">Technical Polish</td>
+              <td class="category-header" data-category="9" title="How well-executed and refined is the thumbnail?">Technical Polish</td>
               <td data-category="9" data-rating="1">No pixelation, basic sizing.</td>
               <td data-category="9" data-rating="2">Mobile-friendly text/contrast.</td>
               <td data-category="9" data-rating="3">Studio-level precision.</td>
@@ -676,34 +656,24 @@
         <h3>Improvement Recommendations</h3>
         <div id="specificFeedback"></div>
         <div class="ai-suggestions" id="aiSuggestions"></div>
-
         <div class="manual-inputs">
           <div>
             <label for="humanFeedback" class="flex-label">Human Feedback</label>
-            <div
-              id="humanFeedback"
-              class="contentedit"
-              contenteditable="true"
-              data-placeholder="Enter your human feedback here..."
-            ></div>
+            <div id="humanFeedback" class="contentedit" contenteditable="true" data-placeholder="Enter your human feedback here..."></div>
           </div>
           <div>
             <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
-            <div
-              id="artistAIFeedback"
-              class="contentedit"
-              contenteditable="true"
-              data-placeholder="Paste AI feedback or notes here..."
-            ></div>
+            <div id="artistAIFeedback" class="contentedit" contenteditable="true" data-placeholder="Paste AI feedback or notes here..."></div>
           </div>
+          <button class="clear-btn" onclick="clearFeedback()">Clear Feedback</button>
         </div>
       </div>
 
       <!-- Insights -->
       <div class="auto-insights glass-panel">
         <h3>Design Insights</h3>
-        <div class="insight-message" id="contrastMessage"></div>
         <div class="insight-message" id="brightnessMessage"></div>
+        <div class="insight-message" id="contrastMessage"></div>
         <h4>Color Palette</h4>
         <p style="margin:0;">Dominant Colors Extracted:</p>
         <div id="paletteContainer" class="palette-container"></div>
@@ -727,18 +697,34 @@
     </div>
   </div>
 
-  <!-- Lightbox Modal -->
+  <!-- Lightbox Modal for Image Enlargement -->
   <div class="modal-bg" id="imgModal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal()">✕</span>
-      <img id="modalImg" src="" alt="enlarged thumbnail" />
+      <img id="modalImg" src="" alt="Enlarged thumbnail" />
+    </div>
+  </div>
+
+  <!-- How-To Modal -->
+  <div class="modal-bg" id="howToModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeHowTo()">✕</span>
+      <h2>How to Use Thumbnail Analyzer Pro+</h2>
+      <ul>
+        <li>Enter your video title; previews update live.</li>
+        <li>Upload a thumbnail image or simply drag & drop it into the upload area.</li>
+        <li>Click on the preview boxes to enlarge the thumbnail.</li>
+        <li>Rate your thumbnail on various criteria using the rubric table.</li>
+        <li>View improvement recommendations and AI suggestions.</li>
+        <li>Use the resources for additional help and inspiration.</li>
+      </ul>
     </div>
   </div>
 
   <script>
-    /*========================================================
-      Full improvementTips for all 10 categories
-    ========================================================*/
+    /***************************************************
+     * Improvement Tips for Rubric (10 Categories)
+     ***************************************************/
     const improvementTips = {
       0: {
         1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.",
@@ -767,8 +753,8 @@
       4: {
         1: "Hints at something interesting.",
         2: "Clear unanswered question.",
-        3: "Strongly teases surprising element.",
-        4: "Creates ‘What on earth?’ scenario."
+        3: "Strongly teases a surprising element.",
+        4: "Creates a ‘What on earth?’ scenario."
       },
       5: {
         1: "Neutral or mild interest.",
@@ -802,12 +788,12 @@
       }
     };
 
-    /*========================================================
-      Global Score Tracking
-    ========================================================*/
+    /***************************************************
+     * Global Score Tracking
+     ***************************************************/
     let scores = {};
 
-    // Character limits
+    // Character limits for title preview truncation
     const HOME_LIMIT = 66;
     const SUGGESTED_LIMIT = 60;
     const MOBILE_LIMIT = 72;
@@ -817,10 +803,8 @@
       document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
         cell.addEventListener('click', () => selectRating(cell));
       });
-
-      // Image upload
+      // Image upload change event
       document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
-
       // Title input synergy
       document.getElementById('videoTitle').addEventListener('input', () => {
         updateTitlePreview();
@@ -828,6 +812,9 @@
       });
     });
 
+    /***************************************************
+     * Rubric Functions
+     ***************************************************/
     function selectRating(cell) {
       const categoryIndex = Number(cell.getAttribute('data-category'));
       const rating = parseInt(cell.getAttribute('data-rating'));
@@ -845,15 +832,11 @@
       const total = Object.values(scores).reduce((a, b) => a + b, 0);
       document.getElementById('total').textContent = total;
       const ranking = document.getElementById('ranking');
-
-      // Incomplete if not all 10 categories
       if (Object.keys(scores).length < 10) {
         ranking.textContent = 'Incomplete';
         ranking.style.color = '#64748b';
         return;
       }
-
-      // Score thresholds
       if (total <= 24) {
         ranking.textContent = 'Needs Work 🔴';
         ranking.style.color = '#ef4444';
@@ -873,15 +856,13 @@
       const feedbackDiv = document.getElementById('specificFeedback');
       feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
         const rating = scores[cat];
-        // Attempt to get category name from the table header
-        const catHeader = document.querySelector(`[data-category="${cat}"]`);
-        let categoryName = '';
-        if (catHeader && catHeader.classList.contains('category-header')) {
-          categoryName = catHeader.textContent.trim();
-        }
-        return (
-          `<div class="feedback-item">\n             <strong>${categoryName}</strong>\n             <span>${improvementTips[cat][rating]}</span>\n           </div>`
-        );
+        // Get category name from the corresponding header cell
+        const catHeader = document.querySelector(`.category-header[data-category="${cat}"]`);
+        const categoryName = catHeader ? catHeader.textContent.trim() : 'Category ' + cat;
+        return `<div class="feedback-item">
+                  <strong>${categoryName}</strong>
+                  <span>${improvementTips[cat][rating]}</span>
+                </div>`;
       }).join('');
     }
 
@@ -895,9 +876,9 @@
       ranking.style.color = '#64748b';
     }
 
-    /*========================================================
-      Title Previews
-    ========================================================*/
+    /***************************************************
+     * Title Preview & Synergy Functions
+     ***************************************************/
     let debounceTimer;
     function updateTitlePreview() {
       clearTimeout(debounceTimer);
@@ -914,30 +895,59 @@
     }
 
     function checkTitleThumbnailSynergy() {
-      // Potential synergy checks; minimal example
-      const title = document.getElementById('videoTitle').value.toLowerCase();
-      const synergyScore = title ? 1 : 0;
-      // Additional logic if needed
+      // Placeholder for synergy check logic
+      // For example, warn if title is too long compared to thumbnail preview space.
+      // You can update this function to provide specific recommendations.
     }
 
-    /*========================================================
-      Image Upload & Color Extraction
-    ========================================================*/
+    /***************************************************
+     * Image Upload & Drag-and-Drop Functions
+     ***************************************************/
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = ev => {
         const dataUrl = ev.target.result;
-        document.getElementById('homePreview').src = dataUrl;
-        document.getElementById('suggestedPreview').src = dataUrl;
-        document.getElementById('mobilePreview').src = dataUrl;
+        updateAllPreviews(dataUrl);
         extractColors(dataUrl);
         setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
       };
       reader.readAsDataURL(file);
     }
 
+    function updateAllPreviews(dataUrl) {
+      document.getElementById('homePreview').src = dataUrl;
+      document.getElementById('suggestedPreview').src = dataUrl;
+      document.getElementById('mobilePreview').src = dataUrl;
+      // Also update the small preview in the sidebar if needed:
+      document.getElementById('homePreviewSmall').src = dataUrl;
+    }
+
+    // Drag & drop events for the upload area
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('uploadArea').classList.add('dragover');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('uploadArea').classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const dataUrl = ev.target.result;
+          updateAllPreviews(dataUrl);
+          extractColors(dataUrl);
+          setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    /***************************************************
+     * Color Extraction & Brightness/Contrast Check
+     ***************************************************/
     function extractColors(imageSrc) {
       const paletteContainer = document.getElementById('paletteContainer');
       paletteContainer.innerHTML = 'Detecting palette…';
@@ -958,9 +968,6 @@
       };
     }
 
-    /*========================================================
-      Brightness & Contrast Check
-    ========================================================*/
     function checkContrastAndBrightness(imageSrc) {
       const brightnessMessage = document.getElementById('brightnessMessage');
       const contrastMessage = document.getElementById('contrastMessage');
@@ -984,19 +991,19 @@
         const avg = total / count;
         brightnessMessage.textContent = `Average Brightness: ${Math.round(avg)}/255`;
         if (avg < 80) {
-          brightnessMessage.textContent += ' (Very Dark).';
+          brightnessMessage.textContent += ' (Very Dark)';
         } else if (avg < 160) {
-          brightnessMessage.textContent += ' (Moderate).';
+          brightnessMessage.textContent += ' (Moderate)';
         } else {
-          brightnessMessage.textContent += ' (Bright).';
+          brightnessMessage.textContent += ' (Bright)';
         }
-        contrastMessage.textContent = 'Check text vs. background colors for ~4.5:1 contrast ratio if text is small.';
+        contrastMessage.textContent = 'Ensure text overlay meets accessibility contrast standards (~4.5:1).';
       };
     }
 
-    /*========================================================
-      AI Suggestions (Simulated)
-    ========================================================*/
+    /***************************************************
+     * AI Suggestions Simulation
+     ***************************************************/
     async function getAISuggestions() {
       const aiDiv = document.getElementById('aiSuggestions');
       aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
@@ -1006,27 +1013,24 @@
           "Emphasize a single word in your text with a contrasting color.",
           "Use a bold arrow or shape pointing to the focal subject.",
           "Consider adding a brand watermark or consistent corner element.",
-          "Crop the background to remove any distracting edges."
+          "Crop the background to remove any distracting edges.",
+          "Test different color combinations to improve contrast."
         ];
         aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' +
           suggestions.map(s => `• ${s}`).join('<br>');
       }, 2000);
     }
 
-    /*========================================================
-      EXPORT PDF (Uses doc.html)
-    ========================================================*/
+    /***************************************************
+     * EXPORT FUNCTIONS (PDF & PNG)
+     ***************************************************/
     async function exportPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
-
-      // We'll simply render the entire body using doc.html
-      // The content inside contentEditable divs will appear as multiline.
-
       await doc.html(document.body, {
         x: 10,
         y: 10,
-        width: 190, // 210mm wide page - 20mm margin = 190
+        width: 190,
         windowWidth: document.body.scrollWidth,
         autoPaging: 'text',
         callback: function (doc) {
@@ -1035,19 +1039,13 @@
       });
     }
 
-    /*========================================================
-      EXPORT PNG (Uses html2canvas screenshot)
-    ========================================================*/
     async function exportPNG() {
-      // The contentEditable divs should be captured as multiple lines.
       const canvas = await html2canvas(document.body, {
         scale: 2,
         useCORS: true,
         allowTaint: true
       });
       const dataUrl = canvas.toDataURL('image/png');
-
-      // Trigger download
       const link = document.createElement('a');
       link.download = 'thumbnail-analysis.png';
       link.href = dataUrl;
@@ -1056,9 +1054,9 @@
       document.body.removeChild(link);
     }
 
-    /*========================================================
-      THEME TOGGLE
-    ========================================================*/
+    /***************************************************
+     * THEME TOGGLE
+     ***************************************************/
     function toggleTheme() {
       const htmlEl = document.documentElement;
       if (htmlEl.getAttribute('data-theme') === 'dark') {
@@ -1068,9 +1066,9 @@
       }
     }
 
-    /*========================================================
-      LIGHTBOX
-    ========================================================*/
+    /***************************************************
+     * LIGHTBOX FUNCTIONS
+     ***************************************************/
     function enlargeImage(imgId) {
       const src = document.getElementById(imgId).src;
       document.getElementById('modalImg').src = src;
@@ -1078,6 +1076,24 @@
     }
     function closeModal() {
       document.getElementById('imgModal').classList.remove('show');
+    }
+
+    /***************************************************
+     * CLEAR FEEDBACK FIELDS
+     ***************************************************/
+    function clearFeedback() {
+      document.getElementById('humanFeedback').innerHTML = '';
+      document.getElementById('artistAIFeedback').innerHTML = '';
+    }
+
+    /***************************************************
+     * HOW-TO MODAL FUNCTIONS
+     ***************************************************/
+    function openHowTo() {
+      document.getElementById('howToModal').classList.add('show');
+    }
+    function closeHowTo() {
+      document.getElementById('howToModal').classList.remove('show');
     }
   </script>
 </body>
