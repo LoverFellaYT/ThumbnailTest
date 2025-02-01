@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thumbnail Analyzer Pro+ (ContentEditable)</title>
+    <title>Thumbnail Analyzer Pro+ (Enhanced)</title>
 
     <!-- Roboto Font (Used by YouTube) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,17 +15,22 @@
 
     <!-- Optional: Color Thief for palette extraction -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
-
-    <!-- For PNG export only -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-    <!-- PDF export (via doc.html) -->
+    <!-- PDF export (via jsPDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- New Libraries for Image Analysis -->
+    <!-- Face Detection & Expression Analysis -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <!-- OCR Text Detection -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
+    <!-- TensorFlow & MobileNet for Object Recognition -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 
     <style>
       :root {
         /* Colors & Theme Variables */
-        --primary-light: #7e22ce; /* Vibrant purple */
+        --primary-light: #7e22ce;
         --accent-light: #ec4899;
         --bg-light: #f9fafb;
         --text-light: #1e293b;
@@ -55,7 +60,6 @@
         --focus-outline: 2px solid var(--accent-light);
       }
 
-      /* Default (light) theme */
       body {
         margin: 0;
         padding: 0;
@@ -65,7 +69,7 @@
         transition: var(--transition);
       }
 
-      /* Ensure interactive elements show a clear focus */
+      /* Focus styles for accessibility */
       button:focus,
       [tabindex]:focus {
         outline: var(--focus-outline);
@@ -81,7 +85,7 @@
         padding: 1rem;
       }
 
-      html[data-theme='dark'] {
+      html[data-theme="dark"] {
         --bg-light: var(--bg-dark);
         --text-light: var(--text-dark);
         --panel-light: var(--panel-dark);
@@ -188,7 +192,7 @@
       .upload-container {
         margin-bottom: 1rem;
       }
-      /* Drag-and-Drop styling for upload area */
+      /* Drag-and-Drop styling */
       .thumbnail-wrap {
         background: #f1f5f9;
         border: 2px dashed rgba(126, 34, 206, 0.2);
@@ -269,7 +273,6 @@
         cursor: pointer;
         background: var(--table-cell-bg-light);
       }
-      /* Added tabindex and role for accessibility on rating cells */
       .modern-table td[data-rating] {
         outline: none;
       }
@@ -377,7 +380,11 @@
         background: #ef4444;
       }
 
-      /* INSIGHTS */
+      /* DESIGN INSIGHTS SECTION */
+      .auto-insights h3,
+      .auto-insights h4 {
+        margin-top: 0;
+      }
       .palette-container {
         display: flex;
         flex-wrap: wrap;
@@ -389,9 +396,6 @@
         height: 40px;
         border-radius: var(--radius);
         border: 1px solid #ccc;
-      }
-      .insight-message {
-        margin-top: 0.5rem;
       }
 
       /* RESOURCES */
@@ -472,9 +476,7 @@
     <!-- HEADER -->
     <header class="analyzer-header glass-panel">
       <div class="header-left">
-        <div class="total-score">
-          Score: <span id="total">0</span>/40
-        </div>
+        <div class="total-score">Score: <span id="total">0</span>/40</div>
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
@@ -482,123 +484,49 @@
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
         <button class="btn" onclick="exportPDF()" aria-label="Export as PDF">📥 Export PDF</button>
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-        <button class="btn" onclick="getAISuggestions()" aria-label="Get AI Help">
-          🤖 AI Help
-        </button>
+        <button class="btn" onclick="getAISuggestions()" aria-label="Get AI Help">🤖 AI Help</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
       </div>
     </header>
 
     <!-- MAIN WRAPPER -->
     <div class="analyzer-container">
-      <!-- SIDEBAR (left) -->
+      <!-- SIDEBAR -->
       <aside class="sidebar glass-panel">
         <section class="preview-section">
           <h2>Video Title &amp; Thumbnails</h2>
-          <input
-            type="text"
-            id="videoTitle"
-            class="title-input"
-            placeholder="Enter video title here..."
-            aria-label="Video Title"
-          />
+          <input type="text" id="videoTitle" class="title-input" placeholder="Enter video title here..." aria-label="Video Title" />
           <div class="upload-container">
-            <button class="btn" onclick="document.getElementById('thumbnailUpload').click()" aria-label="Upload Image">
-              📁 Upload Image
-            </button>
+            <button class="btn" onclick="document.getElementById('thumbnailUpload').click()" aria-label="Upload Image">📁 Upload Image</button>
             <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
             <p style="font-size:0.9rem; color:#555;">Or drag &amp; drop image below</p>
           </div>
           <!-- Drag & Drop Area -->
-          <div
-            class="thumbnail-wrap"
-            id="uploadArea"
-            style="width:320px; height:180px;"
-            ondragover="handleDragOver(event)"
-            ondrop="handleDrop(event)"
-            role="button"
-            tabindex="0"
-            aria-label="Drag and drop thumbnail image here"
-          >
-            <img
-              id="homePreview"
-              class="youtube-thumb"
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-              alt="Default Thumbnail Preview"
-              width="320"
-              height="180"
-              loading="lazy"
-            />
+          <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" role="button" tabindex="0" aria-label="Drag and drop thumbnail image here">
+            <img id="homePreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Default Thumbnail Preview" width="320" height="180" loading="lazy" />
           </div>
           <div class="previews-container">
-            <!-- HOME Preview -->
+            <!-- YouTube Home Preview -->
             <div class="preview-box">
               <div class="preview-label">YouTube Home</div>
-              <div
-                class="thumbnail-wrap"
-                style="width:210px; height:118px;"
-                onclick="enlargeImage('homePreview')"
-                role="button"
-                tabindex="0"
-                aria-label="Enlarge Home Thumbnail"
-              >
-                <img
-                  id="homePreviewSmall"
-                  class="youtube-thumb"
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                  alt="Small YouTube Home Thumbnail"
-                  width="210"
-                  height="118"
-                  loading="lazy"
-                />
+              <div class="thumbnail-wrap" style="width:210px; height:118px;" onclick="enlargeImage('homePreview')" role="button" tabindex="0" aria-label="Enlarge Home Thumbnail">
+                <img id="homePreviewSmall" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small YouTube Home Thumbnail" width="210" height="118" loading="lazy" />
               </div>
               <div id="homeTitle" class="youtube-title" style="max-width:210px;"></div>
             </div>
-
-            <!-- SUGGESTED Preview -->
+            <!-- Suggested Video Preview -->
             <div class="preview-box">
               <div class="preview-label">Suggested Video</div>
-              <div
-                class="thumbnail-wrap"
-                style="width:168px; height:94px;"
-                onclick="enlargeImage('suggestedPreview')"
-                role="button"
-                tabindex="0"
-                aria-label="Enlarge Suggested Thumbnail"
-              >
-                <img
-                  id="suggestedPreview"
-                  class="youtube-thumb"
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                  alt="Small Suggested Video Thumbnail"
-                  width="168"
-                  height="94"
-                  loading="lazy"
-                />
+              <div class="thumbnail-wrap" style="width:168px; height:94px;" onclick="enlargeImage('suggestedPreview')" role="button" tabindex="0" aria-label="Enlarge Suggested Thumbnail">
+                <img id="suggestedPreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small Suggested Video Thumbnail" width="168" height="94" loading="lazy" />
               </div>
               <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
             </div>
-
-            <!-- MOBILE Preview -->
+            <!-- Mobile View Preview -->
             <div class="preview-box">
               <div class="preview-label">Mobile View</div>
-              <div
-                class="thumbnail-wrap"
-                style="width:320px; height:180px;"
-                onclick="enlargeImage('mobilePreview')"
-                role="button"
-                tabindex="0"
-                aria-label="Enlarge Mobile Thumbnail"
-              >
-                <img
-                  id="mobilePreview"
-                  class="youtube-thumb"
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                  alt="Mobile Thumbnail Preview"
-                  width="320"
-                  height="180"
-                  loading="lazy"
-                />
+              <div class="thumbnail-wrap" style="width:320px; height:180px;" onclick="enlargeImage('mobilePreview')" role="button" tabindex="0" aria-label="Enlarge Mobile Thumbnail">
+                <img id="mobilePreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Mobile Thumbnail Preview" width="320" height="180" loading="lazy" />
               </div>
               <div id="mobileTitle" class="youtube-title" style="max-width:320px;"></div>
             </div>
@@ -606,7 +534,7 @@
         </section>
       </aside>
 
-      <!-- MAIN CONTENT (right) -->
+      <!-- MAIN CONTENT -->
       <main class="main-content">
         <!-- Rubric Table -->
         <section class="rubric-table glass-panel">
@@ -621,12 +549,9 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Each rating cell now has tabindex and role="button" for keyboard interaction -->
               <!-- 0: Scroll-Stopping Power -->
               <tr>
-                <td class="category-header" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">
-                  Scroll-Stopping Power
-                </td>
+                <td class="category-header" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">Scroll-Stopping Power</td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">Basic colors/text. Blends into feed.</td>
                 <td data-category="0" data-rating="2" role="button" tabindex="0">Bright colors OR faces OR danger/movement.</td>
                 <td data-category="0" data-rating="3" role="button" tabindex="0">Combines 2+ “scroll-stoppers” (e.g. money + shoes).</td>
@@ -634,9 +559,7 @@
               </tr>
               <!-- 1: Composition & Design -->
               <tr>
-                <td class="category-header" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">
-                  Composition &amp; Design
-                </td>
+                <td class="category-header" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">Composition &amp; Design</td>
                 <td data-category="1" data-rating="1" role="button" tabindex="0">Functional layout.</td>
                 <td data-category="1" data-rating="2" role="button" tabindex="0">Rule of thirds / central alignment.</td>
                 <td data-category="1" data-rating="3" role="button" tabindex="0">Leading lines + dynamic contrast.</td>
@@ -644,9 +567,7 @@
               </tr>
               <!-- 2: Simplicity vs. Clutter -->
               <tr>
-                <td class="category-header" data-category="2" title="Balance between simplicity and clutter. Less is more if the focal point stands out.">
-                  Simplicity vs. Clutter
-                </td>
+                <td class="category-header" data-category="2" title="Balance between simplicity and clutter. Less is more if the focal point stands out.">Simplicity vs. Clutter</td>
                 <td data-category="2" data-rating="1" role="button" tabindex="0">Some clarity; background elements distract.</td>
                 <td data-category="2" data-rating="2" role="button" tabindex="0">Clean layout, minimal clutter.</td>
                 <td data-category="2" data-rating="3" role="button" tabindex="0">Strong hierarchy, clear focal point.</td>
@@ -720,38 +641,41 @@
           <div class="manual-inputs">
             <div>
               <label for="humanFeedback" class="flex-label">Human Feedback</label>
-              <div
-                id="humanFeedback"
-                class="contentedit"
-                contenteditable="true"
-                data-placeholder="Enter your human feedback here..."
-                aria-label="Human Feedback Input"
-              ></div>
+              <div id="humanFeedback" class="contentedit" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback Input"></div>
             </div>
             <div>
               <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
-              <div
-                id="artistAIFeedback"
-                class="contentedit"
-                contenteditable="true"
-                data-placeholder="Paste AI feedback or notes here..."
-                aria-label="AI Feedback Input"
-              ></div>
+              <div id="artistAIFeedback" class="contentedit" contenteditable="true" data-placeholder="Paste AI feedback or notes here..." aria-label="AI Feedback Input"></div>
             </div>
-            <button class="clear-btn" onclick="clearFeedback()" aria-label="Clear Feedback">
-              Clear Feedback
-            </button>
+            <button class="clear-btn" onclick="clearFeedback()" aria-label="Clear Feedback">Clear Feedback</button>
           </div>
         </section>
 
-        <!-- Insights -->
+        <!-- Design Insights Section (Enhanced) -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
           <div class="insight-message" id="brightnessMessage"></div>
           <div class="insight-message" id="contrastMessage"></div>
+
           <h4>Color Palette</h4>
           <p style="margin:0;">Dominant Colors Extracted:</p>
           <div id="paletteContainer" class="palette-container"></div>
+          <div id="colorSuggestions" class="palette-container"></div>
+
+          <h4>Composition Grid</h4>
+          <canvas id="compositionCanvas" style="width:320px; height:180px; border:1px solid #ccc;"></canvas>
+
+          <h4>Face Detection</h4>
+          <div class="insight-message" id="faceDetectionResults"></div>
+
+          <h4>OCR Text Detection</h4>
+          <div class="insight-message" id="ocrResults"></div>
+
+          <h4>Object &amp; Scene Recognition</h4>
+          <div class="insight-message" id="objectRecognitionResults"></div>
+
+          <h4>Sharpness Evaluation</h4>
+          <div class="insight-message" id="sharpnessResult"></div>
         </section>
 
         <!-- Resources -->
@@ -772,7 +696,7 @@
       </main>
     </div>
 
-    <!-- LIGHTBOX MODAL for Image Enlargement -->
+    <!-- Lightbox Modal for Image Enlargement -->
     <div class="modal-bg" id="imgModal" role="dialog" aria-modal="true">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal()" aria-label="Close Modal">✕</span>
@@ -780,17 +704,17 @@
       </div>
     </div>
 
-    <!-- HOW-TO MODAL -->
+    <!-- How-To Modal -->
     <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
       <div class="modal-content">
         <span class="close-btn" onclick="closeHowTo()" aria-label="Close How To">✕</span>
         <h2>How to Use Thumbnail Analyzer Pro+</h2>
         <ul>
           <li>Enter your video title; previews update live.</li>
-          <li>Upload a thumbnail image or simply drag &amp; drop it into the upload area.</li>
+          <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
           <li>Click on the preview boxes to enlarge the thumbnail.</li>
           <li>Rate your thumbnail on various criteria using the rubric table.</li>
-          <li>View improvement recommendations and AI suggestions.</li>
+          <li>View the improvement recommendations and design insights.</li>
           <li>Use the resources for additional help and inspiration.</li>
         </ul>
       </div>
@@ -802,80 +726,33 @@
        * Improvement Tips for Rubric (10 Categories)
        ***************************************************/
       const improvementTips = {
-        0: {
-          1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.",
-          2: "Add bright color(s) or a face/danger element to stand out.",
-          3: "Combine multiple ‘scroll-stoppers’ (e.g. big text + dramatic photo).",
-          4: "You’re hitting MUST-CLICK levels; keep testing new combos."
-        },
-        1: {
-          1: "Functional layout.",
-          2: "Rule of thirds / central alignment.",
-          3: "Leading lines + dynamic contrast.",
-          4: "Visually readable in under a second on any device."
-        },
-        2: {
-          1: "Some clarity; background might distract.",
-          2: "Clean layout, minimal clutter.",
-          3: "Strong hierarchy, clear focal point.",
-          4: "Perfect negative space usage; subject pops."
-        },
-        3: {
-          1: "Legible but possibly too long.",
-          2: "Short text, easy to read on mobile.",
-          3: "Minimal, punchy text complements visuals.",
-          4: "Perfect synergy; zero wasted words."
-        },
-        4: {
-          1: "Hints at something interesting.",
-          2: "Clear unanswered question.",
-          3: "Strongly teases a surprising element.",
-          4: "Creates a ‘What on earth?’ scenario."
-        },
-        5: {
-          1: "Neutral or mild interest.",
-          2: "Sparks curiosity or excitement.",
-          3: "Triggers FOMO, shock, or urgency.",
-          4: "Visceral reaction (fear, awe, hilarity)."
-        },
-        6: {
-          1: "Doesn’t reinforce title.",
-          2: "Hints at title’s topic.",
-          3: "Combined ‘hook’ effect with the title.",
-          4: "Seamless ‘one-two punch’ with title."
-        },
-        7: {
-          1: "Some alignment but somewhat clickbaity.",
-          2: "Accurately represents main topic.",
-          3: "Compelling moment without spoilers.",
-          4: "Perfect alignment with content."
-        },
-        8: {
-          1: "Basic consistency with channel style.",
-          2: "Visible brand elements used.",
-          3: "Immediately identifiable as your style.",
-          4: "Instant brand recognition from a glance."
-        },
-        9: {
-          1: "No pixelation, basic sizing.",
-          2: "Mobile-friendly text/contrast.",
-          3: "Studio-level precision.",
-          4: "Flawless execution."
-        }
+        0: { 1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.", 2: "Add bright color(s) or a face/danger element to stand out.", 3: "Combine multiple ‘scroll-stoppers’ (e.g. big text + dramatic photo).", 4: "You’re hitting MUST-CLICK levels; keep testing new combos." },
+        1: { 1: "Functional layout.", 2: "Rule of thirds / central alignment.", 3: "Leading lines + dynamic contrast.", 4: "Visually readable in under a second on any device." },
+        2: { 1: "Some clarity; background might distract.", 2: "Clean layout, minimal clutter.", 3: "Strong hierarchy, clear focal point.", 4: "Perfect negative space usage; subject pops." },
+        3: { 1: "Legible but possibly too long.", 2: "Short text, easy to read on mobile.", 3: "Minimal, punchy text complements visuals.", 4: "Perfect synergy; zero wasted words." },
+        4: { 1: "Hints at something interesting.", 2: "Clear unanswered question.", 3: "Strongly teases a surprising element.", 4: "Creates a ‘What on earth?’ scenario." },
+        5: { 1: "Neutral or mild interest.", 2: "Sparks curiosity or excitement.", 3: "Triggers FOMO, shock, or urgency.", 4: "Visceral reaction (fear, awe, hilarity)." },
+        6: { 1: "Doesn’t reinforce title.", 2: "Hints at title’s topic.", 3: "Combined ‘hook’ effect with the title.", 4: "Seamless ‘one-two punch’ with title." },
+        7: { 1: "Some alignment but somewhat clickbaity.", 2: "Accurately represents main topic.", 3: "Compelling moment without spoilers.", 4: "Perfect alignment with content." },
+        8: { 1: "Basic consistency with channel style.", 2: "Visible brand elements used.", 3: "Immediately identifiable as your style.", 4: "Instant brand recognition from a glance." },
+        9: { 1: "No pixelation, basic sizing.", 2: "Mobile-friendly text/contrast.", 3: "Studio-level precision.", 4: "Flawless execution." }
       };
 
       /***************************************************
-       * Global Score Tracking
+       * Global Score Tracking & Palette Storage
        ***************************************************/
       let scores = {};
+      // Store extracted palette for dynamic color suggestions
+      window.currentPalette = [];
 
       // Character limits for title preview truncation
-      const HOME_LIMIT = 66;
-      const SUGGESTED_LIMIT = 60;
-      const MOBILE_LIMIT = 72;
+      const HOME_LIMIT = 66, SUGGESTED_LIMIT = 60, MOBILE_LIMIT = 72;
+
+      // Global variable for MobileNet model
+      let mobileNetModel = null;
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Table rating selection with both click and keydown events for accessibility
+        // Set up rating selection for rubric table (click and keydown for accessibility)
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
           cell.addEventListener('keydown', (e) => {
@@ -885,13 +762,21 @@
             }
           });
         });
-        // Image upload change event
+        // Image upload event
         document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
-        // Title input synergy
+        // Title input event
         document.getElementById('videoTitle').addEventListener('input', () => {
           updateTitlePreview();
           checkTitleThumbnailSynergy();
         });
+        // Load MobileNet model for object recognition
+        loadMobileNet();
+        // (Optional) Load face-api models – ensure you host the models in a /models folder
+        if (typeof faceapi !== "undefined") {
+          Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('/models')
+          ]).then(() => console.log("Face-api models loaded"));
+        }
       });
 
       /***************************************************
@@ -938,13 +823,9 @@
         const feedbackDiv = document.getElementById('specificFeedback');
         feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
           const rating = scores[cat];
-          // Get category name from the corresponding header cell
           const catHeader = document.querySelector(`.category-header[data-category="${cat}"]`);
           const categoryName = catHeader ? catHeader.textContent.trim() : 'Category ' + cat;
-          return `<div class="feedback-item">
-                    <strong>${categoryName}</strong>
-                    <span>${improvementTips[cat][rating]}</span>
-                  </div>`;
+          return `<div class="feedback-item"><strong>${categoryName}</strong><span>${improvementTips[cat][rating]}</span></div>`;
         }).join('');
       }
 
@@ -977,8 +858,7 @@
       }
 
       function checkTitleThumbnailSynergy() {
-        // Placeholder for synergy check logic
-        // For example, warn if title is too long compared to thumbnail preview space.
+        // Placeholder: Insert logic if you want to check title length vs. thumbnail preview.
       }
 
       /***************************************************
@@ -992,7 +872,14 @@
           const dataUrl = ev.target.result;
           updateAllPreviews(dataUrl);
           extractColors(dataUrl);
-          setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
+          setTimeout(() => {
+            checkContrastAndBrightness(dataUrl);
+            drawCompositionGrid(dataUrl);
+            runFaceDetection(dataUrl);
+            runOCR(dataUrl);
+            runObjectRecognition(dataUrl);
+            showSharpness(dataUrl);
+          }, 300);
         };
         reader.readAsDataURL(file);
       }
@@ -1001,15 +888,14 @@
         document.getElementById('homePreview').src = dataUrl;
         document.getElementById('suggestedPreview').src = dataUrl;
         document.getElementById('mobilePreview').src = dataUrl;
-        // Update the small preview in the sidebar if needed
         document.getElementById('homePreviewSmall').src = dataUrl;
       }
 
-      // Drag & drop events for the upload area with visual feedback
       function handleDragOver(e) {
         e.preventDefault();
         document.getElementById('uploadArea').classList.add('dragover');
       }
+
       function handleDrop(e) {
         e.preventDefault();
         document.getElementById('uploadArea').classList.remove('dragover');
@@ -1020,14 +906,21 @@
             const dataUrl = ev.target.result;
             updateAllPreviews(dataUrl);
             extractColors(dataUrl);
-            setTimeout(() => checkContrastAndBrightness(dataUrl), 300);
+            setTimeout(() => {
+              checkContrastAndBrightness(dataUrl);
+              drawCompositionGrid(dataUrl);
+              runFaceDetection(dataUrl);
+              runOCR(dataUrl);
+              runObjectRecognition(dataUrl);
+              showSharpness(dataUrl);
+            }, 300);
           };
           reader.readAsDataURL(file);
         }
       }
 
       /***************************************************
-       * Color Extraction & Brightness/Contrast Check
+       * Color Extraction & Dynamic Color Suggestions
        ***************************************************/
       function extractColors(imageSrc) {
         const paletteContainer = document.getElementById('paletteContainer');
@@ -1039,16 +932,39 @@
           const colorThief = new ColorThief();
           try {
             const palette = colorThief.getPalette(img, 6);
+            window.currentPalette = palette;
             paletteContainer.innerHTML = palette.map(color => {
               const rgb = `rgb(${color[0]},${color[1]},${color[2]})`;
               return `<div class='color-swatch' style='background-color:${rgb}' title='${rgb}'></div>`;
             }).join('');
+            generateColorSuggestions();
           } catch {
             paletteContainer.innerHTML = 'Unable to extract palette.';
           }
         };
       }
 
+      function generateColorSuggestions() {
+        if (!window.currentPalette || window.currentPalette.length === 0) {
+          document.getElementById("colorSuggestions").textContent = "No color suggestions available.";
+          return;
+        }
+        let suggestionsHTML = "<h4>Color Suggestions (Complementary)</h4><div style='display:flex; gap:10px;'>";
+        window.currentPalette.forEach(color => {
+          const comp = `rgb(${255 - color[0]},${255 - color[1]},${255 - color[2]})`;
+          const orig = `rgb(${color[0]},${color[1]},${color[2]})`;
+          suggestionsHTML += `<div style="display:flex; flex-direction:column; align-items:center;">
+              <div style="width:40px; height:40px; background:${orig}; border:1px solid #ccc;" title="Original: ${orig}"></div>
+              <div style="width:40px; height:40px; background:${comp}; border:1px solid #ccc;" title="Complementary: ${comp}"></div>
+            </div>`;
+        });
+        suggestionsHTML += "</div>";
+        document.getElementById("colorSuggestions").innerHTML = suggestionsHTML;
+      }
+
+      /***************************************************
+       * Brightness & Contrast Analysis
+       ***************************************************/
       function checkContrastAndBrightness(imageSrc) {
         const brightnessMessage = document.getElementById('brightnessMessage');
         const contrastMessage = document.getElementById('contrastMessage');
@@ -1064,8 +980,7 @@
           const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
           let total = 0, count = 0;
           for (let i = 0; i < data.length; i += 4) {
-            const r = data[i], g = data[i+1], b = data[i+2];
-            const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+            const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
             total += brightness;
             count++;
           }
@@ -1083,21 +998,156 @@
       }
 
       /***************************************************
-       * AI Suggestions Simulation
+       * Composition Grid (Rule of Thirds)
+       ***************************************************/
+      async function drawCompositionGrid(imageSrc) {
+        const canvas = document.getElementById("compositionCanvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = imageSrc;
+        img.onload = function() {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          ctx.strokeStyle = "rgba(255,255,255,0.8)";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
+          const v1 = canvas.width / 3, v2 = (canvas.width * 2) / 3;
+          ctx.beginPath();
+          ctx.moveTo(v1, 0);
+          ctx.lineTo(v1, canvas.height);
+          ctx.moveTo(v2, 0);
+          ctx.lineTo(v2, canvas.height);
+          const h1 = canvas.height / 3, h2 = (canvas.height * 2) / 3;
+          ctx.moveTo(0, h1);
+          ctx.lineTo(canvas.width, h1);
+          ctx.moveTo(0, h2);
+          ctx.lineTo(canvas.width, h2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        };
+      }
+
+      /***************************************************
+       * Face Detection & Expression Analysis
+       ***************************************************/
+      async function runFaceDetection(imageSrc) {
+        if (typeof faceapi === "undefined") {
+          document.getElementById("faceDetectionResults").textContent = "Face detection library not loaded.";
+          return;
+        }
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = imageSrc;
+        img.onload = async function() {
+          const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+          if (detections.length === 0) {
+            document.getElementById("faceDetectionResults").textContent = "No faces detected.";
+          } else {
+            let resultText = `${detections.length} face(s) detected. `;
+            detections.forEach((det, i) => {
+              resultText += `Face ${i+1} expressions: `;
+              for (const expr in det.expressions) {
+                resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
+              }
+            });
+            document.getElementById("faceDetectionResults").textContent = resultText;
+          }
+        };
+      }
+
+      /***************************************************
+       * OCR Text Detection using Tesseract.js
+       ***************************************************/
+      async function runOCR(imageSrc) {
+        if (typeof Tesseract === "undefined") {
+          document.getElementById("ocrResults").textContent = "OCR library not loaded.";
+          return;
+        }
+        Tesseract.recognize(imageSrc, 'eng', { logger: m => console.log(m) })
+          .then(({ data: { text } }) => {
+            document.getElementById("ocrResults").textContent = text ? `Detected Text: ${text}` : "No text detected.";
+          })
+          .catch(err => {
+            document.getElementById("ocrResults").textContent = "OCR error.";
+          });
+      }
+
+      /***************************************************
+       * Object & Scene Recognition using MobileNet
+       ***************************************************/
+      async function loadMobileNet() {
+        if (typeof mobilenet === "undefined") {
+          console.log("TensorFlow MobileNet not loaded.");
+          return;
+        }
+        mobileNetModel = await mobilenet.load();
+      }
+      async function runObjectRecognition(imageSrc) {
+        if (!mobileNetModel) {
+          document.getElementById("objectRecognitionResults").textContent = "Object recognition model not loaded.";
+          return;
+        }
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = imageSrc;
+        img.onload = async function() {
+          const predictions = await mobileNetModel.classify(img);
+          if (predictions.length > 0) {
+            let text = predictions.map(p => `${p.className} (${(p.probability*100).toFixed(1)}%)`).join(', ');
+            document.getElementById("objectRecognitionResults").textContent = `Predictions: ${text}`;
+          } else {
+            document.getElementById("objectRecognitionResults").textContent = "No objects recognized.";
+          }
+        };
+      }
+
+      /***************************************************
+       * Sharpness Evaluation (Simple Metric)
+       ***************************************************/
+      async function calculateSharpness(imageSrc) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = "Anonymous";
+          img.src = imageSrc;
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let sumDiff = 0, count = 0;
+            for (let i = 0; i < data.length - 4; i += 4) {
+              const brightness1 = (data[i] + data[i+1] + data[i+2]) / 3;
+              const brightness2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
+              sumDiff += Math.abs(brightness1 - brightness2);
+              count++;
+            }
+            const avgDiff = sumDiff / count;
+            resolve(avgDiff);
+          };
+          img.onerror = reject;
+        });
+      }
+      async function showSharpness(imageSrc) {
+        const sharpness = await calculateSharpness(imageSrc);
+        document.getElementById("sharpnessResult").textContent = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
+      }
+
+      /***************************************************
+       * AI Suggestions Simulation (Existing Function)
        ***************************************************/
       async function getAISuggestions() {
         const aiDiv = document.getElementById('aiSuggestions');
         aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
-        // Construct prompt based on title and other data if available
         const videoTitle = document.getElementById('videoTitle').value || "Untitled Video";
         const prompt = `Please review the thumbnail for a YouTube video. The video title is "${videoTitle}". The thumbnail appears to have a dominant color scheme and its layout follows typical best practices. Please provide suggestions on how to improve visual impact, text clarity, and overall engagement.`;
-
         try {
           const response = await fetch('/api/chatgpt', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ prompt })
           });
           const data = await response.json();
@@ -1110,7 +1160,7 @@
       }
 
       /***************************************************
-       * EXPORT FUNCTIONS (PDF & PNG)
+       * Export Functions (PDF & PNG)
        ***************************************************/
       async function exportPDF() {
         const { jsPDF } = window.jspdf;
@@ -1126,13 +1176,8 @@
           }
         });
       }
-
       async function exportPNG() {
-        const canvas = await html2canvas(document.body, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true
-        });
+        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.download = 'thumbnail-analysis.png';
@@ -1143,7 +1188,7 @@
       }
 
       /***************************************************
-       * THEME TOGGLE
+       * Theme Toggle
        ***************************************************/
       function toggleTheme() {
         const htmlEl = document.documentElement;
@@ -1155,7 +1200,7 @@
       }
 
       /***************************************************
-       * LIGHTBOX FUNCTIONS
+       * Lightbox Functions
        ***************************************************/
       function enlargeImage(imgId) {
         const src = document.getElementById(imgId).src;
@@ -1167,7 +1212,7 @@
       }
 
       /***************************************************
-       * CLEAR FEEDBACK FIELDS
+       * Clear Feedback Fields
        ***************************************************/
       function clearFeedback() {
         document.getElementById('humanFeedback').innerHTML = '';
@@ -1175,7 +1220,7 @@
       }
 
       /***************************************************
-       * HOW-TO MODAL FUNCTIONS
+       * How-To Modal Functions
        ***************************************************/
       function openHowTo() {
         document.getElementById('howToModal').classList.add('show');
