@@ -97,6 +97,31 @@
         --yt-title-color-light: var(--yt-title-color-dark);
       }
 
+      /* New CSS for color blocks */
+      .color-block {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        position: relative;
+      }
+      /* Tooltip on hover */
+      .color-block:hover::after {
+        content: attr(data-hex);
+        position: absolute;
+        bottom: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #000;
+        color: #fff;
+        padding: 2px 4px;
+        font-size: 10px;
+        border-radius: 4px;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 100;
+      }
+
       /* HEADER */
       header.analyzer-header {
         position: sticky;
@@ -391,12 +416,6 @@
         gap: 0.75rem;
         margin-top: 1rem;
       }
-      .color-swatch {
-        width: 40px;
-        height: 40px;
-        border-radius: var(--radius);
-        border: 1px solid #ccc;
-      }
 
       /* RESOURCES */
       .resources h3 {
@@ -651,7 +670,7 @@
           </div>
         </section>
 
-        <!-- Design Insights Section (Enhanced) -->
+        <!-- Design Insights Section -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
           <div class="insight-message" id="brightnessMessage"></div>
@@ -660,10 +679,18 @@
           <h4>Color Palette</h4>
           <p style="margin:0;">Dominant Colors Extracted:</p>
           <div id="paletteContainer" class="palette-container"></div>
+
+          <!-- Color Suggestions appear below the title -->
           <div id="colorSuggestions" class="palette-container"></div>
 
           <h4>Composition Grid</h4>
-          <canvas id="compositionCanvas" style="width:320px; height:180px; border:1px solid #ccc;"></canvas>
+          <canvas id="compositionCanvas" style="border:1px solid #ccc;"></canvas>
+
+          <h4>Divine Spiral Overlay</h4>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <canvas id="divineSpiralLeft" style="border:1px solid #ccc;"></canvas>
+            <canvas id="divineSpiralRight" style="border:1px solid #ccc;"></canvas>
+          </div>
 
           <h4>Face Detection</h4>
           <div class="insight-message" id="faceDetectionResults"></div>
@@ -723,6 +750,25 @@
     <!-- JAVASCRIPT -->
     <script>
       /***************************************************
+       * Helper Functions
+       ***************************************************/
+      // Convert RGB values to Hex string
+      function rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+          const hex = x.toString(16);
+          return hex.length === 1 ? "0" + hex : hex;
+        }).join("");
+      }
+      // Copy hex value to clipboard and provide visual feedback
+      function copyHex(elem) {
+        var hex = elem.getAttribute("data-hex");
+        navigator.clipboard.writeText(hex).then(() => {
+          elem.style.borderColor = "lime";
+          setTimeout(() => { elem.style.borderColor = "#ccc"; }, 1000);
+        });
+      }
+
+      /***************************************************
        * Improvement Tips for Rubric (10 Categories)
        ***************************************************/
       const improvementTips = {
@@ -742,17 +788,14 @@
        * Global Score Tracking & Palette Storage
        ***************************************************/
       let scores = {};
-      // Store extracted palette for dynamic color suggestions
       window.currentPalette = [];
 
       // Character limits for title preview truncation
       const HOME_LIMIT = 66, SUGGESTED_LIMIT = 60, MOBILE_LIMIT = 72;
-
-      // Global variable for MobileNet model
-      let mobileNetModel = null;
+      let mobileNetModel = null; // For object recognition
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Set up rating selection for rubric table (click and keydown for accessibility)
+        // Set up rubric rating events (click and keyboard)
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
           cell.addEventListener('keydown', (e) => {
@@ -762,16 +805,12 @@
             }
           });
         });
-        // Image upload event
         document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
-        // Title input event
         document.getElementById('videoTitle').addEventListener('input', () => {
           updateTitlePreview();
           checkTitleThumbnailSynergy();
         });
-        // Load MobileNet model for object recognition
         loadMobileNet();
-        // (Optional) Load face-api models – ensure you host the models in a /models folder
         if (typeof faceapi !== "undefined") {
           Promise.all([
             faceapi.nets.tinyFaceDetector.loadFromUri('/models')
@@ -858,7 +897,7 @@
       }
 
       function checkTitleThumbnailSynergy() {
-        // Placeholder: Insert logic if you want to check title length vs. thumbnail preview.
+        // Placeholder for additional synergy checks.
       }
 
       /***************************************************
@@ -879,6 +918,8 @@
             runOCR(dataUrl);
             runObjectRecognition(dataUrl);
             showSharpness(dataUrl);
+            drawDivineSpiral("divineSpiralLeft", "left", dataUrl);
+            drawDivineSpiral("divineSpiralRight", "right", dataUrl);
           }, 300);
         };
         reader.readAsDataURL(file);
@@ -913,6 +954,8 @@
               runOCR(dataUrl);
               runObjectRecognition(dataUrl);
               showSharpness(dataUrl);
+              drawDivineSpiral("divineSpiralLeft", "left", dataUrl);
+              drawDivineSpiral("divineSpiralRight", "right", dataUrl);
             }, 300);
           };
           reader.readAsDataURL(file);
@@ -935,7 +978,7 @@
             window.currentPalette = palette;
             paletteContainer.innerHTML = palette.map(color => {
               const rgb = `rgb(${color[0]},${color[1]},${color[2]})`;
-              return `<div class='color-swatch' style='background-color:${rgb}' title='${rgb}'></div>`;
+              return `<div class='color-block' style="background:${rgb};" title="Original: ${rgb}" data-hex="${rgb}" onclick="copyHex(this)"></div>`;
             }).join('');
             generateColorSuggestions();
           } catch {
@@ -949,13 +992,14 @@
           document.getElementById("colorSuggestions").textContent = "No color suggestions available.";
           return;
         }
-        let suggestionsHTML = "<h4>Color Suggestions (Complementary)</h4><div style='display:flex; gap:10px;'>";
+        // Build suggestions HTML with heading (placed below the palette title)
+        let suggestionsHTML = "<h4>Color Suggestions (Complementary)</h4><div style='display: flex; flex-wrap: wrap; gap: 10px;'>";
         window.currentPalette.forEach(color => {
-          const comp = `rgb(${255 - color[0]},${255 - color[1]},${255 - color[2]})`;
-          const orig = `rgb(${color[0]},${color[1]},${color[2]})`;
-          suggestionsHTML += `<div style="display:flex; flex-direction:column; align-items:center;">
-              <div style="width:40px; height:40px; background:${orig}; border:1px solid #ccc;" title="Original: ${orig}"></div>
-              <div style="width:40px; height:40px; background:${comp}; border:1px solid #ccc;" title="Complementary: ${comp}"></div>
+          const origHex = rgbToHex(color[0], color[1], color[2]);
+          const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
+          suggestionsHTML += `<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div class="color-block" data-hex="${origHex}" style="background:${origHex};" onclick="copyHex(this)"></div>
+              <div class="color-block" data-hex="${compHex}" style="background:${compHex};" onclick="copyHex(this)"></div>
             </div>`;
         });
         suggestionsHTML += "</div>";
@@ -1000,7 +1044,7 @@
       /***************************************************
        * Composition Grid (Rule of Thirds)
        ***************************************************/
-      async function drawCompositionGrid(imageSrc) {
+      function drawCompositionGrid(imageSrc) {
         const canvas = document.getElementById("compositionCanvas");
         const ctx = canvas.getContext("2d");
         const img = new Image();
@@ -1010,8 +1054,8 @@
           canvas.width = img.width;
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          ctx.strokeStyle = "rgba(255,255,255,0.8)";
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = "rgba(255,255,255,1)";
+          ctx.lineWidth = 3;
           ctx.setLineDash([5, 5]);
           const v1 = canvas.width / 3, v2 = (canvas.width * 2) / 3;
           ctx.beginPath();
@@ -1026,6 +1070,41 @@
           ctx.lineTo(canvas.width, h2);
           ctx.stroke();
           ctx.setLineDash([]);
+        };
+      }
+
+      /***************************************************
+       * Divine Spiral Overlay Drawing
+       ***************************************************/
+      function drawDivineSpiral(canvasId, side, imageSrc) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = imageSrc;
+        img.onload = function() {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          // Draw the background image
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          // Draw the spiral overlay
+          ctx.strokeStyle = "rgba(255,0,0,0.8)";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+          let a = 2, b = 0.20;
+          let startAngle = side === "left" ? 0 : Math.PI;
+          let maxTheta = 4 * Math.PI;
+          let first = true;
+          for (let theta = startAngle; theta < startAngle + maxTheta; theta += 0.1) {
+            let r = a * Math.exp(b * theta);
+            let x = centerX + r * Math.cos(theta);
+            let y = centerY + r * Math.sin(theta);
+            if (first) { ctx.moveTo(x, y); first = false; }
+            else { ctx.lineTo(x, y); }
+          }
+          ctx.stroke();
         };
       }
 
@@ -1047,7 +1126,7 @@
           } else {
             let resultText = `${detections.length} face(s) detected. `;
             detections.forEach((det, i) => {
-              resultText += `Face ${i+1} expressions: `;
+              resultText += `Face ${i+1}: `;
               for (const expr in det.expressions) {
                 resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
               }
