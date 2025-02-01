@@ -97,13 +97,14 @@
         --yt-title-color-light: var(--yt-title-color-dark);
       }
 
-      /* New CSS for color blocks */
+      /* New CSS for interactive color blocks */
       .color-block {
         width: 40px;
         height: 40px;
         border: 1px solid #ccc;
         cursor: pointer;
         position: relative;
+        margin: 4px;
       }
       /* Tooltip on hover */
       .color-block:hover::after {
@@ -405,16 +406,33 @@
         background: #ef4444;
       }
 
-      /* DESIGN INSIGHTS SECTION */
-      .auto-insights h3,
-      .auto-insights h4 {
-        margin-top: 0;
+      /* DESIGN INSIGHTS SECTION (Clean & Modern) */
+      .auto-insights {
+        background: var(--panel-light);
+        border-radius: var(--radius);
+        padding: 1.5rem;
       }
-      .palette-container {
+      .auto-insights h3 {
+        margin-bottom: 1rem;
+        font-size: 1.6rem;
+      }
+      .auto-insights h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 0.25rem;
+      }
+      .auto-insights .insight-message {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+      /* Ensure color suggestion container appears as a block below its heading */
+      .color-suggestions-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 1rem;
+        gap: 10px;
+        margin-top: 0.5rem;
       }
 
       /* RESOURCES */
@@ -670,7 +688,7 @@
           </div>
         </section>
 
-        <!-- Design Insights Section -->
+        <!-- Design Insights Section (Clean & Modern) -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
           <div class="insight-message" id="brightnessMessage"></div>
@@ -680,17 +698,11 @@
           <p style="margin:0;">Dominant Colors Extracted:</p>
           <div id="paletteContainer" class="palette-container"></div>
 
-          <!-- Color Suggestions appear below the title -->
-          <div id="colorSuggestions" class="palette-container"></div>
+          <h4>Color Suggestions (Complementary)</h4>
+          <div id="colorSuggestions" class="color-suggestions-container"></div>
 
-          <h4>Composition Grid</h4>
-          <canvas id="compositionCanvas" style="border:1px solid #ccc;"></canvas>
-
-          <h4>Divine Spiral Overlay</h4>
-          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <canvas id="divineSpiralLeft" style="border:1px solid #ccc;"></canvas>
-            <canvas id="divineSpiralRight" style="border:1px solid #ccc;"></canvas>
-          </div>
+          <h4>Composition Grid (Rule of Thirds)</h4>
+          <canvas id="compositionCanvas" style="border:1px solid #ccc; width:100%; max-width:320px;"></canvas>
 
           <h4>Face Detection</h4>
           <div class="insight-message" id="faceDetectionResults"></div>
@@ -918,8 +930,6 @@
             runOCR(dataUrl);
             runObjectRecognition(dataUrl);
             showSharpness(dataUrl);
-            drawDivineSpiral("divineSpiralLeft", "left", dataUrl);
-            drawDivineSpiral("divineSpiralRight", "right", dataUrl);
           }, 300);
         };
         reader.readAsDataURL(file);
@@ -954,8 +964,6 @@
               runOCR(dataUrl);
               runObjectRecognition(dataUrl);
               showSharpness(dataUrl);
-              drawDivineSpiral("divineSpiralLeft", "left", dataUrl);
-              drawDivineSpiral("divineSpiralRight", "right", dataUrl);
             }, 300);
           };
           reader.readAsDataURL(file);
@@ -978,7 +986,7 @@
             window.currentPalette = palette;
             paletteContainer.innerHTML = palette.map(color => {
               const rgb = `rgb(${color[0]},${color[1]},${color[2]})`;
-              return `<div class='color-block' style="background:${rgb};" title="Original: ${rgb}" data-hex="${rgb}" onclick="copyHex(this)"></div>`;
+              return `<div class="color-block" style="background:${rgb};" data-hex="${rgb}" onclick="copyHex(this)"></div>`;
             }).join('');
             generateColorSuggestions();
           } catch {
@@ -992,17 +1000,15 @@
           document.getElementById("colorSuggestions").textContent = "No color suggestions available.";
           return;
         }
-        // Build suggestions HTML with heading (placed below the palette title)
-        let suggestionsHTML = "<h4>Color Suggestions (Complementary)</h4><div style='display: flex; flex-wrap: wrap; gap: 10px;'>";
+        let suggestionsHTML = "";
         window.currentPalette.forEach(color => {
           const origHex = rgbToHex(color[0], color[1], color[2]);
           const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
-          suggestionsHTML += `<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          suggestionsHTML += `<div style="display: flex; flex-direction: column; align-items: center;">
               <div class="color-block" data-hex="${origHex}" style="background:${origHex};" onclick="copyHex(this)"></div>
               <div class="color-block" data-hex="${compHex}" style="background:${compHex};" onclick="copyHex(this)"></div>
             </div>`;
         });
-        suggestionsHTML += "</div>";
         document.getElementById("colorSuggestions").innerHTML = suggestionsHTML;
       }
 
@@ -1070,41 +1076,6 @@
           ctx.lineTo(canvas.width, h2);
           ctx.stroke();
           ctx.setLineDash([]);
-        };
-      }
-
-      /***************************************************
-       * Divine Spiral Overlay Drawing
-       ***************************************************/
-      function drawDivineSpiral(canvasId, side, imageSrc) {
-        const canvas = document.getElementById(canvasId);
-        const ctx = canvas.getContext("2d");
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = imageSrc;
-        img.onload = function() {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          // Draw the background image
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          // Draw the spiral overlay
-          ctx.strokeStyle = "rgba(255,0,0,0.8)";
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          const centerX = canvas.width / 2;
-          const centerY = canvas.height / 2;
-          let a = 2, b = 0.20;
-          let startAngle = side === "left" ? 0 : Math.PI;
-          let maxTheta = 4 * Math.PI;
-          let first = true;
-          for (let theta = startAngle; theta < startAngle + maxTheta; theta += 0.1) {
-            let r = a * Math.exp(b * theta);
-            let x = centerX + r * Math.cos(theta);
-            let y = centerY + r * Math.sin(theta);
-            if (first) { ctx.moveTo(x, y); first = false; }
-            else { ctx.lineTo(x, y); }
-          }
-          ctx.stroke();
         };
       }
 
@@ -1216,7 +1187,7 @@
       }
 
       /***************************************************
-       * AI Suggestions Simulation (Existing Function)
+       * AI Suggestions Simulation
        ***************************************************/
       async function getAISuggestions() {
         const aiDiv = document.getElementById('aiSuggestions');
