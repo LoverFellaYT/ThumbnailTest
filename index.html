@@ -15,9 +15,6 @@
 
     <!-- Optional: Color Thief for palette extraction -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
-    <!-- PDF export (via jsPDF) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <!-- New Libraries for Image Analysis -->
     <!-- Face Detection & Expression Analysis -->
     <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
@@ -26,6 +23,8 @@
     <!-- TensorFlow & MobileNet for Object Recognition -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <!-- html2canvas for PNG export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
       :root {
@@ -519,7 +518,7 @@
       <div class="header-right">
         <button class="btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓 Theme</button>
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-        <button class="btn" onclick="exportPDF()" aria-label="Export as PDF">📥 Export PDF</button>
+        <!-- Removed PDF export button -->
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
         <button class="btn" onclick="getAISuggestions()" aria-label="Get AI Help">🤖 AI Help</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
@@ -624,7 +623,7 @@
                 <td data-category="4" data-rating="1" role="button" tabindex="0">Hints at something interesting.</td>
                 <td data-category="4" data-rating="2" role="button" tabindex="0">Clear unanswered question.</td>
                 <td data-category="4" data-rating="3" role="button" tabindex="0">Strongly teases a surprising element.</td>
-                <td data-category="4" data-rating="4" role="button" tabindex="0">Creates a “What on earth?” scenario.</td>
+                <td data-category="4" data-rating="4" role="button" tabindex="0">Creates a ‘What on earth?’ scenario.</td>
               </tr>
               <!-- 5: Emotional Impact -->
               <tr>
@@ -639,8 +638,8 @@
                 <td class="category-header" data-category="6" title="How well does the thumbnail reinforce the title?">Thumbnail–Title Synergy</td>
                 <td data-category="6" data-rating="1" role="button" tabindex="0">Doesn’t reinforce title.</td>
                 <td data-category="6" data-rating="2" role="button" tabindex="0">Hints at title’s topic.</td>
-                <td data-category="6" data-rating="3" role="button" tabindex="0">Combined “hook” effect with the title.</td>
-                <td data-category="6" data-rating="4" role="button" tabindex="0">Seamless “one-two punch” with title.</td>
+                <td data-category="6" data-rating="3" role="button" tabindex="0">Combined ‘hook’ effect with the title.</td>
+                <td data-category="6" data-rating="4" role="button" tabindex="0">Seamless ‘one-two punch’ with title.</td>
               </tr>
               <!-- 7: Video Relevance -->
               <tr>
@@ -806,6 +805,9 @@
       const HOME_LIMIT = 66, SUGGESTED_LIMIT = 60, MOBILE_LIMIT = 72;
       let mobileNetModel = null; // For object recognition
 
+      // A constant to set the sampling step (adjust for speed vs. accuracy)
+      const SAMPLE_STEP = 16;
+
       document.addEventListener("DOMContentLoaded", () => {
         // Set up rubric rating events (click and keyboard)
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
@@ -915,22 +917,27 @@
       /***************************************************
        * Image Upload & Drag-and-Drop Functions
        ***************************************************/
+      // Consolidated processing function for both upload and drag–drop
+      function processImage(dataUrl) {
+        updateAllPreviews(dataUrl);
+        extractColors(dataUrl);
+        // Delay to ensure image is fully rendered before further analysis
+        setTimeout(() => {
+          checkContrastAndBrightness(dataUrl);
+          drawCompositionGrid(dataUrl);
+          runFaceDetection(dataUrl);
+          runOCR(dataUrl);
+          runObjectRecognition(dataUrl);
+          showSharpness(dataUrl);
+        }, 300);
+      }
+
       function handleImageUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = ev => {
-          const dataUrl = ev.target.result;
-          updateAllPreviews(dataUrl);
-          extractColors(dataUrl);
-          setTimeout(() => {
-            checkContrastAndBrightness(dataUrl);
-            drawCompositionGrid(dataUrl);
-            runFaceDetection(dataUrl);
-            runOCR(dataUrl);
-            runObjectRecognition(dataUrl);
-            showSharpness(dataUrl);
-          }, 300);
+          processImage(ev.target.result);
         };
         reader.readAsDataURL(file);
       }
@@ -954,17 +961,7 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = ev => {
-            const dataUrl = ev.target.result;
-            updateAllPreviews(dataUrl);
-            extractColors(dataUrl);
-            setTimeout(() => {
-              checkContrastAndBrightness(dataUrl);
-              drawCompositionGrid(dataUrl);
-              runFaceDetection(dataUrl);
-              runOCR(dataUrl);
-              runObjectRecognition(dataUrl);
-              showSharpness(dataUrl);
-            }, 300);
+            processImage(ev.target.result);
           };
           reader.readAsDataURL(file);
         }
@@ -1029,7 +1026,8 @@
           ctx.drawImage(img, 0, 0);
           const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
           let total = 0, count = 0;
-          for (let i = 0; i < data.length; i += 4) {
+          // Use sampling to speed up processing
+          for (let i = 0; i < data.length; i += 4 * SAMPLE_STEP) {
             const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
             total += brightness;
             count++;
@@ -1169,7 +1167,8 @@
             ctx.drawImage(img, 0, 0);
             const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             let sumDiff = 0, count = 0;
-            for (let i = 0; i < data.length - 4; i += 4) {
+            // Use sampling to improve performance on large images
+            for (let i = 0; i < data.length - 4; i += 4 * SAMPLE_STEP) {
               const brightness1 = (data[i] + data[i+1] + data[i+2]) / 3;
               const brightness2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
               sumDiff += Math.abs(brightness1 - brightness2);
@@ -1210,23 +1209,11 @@
       }
 
       /***************************************************
-       * Export Functions (PDF & PNG)
+       * Export Function (PNG only)
        ***************************************************/
-      async function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        await doc.html(document.body, {
-          x: 10,
-          y: 10,
-          width: 190,
-          windowWidth: document.body.scrollWidth,
-          autoPaging: 'text',
-          callback: function (doc) {
-            doc.save('thumbnail-analysis-report.pdf');
-          }
-        });
-      }
       async function exportPNG() {
+        // Here we capture the entire document body.
+        // Change 'document.body' to a specific container if desired.
         const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
