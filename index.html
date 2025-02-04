@@ -266,17 +266,8 @@
         display: flex;
         flex-direction: column;
         gap: 2rem;
-        margin-top: 0; /* removed margin to align with left side */
+        margin-top: 0;
       }
-      .rubric-table,
-      .feedback-panel,
-      .auto-insights,
-      .resources {
-        margin: 0;
-        padding: 1.5rem;
-        margin-top: 1rem;
-      }
-      /* TABLE */
       .rubric-table {
         overflow-x: auto;
       }
@@ -330,88 +321,6 @@
         transform: scale(1.02);
       }
 
-      /* FEEDBACK PANEL */
-      .feedback-panel h3 {
-        margin-top: 0;
-      }
-      #specificFeedback {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        margin-top: 1rem;
-      }
-      .feedback-item {
-        padding: 0.8rem;
-        border-radius: var(--radius);
-        background: rgba(126, 34, 206, 0.07);
-        border: 1px solid rgba(126, 34, 206, 0.15);
-      }
-      .feedback-item strong {
-        display: block;
-        margin-bottom: 0.3rem;
-      }
-      .ai-suggestions {
-        margin-top: 1rem;
-        padding: 1rem;
-        border-radius: var(--radius);
-        background: rgba(236, 72, 153, 0.07);
-        border: 1px solid rgba(236, 72, 153, 0.2);
-      }
-      .keyword {
-        background: rgba(236, 72, 153, 0.1);
-        padding: 2px 4px;
-        border-radius: 4px;
-      }
-
-      /* CONTENTEDITABLE FOR FEEDBACK */
-      .manual-inputs {
-        margin-top: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-      .flex-label {
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-      }
-      .contentedit {
-        min-height: 80px;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 0.8rem;
-        width: 100%;
-        max-width: 600px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        resize: vertical;
-        font-size: 1rem;
-        font-family: 'Inter', sans-serif;
-        transition: var(--transition);
-      }
-      .contentedit:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
-      }
-      .contentedit:empty::before {
-        content: attr(data-placeholder);
-        color: #9ca3af;
-      }
-      .clear-btn {
-        background: #f87171;
-        border: none;
-        color: #fff;
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        align-self: flex-start;
-      }
-      .clear-btn:hover {
-        background: #ef4444;
-      }
-
       /* DESIGN INSIGHTS SECTION (Clean & Modern) */
       .auto-insights {
         background: var(--panel-light);
@@ -441,15 +350,14 @@
         margin-top: 0.5rem;
       }
 
-      /* RESOURCES */
-      .resources h3 {
-        margin-top: 0;
-      }
-      .resources ul {
-        margin: 1rem 0 0 1.5rem;
+      /* COMPOSITION FEEDBACK */
+      #compositionFeedback {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #555;
       }
 
-      /* MODAL (LIGHTBOX & HOW-TO) */
+      /* MODAL (LIGHTBOX, HOW-TO & TUTORIAL) */
       .modal-bg {
         position: fixed;
         top: 0;
@@ -527,7 +435,6 @@
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
         <!-- Removed PDF export button -->
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-        <button class="btn" onclick="getAISuggestions()" aria-label="Get AI Help">🤖 AI Help</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
       </div>
     </header>
@@ -565,7 +472,6 @@
               </div>
               <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
             </div>
-            <!-- Removed Mobile View preview to avoid redundancy -->
           </div>
         </section>
       </aside>
@@ -669,24 +575,6 @@
           </table>
         </section>
 
-        <!-- Feedback Panel -->
-        <section class="feedback-panel glass-panel" id="feedback">
-          <h3>Improvement Recommendations</h3>
-          <div id="specificFeedback"></div>
-          <div class="ai-suggestions" id="aiSuggestions" aria-live="polite"></div>
-          <div class="manual-inputs">
-            <div>
-              <label for="humanFeedback" class="flex-label">Human Feedback</label>
-              <div id="humanFeedback" class="contentedit" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback Input"></div>
-            </div>
-            <div>
-              <label for="artistAIFeedback" class="flex-label">AI Feedback Entry</label>
-              <div id="artistAIFeedback" class="contentedit" contenteditable="true" data-placeholder="Paste AI feedback or notes here..." aria-label="AI Feedback Input"></div>
-            </div>
-            <button class="clear-btn" onclick="clearFeedback()" aria-label="Clear Feedback">Clear Feedback</button>
-          </div>
-        </section>
-
         <!-- Design Insights Section (Clean & Modern) -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
@@ -702,6 +590,10 @@
 
           <h4>Composition Grid (Rule of Thirds)</h4>
           <canvas id="compositionCanvas" style="border:1px solid #ccc; width:100%; max-width:320px;"></canvas>
+          <p id="compositionFeedback">
+            Composition Feedback: Your main subject may be off-center. Align it with the grid lines for better balance.
+            <a href="#" onclick="openTutorial('composition')">Learn How</a>
+          </p>
 
           <h4>Face Detection</h4>
           <div class="insight-message" id="faceDetectionResults"></div>
@@ -714,22 +606,6 @@
 
           <h4>Sharpness Evaluation</h4>
           <div class="insight-message" id="sharpnessResult"></div>
-        </section>
-
-        <!-- Resources -->
-        <section class="resources glass-panel">
-          <h3>Creation Resources</h3>
-          <ul>
-            <li><a href="https://creatoracademy.youtube.com/page/lesson/thumbnails" target="_blank">YouTube Thumbnail Guide</a></li>
-            <li><a href="https://www.canva.com/create/youtube-thumbnails/" target="_blank">Free Thumbnail Maker</a></li>
-            <li><a href="https://www.tubebuddy.com/thumbnail-tester" target="_blank">A/B Testing Tool</a></li>
-            <li><a href="https://photopea.com/" target="_blank">Photopea (Free Online Photoshop)</a></li>
-            <li><a href="https://leonardo.ai/" target="_blank">Leonardo.ai (AI Image Generation)</a></li>
-            <li><a href="https://clipdrop.co/" target="_blank">Clipdrop (Background Remover, etc.)</a></li>
-            <li><a href="https://contrast-ratio.com" target="_blank">Contrast Ratio Checker</a></li>
-            <li><a href="https://coolors.co/" target="_blank">Coolors (Color Palette Generator)</a></li>
-            <li><a href="https://wave.webaim.org/" target="_blank">WAVE Accessibility Evaluation</a></li>
-          </ul>
         </section>
       </main>
     </div>
@@ -752,9 +628,16 @@
           <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
           <li>Click on the preview boxes to enlarge the thumbnail.</li>
           <li>Rate your thumbnail on various criteria using the rubric table.</li>
-          <li>View the improvement recommendations and design insights.</li>
-          <li>Use the resources for additional help and inspiration.</li>
+          <li>Review the Design Insights for technical feedback and tips.</li>
         </ul>
+      </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div class="modal-bg" id="tutorialModal" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">✕</span>
+        <div id="tutorialContent"></div>
       </div>
     </div>
 
@@ -780,30 +663,10 @@
       }
 
       /***************************************************
-       * Improvement Tips for Rubric (10 Categories)
-       ***************************************************/
-      const improvementTips = {
-        0: { 1: "Use bigger contrasts or dynamic visuals to stop scrolling eyes.", 2: "Add bright color(s) or a face/danger element to stand out.", 3: "Combine multiple ‘scroll-stoppers’ (e.g. big text + dramatic photo).", 4: "You’re hitting MUST-CLICK levels; keep testing new combos." },
-        1: { 1: "Functional layout.", 2: "Rule of thirds / central alignment.", 3: "Leading lines + dynamic contrast.", 4: "Visually readable in under a second on any device." },
-        2: { 1: "Some clarity; background might distract.", 2: "Clean layout, minimal clutter.", 3: "Strong hierarchy, clear focal point.", 4: "Perfect negative space usage; subject pops." },
-        3: { 1: "Legible but possibly too long.", 2: "Short text, easy to read on mobile.", 3: "Minimal, punchy text complements visuals.", 4: "Perfect synergy; zero wasted words." },
-        4: { 1: "Hints at something interesting.", 2: "Clear unanswered question.", 3: "Strongly teases a surprising element.", 4: "Creates a ‘What on earth?’ scenario." },
-        5: { 1: "Neutral or mild interest.", 2: "Sparks curiosity or excitement.", 3: "Triggers FOMO, shock, or urgency.", 4: "Visceral reaction (fear, awe, hilarity)." },
-        6: { 1: "Doesn’t reinforce title.", 2: "Hints at title’s topic.", 3: "Combined ‘hook’ effect with the title.", 4: "Seamless ‘one-two punch’ with title." },
-        7: { 1: "Some alignment but somewhat clickbaity.", 2: "Accurately represents main topic.", 3: "Compelling moment without spoilers.", 4: "Perfect alignment with content." },
-        8: { 1: "Basic consistency with channel style.", 2: "Visible brand elements used.", 3: "Immediately identifiable as your style.", 4: "Instant brand recognition from a glance." },
-        9: { 1: "No pixelation, basic sizing.", 2: "Mobile-friendly text/contrast.", 3: "Studio-level precision.", 4: "Flawless execution." }
-      };
-
-      /***************************************************
        * Global Score Tracking & Palette Storage
        ***************************************************/
       let scores = {};
       window.currentPalette = [];
-
-      // Character limits for title preview truncation
-      const HOME_LIMIT = 66, SUGGESTED_LIMIT = 60, MOBILE_LIMIT = 72;
-      let mobileNetModel = null; // For object recognition
 
       // A constant to set the sampling step (adjust for speed vs. accuracy)
       const SAMPLE_STEP = 16;
@@ -847,7 +710,6 @@
         cell.classList.add('selected');
         scores[categoryIndex] = rating;
         updateTotal();
-        showFeedback();
       }
 
       function updateTotal() {
@@ -874,26 +736,6 @@
         }
       }
 
-      function showFeedback() {
-        const feedbackDiv = document.getElementById('specificFeedback');
-        feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
-          const rating = scores[cat];
-          const catHeader = document.querySelector(`.category-header[data-category="${cat}"]`);
-          const categoryName = catHeader ? catHeader.textContent.trim() : 'Category ' + cat;
-          return `<div class="feedback-item"><strong>${categoryName}</strong><span>${improvementTips[cat][rating]}</span></div>`;
-        }).join('');
-      }
-
-      function resetScores() {
-        scores = {};
-        document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-        document.getElementById('specificFeedback').innerHTML = '';
-        updateTotal();
-        const ranking = document.getElementById('ranking');
-        ranking.textContent = 'Incomplete';
-        ranking.style.color = '#64748b';
-      }
-
       /***************************************************
        * Title Preview & Synergy Functions
        ***************************************************/
@@ -902,9 +744,8 @@
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
           const title = document.getElementById('videoTitle').value || '';
-          document.getElementById('homeTitle').textContent = truncateTitle(title, HOME_LIMIT);
-          document.getElementById('suggestedTitle').textContent = truncateTitle(title, SUGGESTED_LIMIT);
-          // Removed mobileTitle update since mobile view was removed
+          document.getElementById('homeTitle').textContent = truncateTitle(title, 66);
+          document.getElementById('suggestedTitle').textContent = truncateTitle(title, 60);
         }, 300);
       }
 
@@ -919,11 +760,9 @@
       /***************************************************
        * Image Upload & Drag-and-Drop Functions
        ***************************************************/
-      // Consolidated processing function for both upload and drag–drop
       function processImage(dataUrl) {
         updateAllPreviews(dataUrl);
         extractColors(dataUrl);
-        // Delay to ensure image is fully rendered before further analysis
         setTimeout(() => {
           checkContrastAndBrightness(dataUrl);
           drawCompositionGrid(dataUrl);
@@ -947,7 +786,6 @@
       function updateAllPreviews(dataUrl) {
         document.getElementById('homePreview').src = dataUrl;
         document.getElementById('suggestedPreview').src = dataUrl;
-        // Removed mobile preview update
         document.getElementById('homePreviewSmall').src = dataUrl;
       }
 
@@ -1028,22 +866,22 @@
           ctx.drawImage(img, 0, 0);
           const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
           let total = 0, count = 0;
-          // Use sampling to speed up processing
           for (let i = 0; i < data.length; i += 4 * SAMPLE_STEP) {
             const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
             total += brightness;
             count++;
           }
           const avg = total / count;
-          brightnessMessage.textContent = `Average Brightness: ${Math.round(avg)}/255`;
+          brightnessMessage.innerHTML = `Average Brightness: ${Math.round(avg)}/255 `;
           if (avg < 80) {
-            brightnessMessage.textContent += ' (Very Dark)';
+            brightnessMessage.innerHTML += '(Very Dark) ';
           } else if (avg < 160) {
-            brightnessMessage.textContent += ' (Moderate)';
+            brightnessMessage.innerHTML += '(Moderate) ';
           } else {
-            brightnessMessage.textContent += ' (Bright)';
+            brightnessMessage.innerHTML += '(Bright) ';
           }
-          contrastMessage.textContent = 'Ensure text overlay meets accessibility contrast standards (~4.5:1).';
+          brightnessMessage.innerHTML += `<a href="#" onclick="openTutorial('brightness')">Learn How</a>`;
+          contrastMessage.innerHTML = 'Ensure text overlay meets accessibility contrast standards (~4.5:1). <a href="#" onclick="openTutorial(\'contrast\')">Learn How</a>';
         };
       }
 
@@ -1061,7 +899,7 @@
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           ctx.strokeStyle = "rgba(255,255,255,1)";
-          ctx.lineWidth = 4; // increased line width for better visibility
+          ctx.lineWidth = 4;
           ctx.setLineDash([5, 5]);
           const v1 = canvas.width / 3, v2 = (canvas.width * 2) / 3;
           ctx.beginPath();
@@ -1076,12 +914,10 @@
           ctx.lineTo(canvas.width, h2);
           ctx.stroke();
           ctx.setLineDash([]);
-          // Set pointer style to indicate clickability
           canvas.style.cursor = 'pointer';
         };
       }
 
-      // When the composition grid canvas is clicked, enlarge it in the modal
       function enlargeComposition() {
         const canvas = document.getElementById("compositionCanvas");
         const dataUrl = canvas.toDataURL();
@@ -1112,7 +948,7 @@
                 resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
               }
             });
-            document.getElementById("faceDetectionResults").textContent = resultText;
+            document.getElementById("faceDetectionResults").innerHTML = resultText + ` <a href="#" onclick="openTutorial('face')">Learn How</a>`;
           }
         };
       }
@@ -1127,7 +963,11 @@
         }
         Tesseract.recognize(imageSrc, 'eng', { logger: m => console.log(m) })
           .then(({ data: { text } }) => {
-            document.getElementById("ocrResults").textContent = text ? `Detected Text: ${text}` : "No text detected.";
+            if (text) {
+              document.getElementById("ocrResults").innerHTML = `Detected Text: ${text} <a href="#" onclick="openTutorial('ocr')">Learn How</a>`;
+            } else {
+              document.getElementById("ocrResults").textContent = "No text detected.";
+            }
           })
           .catch(err => {
             document.getElementById("ocrResults").textContent = "OCR error.";
@@ -1156,7 +996,7 @@
           const predictions = await mobileNetModel.classify(img);
           if (predictions.length > 0) {
             let text = predictions.map(p => `${p.className} (${(p.probability*100).toFixed(1)}%)`).join(', ');
-            document.getElementById("objectRecognitionResults").textContent = `Predictions: ${text}`;
+            document.getElementById("objectRecognitionResults").innerHTML = `Predictions: ${text} <a href="#" onclick="openTutorial('object')">Learn How</a>`;
           } else {
             document.getElementById("objectRecognitionResults").textContent = "No objects recognized.";
           }
@@ -1179,7 +1019,6 @@
             ctx.drawImage(img, 0, 0);
             const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             let sumDiff = 0, count = 0;
-            // Use sampling to improve performance on large images
             for (let i = 0; i < data.length - 4; i += 4 * SAMPLE_STEP) {
               const brightness1 = (data[i] + data[i+1] + data[i+2]) / 3;
               const brightness2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
@@ -1198,33 +1037,9 @@
       }
 
       /***************************************************
-       * AI Suggestions Simulation
-       ***************************************************/
-      async function getAISuggestions() {
-        const aiDiv = document.getElementById('aiSuggestions');
-        aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing...';
-        const videoTitle = document.getElementById('videoTitle').value || "Untitled Video";
-        const prompt = `Please review the thumbnail for a YouTube video. The video title is "${videoTitle}". The thumbnail appears to have a dominant color scheme and its layout follows typical best practices. Please provide suggestions on how to improve visual impact, text clarity, and overall engagement.`;
-        try {
-          const response = await fetch('/api/chatgpt', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt })
-          });
-          const data = await response.json();
-          const aiFeedback = data.choices && data.choices[0].message.content;
-          aiDiv.innerHTML = `<strong>AI Recommendations:</strong><br>${aiFeedback.replace(/\n/g, '<br>')}`;
-        } catch (error) {
-          aiDiv.innerHTML = 'Failed to retrieve AI feedback.';
-          console.error('Error fetching AI feedback:', error);
-        }
-      }
-
-      /***************************************************
        * Export Function (PNG only)
        ***************************************************/
       async function exportPNG() {
-        // Capture the entire document body (or change to a specific container if desired)
         const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
@@ -1260,14 +1075,6 @@
       }
 
       /***************************************************
-       * Clear Feedback Fields
-       ***************************************************/
-      function clearFeedback() {
-        document.getElementById('humanFeedback').innerHTML = '';
-        document.getElementById('artistAIFeedback').innerHTML = '';
-      }
-
-      /***************************************************
        * How-To Modal Functions
        ***************************************************/
       function openHowTo() {
@@ -1275,6 +1082,35 @@
       }
       function closeHowTo() {
         document.getElementById('howToModal').classList.remove('show');
+      }
+
+      /***************************************************
+       * Tutorial Modal Functions
+       ***************************************************/
+      function openTutorial(topic) {
+        const tutorialContent = document.getElementById('tutorialContent');
+        let content = "";
+        if (topic === 'brightness') {
+          content = "<h2>Adjusting Brightness</h2><p>If your thumbnail appears too dark, try increasing the brightness or adding highlights. In your editing software, look for 'Brightness/Contrast' adjustments. <a href='https://example.com/brightness-tutorial' target='_blank'>Learn More</a></p>";
+        } else if (topic === 'contrast') {
+          content = "<h2>Improving Contrast</h2><p>Ensure that text overlays have sufficient contrast. Adjust the contrast or text color in your editor. <a href='https://example.com/contrast-tutorial' target='_blank'>Learn More</a></p>";
+        } else if (topic === 'composition') {
+          content = "<h2>Enhancing Composition</h2><p>Your main subject might be off-center. Try aligning it with the rule-of-thirds grid for better visual balance. <a href='https://example.com/composition-tutorial' target='_blank'>Learn More</a></p>";
+        } else if (topic === 'ocr') {
+          content = "<h2>Text Legibility</h2><p>If the detected text seems too small or unclear, consider increasing the font size or using bolder text. <a href='https://example.com/text-legibility-tutorial' target='_blank'>Learn More</a></p>";
+        } else if (topic === 'object') {
+          content = "<h2>Object Positioning</h2><p>For better impact, ensure that key objects are well-positioned and not obscured. <a href='https://example.com/object-positioning-tutorial' target='_blank'>Learn More</a></p>";
+        } else if (topic === 'face') {
+          content = "<h2>Face Detection &amp; Composition</h2><p>If detected faces are not centered, consider repositioning the subject to enhance focus and engagement. <a href='https://example.com/face-detection-tutorial' target='_blank'>Learn More</a></p>";
+        } else {
+          content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
+        }
+        tutorialContent.innerHTML = content;
+        document.getElementById('tutorialModal').classList.add('show');
+      }
+
+      function closeTutorial() {
+        document.getElementById('tutorialModal').classList.remove('show');
       }
     </script>
   </body>
