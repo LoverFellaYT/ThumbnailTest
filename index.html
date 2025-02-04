@@ -215,6 +215,7 @@
         font-size: 1rem;
         transition: var(--transition);
         margin-bottom: 0.75rem;
+        box-sizing: border-box;
       }
       .title-input:focus {
         outline: none;
@@ -336,9 +337,11 @@
         display: block;
         margin-bottom: 0.3rem;
       }
-      /* Using contenteditable divs instead of textareas */
+      /* Contenteditable feedback inputs */
       .feedback-input {
+        display: block;
         width: 100%;
+        box-sizing: border-box;
         min-height: 80px;
         padding: 0.8rem;
         border: 2px solid #e2e8f0;
@@ -346,8 +349,9 @@
         font-size: 1rem;
         font-family: 'Inter', sans-serif;
         transition: var(--transition);
-        overflow-wrap: break-word;
         white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow: auto;
       }
       .feedback-input:focus {
         outline: none;
