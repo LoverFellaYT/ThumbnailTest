@@ -321,6 +321,37 @@
         transform: scale(1.02);
       }
 
+      /* FEEDBACK PANEL */
+      .feedback-panel {
+        margin-top: 1rem;
+      }
+      .feedback-panel h3 {
+        margin-top: 0;
+      }
+      .feedback-panel .feedback-entry {
+        margin-bottom: 1rem;
+      }
+      .feedback-panel label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+      .feedback-panel textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        resize: vertical;
+        font-family: 'Inter', sans-serif;
+        transition: var(--transition);
+      }
+      .feedback-panel textarea:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+      }
+
       /* DESIGN INSIGHTS SECTION (Clean & Modern) */
       .auto-insights {
         background: var(--panel-light);
@@ -575,6 +606,19 @@
           </table>
         </section>
 
+        <!-- Feedback Panel -->
+        <section class="feedback-panel glass-panel">
+          <h3>Feedback</h3>
+          <div class="feedback-entry">
+            <label for="humanFeedback" class="flex-label">Human Feedback</label>
+            <textarea id="humanFeedback" placeholder="Enter your human feedback here..." aria-label="Human Feedback"></textarea>
+          </div>
+          <div class="feedback-entry">
+            <label for="aiFeedback" class="flex-label">AI Feedback</label>
+            <textarea id="aiFeedback" placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></textarea>
+          </div>
+        </section>
+
         <!-- Design Insights Section (Clean & Modern) -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
@@ -628,6 +672,7 @@
           <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
           <li>Click on the preview boxes to enlarge the thumbnail.</li>
           <li>Rate your thumbnail on various criteria using the rubric table.</li>
+          <li>Provide feedback using the Human and AI feedback boxes.</li>
           <li>Review the Design Insights for technical feedback and tips.</li>
         </ul>
       </div>
