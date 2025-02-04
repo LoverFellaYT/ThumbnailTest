@@ -342,9 +342,11 @@
         border: 2px solid #e2e8f0;
         border-radius: var(--radius);
         font-size: 1rem;
-        resize: vertical;
         font-family: 'Inter', sans-serif;
         transition: var(--transition);
+        overflow: hidden;
+        white-space: pre-wrap;
+        word-wrap: break-word;
       }
       .feedback-panel textarea:focus {
         outline: none;
@@ -464,7 +466,6 @@
       <div class="header-right">
         <button class="btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓 Theme</button>
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-        <!-- Removed PDF export button -->
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
       </div>
@@ -708,6 +709,15 @@
       }
 
       /***************************************************
+       * Auto-Resizing Textareas
+       ***************************************************/
+      function autoResize(e) {
+        const textarea = e.target;
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
+      }
+
+      /***************************************************
        * Global Score Tracking & Palette Storage
        ***************************************************/
       let scores = {};
@@ -740,6 +750,12 @@
         }
         // Attach click event to composition grid canvas for enlargement
         document.getElementById("compositionCanvas").addEventListener("click", enlargeComposition);
+
+        // Set up auto-resize for feedback textareas
+        document.querySelectorAll('.feedback-panel textarea').forEach(textarea => {
+          textarea.addEventListener('input', autoResize);
+          autoResize({ target: textarea });
+        });
       });
 
       /***************************************************
