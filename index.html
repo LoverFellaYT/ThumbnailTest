@@ -209,6 +209,7 @@
       }
       .title-input {
         width: 100%;
+        max-width: 600px;  /* Constrain the title input width */
         padding: 0.8rem;
         border: 2px solid #e2e8f0;
         border-radius: var(--radius);
@@ -337,10 +338,11 @@
         display: block;
         margin-bottom: 0.3rem;
       }
-      /* Contenteditable feedback inputs */
+      /* Constrained contenteditable feedback inputs */
       .feedback-input {
         display: block;
         width: 100%;
+        max-width: 600px; /* Constrain the feedback box width */
         box-sizing: border-box;
         min-height: 80px;
         padding: 0.8rem;
@@ -1095,6 +1097,11 @@
        * Export Function (PNG only)
        ***************************************************/
       async function exportPNG() {
+        // Temporarily remove the sticky style from the header
+        const header = document.querySelector("header.analyzer-header");
+        const originalPosition = header.style.position;
+        header.style.position = "static"; // Make header static for export
+
         const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
@@ -1103,6 +1110,9 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        // Restore the sticky header style
+        header.style.position = originalPosition;
       }
 
       /***************************************************
