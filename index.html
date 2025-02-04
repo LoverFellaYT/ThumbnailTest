@@ -336,22 +336,27 @@
         display: block;
         margin-bottom: 0.3rem;
       }
-      .feedback-panel textarea {
+      /* Using contenteditable divs instead of textareas */
+      .feedback-input {
         width: 100%;
+        min-height: 80px;
         padding: 0.8rem;
         border: 2px solid #e2e8f0;
         border-radius: var(--radius);
         font-size: 1rem;
         font-family: 'Inter', sans-serif;
         transition: var(--transition);
-        overflow: hidden;
+        overflow-wrap: break-word;
         white-space: pre-wrap;
-        word-wrap: break-word;
       }
-      .feedback-panel textarea:focus {
+      .feedback-input:focus {
         outline: none;
         border-color: var(--primary-light);
         box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+      }
+      .feedback-input:empty::before {
+        content: attr(data-placeholder);
+        color: #9ca3af;
       }
 
       /* DESIGN INSIGHTS SECTION (Clean & Modern) */
@@ -607,16 +612,16 @@
           </table>
         </section>
 
-        <!-- Feedback Panel -->
+        <!-- Feedback Panel (using contenteditable divs) -->
         <section class="feedback-panel glass-panel">
           <h3>Feedback</h3>
           <div class="feedback-entry">
             <label for="humanFeedback" class="flex-label">Human Feedback</label>
-            <textarea id="humanFeedback" placeholder="Enter your human feedback here..." aria-label="Human Feedback"></textarea>
+            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
           </div>
           <div class="feedback-entry">
             <label for="aiFeedback" class="flex-label">AI Feedback</label>
-            <textarea id="aiFeedback" placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></textarea>
+            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
           </div>
         </section>
 
@@ -709,15 +714,6 @@
       }
 
       /***************************************************
-       * Auto-Resizing Textareas
-       ***************************************************/
-      function autoResize(e) {
-        const textarea = e.target;
-        textarea.style.height = "auto";
-        textarea.style.height = textarea.scrollHeight + "px";
-      }
-
-      /***************************************************
        * Global Score Tracking & Palette Storage
        ***************************************************/
       let scores = {};
@@ -750,12 +746,6 @@
         }
         // Attach click event to composition grid canvas for enlargement
         document.getElementById("compositionCanvas").addEventListener("click", enlargeComposition);
-
-        // Set up auto-resize for feedback textareas
-        document.querySelectorAll('.feedback-panel textarea').forEach(textarea => {
-          textarea.addEventListener('input', autoResize);
-          autoResize({ target: textarea });
-        });
       });
 
       /***************************************************
