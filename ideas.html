@@ -11,9 +11,9 @@
     :root {
       --primary: #10B981;
       --secondary: #059669;
-      /* Changed accent color to #ff004f */
       --accent: #ff004f;
-      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      /* Use a solid color instead of a gradient */
+      --gradient: #ff004f;
       --glass: rgba(255, 255, 255, 0.98);
       --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -132,16 +132,6 @@
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
     }
     
-    .idea-preview {
-      background: #fff;
-      border: 1px solid #E5E7EB;
-      border-radius: var(--radius);
-      padding: 1rem;
-      margin-top: 1rem;
-      font-size: 1rem;
-      color: var(--text-secondary);
-    }
-    
     .word-count {
       text-align: right;
       font-size: 0.9rem;
@@ -235,7 +225,6 @@
       min-width: 180px;
       backdrop-filter: blur(5px);
       border-right: 1px solid rgba(229, 231, 235, 0.3);
-      /* Tooltip for additional guidance */
       cursor: help;
     }
     
@@ -382,7 +371,6 @@
     </div>
     <ul class="revision-history" id="revisionHistory"></ul>
     <button class="clear-btn" onclick="clearRevisions()">Clear Revision History</button>
-    <div class="idea-preview" id="ideaPreview">Live Preview: Your idea will appear here as you type.</div>
     
     <div class="prompt-generator">
       <button onclick="generatePrompt()">🎲 Random Prompt</button>
@@ -511,7 +499,7 @@
       <h2>How to Use Idea Forge Pro</h2>
       <ul>
         <li>Type or paste your video concept in the Idea Incubator.</li>
-        <li>Watch the live preview and word/character count update as you type.</li>
+        <li>Watch the word/character count update as you type.</li>
         <li>Use the "Save Revision" button to record versions of your idea.</li>
         <li>Click on a revision from the list to load it back into the editor.</li>
         <li>Generate random prompts for inspiration with the "Random Prompt" button.</li>
@@ -734,12 +722,11 @@
     }
     
     /***************************************************
-     * Idea Input: Live Word/Character Count, Preview & Auto-save Draft
+     * Idea Input: Live Word/Character Count & Auto-save Draft
      ***************************************************/
     function updateIdea() {
       const ideaText = document.getElementById('ideaInput').value;
       updateWordCount(ideaText);
-      updateIdeaPreview(ideaText);
       // Auto-save draft after 500ms of inactivity
       clearTimeout(saveDraftTimeout);
       saveDraftTimeout = setTimeout(() => {
@@ -751,11 +738,6 @@
       const words = text.trim() ? text.trim().split(/\s+/).length : 0;
       const characters = text.length;
       document.getElementById('ideaWordCount').textContent = `${words} words, ${characters} characters`;
-    }
-    
-    function updateIdeaPreview(text) {
-      const preview = text ? text.replace(/\n/g, '<br>') : "Live Preview: Your idea will appear here as you type.";
-      document.getElementById('ideaPreview').innerHTML = preview;
     }
     
     function clearIdea() {
