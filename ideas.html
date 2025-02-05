@@ -378,7 +378,7 @@
         </svg>
         <h2>Idea Incubator</h2>
       </div>
-      <textarea id="ideaInput" placeholder="✨ Describe your video concept here..."></textarea>
+      <textarea id="ideaInput" placeholder="✨ Describe your video concept here..." oninput="updateIdea()"></textarea>
       <div class="word-count" id="ideaWordCount">0 words, 0 characters</div>
       <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
         <button class="clear-btn" onclick="clearIdea()">Clear Idea</button>
@@ -405,82 +405,82 @@
           <!-- Originality & Concept -->
           <tr>
             <td class="category-header" data-category="0" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
-            <td data-category="0" data-rating="1">Basic, generic idea</td>
-            <td data-category="0" data-rating="2">Some intrigue but needs refinement</td>
-            <td data-category="0" data-rating="3">Engaging with clear potential</td>
-            <td data-category="0" data-rating="4">Exceptionally bold &amp; entertaining</td>
+            <td data-category="0" data-rating="1" onclick="selectRating(this)">Basic, generic idea</td>
+            <td data-category="0" data-rating="2" onclick="selectRating(this)">Some intrigue but needs refinement</td>
+            <td data-category="0" data-rating="3" onclick="selectRating(this)">Engaging with clear potential</td>
+            <td data-category="0" data-rating="4" onclick="selectRating(this)">Exceptionally bold &amp; entertaining</td>
           </tr>
           <!-- Transformation/Progression -->
           <tr>
             <td class="category-header" data-category="1" title="How well does the idea develop or transform?">Transformation/Progression</td>
-            <td data-category="1" data-rating="1">No clear growth</td>
-            <td data-category="1" data-rating="2">Mild progression</td>
-            <td data-category="1" data-rating="3">Clear transformation</td>
-            <td data-category="1" data-rating="4">Dramatic, impactful progression</td>
+            <td data-category="1" data-rating="1" onclick="selectRating(this)">No clear growth</td>
+            <td data-category="1" data-rating="2" onclick="selectRating(this)">Mild progression</td>
+            <td data-category="1" data-rating="3" onclick="selectRating(this)">Clear transformation</td>
+            <td data-category="1" data-rating="4" onclick="selectRating(this)">Dramatic, impactful progression</td>
           </tr>
           <!-- Retention Potential -->
           <tr>
             <td class="category-header" data-category="2" title="How well does the concept retain viewer interest?">Retention Potential</td>
-            <td data-category="2" data-rating="1">No clear hook or progression</td>
-            <td data-category="2" data-rating="2">Might hold attention, but risks drop-offs</td>
-            <td data-category="2" data-rating="3">Strong potential to keep viewers engaged</td>
-            <td data-category="2" data-rating="4">Built-in tension, pacing, and payoffs maximizing retention</td>
+            <td data-category="2" data-rating="1" onclick="selectRating(this)">No clear hook or progression</td>
+            <td data-category="2" data-rating="2" onclick="selectRating(this)">Might hold attention, but risks drop-offs</td>
+            <td data-category="2" data-rating="3" onclick="selectRating(this)">Strong potential to keep viewers engaged</td>
+            <td data-category="2" data-rating="4" onclick="selectRating(this)">Built-in tension, pacing, and payoffs maximizing retention</td>
           </tr>
           <!-- Neural Network Link -->
           <tr>
             <td class="category-header" data-category="3" title="How well does the concept connect to previous content?">Neural Network Link</td>
-            <td data-category="3" data-rating="1">Doesn’t connect to past videos</td>
-            <td data-category="3" data-rating="2">Minor connection to previous themes</td>
-            <td data-category="3" data-rating="3">Expands on previous mechanics or lore</td>
-            <td data-category="3" data-rating="4">Deeply integrates into channel’s worldbuilding, running themes, or strategies</td>
+            <td data-category="3" data-rating="1" onclick="selectRating(this)">Doesn’t connect to past videos</td>
+            <td data-category="3" data-rating="2" onclick="selectRating(this)">Minor connection to previous themes</td>
+            <td data-category="3" data-rating="3" onclick="selectRating(this)">Expands on previous mechanics or lore</td>
+            <td data-category="3" data-rating="4" onclick="selectRating(this)">Deeply integrates into channel’s worldbuilding, running themes, or strategies</td>
           </tr>
           <!-- Viewer Curiosity & Clickability -->
           <tr>
             <td class="category-header" data-category="4" title="How well does the title and thumbnail spark interest?">Viewer Curiosity &amp; Clickability</td>
-            <td data-category="4" data-rating="1">Title &amp; thumbnail would struggle to stand out</td>
-            <td data-category="4" data-rating="2">Might generate interest but lacks urgency</td>
-            <td data-category="4" data-rating="3">Creates a strong curiosity gap</td>
-            <td data-category="4" data-rating="4">Instant click magnet, impossible to ignore</td>
+            <td data-category="4" data-rating="1" onclick="selectRating(this)">Title &amp; thumbnail would struggle to stand out</td>
+            <td data-category="4" data-rating="2" onclick="selectRating(this)">Might generate interest but lacks urgency</td>
+            <td data-category="4" data-rating="3" onclick="selectRating(this)">Creates a strong curiosity gap</td>
+            <td data-category="4" data-rating="4" onclick="selectRating(this)">Instant click magnet, impossible to ignore</td>
           </tr>
           <!-- Potential for Escalation -->
           <tr>
             <td class="category-header" data-category="5" title="How well can the concept escalate in complexity and excitement?">Potential for Escalation</td>
-            <td data-category="5" data-rating="1">Premise has limited depth</td>
-            <td data-category="5" data-rating="2">Some room for unexpected twists</td>
-            <td data-category="5" data-rating="3">Can build into a compelling narrative</td>
-            <td data-category="5" data-rating="4">Has a natural progression that keeps getting crazier, sustaining tension</td>
+            <td data-category="5" data-rating="1" onclick="selectRating(this)">Premise has limited depth</td>
+            <td data-category="5" data-rating="2" onclick="selectRating(this)">Some room for unexpected twists</td>
+            <td data-category="5" data-rating="3" onclick="selectRating(this)">Can build into a compelling narrative</td>
+            <td data-category="5" data-rating="4" onclick="selectRating(this)">Has a natural progression that keeps getting crazier, sustaining tension</td>
           </tr>
           <!-- Minecraft Mechanics Creativity -->
           <tr>
             <td class="category-header" data-category="6" title="How creative is the gameplay concept?">Minecraft Mechanics Creativity</td>
-            <td data-category="6" data-rating="1">Standard gameplay ideas</td>
-            <td data-category="6" data-rating="2">Somewhat creative but not groundbreaking</td>
-            <td data-category="6" data-rating="3">Clever use of game mechanics</td>
-            <td data-category="6" data-rating="4">Reinvents or breaks the game in a way that stuns viewers</td>
+            <td data-category="6" data-rating="1" onclick="selectRating(this)">Standard gameplay ideas</td>
+            <td data-category="6" data-rating="2" onclick="selectRating(this)">Somewhat creative but not groundbreaking</td>
+            <td data-category="6" data-rating="3" onclick="selectRating(this)">Clever use of game mechanics</td>
+            <td data-category="6" data-rating="4" onclick="selectRating(this)">Reinvents or breaks the game in a way that stuns viewers</td>
           </tr>
           <!-- Trend & Algorithm Fit -->
           <tr>
             <td class="category-header" data-category="7" title="How well does the concept align with trends and algorithms?">Trend &amp; Algorithm Fit</td>
-            <td data-category="7" data-rating="1">No relevance to trends or searchability</td>
-            <td data-category="7" data-rating="2">Loosely inspired by trends but not optimized</td>
-            <td data-category="7" data-rating="3">Taps into an existing viral format</td>
-            <td data-category="7" data-rating="4">Could start a new trend or redefine the niche</td>
+            <td data-category="7" data-rating="1" onclick="selectRating(this)">No relevance to trends or searchability</td>
+            <td data-category="7" data-rating="2" onclick="selectRating(this)">Loosely inspired by trends but not optimized</td>
+            <td data-category="7" data-rating="3" onclick="selectRating(this)">Taps into an existing viral format</td>
+            <td data-category="7" data-rating="4" onclick="selectRating(this)">Could start a new trend or redefine the niche</td>
           </tr>
           <!-- Surprise Factor & Unpredictability -->
           <tr>
             <td class="category-header" data-category="8" title="How unpredictable and surprising is the concept?">Surprise Factor &amp; Unpredictability</td>
-            <td data-category="8" data-rating="1">Entirely predictable</td>
-            <td data-category="8" data-rating="2">Some minor surprises but nothing shocking</td>
-            <td data-category="8" data-rating="3">Unexpected twists that keep players and viewers engaged</td>
-            <td data-category="8" data-rating="4">Completely unpredictable outcomes that change the trajectory of the video</td>
+            <td data-category="8" data-rating="1" onclick="selectRating(this)">Entirely predictable</td>
+            <td data-category="8" data-rating="2" onclick="selectRating(this)">Some minor surprises but nothing shocking</td>
+            <td data-category="8" data-rating="3" onclick="selectRating(this)">Unexpected twists that keep players and viewers engaged</td>
+            <td data-category="8" data-rating="4" onclick="selectRating(this)">Completely unpredictable outcomes that change the trajectory of the video</td>
           </tr>
           <!-- Execution Feasibility -->
           <tr>
             <td class="category-header" data-category="9" title="How realistic is it to execute the idea?">Execution Feasibility</td>
-            <td data-category="9" data-rating="1">Impractical</td>
-            <td data-category="9" data-rating="2">Possible but difficult</td>
-            <td data-category="9" data-rating="3">Practical with ROI</td>
-            <td data-category="9" data-rating="4">Easy &amp; high ROI</td>
+            <td data-category="9" data-rating="1" onclick="selectRating(this)">Impractical</td>
+            <td data-category="9" data-rating="2" onclick="selectRating(this)">Possible but difficult</td>
+            <td data-category="9" data-rating="3" onclick="selectRating(this)">Practical with ROI</td>
+            <td data-category="9" data-rating="4" onclick="selectRating(this)">Easy &amp; high ROI</td>
           </tr>
         </tbody>
       </table>
