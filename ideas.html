@@ -8,6 +8,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
+    /* Global box-sizing to prevent padding/border issues */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     :root {
       --primary: #10B981;
       --secondary: #059669;
@@ -25,6 +30,7 @@
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       max-width: 1200px;
+      width: 100%;
       margin: 2rem auto;
       padding: 0 2rem;
       background: #F3F4F6;
@@ -97,6 +103,7 @@
       margin-bottom: 2rem;
       box-shadow: var(--shadow);
       border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 100%;  /* Ensure the incubator box uses full available width */
     }
     
     .brainstorm-header {
@@ -325,9 +332,16 @@
       100% { transform: rotate(360deg); }
     }
     
+    /* Additional responsive adjustments for the idea incubator */
     @media (max-width: 768px) {
       body {
         padding: 0 1rem;
+      }
+      .brainstorm-section {
+        padding: 1rem;
+      }
+      #ideaInput {
+        padding: 1rem;
       }
       .modern-table th, .modern-table td {
         padding: 1rem;
