@@ -212,6 +212,7 @@
       backdrop-filter: blur(10px);
     }
     
+    /* Ensure rubric cells are clickable */
     .modern-table td {
       padding: 1.25rem;
       background: rgba(255, 255, 255, 0.85);
@@ -220,8 +221,7 @@
       vertical-align: top;
       min-width: 200px;
       cursor: pointer;
-      /* Ensure pointer events are enabled */
-      pointer-events: auto;
+      pointer-events: all;
     }
     
     .category-header {
@@ -247,7 +247,7 @@
       transform: scale(1.02);
     }
     
-    /* HUMAN SUGGESTIONS section below the rubric */
+    /* HUMAN SUGGESTIONS section */
     .human-suggestions {
       background: var(--glass);
       padding: 1.5rem;
@@ -518,9 +518,7 @@
   </div>
   
   <script>
-    /***************************************************
-     * Global variable declarations
-     ***************************************************/
+    // Global variable declarations
     let scores = {};
     let revisions = [];
     let saveDraftTimeout;
