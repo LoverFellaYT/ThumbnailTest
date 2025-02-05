@@ -27,7 +27,7 @@
       --text-secondary: #4B5563;
     }
     
-    /* Original font (Inter) */
+    /* Revert to the original font (Inter) */
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       max-width: 1200px;
@@ -131,7 +131,7 @@
     
     /* REPORT container */
     #report {
-      /* This container wraps the content to be exported */
+      /* Wraps the content to be exported */
     }
     
     /* BRAINSTORM / IDEA SECTION */
@@ -164,7 +164,7 @@
       height: 150px;
       padding: 1.5rem;
       border: 2px solid #E5E7EB;
-      border-radius: 12px;
+      border-radius: var(--radius);
       margin: 1rem 0;
       font-size: 1rem;
       resize: vertical;
@@ -220,6 +220,8 @@
       vertical-align: top;
       min-width: 200px;
       cursor: pointer;
+      /* Ensure pointer events are enabled */
+      pointer-events: auto;
     }
     
     .category-header {
@@ -517,6 +519,13 @@
   
   <script>
     /***************************************************
+     * Global variable declarations
+     ***************************************************/
+    let scores = {};
+    let revisions = [];
+    let saveDraftTimeout;
+    
+    /***************************************************
      * Rubric Score Functions
      ***************************************************/
     function selectRating(cell) {
@@ -724,11 +733,6 @@
         localStorage.removeItem('ideaRevisions');
       }
     }
-    
-    // Global variable declarations
-    let scores = {};
-    let revisions = [];
-    let saveDraftTimeout;
   </script>
 </body>
 </html>
