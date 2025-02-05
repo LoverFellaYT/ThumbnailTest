@@ -4,11 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Idea Forge Pro | Viral Content Generator</title>
+  
   <!-- Added html2canvas library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
   <style>
-    /* Include Cocogoose fonts - adjust URLs as needed */
+    /* Include Cocogoose Pro font for the scoring number */
+    @font-face {
+      font-family: 'Cocogoose Pro';
+      src: url('CocogoosePro-Regular.woff2') format('woff2'),
+           url('CocogoosePro-Regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    /* Include Cocogoose Regular font for body text */
     @font-face {
       font-family: 'Cocogoose Regular';
       src: url('Cocogoose-Regular.woff2') format('woff2'),
@@ -17,6 +28,7 @@
       font-style: normal;
     }
 
+    /* Include Cocogoose Bold font for headings and category names */
     @font-face {
       font-family: 'Cocogoose Bold';
       src: url('Cocogoose-Bold.woff2') format('woff2'),
@@ -80,6 +92,11 @@
       align-items: center;
       gap: 2rem;
       margin-bottom: 1.5rem;
+    }
+    
+    /* Scoring number now uses Cocogoose Pro */
+    #total {
+      font-family: 'Cocogoose Pro', sans-serif;
     }
     
     .total-score {
@@ -263,10 +280,10 @@
       transform: scale(1.02);
     }
     
-    /* Updated .selected style to use color #00f3ff */
+    /* Updated .selected style for a subtle, opaque blue highlight */
     .selected {
-      background: rgba(0, 243, 255, 0.5) !important;
-      box-shadow: inset 4px 0 0 #00f3ff;
+      background: rgba(0, 243, 255, 0.2) !important;
+      box-shadow: inset 2px 0 0 rgba(0, 243, 255, 0.2);
       transform: scale(1.02);
     }
     
