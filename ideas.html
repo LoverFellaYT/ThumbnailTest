@@ -51,14 +51,20 @@
     }
     .dark-mode .analyzer-header,
     .dark-mode .brainstorm-section,
-    .dark-mode .rubric-table,
     .dark-mode .human-suggestions,
-    .dark-mode .feedback-panel {
+    .dark-mode .feedback-panel,
+    .dark-mode .rubric-table {
       background: #1a2a40;
       border-color: #3a3a3a;
     }
     .dark-mode .modern-table th {
-      background: #13223d;
+      background: #182a40;
+      color: #ffffff;
+    }
+    .dark-mode .modern-table td {
+      background: #1a2a40;
+      color: #ffffff;
+      border-bottom: 1px solid #3a3a3a;
     }
     .dark-mode button {
       background: #13223d;
@@ -95,7 +101,7 @@
       letter-spacing: -0.5px;
     }
     
-    /* Controls (outside the report container) */
+    /* CONTROLS (at the top) */
     .controls {
       display: flex;
       gap: 1rem;
@@ -343,7 +349,17 @@
   </style>
 </head>
 <body>
-  <!-- REPORT HEADER (part of the report) -->
+  <!-- CONTROLS (at the top) -->
+  <div class="controls">
+    <button onclick="resetScores()">🔄 Reset Scores</button>
+    <button onclick="exportPDF()">📥 Export Report as PDF</button>
+    <button onclick="exportPNG()">📷 Export Report as PNG</button>
+    <button onclick="getAISuggestions()">🤖 AI Suggestions</button>
+    <button onclick="openHowTo()">❓ How To</button>
+    <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+  </div>
+  
+  <!-- REPORT CONTAINER -->
   <div id="report">
     <div class="analyzer-header">
       <div class="score-display">
@@ -480,16 +496,6 @@
       <div id="specificFeedback"></div>
       <div class="ai-suggestions" id="aiSuggestions"></div>
     </div>
-  </div>
-  
-  <!-- CONTROLS (outside the report so they are not exported) -->
-  <div class="controls">
-    <button onclick="resetScores()">🔄 Reset Scores</button>
-    <button onclick="exportPDF()">📥 Export Report as PDF</button>
-    <button onclick="exportPNG()">📷 Export Report as PNG</button>
-    <button onclick="getAISuggestions()">🤖 AI Suggestions</button>
-    <button onclick="openHowTo()">❓ How To</button>
-    <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
   </div>
   
   <!-- HOW-TO MODAL -->
@@ -719,7 +725,7 @@
       }
     }
     
-    // Global variable for revisions
+    // Global variable declarations
     let scores = {};
     let revisions = [];
     let saveDraftTimeout;
