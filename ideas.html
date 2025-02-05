@@ -8,6 +8,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
+    /* Include Cocogoose fonts - adjust URLs as needed */
+    @font-face {
+      font-family: 'Cocogoose Regular';
+      src: url('Cocogoose-Regular.woff2') format('woff2'),
+           url('Cocogoose-Regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Cocogoose Bold';
+      src: url('Cocogoose-Bold.woff2') format('woff2'),
+           url('Cocogoose-Bold.woff') format('woff');
+      font-weight: bold;
+      font-style: normal;
+    }
+
     /* Global box-sizing to prevent padding/border issues */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -27,8 +44,9 @@
       --text-secondary: #4B5563;
     }
     
+    /* Set default body font to Cocogoose Regular */
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Cocogoose Regular', sans-serif;
       max-width: 1200px;
       width: 100%;
       margin: 2rem auto;
@@ -36,6 +54,11 @@
       background: #F3F4F6;
       color: var(--text-primary);
       line-height: 1.6;
+    }
+
+    /* Use Cocogoose Bold for headings and category names */
+    h1, h2, h3, .category-header {
+      font-family: 'Cocogoose Bold', sans-serif;
     }
     
     /* HEADER */
@@ -103,7 +126,7 @@
       margin-bottom: 2rem;
       box-shadow: var(--shadow);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      width: 100%;  /* Ensure the incubator box uses full available width */
+      width: 100%;
     }
     
     .brainstorm-header {
@@ -240,9 +263,10 @@
       transform: scale(1.02);
     }
     
+    /* Updated .selected style to use color #00f3ff */
     .selected {
-      background: rgba(209, 250, 229, 0.5) !important;
-      box-shadow: inset 4px 0 0 var(--primary);
+      background: rgba(0, 243, 255, 0.5) !important;
+      box-shadow: inset 4px 0 0 #00f3ff;
       transform: scale(1.02);
     }
     
@@ -796,11 +820,11 @@
       aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing concept...';
       setTimeout(() => {
         const suggestions = [
-          "Add a personal story to increase relatability.",
-          "Include a surprising twist in the first 30 seconds.",
-          "Create a recurring character for series potential.",
-          "Add data visualization for credibility.",
-          "Use trending audio to boost discoverability."
+          "Optimize your video title by incorporating high-converting keywords, numbers, and emotional triggers to prolong CTR on YouTube.",
+          "Experiment with bold title formats—using questions, challenges, or urgency cues—to capture viewer interest and boost click-through rates.",
+          "Supercharge your video concept 10x by integrating unexpected twists and dynamic storytelling techniques.",
+          "Fix a weak concept by identifying its shortcomings and refining the narrative, pacing, and visual hooks for better engagement.",
+          "A/B test different title and thumbnail combinations to discover which format drives the highest CTR."
         ];
         aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' + suggestions.map(s => `• ${s}`).join('<br>');
       }, 2000);
