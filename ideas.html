@@ -4,40 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Idea Forge Pro | Viral Content Generator</title>
-  
   <!-- Added html2canvas library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  
   <style>
-    /* Include Cocogoose Pro font for the scoring number */
-    @font-face {
-      font-family: 'Cocogoose Pro';
-      src: url('CocogoosePro-Regular.woff2') format('woff2'),
-           url('CocogoosePro-Regular.woff') format('woff');
-      font-weight: normal;
-      font-style: normal;
-    }
-    
-    /* Include Cocogoose Regular font for body text */
-    @font-face {
-      font-family: 'Cocogoose Regular';
-      src: url('Cocogoose-Regular.woff2') format('woff2'),
-           url('Cocogoose-Regular.woff') format('woff');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    /* Include Cocogoose Bold font for headings and category names */
-    @font-face {
-      font-family: 'Cocogoose Bold';
-      src: url('Cocogoose-Bold.woff2') format('woff2'),
-           url('Cocogoose-Bold.woff') format('woff');
-      font-weight: bold;
-      font-style: normal;
-    }
-
-    /* Global box-sizing to prevent padding/border issues */
+    /* Global box-sizing */
     *, *::before, *::after {
       box-sizing: border-box;
     }
@@ -56,9 +27,9 @@
       --text-secondary: #4B5563;
     }
     
-    /* Set default body font to Cocogoose Regular */
+    /* Original font (Inter) */
     body {
-      font-family: 'Cocogoose Regular', sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       max-width: 1200px;
       width: 100%;
       margin: 2rem auto;
@@ -67,13 +38,37 @@
       color: var(--text-primary);
       line-height: 1.6;
     }
-
-    /* Use Cocogoose Bold for headings and category names */
+    
+    /* Headings and category headers use bold weight */
     h1, h2, h3, .category-header {
-      font-family: 'Cocogoose Bold', sans-serif;
+      font-weight: bold;
     }
     
-    /* HEADER */
+    /* DARK MODE styles */
+    .dark-mode {
+      background: #13223d;
+      color: #ffffff;
+    }
+    .dark-mode .analyzer-header,
+    .dark-mode .brainstorm-section,
+    .dark-mode .rubric-table,
+    .dark-mode .human-suggestions,
+    .dark-mode .feedback-panel {
+      background: #1a2a40;
+      border-color: #3a3a3a;
+    }
+    .dark-mode .modern-table th {
+      background: #13223d;
+    }
+    .dark-mode button {
+      background: #13223d;
+      color: #ffffff;
+    }
+    .dark-mode .word-count {
+      color: #ffffff;
+    }
+    
+    /* HEADER (Report header) */
     .analyzer-header {
       background: var(--glass);
       padding: 2rem;
@@ -82,9 +77,6 @@
       margin-bottom: 2rem;
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      position: sticky;
-      top: 1rem;
-      z-index: 100;
     }
     
     .score-display {
@@ -92,11 +84,6 @@
       align-items: center;
       gap: 2rem;
       margin-bottom: 1.5rem;
-    }
-    
-    /* Scoring number now uses Cocogoose Pro */
-    #total {
-      font-family: 'Cocogoose Pro', sans-serif;
     }
     
     .total-score {
@@ -108,10 +95,11 @@
       letter-spacing: -0.5px;
     }
     
+    /* Controls (outside the report container) */
     .controls {
       display: flex;
       gap: 1rem;
-      margin-top: 1.5rem;
+      margin-bottom: 2rem;
       flex-wrap: wrap;
     }
     
@@ -133,6 +121,11 @@
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+    }
+    
+    /* REPORT container */
+    #report {
+      /* This container wraps the content to be exported */
     }
     
     /* BRAINSTORM / IDEA SECTION */
@@ -186,52 +179,11 @@
       margin-top: 0.5rem;
     }
     
-    .prompt-generator {
-      margin-top: 1.5rem;
-      padding: 1.5rem;
-      background: rgba(245, 158, 11, 0.05);
-      border-radius: var(--radius);
-      border: 1px solid rgba(245, 158, 11, 0.1);
-    }
-    
-    /* Revision History */
-    .revision-history {
-      margin-top: 1rem;
-      background: #fff;
-      border: 1px solid #E5E7EB;
-      border-radius: var(--radius);
-      padding: 0.75rem;
-      max-height: 150px;
-      overflow-y: auto;
-      font-size: 0.9rem;
-    }
-    
-    .revision-history li {
-      cursor: pointer;
-      margin: 0.25rem 0;
-      padding: 0.25rem;
-    }
-    
-    .clear-btn {
-      background: #F87171;
-      border: none;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
-    
-    .clear-btn:hover {
-      background: #EF4444;
-    }
-    
     /* RUBRIC TABLE */
     .rubric-table {
       background: var(--glass);
       border-radius: var(--radius);
-      margin: 2rem 0;
+      margin-bottom: 2rem;
       box-shadow: var(--shadow);
       overflow-x: auto;
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -280,38 +232,34 @@
       transform: scale(1.02);
     }
     
-    /* Updated .selected style for a subtle, opaque blue highlight */
+    /* Selected cell: subtle opaque blue highlight */
     .selected {
       background: rgba(0, 243, 255, 0.2) !important;
       box-shadow: inset 2px 0 0 rgba(0, 243, 255, 0.2);
       transform: scale(1.02);
     }
     
-    /* FEEDBACK PANEL & RESOURCES */
-    .feedback-panel, .resources {
+    /* HUMAN SUGGESTIONS section below the rubric */
+    .human-suggestions {
       background: var(--glass);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: var(--radius);
-      margin: 2rem 0;
+      margin-bottom: 2rem;
       box-shadow: var(--shadow);
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    
-    .ai-suggestions {
-      background: rgba(245, 158, 11, 0.05);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-top: 1.5rem;
-      border: 1px solid rgba(245, 158, 11, 0.1);
-    }
-    
-    /* RESOURCES */
-    .resources h3 {
+    .human-suggestions h3 {
       margin-top: 0;
     }
     
-    .resources ul {
-      margin: 1rem 0 0 1.5rem;
+    /* FEEDBACK PANEL */
+    .feedback-panel {
+      background: var(--glass);
+      padding: 2rem;
+      border-radius: var(--radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     /* HOW-TO MODAL */
@@ -373,7 +321,7 @@
       100% { transform: rotate(360deg); }
     }
     
-    /* Additional responsive adjustments for the idea incubator */
+    /* Responsive adjustments */
     @media (max-width: 768px) {
       body {
         padding: 0 1rem;
@@ -395,156 +343,153 @@
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <div class="analyzer-header">
-    <div class="score-display">
-      <div class="total-score">Score: <span id="total">0</span>/40</div>
-      <div class="status-indicator" id="ranking">Incomplete</div>
+  <!-- REPORT HEADER (part of the report) -->
+  <div id="report">
+    <div class="analyzer-header">
+      <div class="score-display">
+        <div class="total-score">Score: <span id="total">0</span>/40</div>
+        <div class="status-indicator" id="ranking">Incomplete</div>
+      </div>
     </div>
-    <div class="controls">
-      <button onclick="resetScores()">🔄 Reset Scores</button>
-      <button onclick="exportPDF()">📥 Export Report</button>
-      <button onclick="getAISuggestions()">🤖 AI Suggestions</button>
-      <button onclick="openHowTo()">❓ How To</button>
-    </div>
-  </div>
-  
-  <!-- BRAINSTORM / IDEA SECTION -->
-  <div class="brainstorm-section">
-    <div class="brainstorm-header">
-      <svg class="spark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="28" height="28">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-      </svg>
-      <h2>Idea Incubator</h2>
-    </div>
-    <textarea id="ideaInput" placeholder="✨ Describe your video concept here..."></textarea>
-    <div class="word-count" id="ideaWordCount">0 words, 0 characters</div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button class="clear-btn" onclick="clearIdea()">Clear Idea</button>
-      <button class="clear-btn" onclick="copyIdea()">📋 Copy Idea</button>
-      <button class="clear-btn" onclick="saveRevision()">💾 Save Revision</button>
-    </div>
-    <ul class="revision-history" id="revisionHistory"></ul>
-    <button class="clear-btn" onclick="clearRevisions()">Clear Revision History</button>
     
-    <div class="prompt-generator">
-      <button onclick="generatePrompt()">🎲 Random Prompt</button>
-      <div id="randomPrompt" class="idea-prompt"></div>
+    <!-- BRAINSTORM / IDEA SECTION -->
+    <div class="brainstorm-section">
+      <div class="brainstorm-header">
+        <svg class="spark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="28" height="28">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <h2>Idea Incubator</h2>
+      </div>
+      <textarea id="ideaInput" placeholder="✨ Describe your video concept here..."></textarea>
+      <div class="word-count" id="ideaWordCount">0 words, 0 characters</div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button class="clear-btn" onclick="clearIdea()">Clear Idea</button>
+        <button class="clear-btn" onclick="copyIdea()">📋 Copy Idea</button>
+        <button class="clear-btn" onclick="saveRevision()">💾 Save Revision</button>
+      </div>
+      <ul class="revision-history" id="revisionHistory"></ul>
+      <button class="clear-btn" onclick="clearRevisions()">Clear Revision History</button>
+    </div>
+    
+    <!-- RUBRIC TABLE -->
+    <div class="rubric-table">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Good (1)</th>
+            <th>Great (2)</th>
+            <th>Excellent (3)</th>
+            <th>Outstanding (4)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Originality & Concept -->
+          <tr>
+            <td class="category-header" data-category="0" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
+            <td data-category="0" data-rating="1">Basic, generic idea</td>
+            <td data-category="0" data-rating="2">Some intrigue but needs refinement</td>
+            <td data-category="0" data-rating="3">Engaging with clear potential</td>
+            <td data-category="0" data-rating="4">Exceptionally bold &amp; entertaining</td>
+          </tr>
+          <!-- Transformation/Progression -->
+          <tr>
+            <td class="category-header" data-category="1" title="How well does the idea develop or transform?">Transformation/Progression</td>
+            <td data-category="1" data-rating="1">No clear growth</td>
+            <td data-category="1" data-rating="2">Mild progression</td>
+            <td data-category="1" data-rating="3">Clear transformation</td>
+            <td data-category="1" data-rating="4">Dramatic, impactful progression</td>
+          </tr>
+          <!-- Retention Potential -->
+          <tr>
+            <td class="category-header" data-category="2" title="How well does the concept retain viewer interest?">Retention Potential</td>
+            <td data-category="2" data-rating="1">No clear hook or progression</td>
+            <td data-category="2" data-rating="2">Might hold attention, but risks drop-offs</td>
+            <td data-category="2" data-rating="3">Strong potential to keep viewers engaged</td>
+            <td data-category="2" data-rating="4">Built-in tension, pacing, and payoffs maximizing retention</td>
+          </tr>
+          <!-- Neural Network Link -->
+          <tr>
+            <td class="category-header" data-category="3" title="How well does the concept connect to previous content?">Neural Network Link</td>
+            <td data-category="3" data-rating="1">Doesn’t connect to past videos</td>
+            <td data-category="3" data-rating="2">Minor connection to previous themes</td>
+            <td data-category="3" data-rating="3">Expands on previous mechanics or lore</td>
+            <td data-category="3" data-rating="4">Deeply integrates into channel’s worldbuilding, running themes, or strategies</td>
+          </tr>
+          <!-- Viewer Curiosity & Clickability -->
+          <tr>
+            <td class="category-header" data-category="4" title="How well does the title and thumbnail spark interest?">Viewer Curiosity &amp; Clickability</td>
+            <td data-category="4" data-rating="1">Title &amp; thumbnail would struggle to stand out</td>
+            <td data-category="4" data-rating="2">Might generate interest but lacks urgency</td>
+            <td data-category="4" data-rating="3">Creates a strong curiosity gap</td>
+            <td data-category="4" data-rating="4">Instant click magnet, impossible to ignore</td>
+          </tr>
+          <!-- Potential for Escalation -->
+          <tr>
+            <td class="category-header" data-category="5" title="How well can the concept escalate in complexity and excitement?">Potential for Escalation</td>
+            <td data-category="5" data-rating="1">Premise has limited depth</td>
+            <td data-category="5" data-rating="2">Some room for unexpected twists</td>
+            <td data-category="5" data-rating="3">Can build into a compelling narrative</td>
+            <td data-category="5" data-rating="4">Has a natural progression that keeps getting crazier, sustaining tension</td>
+          </tr>
+          <!-- Minecraft Mechanics Creativity -->
+          <tr>
+            <td class="category-header" data-category="6" title="How creative is the gameplay concept?">Minecraft Mechanics Creativity</td>
+            <td data-category="6" data-rating="1">Standard gameplay ideas</td>
+            <td data-category="6" data-rating="2">Somewhat creative but not groundbreaking</td>
+            <td data-category="6" data-rating="3">Clever use of game mechanics</td>
+            <td data-category="6" data-rating="4">Reinvents or breaks the game in a way that stuns viewers</td>
+          </tr>
+          <!-- Trend & Algorithm Fit -->
+          <tr>
+            <td class="category-header" data-category="7" title="How well does the concept align with trends and algorithms?">Trend &amp; Algorithm Fit</td>
+            <td data-category="7" data-rating="1">No relevance to trends or searchability</td>
+            <td data-category="7" data-rating="2">Loosely inspired by trends but not optimized</td>
+            <td data-category="7" data-rating="3">Taps into an existing viral format</td>
+            <td data-category="7" data-rating="4">Could start a new trend or redefine the niche</td>
+          </tr>
+          <!-- Surprise Factor & Unpredictability -->
+          <tr>
+            <td class="category-header" data-category="8" title="How unpredictable and surprising is the concept?">Surprise Factor &amp; Unpredictability</td>
+            <td data-category="8" data-rating="1">Entirely predictable</td>
+            <td data-category="8" data-rating="2">Some minor surprises but nothing shocking</td>
+            <td data-category="8" data-rating="3">Unexpected twists that keep players and viewers engaged</td>
+            <td data-category="8" data-rating="4">Completely unpredictable outcomes that change the trajectory of the video</td>
+          </tr>
+          <!-- Execution Feasibility -->
+          <tr>
+            <td class="category-header" data-category="9" title="How realistic is it to execute the idea?">Execution Feasibility</td>
+            <td data-category="9" data-rating="1">Impractical</td>
+            <td data-category="9" data-rating="2">Possible but difficult</td>
+            <td data-category="9" data-rating="3">Practical with ROI</td>
+            <td data-category="9" data-rating="4">Easy &amp; high ROI</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- HUMAN SUGGESTIONS SECTION -->
+    <div class="human-suggestions">
+      <h3>Human Suggestions</h3>
+      <div id="humanSuggestions">No suggestions yet.</div>
+    </div>
+    
+    <!-- FEEDBACK PANEL -->
+    <div class="feedback-panel" id="feedback">
+      <h3>Improvement Recommendations</h3>
+      <div id="specificFeedback"></div>
+      <div class="ai-suggestions" id="aiSuggestions"></div>
     </div>
   </div>
   
-  <!-- RUBRIC TABLE -->
-  <div class="rubric-table">
-    <table class="modern-table">
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Good (1)</th>
-          <th>Great (2)</th>
-          <th>Excellent (3)</th>
-          <th>Outstanding (4)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Originality & Concept -->
-        <tr>
-          <td class="category-header" data-category="0" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
-          <td data-category="0" data-rating="1">Basic, generic idea</td>
-          <td data-category="0" data-rating="2">Some intrigue but needs refinement</td>
-          <td data-category="0" data-rating="3">Engaging with clear potential</td>
-          <td data-category="0" data-rating="4">Exceptionally bold &amp; entertaining</td>
-        </tr>
-        <!-- Transformation/Progression -->
-        <tr>
-          <td class="category-header" data-category="1" title="How well does the idea develop or transform?">Transformation/Progression</td>
-          <td data-category="1" data-rating="1">No clear growth</td>
-          <td data-category="1" data-rating="2">Mild progression</td>
-          <td data-category="1" data-rating="3">Clear transformation</td>
-          <td data-category="1" data-rating="4">Dramatic, impactful progression</td>
-        </tr>
-        <!-- Retention Potential (new) -->
-        <tr>
-          <td class="category-header" data-category="2" title="How well does the concept retain viewer interest?">Retention Potential</td>
-          <td data-category="2" data-rating="1">No clear hook or progression</td>
-          <td data-category="2" data-rating="2">Might hold attention, but risks drop-offs</td>
-          <td data-category="2" data-rating="3">Strong potential to keep viewers engaged</td>
-          <td data-category="2" data-rating="4">Built-in tension, pacing, and payoffs maximizing retention</td>
-        </tr>
-        <!-- Neural Network Link (new) -->
-        <tr>
-          <td class="category-header" data-category="3" title="How well does the concept connect to previous content?">Neural Network Link</td>
-          <td data-category="3" data-rating="1">Doesn’t connect to past videos</td>
-          <td data-category="3" data-rating="2">Minor connection to previous themes</td>
-          <td data-category="3" data-rating="3">Expands on previous mechanics or lore</td>
-          <td data-category="3" data-rating="4">Deeply integrates into channel’s worldbuilding, running themes, or strategies</td>
-        </tr>
-        <!-- Viewer Curiosity & Clickability (new) -->
-        <tr>
-          <td class="category-header" data-category="4" title="How well does the title and thumbnail spark interest?">Viewer Curiosity &amp; Clickability</td>
-          <td data-category="4" data-rating="1">Title &amp; thumbnail would struggle to stand out</td>
-          <td data-category="4" data-rating="2">Might generate interest but lacks urgency</td>
-          <td data-category="4" data-rating="3">Creates a strong curiosity gap</td>
-          <td data-category="4" data-rating="4">Instant click magnet, impossible to ignore</td>
-        </tr>
-        <!-- Potential for Escalation (new) -->
-        <tr>
-          <td class="category-header" data-category="5" title="How well can the concept escalate in complexity and excitement?">Potential for Escalation</td>
-          <td data-category="5" data-rating="1">Premise has limited depth</td>
-          <td data-category="5" data-rating="2">Some room for unexpected twists</td>
-          <td data-category="5" data-rating="3">Can build into a compelling narrative</td>
-          <td data-category="5" data-rating="4">Has a natural progression that keeps getting crazier, sustaining tension</td>
-        </tr>
-        <!-- Minecraft Mechanics Creativity (new) -->
-        <tr>
-          <td class="category-header" data-category="6" title="How creative is the gameplay concept?">Minecraft Mechanics Creativity</td>
-          <td data-category="6" data-rating="1">Standard gameplay ideas</td>
-          <td data-category="6" data-rating="2">Somewhat creative but not groundbreaking</td>
-          <td data-category="6" data-rating="3">Clever use of game mechanics</td>
-          <td data-category="6" data-rating="4">Reinvents or breaks the game in a way that stuns viewers</td>
-        </tr>
-        <!-- Trend & Algorithm Fit (new) -->
-        <tr>
-          <td class="category-header" data-category="7" title="How well does the concept align with trends and algorithms?">Trend &amp; Algorithm Fit</td>
-          <td data-category="7" data-rating="1">No relevance to trends or searchability</td>
-          <td data-category="7" data-rating="2">Loosely inspired by trends but not optimized</td>
-          <td data-category="7" data-rating="3">Taps into an existing viral format</td>
-          <td data-category="7" data-rating="4">Could start a new trend or redefine the niche</td>
-        </tr>
-        <!-- Surprise Factor & Unpredictability (new) -->
-        <tr>
-          <td class="category-header" data-category="8" title="How unpredictable and surprising is the concept?">Surprise Factor &amp; Unpredictability</td>
-          <td data-category="8" data-rating="1">Entirely predictable</td>
-          <td data-category="8" data-rating="2">Some minor surprises but nothing shocking</td>
-          <td data-category="8" data-rating="3">Unexpected twists that keep players and viewers engaged</td>
-          <td data-category="8" data-rating="4">Completely unpredictable outcomes that change the trajectory of the video</td>
-        </tr>
-        <!-- Execution Feasibility -->
-        <tr>
-          <td class="category-header" data-category="9" title="How realistic is it to execute the idea?">Execution Feasibility</td>
-          <td data-category="9" data-rating="1">Impractical</td>
-          <td data-category="9" data-rating="2">Possible but difficult</td>
-          <td data-category="9" data-rating="3">Practical with ROI</td>
-          <td data-category="9" data-rating="4">Easy &amp; high ROI</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <!-- FEEDBACK PANEL -->
-  <div class="feedback-panel" id="feedback">
-    <h3>Improvement Recommendations</h3>
-    <div id="specificFeedback"></div>
-    <div class="ai-suggestions" id="aiSuggestions"></div>
-  </div>
-  
-  <!-- RESOURCES -->
-  <div class="resources">
-    <h3>Idea Generation Resources</h3>
-    <ul>
-      <li><a href="https://trends.google.com/trends/" target="_blank">Google Trends</a></li>
-      <li><a href="https://answerthepublic.com/" target="_blank">Audience Questions</a></li>
-      <li><a href="https://www.reddit.com/r/VideoIdeas/" target="_blank">Idea Community</a></li>
-    </ul>
+  <!-- CONTROLS (outside the report so they are not exported) -->
+  <div class="controls">
+    <button onclick="resetScores()">🔄 Reset Scores</button>
+    <button onclick="exportPDF()">📥 Export Report as PDF</button>
+    <button onclick="exportPNG()">📷 Export Report as PNG</button>
+    <button onclick="getAISuggestions()">🤖 AI Suggestions</button>
+    <button onclick="openHowTo()">❓ How To</button>
+    <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
   </div>
   
   <!-- HOW-TO MODAL -->
@@ -557,146 +502,14 @@
         <li>Watch the word/character count update as you type.</li>
         <li>Use the "Save Revision" button to record versions of your idea.</li>
         <li>Click on a revision from the list to load it back into the editor.</li>
-        <li>Generate random prompts for inspiration with the "Random Prompt" button.</li>
         <li>Rate your idea using the rubric table and review detailed improvement recommendations below.</li>
         <li>Use the AI Suggestions button for automated feedback.</li>
-        <li>Export your complete report as a PDF when you’re ready.</li>
+        <li>Export your complete report as a PDF or PNG when you’re ready.</li>
       </ul>
     </div>
   </div>
   
   <script>
-    /***************************************************
-     * Improvement Tips for Rubric (10 Categories)
-     * (Updated for the replaced rubric categories)
-     ***************************************************/
-    const improvementTips = {
-      0: {
-        1: "Your idea appears too generic. Brainstorm by listing 'what if' scenarios to add an unexpected twist. Explore examples from various genres to find unconventional angles.",
-        2: "There’s some uniqueness here. Try merging two unrelated concepts or subverting a common trope. Sketch out a mind-map to see new connections.",
-        3: "Great originality! Enhance the concept by refining details and establishing a clear hook. Consider early surprises that capture attention.",
-        4: "Outstanding originality! Focus on fine-tuning every element. Develop detailed visuals and consider how innovative storytelling can amplify the concept."
-      },
-      1: {
-        1: "The idea lacks clear progression. Outline a basic three-act structure (beginning, middle, end) and consider using storyboards to visualize the flow.",
-        2: "The narrative shows growth but needs depth. Identify key turning points and add tension by introducing obstacles and conflicts.",
-        3: "Solid progression. Elevate it by incorporating dynamic character arcs and unexpected plot twists that deepen the narrative.",
-        4: "Excellent progression! Enhance by mapping out subplots and secondary conflicts that enrich the storyline and maintain momentum."
-      },
-      2: { // Retention Potential
-        1: "Your concept lacks a clear hook or progression. Consider establishing a more engaging narrative structure from the outset.",
-        2: "There's some retention potential, but the pacing might be slow. Introduce strategic cliffhangers to maintain interest.",
-        3: "Strong retention potential! Enhance by incorporating mid-video surprises and ensuring a smooth narrative flow.",
-        4: "Outstanding retention! Perfectly timed tension and payoffs keep viewers hooked throughout."
-      },
-      3: { // Neural Network Link
-        1: "The concept doesn't build on your previous content. Consider tying in familiar elements to create continuity.",
-        2: "There's a minor connection to past themes. Strengthen these links to foster a sense of community and continuity.",
-        3: "Good integration with previous content. Enhance by weaving in recurring themes or callbacks to earlier videos.",
-        4: "Excellent connection! Deeply integrate with your channel’s narrative to create a rich, interconnected viewing experience."
-      },
-      4: { // Viewer Curiosity & Clickability
-        1: "The title and thumbnail might not capture attention. Rework them to spark curiosity and stand out.",
-        2: "There's some intrigue, but the visuals could use more impact. Enhance your title or thumbnail for greater urgency.",
-        3: "Great curiosity factor! Build on this by highlighting a compelling mystery or question in your presentation.",
-        4: "This is a click magnet! Your title and thumbnail immediately draw viewers in—keep up the strong visual appeal."
-      },
-      5: { // Potential for Escalation
-        1: "The narrative appears static. Introduce escalating stakes or twists to add depth to your concept.",
-        2: "There's potential for escalation, but the development is moderate. Consider layering in additional twists.",
-        3: "Your concept builds well. Enhance the narrative by adding unexpected developments to heighten tension.",
-        4: "Outstanding escalation! Each twist and turn amplifies the excitement and drives the narrative forward."
-      },
-      6: { // Minecraft Mechanics Creativity
-        1: "The gameplay concept is standard. Look for innovative ways to incorporate unique game mechanics.",
-        2: "Some creative elements are present, but there's room for innovation. Experiment with novel gameplay twists.",
-        3: "Clever use of game mechanics! Push the boundaries further by integrating unexpected elements.",
-        4: "Exceptional creativity! Reinvent traditional gameplay with innovative mechanics that captivate the audience."
-      },
-      7: { // Trend & Algorithm Fit
-        1: "The concept doesn't align with current trends. Research popular topics and consider adjustments for better visibility.",
-        2: "There's slight trend alignment, but it's not fully optimized. Incorporate trending elements more strategically.",
-        3: "Good trend alignment! Fine-tune your approach by emphasizing elements that boost discoverability.",
-        4: "Perfect fit for trends! Your concept is poised to set new standards—capitalize on this momentum."
-      },
-      8: { // Surprise Factor & Unpredictability
-        1: "The outcome seems predictable. Introduce more unexpected twists to keep the audience engaged.",
-        2: "Some surprises are present, but they could be more impactful. Aim for bolder, more unpredictable turns.",
-        3: "Good level of unpredictability! Enhance by incorporating twists that continually subvert expectations.",
-        4: "Exceptional unpredictability! Your concept is full of delightful surprises that radically change the viewer experience."
-      },
-      9: {
-        1: "The execution appears impractical. Simplify the concept and focus on what can realistically be produced given your resources.",
-        2: "Execution is challenging. Look for ways to streamline production—consider using affordable tools, outsourcing certain elements, or planning a minimalistic approach.",
-        3: "Practical with clear ROI. Enhance by mapping out a detailed production plan, including timelines, budgets, and contingency strategies.",
-        4: "Effortless execution with high ROI! Consider innovative production techniques or strategic collaborations that can elevate your final product without overextending resources."
-      }
-    };
-    
-    /***************************************************
-     * Global Variables & Revision History
-     ***************************************************/
-    let scores = {};
-    let revisions = [];
-    let saveDraftTimeout;
-    
-    /***************************************************
-     * Expanded Random Prompts for Creative Inspiration
-     ***************************************************/
-    const prompts = [
-      "What if you combined an unexpected historical event with futuristic technology?",
-      "Imagine a world where your video genre is completely inverted—what fresh perspective emerges?",
-      "How could you tell your story if you started at the climax and unraveled the events backwards?",
-      "What if you introduced a mysterious character whose secret changes everything?",
-      "Imagine blending two completely different genres—what unique narrative could form?",
-      "What would your story look like if told by an unreliable narrator with hidden motives?",
-      "Consider a twist where the villain becomes the hero. How would that reshape your narrative?",
-      "What if your content involved interactive viewer choices that shape the storyline in real time?",
-      "How can you incorporate elements of mystery and suspense to hook your audience from the start?",
-      "What if you used a non-linear narrative to reveal different perspectives on the same event?",
-      "Imagine your idea as a serialized mystery—what cliffhanger would you end each episode with?",
-      "How would your concept change if you mixed reality with surreal, dream-like sequences?",
-      "What if your video opened with a controversial statement and then built credibility through evidence?",
-      "Imagine your content as a journey of transformation. What key stages would your character experience?",
-      "How could you incorporate user-generated content to make your narrative more dynamic and relatable?",
-      "What if you narrated your idea from an unexpected perspective, such as an inanimate object?",
-      "Consider a scenario where every decision has a visible consequence. How would you structure that?",
-      "How can you integrate a live element into your content to create authentic real-time engagement?",
-      "What if you challenged a common stereotype or myth—how would you flip the narrative?",
-      "Imagine your narrative as a puzzle with clues scattered throughout. How would you arrange them?",
-      "How would you use visual metaphors to add layers of meaning to your concept?",
-      "What if you reimagined a familiar story in a futuristic setting with a radical twist?",
-      "Consider a scenario where technology and raw emotion collide—how would that shape your story?"
-    ];
-    
-    document.addEventListener('DOMContentLoaded', () => {
-      // Load saved draft (if any)
-      const savedDraft = localStorage.getItem('ideaDraft');
-      if(savedDraft) {
-        document.getElementById('ideaInput').value = savedDraft;
-        updateIdea();
-      }
-      // Load saved revisions
-      const savedRevisions = localStorage.getItem('ideaRevisions');
-      if(savedRevisions) {
-        revisions = JSON.parse(savedRevisions);
-        updateRevisionHistory();
-      }
-      // Set up event listeners
-      document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-        cell.addEventListener('click', () => selectRating(cell));
-      });
-      document.getElementById('ideaInput').addEventListener('input', updateIdea);
-      generatePrompt();
-      
-      // Close How-To modal on Escape key press
-      document.addEventListener('keydown', function(e) {
-        if(e.key === "Escape" && document.getElementById('howToModal').classList.contains('show')) {
-          closeHowTo();
-        }
-      });
-    });
-    
     /***************************************************
      * Rubric Score Functions
      ***************************************************/
@@ -705,7 +518,7 @@
       const rating = parseInt(cell.getAttribute('data-rating'));
       const row = cell.parentElement;
       row.querySelectorAll('td').forEach(td => {
-        if(td !== row.firstElementChild) td.classList.remove('selected');
+        if (td !== row.firstElementChild) td.classList.remove('selected');
       });
       cell.classList.add('selected');
       scores[categoryIndex] = rating;
@@ -718,19 +531,19 @@
       document.getElementById('total').textContent = total;
       const ranking = document.getElementById('ranking');
       
-      if(Object.keys(scores).length < 10) {
+      if (Object.keys(scores).length < 10) {
         ranking.textContent = 'Incomplete';
         ranking.style.color = '#64748b';
         return;
       }
       
-      if(total <= 24) {
+      if (total <= 24) {
         ranking.textContent = 'Needs Work 🔴';
         ranking.style.color = '#ef4444';
-      } else if(total <= 32) {
+      } else if (total <= 32) {
         ranking.textContent = 'Good Start 🟡';
         ranking.style.color = '#eab308';
-      } else if(total <= 38) {
+      } else if (total <= 38) {
         ranking.textContent = 'Great! 🟢';
         ranking.style.color = '#22c55e';
       } else {
@@ -743,7 +556,6 @@
       const feedbackDiv = document.getElementById('specificFeedback');
       feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
         const rating = scores[cat];
-        // Look up the category header using the data-category attribute
         const header = document.querySelector(`.category-header[data-category="${cat}"]`);
         const categoryName = header ? header.textContent.trim() : 'Category ' + cat;
         return `<div class="feedback-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 8px;">
@@ -769,11 +581,90 @@
     }
     
     /***************************************************
-     * Prompt Generator
+     * AI Suggestions Simulation
      ***************************************************/
-    function generatePrompt() {
-      const random = prompts[Math.floor(Math.random() * prompts.length)];
-      document.getElementById('randomPrompt').textContent = random;
+    async function getAISuggestions() {
+      const aiDiv = document.getElementById('aiSuggestions');
+      aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing concept...';
+      setTimeout(() => {
+        const suggestions = [
+          "Optimize your video title by incorporating high-converting keywords, numbers, and emotional triggers to prolong CTR on YouTube.",
+          "Experiment with bold title formats—using questions, challenges, or urgency cues—to capture viewer interest and boost click-through rates.",
+          "Supercharge your video concept 10x by integrating unexpected twists and dynamic storytelling techniques.",
+          "Fix a weak concept by identifying its shortcomings and refining the narrative, pacing, and visual hooks for better engagement.",
+          "A/B test different title and thumbnail combinations to discover which format drives the highest CTR."
+        ];
+        aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' + suggestions.map(s => `• ${s}`).join('<br>');
+      }, 2000);
+    }
+    
+    /***************************************************
+     * Export Report as PDF
+     ***************************************************/
+    async function exportPDF() {
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const reportElement = document.getElementById('report');
+        const canvas = await html2canvas(reportElement, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const imgProps = doc.getImageProperties(imgData);
+        const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        doc.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+        doc.save('idea-analysis-report.pdf');
+      } catch (error) {
+        console.error("Error exporting PDF: ", error);
+        alert("Failed to export PDF. Please try again.");
+      }
+    }
+    
+    /***************************************************
+     * Export Report as PNG
+     ***************************************************/
+    async function exportPNG() {
+      try {
+        const reportElement = document.getElementById('report');
+        const canvas = await html2canvas(reportElement, { scale: 2 });
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'idea-analysis-report.png';
+        link.click();
+      } catch (error) {
+        console.error("Error exporting PNG: ", error);
+        alert("Failed to export PNG. Please try again.");
+      }
+    }
+    
+    /***************************************************
+     * Dark Mode Toggle
+     ***************************************************/
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+    
+    /***************************************************
+     * HOW-TO MODAL FUNCTIONS
+     ***************************************************/
+    function openHowTo() {
+      document.getElementById('howToModal').classList.add('show');
+    }
+    
+    function closeHowTo() {
+      document.getElementById('howToModal').classList.remove('show');
+    }
+    
+    /***************************************************
+     * Copy Idea Functionality
+     ***************************************************/
+    function copyIdea() {
+      const ideaText = document.getElementById('ideaInput').value;
+      if (ideaText.trim()) {
+        navigator.clipboard.writeText(ideaText)
+          .then(() => alert('Idea copied to clipboard!'))
+          .catch(err => alert('Failed to copy text: ' + err));
+      }
     }
     
     /***************************************************
@@ -782,7 +673,6 @@
     function updateIdea() {
       const ideaText = document.getElementById('ideaInput').value;
       updateWordCount(ideaText);
-      // Auto-save draft after 500ms of inactivity
       clearTimeout(saveDraftTimeout);
       saveDraftTimeout = setTimeout(() => {
         localStorage.setItem('ideaDraft', ideaText);
@@ -802,7 +692,7 @@
     
     function saveRevision() {
       const ideaText = document.getElementById('ideaInput').value;
-      if(!ideaText.trim()) return;
+      if (!ideaText.trim()) return;
       const timestamp = new Date().toLocaleString();
       revisions.push({ text: ideaText, time: timestamp });
       localStorage.setItem('ideaRevisions', JSON.stringify(revisions));
@@ -811,99 +701,28 @@
     
     function updateRevisionHistory() {
       const revList = document.getElementById('revisionHistory');
-      revList.innerHTML = revisions.map((rev, index) => `<li onclick="loadRevision(${index})">Revision ${index+1} - ${rev.time}</li>`).join('');
+      revList.innerHTML = revisions.map((rev, index) => `<li onclick="loadRevision(${index})">Revision ${index + 1} - ${rev.time}</li>`).join('');
     }
     
     function loadRevision(index) {
-      if(confirm("Load this revision? Unsaved changes will be lost.")) {
+      if (confirm("Load this revision? Unsaved changes will be lost.")) {
         document.getElementById('ideaInput').value = revisions[index].text;
         updateIdea();
       }
     }
     
     function clearRevisions() {
-      if(confirm("Are you sure you want to clear all revision history?")) {
+      if (confirm("Are you sure you want to clear all revision history?")) {
         revisions = [];
         updateRevisionHistory();
         localStorage.removeItem('ideaRevisions');
       }
     }
     
-    /***************************************************
-     * AI Suggestions Simulation
-     ***************************************************/
-    async function getAISuggestions() {
-      const aiDiv = document.getElementById('aiSuggestions');
-      aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing concept...';
-      setTimeout(() => {
-        const suggestions = [
-          "Optimize your video title by incorporating high-converting keywords, numbers, and emotional triggers to prolong CTR on YouTube.",
-          "Experiment with bold title formats—using questions, challenges, or urgency cues—to capture viewer interest and boost click-through rates.",
-          "Supercharge your video concept 10x by integrating unexpected twists and dynamic storytelling techniques.",
-          "Fix a weak concept by identifying its shortcomings and refining the narrative, pacing, and visual hooks for better engagement.",
-          "A/B test different title and thumbnail combinations to discover which format drives the highest CTR."
-        ];
-        aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' + suggestions.map(s => `• ${s}`).join('<br>');
-      }, 2000);
-    }
-    
-    /***************************************************
-     * EXPORT PDF
-     ***************************************************/
-    async function exportPDF() {
-      try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        const elements = [
-          document.querySelector('.analyzer-header'),
-          document.querySelector('.brainstorm-section'),
-          document.querySelector('.rubric-table'),
-          document.querySelector('.feedback-panel')
-        ];
-        
-        let yPos = 10;
-        for(const element of elements) {
-          const canvas = await html2canvas(element, { scale: 2 });
-          const imgData = canvas.toDataURL('image/png');
-          const imgProps = doc.getImageProperties(imgData);
-          const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-          if(yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
-            doc.addPage();
-            yPos = 10;
-          }
-          doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
-          yPos += pdfHeight + 10;
-        }
-        doc.save('idea-analysis-report.pdf');
-      } catch (error) {
-        console.error("Error exporting PDF: ", error);
-        alert("Failed to export PDF. Please try again.");
-      }
-    }
-    
-    /***************************************************
-     * HOW-TO MODAL FUNCTIONS
-     ***************************************************/
-    function openHowTo() {
-      document.getElementById('howToModal').classList.add('show');
-    }
-    
-    function closeHowTo() {
-      document.getElementById('howToModal').classList.remove('show');
-    }
-    
-    /***************************************************
-     * Copy Idea Functionality
-     ***************************************************/
-    function copyIdea() {
-      const ideaText = document.getElementById('ideaInput').value;
-      if(ideaText.trim()) {
-        navigator.clipboard.writeText(ideaText)
-          .then(() => alert('Idea copied to clipboard!'))
-          .catch(err => alert('Failed to copy text: ' + err));
-      }
-    }
+    // Global variable for revisions
+    let scores = {};
+    let revisions = [];
+    let saveDraftTimeout;
   </script>
 </body>
 </html>
