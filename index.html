@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -162,10 +162,52 @@
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
         opacity: 0.9;
       }
-      /* Additional toggles */
+      /* Toggle Switches */
       .toggle-label {
         font-size: 0.9rem;
-        margin-left: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+        vertical-align: middle;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      .toggle-switch input:checked + .slider {
+        background-color: var(--primary-light);
+      }
+      .toggle-switch input:checked + .slider:before {
+        transform: translateX(26px);
       }
 
       /* Progress Bar in Header */
@@ -195,15 +237,14 @@
         display: grid;
         grid-template-columns: 340px 1fr;
         gap: 2rem;
-        width: 90%;
-        max-width: 1200px;
+        width: 95%;
+        max-width: 1600px; /* Expanded for larger screens */
         margin: 2rem auto;
         padding: 0 2rem 2rem;
       }
 
       /* SIDEBAR */
       aside.sidebar {
-        /* Keep sidebar in first grid column */
         position: relative;
         width: 340px;
       }
@@ -276,11 +317,10 @@
 
       /* Rubric Table */
       .rubric-table {
-        overflow-x: auto;
+        /* Removed overflow-x so the table can expand fully */
       }
       .modern-table {
         width: 100%;
-        /* Remove fixed min-width so that the table fits the container */
         border-collapse: separate;
         border-spacing: 0;
         font-family: 'Roboto', sans-serif;
@@ -292,7 +332,7 @@
       .modern-table thead th {
         background: linear-gradient(135deg, #4facfe, #00f2fe);
         color: #fff;
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1.5rem; /* increased padding for a cleaner look */
         font-weight: 600;
         position: sticky;
         top: 0;
@@ -300,7 +340,7 @@
         z-index: 10;
       }
       .modern-table tbody td {
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
         vertical-align: middle;
@@ -320,7 +360,7 @@
         background: rgba(126, 34, 206, 0.1);
         position: sticky;
         left: 0;
-        min-width: 180px;
+        min-width: 200px; /* slightly wider for better balance */
         backdrop-filter: blur(6px);
         border-right: 1px solid rgba(224, 231, 255, 0.3);
         z-index: 9;
@@ -506,11 +546,20 @@
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
         <button class="btn" onclick="cycleTheme()" aria-label="Cycle Theme">🎭 Cycle Theme</button>
+        <!-- Improved Toggle Switches -->
         <label class="toggle-label">
-          <input type="checkbox" id="muteToggle" onchange="toggleSound(this)"> Mute Sound
+          <span class="toggle-switch">
+            <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
+            <span class="slider"></span>
+          </span>
+          Mute Sound
         </label>
         <label class="toggle-label">
-          <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)"> Disable Animations
+          <span class="toggle-switch">
+            <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
+            <span class="slider"></span>
+          </span>
+          Disable Animations
         </label>
       </div>
     </header>
@@ -767,14 +816,22 @@
        * DOMContentLoaded Setup
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-          cell.addEventListener('click', () => selectRating(cell));
-          cell.addEventListener('keydown', (e) => {
-            if (e.key === "Enter" || e.key === " ") {
+        // Use event delegation for the rubric table cells:
+        document.querySelector('.modern-table').addEventListener('click', (e) => {
+          const cell = e.target.closest('td[data-rating]');
+          if (cell) {
+            selectRating(cell);
+          }
+        });
+        // Also support keyboard Enter/Space via delegation:
+        document.querySelector('.modern-table').addEventListener('keydown', (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            const cell = e.target.closest('td[data-rating]');
+            if (cell) {
               e.preventDefault();
               selectRating(cell);
             }
-          });
+          }
         });
         document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
         document.getElementById('videoTitle').addEventListener('input', () => {
@@ -925,7 +982,7 @@
             matchFound = true;
           }
         });
-        // This synergy message could be enhanced further if desired.
+        // (Optional) Provide a visual cue if synergy is detected.
       }
 
       /***************************************************
@@ -950,6 +1007,8 @@
           processImage(ev.target.result);
         };
         reader.readAsDataURL(file);
+        // Clear the file input so the same file can be re-uploaded if needed.
+        e.target.value = "";
       }
       function updateAllPreviews(dataUrl) {
         document.getElementById('homePreview').src = dataUrl;
