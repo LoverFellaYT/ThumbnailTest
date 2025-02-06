@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thumbnail Analyzer Pro+ (Enhanced)</title>
+    <title>Thumbnail Analyzer Pro+ (Final)</title>
 
     <!-- Roboto Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,40 +34,26 @@
         --text-light: #1e293b;
         --panel-light: rgba(255, 255, 255, 0.96);
         --border-light: rgba(255, 255, 255, 0.2);
-
-        --primary-dark: #a78bfa;
-        --accent-dark: #ec4899;
-        --bg-dark: #1f1f1f;
-        --text-dark: #f3f3f3;
-        --panel-dark: rgba(18, 18, 18, 0.98);
-        --border-dark: rgba(255, 255, 255, 0.2);
-
         --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
         --transition: all 0.2s ease;
         --radius: 14px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-
         /* Table & Title Colors */
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-        --table-cell-bg-dark: rgba(30, 30, 30, 0.85);
         --yt-title-color-light: #030303;
-        --yt-title-color-dark: #ffffff;
-
-        /* Focus outline */
-        --focus-outline: 2px solid var(--accent-light);
       }
 
-      /* Dark mode support using data-theme on html */
+      /* Dark mode override – keep the blue gradient */
       html[data-theme="dark"] {
-        --bg-light: var(--bg-dark);
-        --text-light: var(--text-dark);
-        --panel-light: var(--panel-dark);
-        --border-light: var(--border-dark);
-        --gradient-light: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
-        --primary-light: var(--primary-dark);
-        --accent-light: var(--accent-dark);
-        --table-cell-bg-light: var(--table-cell-bg-dark);
-        --yt-title-color-light: var(--yt-title-color-dark);
+        --bg-light: #1f1f1f;
+        --text-light: #f3f3f3;
+        --panel-light: rgba(18, 18, 18, 0.98);
+        --border-light: rgba(255, 255, 255, 0.2);
+        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-light: #4facfe;
+        --accent-light: #00f2fe;
+        --table-cell-bg-light: rgba(30,30,30,0.85);
+        --yt-title-color-light: #ffffff;
       }
 
       body {
@@ -81,10 +67,10 @@
 
       button:focus,
       [tabindex]:focus {
-        outline: var(--focus-outline);
+        outline: 2px solid var(--accent-light);
       }
 
-      /* Added margin-bottom to panels for cleaner spacing */
+      /* Panels */
       .glass-panel {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
@@ -165,7 +151,8 @@
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
         opacity: 0.9;
       }
-      /* Toggle Switches */
+
+      /* Custom Toggle Switches (for dark mode, mute, etc.) */
       .toggle-label {
         font-size: 0.9rem;
         display: flex;
@@ -175,9 +162,8 @@
       .toggle-switch {
         position: relative;
         display: inline-block;
-        width: 50px;
-        height: 24px;
-        vertical-align: middle;
+        width: 60px;
+        height: 30px;
       }
       .toggle-switch input {
         opacity: 0;
@@ -193,27 +179,32 @@
         bottom: 0;
         background-color: #ccc;
         transition: 0.4s;
-        border-radius: 24px;
+        border-radius: 30px;
       }
       .slider:before {
         position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 3px;
-        bottom: 3px;
+        content: "☀";
+        height: 26px;
+        width: 26px;
+        left: 2px;
+        bottom: 2px;
         background-color: white;
         transition: 0.4s;
         border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
       }
       .toggle-switch input:checked + .slider {
         background-color: var(--primary-light);
       }
       .toggle-switch input:checked + .slider:before {
-        transform: translateX(26px);
+        transform: translateX(30px);
+        content: "🌙";
       }
 
-      /* Progress Bar in Header */
+      /* Progress Bar */
       #progressBarContainer {
         position: relative;
         width: 100%;
@@ -235,11 +226,11 @@
         margin-top: 0.5rem;
       }
 
-      /* MAIN CONTAINER as a two‑column grid */
+      /* MAIN CONTAINER */
       .analyzer-container {
         display: grid;
         grid-template-columns: 340px 1fr;
-        gap: 2rem;
+        gap: 3rem;
         width: 95%;
         max-width: 1600px;
         margin: 2rem auto;
@@ -310,8 +301,21 @@
         white-space: normal;
         color: var(--yt-title-color-light);
       }
+      /* Spacing between preview boxes */
+      .previews-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .preview-box {
+        margin-bottom: 1rem;
+        transition: transform 0.2s ease;
+      }
+      .preview-box:hover {
+        transform: scale(1.05);
+      }
 
-      /* MAIN CONTENT */
+      /* MAIN CONTENT (Rubric & Insights) */
       main.main-content {
         display: flex;
         flex-direction: column;
@@ -320,7 +324,7 @@
 
       /* Rubric Table */
       .rubric-table {
-        /* No forced overflow so table expands fully */
+        /* Let the table expand naturally */
       }
       .modern-table {
         width: 100%;
@@ -382,7 +386,6 @@
       .cat-7::before { content: "🎯"; }
       .cat-8::before { content: "🏷️"; }
       .cat-9::before { content: "✨"; }
-
       .modern-table td.selected {
         background: rgba(224, 231, 255, 0.5) !important;
         box-shadow: inset 4px 0 0 var(--primary-light);
@@ -429,7 +432,7 @@
         color: #9ca3af;
       }
 
-      /* DESIGN INSIGHTS SECTION (Simplified) */
+      /* DESIGN INSIGHTS SECTION */
       .auto-insights {
         background: var(--panel-light);
         border-radius: var(--radius);
@@ -479,6 +482,11 @@
       }
       .modal-bg.show {
         display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
       .modal-content {
         position: relative;
@@ -544,12 +552,18 @@
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
-        <!-- Toggle Dark Mode button -->
-        <button class="btn" onclick="toggleTheme()" aria-label="Toggle Dark Mode">🌙 Toggle Dark Mode</button>
+        <!-- Dark Mode Toggle as a slider with sun/moon icons -->
+        <label class="toggle-label">
+          <span class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
+            <span class="slider"></span>
+          </span>
+          Dark Mode
+        </label>
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-        <!-- Toggle Switches for Sound and Animations -->
+        <!-- Other Toggles -->
         <label class="toggle-label">
           <span class="toggle-switch">
             <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
@@ -704,7 +718,7 @@
           </div>
         </section>
 
-        <!-- Design Insights Section (Simplified) -->
+        <!-- Design Insights Section -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
           <div class="insight-message" id="brightnessMessage"></div>
@@ -822,9 +836,7 @@
         // Event delegation for rubric table cells:
         document.querySelector('.modern-table').addEventListener('click', (e) => {
           const cell = e.target.closest('td[data-rating]');
-          if (cell) {
-            selectRating(cell);
-          }
+          if (cell) selectRating(cell);
         });
         document.querySelector('.modern-table').addEventListener('keydown', (e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -922,9 +934,7 @@
        ***************************************************/
       function resetScores() {
         scores = {};
-        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-          cell.classList.remove('selected');
-        });
+        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => cell.classList.remove('selected'));
         document.getElementById('total').textContent = '0';
         document.getElementById('scoreLabel').textContent = 'Good';
         document.getElementById('ranking').textContent = 'Incomplete';
@@ -980,11 +990,9 @@
         if (!title || !window.lastPredictions) return;
         var matchFound = false;
         window.lastPredictions.forEach(pred => {
-          if (title.indexOf(pred.className.toLowerCase()) !== -1) {
-            matchFound = true;
-          }
+          if (title.indexOf(pred.className.toLowerCase()) !== -1) matchFound = true;
         });
-        // Optionally, you could display a message if synergy is detected.
+        // Optionally, display a synergy message.
       }
 
       /***************************************************
@@ -1005,11 +1013,9 @@
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = ev => {
-          processImage(ev.target.result);
-        };
+        reader.onload = ev => processImage(ev.target.result);
         reader.readAsDataURL(file);
-        // Reset the file input value so the same file can be uploaded again.
+        // Reset so same file can be re-uploaded.
         e.target.value = "";
       }
       function updateAllPreviews(dataUrl) {
@@ -1027,9 +1033,7 @@
         const file = e.dataTransfer.files[0];
         if (file) {
           const reader = new FileReader();
-          reader.onload = ev => {
-            processImage(ev.target.result);
-          };
+          reader.onload = ev => processImage(ev.target.result);
           reader.readAsDataURL(file);
         }
       }
@@ -1099,13 +1103,7 @@
           }
           const avg = total / count;
           brightnessMessage.innerHTML = `Average Brightness: ${Math.round(avg)}/255 `;
-          if (avg < 80) {
-            brightnessMessage.innerHTML += '(Very Dark) ';
-          } else if (avg < 160) {
-            brightnessMessage.innerHTML += '(Moderate) ';
-          } else {
-            brightnessMessage.innerHTML += '(Bright) ';
-          }
+          brightnessMessage.innerHTML += avg < 80 ? '(Very Dark) ' : (avg < 160 ? '(Moderate) ' : '(Bright) ');
           brightnessMessage.innerHTML += `<a href="#" onclick="openTutorial('brightness')">Learn How</a>`;
           contrastMessage.innerHTML = 'Ensure text overlay meets accessibility contrast standards (~4.5:1). <a href="#" onclick="openTutorial(\'contrast\')">Learn How</a>';
         };
@@ -1173,9 +1171,7 @@
                 resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
               }
               const box = det.detection.box;
-              if (box.width < img.width * 0.25) {
-                resultText += " (Face appears small)";
-              }
+              if (box.width < img.width * 0.25) resultText += " (Face appears small)";
             });
             document.getElementById("faceDetectionResults").innerHTML = resultText + ` <a href="#" onclick="openTutorial('face')">Learn How</a>`;
           }
@@ -1244,9 +1240,7 @@
       async function showSharpness(imageSrc) {
         const sharpness = await calculateSharpness(imageSrc);
         let sharpnessText = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
-        if (sharpness < 10) {
-          sharpnessText += " - Image appears blurry, consider re-exporting at a higher resolution.";
-        }
+        if (sharpness < 10) sharpnessText += " - Image appears blurry, consider re-exporting at a higher resolution.";
         document.getElementById("sharpnessResult").textContent = sharpnessText;
       }
 
@@ -1271,13 +1265,13 @@
       /***************************************************
        * Theme & Animation Toggles
        ***************************************************/
-      // Toggle Dark Mode: add or remove the data-theme="dark" attribute on html.
-      function toggleTheme() {
+      // Dark mode toggle now uses the slider's state.
+      function toggleTheme(input) {
         const html = document.documentElement;
-        if (html.getAttribute("data-theme") === "dark") {
-          html.removeAttribute("data-theme");
-        } else {
+        if (input.checked) {
           html.setAttribute("data-theme", "dark");
+        } else {
+          html.removeAttribute("data-theme");
         }
       }
       function toggleSound(el) {
@@ -1333,6 +1327,20 @@
       }
       function closeTutorial() {
         document.getElementById('tutorialModal').classList.remove('show');
+      }
+
+      /***************************************************
+       * Easter Egg Surprise!
+       ***************************************************/
+      // Press Alt+E to trigger a fun easter egg.
+      document.addEventListener("keydown", function(e) {
+        if (e.altKey && e.key.toLowerCase() === "e") {
+          triggerEasterEgg();
+        }
+      });
+      function triggerEasterEgg() {
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
+        alert("🎉 You found the secret easter egg! Keep being awesome and enjoy coding!");
       }
     </script>
   </body>
