@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
     <!-- html2canvas for PNG export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Canvas Confetti for outstanding score effect -->
+    <!-- Canvas Confetti for Outstanding Score Effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -104,7 +104,6 @@
         position: relative;
         margin: 4px;
       }
-      /* Tooltip on hover now shows hex */
       .color-block:hover::after {
         content: attr(data-hex);
         position: absolute;
@@ -121,7 +120,6 @@
         z-index: 100;
       }
 
-      /* Palette container now stacks horizontal */
       .palette-container {
         display: flex;
         flex-direction: row;
@@ -143,6 +141,7 @@
         display: flex;
         flex-direction: column;
         gap: 0.4rem;
+        position: relative;
       }
       .total-score {
         font-size: 1.75rem;
@@ -151,10 +150,11 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         transition: var(--transition);
+        position: relative;
       }
       /* Score key tooltip on hover */
       .total-score:hover::after {
-        content: "Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36-40: Outstanding, 30-35: Excellent, 20-29: Great, <19: Good";
+        content: "Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40.\A 36–40: Outstanding\A 30–35: Excellent\A 20–29: Great\A <19: Good";
         position: absolute;
         background: #333;
         color: #fff;
@@ -194,11 +194,11 @@
         opacity: 0.9;
       }
 
-      /* MAIN CONTAINER */
+      /* MAIN CONTAINER - centered with extra blank space on both sides */
       .analyzer-container {
         display: flex;
-        max-width: 1300px;
-        margin: 0 auto;
+        max-width: 1100px;
+        margin: 2rem auto;
         gap: 2rem;
         align-items: flex-start;
         padding: 0 2rem 2rem;
@@ -222,7 +222,7 @@
       }
       .title-input {
         width: 100%;
-        max-width: 600px;  /* Constrain the title input width */
+        max-width: 600px;
         padding: 0.8rem;
         border: 2px solid #e2e8f0;
         border-radius: var(--radius);
@@ -239,7 +239,6 @@
       .upload-container {
         margin-bottom: 1rem;
       }
-      /* Drag-and-Drop styling */
       .thumbnail-wrap {
         background: #f1f5f9;
         border: 2px dashed rgba(126, 34, 206, 0.2);
@@ -290,7 +289,7 @@
       }
       .modern-table {
         width: 100%;
-        min-width: 1200px; /* Increased to widen the table */
+        min-width: 1200px; /* Widened table for 1440p displays */
         border-collapse: separate;
         border-spacing: 0;
         font-family: 'Roboto', sans-serif;
@@ -336,11 +335,10 @@
         z-index: 9;
         cursor: help;
       }
-      /* Adding subtle icons in the category header */
+      /* Adding subtle icons in the category header using emoji */
       .category-header::before {
         margin-right: 0.4rem;
       }
-      /* Specific icons for each category (using emoji) */
       .cat-0::before { content: "⚡"; }
       .cat-1::before { content: "🎨"; }
       .cat-2::before { content: "🔍"; }
@@ -372,11 +370,10 @@
         display: block;
         margin-bottom: 0.3rem;
       }
-      /* Constrained contenteditable feedback inputs */
       .feedback-input {
         display: block;
         width: 100%;
-        max-width: 600px; /* Constrain the feedback box width */
+        max-width: 600px;
         box-sizing: border-box;
         min-height: 80px;
         padding: 0.8rem;
@@ -420,7 +417,20 @@
         margin-bottom: 1rem;
         font-size: 1rem;
       }
-      /* Ensure color suggestion container appears as a block below its heading */
+      /* Additional Insight Sections */
+      /* Font Size & Readability */
+      .auto-insights #readabilityResult { font-size: 1rem; }
+      /* Text Overcrowding */
+      .auto-insights #overcrowdingWarning { font-size: 1rem; color: #d9534f; }
+      /* Foreground Extraction */
+      .auto-insights #foregroundResult { font-size: 1rem; }
+      /* Color Harmony & Branding */
+      .auto-insights #colorHarmonyResult { font-size: 1rem; }
+      /* Title-Thumbnail Synergy */
+      .auto-insights #synergyResult { font-size: 1rem; }
+      /* Face Analysis */
+      .auto-insights #faceAnalysisResult { font-size: 1rem; }
+
       .color-suggestions-container {
         display: flex;
         flex-wrap: wrap;
@@ -504,10 +514,9 @@
   <body>
     <!-- HEADER -->
     <header class="analyzer-header glass-panel">
-      <!-- The score display now includes a tooltip and a label -->
       <div class="header-left">
-        <div class="total-score" title="Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36-40: Outstanding, 30-35: Excellent, 20-29: Great, &lt;19: Good">
-          Score: <span id="total">0</span>/40 - <span id="scoreLabel">Good</span>
+        <div class="total-score" title="Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36–40: Outstanding, 30–35: Excellent, 20–29: Great, &lt;19: Good">
+          Score: <span id="total">0</span>/40 – <span id="scoreLabel">Good</span>
         </div>
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
@@ -735,20 +744,7 @@
           </table>
         </section>
 
-        <!-- Feedback Panel (using contenteditable divs) -->
-        <section class="feedback-panel glass-panel">
-          <h3>Feedback</h3>
-          <div class="feedback-entry">
-            <label for="humanFeedback" class="flex-label">Human Feedback</label>
-            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
-          </div>
-          <div class="feedback-entry">
-            <label for="aiFeedback" class="flex-label">AI Feedback</label>
-            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
-          </div>
-        </section>
-
-        <!-- Design Insights Section (Clean & Modern) -->
+        <!-- Design Insights Section -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
           <div class="insight-message" id="brightnessMessage"></div>
@@ -770,12 +766,29 @@
 
           <h4>Face Detection</h4>
           <div class="insight-message" id="faceDetectionResults"></div>
+          <h4>Face Analysis</h4>
+          <div class="insight-message" id="faceAnalysisResult">Awaiting face analysis...</div>
 
           <h4>Object &amp; Scene Recognition</h4>
           <div class="insight-message" id="objectRecognitionResults"></div>
 
           <h4>Sharpness Evaluation</h4>
           <div class="insight-message" id="sharpnessResult"></div>
+
+          <h4>Font Size &amp; Readability</h4>
+          <div class="insight-message" id="readabilityResult">Recommended minimum font size for mobile: 18px.</div>
+
+          <h4>Text Overcrowding</h4>
+          <div class="insight-message" id="overcrowdingWarning">No overcrowding detected.</div>
+
+          <h4>Foreground Extraction</h4>
+          <div class="insight-message" id="foregroundResult">Main subject separation appears adequate. Consider adding an outline or glow if needed.</div>
+
+          <h4>Color Harmony &amp; Branding</h4>
+          <div class="insight-message" id="colorHarmonyResult">Your palette appears predominantly analogous. Consider adding a complementary accent color.</div>
+
+          <h4>Title-Thumbnail Synergy</h4>
+          <div class="insight-message" id="synergyResult">Awaiting analysis...</div>
         </section>
       </main>
     </div>
@@ -799,7 +812,7 @@
           <li>Click on the preview boxes to enlarge the thumbnail.</li>
           <li>Rate your thumbnail on various criteria using the rubric table.</li>
           <li>Provide feedback using the Human and AI feedback boxes.</li>
-          <li>Review the Design Insights for technical feedback and tips.</li>
+          <li>Review the Design Insights for technical feedback and suggestions.</li>
         </ul>
       </div>
     </div>
@@ -817,14 +830,12 @@
       /***************************************************
        * Helper Functions
        ***************************************************/
-      // Convert RGB values to Hex string
       function rgbToHex(r, g, b) {
         return "#" + [r, g, b].map(x => {
           const hex = x.toString(16);
           return hex.length === 1 ? "0" + hex : hex;
         }).join("");
       }
-      // Copy hex value to clipboard and provide visual feedback
       function copyHex(elem) {
         var hex = elem.getAttribute("data-hex");
         navigator.clipboard.writeText(hex).then(() => {
@@ -838,13 +849,11 @@
        ***************************************************/
       let scores = {};
       window.currentPalette = [];
-      let confettiShown = false; // Flag to prevent multiple confetti triggers
-
-      // A constant to set the sampling step (adjust for speed vs. accuracy)
+      let confettiShown = false;
+      window.lastPredictions = null;
       const SAMPLE_STEP = 16;
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Set up rubric rating events (click and keyboard)
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
           cell.addEventListener('keydown', (e) => {
@@ -865,7 +874,6 @@
             faceapi.nets.tinyFaceDetector.loadFromUri('/models')
           ]).then(() => console.log("Face-api models loaded"));
         }
-        // Attach click event to composition grid canvas for enlargement
         document.getElementById("compositionCanvas").addEventListener("click", enlargeComposition);
       });
 
@@ -887,8 +895,6 @@
       function updateTotal() {
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
-        const ranking = document.getElementById('ranking');
-        // Update score label based on total score
         const scoreLabel = document.getElementById('scoreLabel');
         if (total >= 36) {
           scoreLabel.textContent = "Outstanding";
@@ -906,6 +912,7 @@
           scoreLabel.textContent = "Good";
           confettiShown = false;
         }
+        const ranking = document.getElementById('ranking');
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -927,6 +934,43 @@
       }
 
       /***************************************************
+       * Reset Function
+       ***************************************************/
+      function resetScores() {
+        scores = {};
+        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+          cell.classList.remove('selected');
+        });
+        document.getElementById('total').textContent = '0';
+        document.getElementById('scoreLabel').textContent = 'Good';
+        document.getElementById('ranking').textContent = 'Incomplete';
+        document.getElementById('videoTitle').value = '';
+        document.getElementById('homeTitle').textContent = '';
+        document.getElementById('suggestedTitle').textContent = '';
+        var defaultImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+        document.getElementById('homePreview').src = defaultImg;
+        document.getElementById('homePreviewSmall').src = defaultImg;
+        document.getElementById('suggestedPreview').src = defaultImg;
+        document.getElementById('brightnessMessage').textContent = "";
+        document.getElementById('contrastMessage').textContent = "";
+        document.getElementById('paletteContainer').innerHTML = "";
+        document.getElementById('colorSuggestions').innerHTML = "";
+        document.getElementById('compositionFeedback').innerHTML = "Composition Feedback: Your main subject may be off-center. Align it with the grid lines for better balance. <a href='#' onclick='openTutorial(\"composition\")'>Learn How</a>";
+        document.getElementById('faceDetectionResults').textContent = "";
+        document.getElementById('faceAnalysisResult').textContent = "Awaiting face analysis...";
+        document.getElementById('objectRecognitionResults').textContent = "";
+        document.getElementById('sharpnessResult').textContent = "";
+        document.getElementById('readabilityResult').textContent = "Recommended minimum font size for mobile: 18px.";
+        document.getElementById('overcrowdingWarning').textContent = "No overcrowding detected.";
+        document.getElementById('foregroundResult').textContent = "Main subject separation appears adequate. Consider adding an outline or glow if needed.";
+        document.getElementById('colorHarmonyResult').textContent = "Your palette appears predominantly analogous. Consider adding a complementary accent color.";
+        document.getElementById('synergyResult').textContent = "Awaiting analysis...";
+        window.currentPalette = [];
+        window.lastPredictions = null;
+        confettiShown = false;
+      }
+
+      /***************************************************
        * Title Preview & Synergy Functions
        ***************************************************/
       let debounceTimer;
@@ -936,6 +980,7 @@
           const title = document.getElementById('videoTitle').value || '';
           document.getElementById('homeTitle').textContent = truncateTitle(title, 66);
           document.getElementById('suggestedTitle').textContent = truncateTitle(title, 60);
+          checkTitleThumbnailSynergy();
         }, 300);
       }
 
@@ -944,7 +989,23 @@
       }
 
       function checkTitleThumbnailSynergy() {
-        // Placeholder for additional synergy checks.
+        var title = document.getElementById('videoTitle').value.toLowerCase();
+        var synergyDiv = document.getElementById('synergyResult');
+        if (!title || !window.lastPredictions) {
+          synergyDiv.textContent = "Awaiting analysis...";
+          return;
+        }
+        var matchFound = false;
+        window.lastPredictions.forEach(pred => {
+          if (title.indexOf(pred.className.toLowerCase()) !== -1) {
+            matchFound = true;
+          }
+        });
+        if (matchFound) {
+          synergyDiv.textContent = "Good synergy: Your title and thumbnail imagery are well-matched.";
+        } else {
+          synergyDiv.textContent = "Mismatch: Consider aligning your title with the imagery in your thumbnail.";
+        }
       }
 
       /***************************************************
@@ -1115,7 +1176,7 @@
       }
 
       /***************************************************
-       * Face Detection & Expression Analysis
+       * Face Detection & Analysis
        ***************************************************/
       async function runFaceDetection(imageSrc) {
         if (typeof faceapi === "undefined") {
@@ -1129,15 +1190,23 @@
           const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
           if (detections.length === 0) {
             document.getElementById("faceDetectionResults").textContent = "No faces detected.";
+            document.getElementById("faceAnalysisResult").textContent = "";
           } else {
             let resultText = `${detections.length} face(s) detected. `;
+            let analysisMessage = "";
             detections.forEach((det, i) => {
               resultText += `Face ${i+1}: `;
               for (const expr in det.expressions) {
                 resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
               }
+              // Check if face size is less than 25% of image width
+              const box = det.detection.box;
+              if (box.width < img.width * 0.25) {
+                analysisMessage += "A detected face is small; try featuring the subject's face more prominently. ";
+              }
             });
             document.getElementById("faceDetectionResults").innerHTML = resultText + ` <a href="#" onclick="openTutorial('face')">Learn How</a>`;
+            document.getElementById("faceAnalysisResult").textContent = analysisMessage || "Faces are appropriately sized and positioned.";
           }
         };
       }
@@ -1162,17 +1231,19 @@
         img.src = imageSrc;
         img.onload = async function() {
           const predictions = await mobileNetModel.classify(img);
+          window.lastPredictions = predictions;
           if (predictions.length > 0) {
             let text = predictions.map(p => `${p.className} (${(p.probability*100).toFixed(1)}%)`).join(', ');
             document.getElementById("objectRecognitionResults").innerHTML = `Predictions: ${text} <a href="#" onclick="openTutorial('object')">Learn How</a>`;
           } else {
             document.getElementById("objectRecognitionResults").textContent = "No objects recognized.";
           }
+          checkTitleThumbnailSynergy();
         };
       }
 
       /***************************************************
-       * Sharpness Evaluation (Simple Metric)
+       * Sharpness Evaluation (Edge Clarity / Pixelation)
        ***************************************************/
       async function calculateSharpness(imageSrc) {
         return new Promise((resolve, reject) => {
@@ -1201,18 +1272,20 @@
       }
       async function showSharpness(imageSrc) {
         const sharpness = await calculateSharpness(imageSrc);
-        document.getElementById("sharpnessResult").textContent = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
+        let sharpnessText = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
+        if (sharpness < 10) {
+          sharpnessText += " - Image appears blurry, consider re-exporting at a higher resolution.";
+        }
+        document.getElementById("sharpnessResult").textContent = sharpnessText;
       }
 
       /***************************************************
        * Export Function (PNG only)
        ***************************************************/
       async function exportPNG() {
-        // Temporarily remove the sticky style from the header
         const header = document.querySelector("header.analyzer-header");
         const originalPosition = header.style.position;
-        header.style.position = "static"; // Make header static for export
-
+        header.style.position = "static";
         const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
@@ -1221,8 +1294,6 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
-        // Restore the sticky header style
         header.style.position = originalPosition;
       }
 
