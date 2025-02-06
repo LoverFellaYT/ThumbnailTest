@@ -18,8 +18,7 @@
     <!-- New Libraries for Image Analysis -->
     <!-- Face Detection & Expression Analysis -->
     <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-    <!-- OCR Text Detection -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
+    <!-- OCR Text Detection (Removed) -->
     <!-- TensorFlow & MobileNet for Object Recognition -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
@@ -44,7 +43,7 @@
         --border-dark: rgba(255, 255, 255, 0.2);
 
         --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-        --transition: all 0.3s ease;
+        --transition: all 0.2s ease;
         --radius: 14px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
 
@@ -276,19 +275,19 @@
       }
       .modern-table {
         width: 100%;
-        min-width: 800px;
+        min-width: 600px; /* Reduced from 800px to fit more horizontally */
         border-collapse: separate;
         border-spacing: 0;
         font-family: 'Roboto', sans-serif;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         overflow: hidden;
-        transition: transform 0.3s ease;
+        transition: transform 0.2s ease;
       }
       .modern-table thead th {
         background: linear-gradient(135deg, #4facfe, #00f2fe);
         color: #fff;
-        padding: 0.8rem 1rem;
+        padding: 0.5rem 1rem;
         font-weight: 600;
         position: sticky;
         top: 0;
@@ -296,22 +295,20 @@
         z-index: 10;
       }
       .modern-table tbody td {
-        padding: 0.8rem 1rem;
+        padding: 0.5rem 1rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
         vertical-align: middle;
-        min-width: 120px;
+        min-width: 100px;
         cursor: pointer;
         background: var(--table-cell-bg-light);
       }
       .modern-table tbody tr:hover td {
         background-color: rgba(0, 0, 0, 0.03);
-        transform: scale(1.01);
       }
       .modern-table td[data-rating]:hover,
       .modern-table td[data-rating]:focus {
         background: rgba(224, 231, 255, 0.3);
-        transform: scale(1.02);
       }
       .category-header {
         font-weight: 600;
@@ -327,7 +324,6 @@
       .modern-table td.selected {
         background: rgba(224, 231, 255, 0.5) !important;
         box-shadow: inset 4px 0 0 var(--primary-light);
-        transform: scale(1.02);
       }
 
       /* FEEDBACK PANEL */
@@ -741,9 +737,6 @@
           <h4>Face Detection</h4>
           <div class="insight-message" id="faceDetectionResults"></div>
 
-          <h4>OCR Text Detection</h4>
-          <div class="insight-message" id="ocrResults"></div>
-
           <h4>Object &amp; Scene Recognition</h4>
           <div class="insight-message" id="objectRecognitionResults"></div>
 
@@ -911,7 +904,6 @@
           checkContrastAndBrightness(dataUrl);
           drawCompositionGrid(dataUrl);
           runFaceDetection(dataUrl);
-          runOCR(dataUrl);
           runObjectRecognition(dataUrl);
           showSharpness(dataUrl);
         }, 300);
@@ -1098,27 +1090,6 @@
       }
 
       /***************************************************
-       * OCR Text Detection using Tesseract.js
-       ***************************************************/
-      async function runOCR(imageSrc) {
-        if (typeof Tesseract === "undefined") {
-          document.getElementById("ocrResults").textContent = "OCR library not loaded.";
-          return;
-        }
-        Tesseract.recognize(imageSrc, 'eng', { logger: m => console.log(m) })
-          .then(({ data: { text } }) => {
-            if (text) {
-              document.getElementById("ocrResults").innerHTML = `Detected Text: ${text} <a href="#" onclick="openTutorial('ocr')">Learn How</a>`;
-            } else {
-              document.getElementById("ocrResults").textContent = "No text detected.";
-            }
-          })
-          .catch(err => {
-            document.getElementById("ocrResults").textContent = "OCR error.";
-          });
-      }
-
-      /***************************************************
        * Object & Scene Recognition using MobileNet
        ***************************************************/
       async function loadMobileNet() {
@@ -1248,8 +1219,6 @@
           content = "<h2>Improving Contrast</h2><p>Ensure that text overlays have sufficient contrast. Adjust the contrast or text color in your editor. <a href='https://example.com/contrast-tutorial' target='_blank'>Learn More</a></p>";
         } else if (topic === 'composition') {
           content = "<h2>Enhancing Composition</h2><p>Your main subject might be off-center. Try aligning it with the rule-of-thirds grid for better visual balance. <a href='https://example.com/composition-tutorial' target='_blank'>Learn More</a></p>";
-        } else if (topic === 'ocr') {
-          content = "<h2>Text Legibility</h2><p>If the detected text seems too small or unclear, consider increasing the font size or using bolder text. <a href='https://example.com/text-legibility-tutorial' target='_blank'>Learn More</a></p>";
         } else if (topic === 'object') {
           content = "<h2>Object Positioning</h2><p>For better impact, ensure that key objects are well-positioned and not obscured. <a href='https://example.com/object-positioning-tutorial' target='_blank'>Learn More</a></p>";
         } else if (topic === 'face') {
