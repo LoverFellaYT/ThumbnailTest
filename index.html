@@ -56,6 +56,11 @@
         --yt-title-color-light: #ffffff;
       }
 
+      /* Additional dark mode fix for toggle sliders */
+      html[data-theme="dark"] .toggle-switch .slider {
+        background-color: #444;
+      }
+
       body {
         margin: 0;
         padding: 0;
@@ -869,6 +874,8 @@
           <div id="colorSuggestions" class="color-suggestions-container"></div>
 
           <h4>Composition Grid (Rule of Thirds)</h4>
+          <!-- Note: The canvas is styled with max-width:320px in HTML.
+               The drawCompositionGrid function now scales the image to the canvas clientWidth. -->
           <canvas id="compositionCanvas" style="border:1px solid #ccc; max-width:320px;"></canvas>
           <p id="compositionFeedback">
             Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
@@ -1255,28 +1262,33 @@
         img.crossOrigin = "Anonymous";
         img.src = imageSrc;
         img.onload = function() {
-          // Draw using devicePixelRatio so the grid lines are crisp
+          // Use the canvas's clientWidth (set via CSS max-width) to compute the display size.
+          const maxDisplayWidth = canvas.clientWidth || 320; // fallback to 320 if not defined
+          const scaleFactor = maxDisplayWidth / img.width;
+          const displayWidth = maxDisplayWidth;
+          const displayHeight = img.height * scaleFactor;
           const ratio = window.devicePixelRatio || 1;
-          canvas.width = img.width * ratio;
-          canvas.height = img.height * ratio;
-          canvas.style.width = img.width + "px";
-          canvas.style.height = img.height + "px";
+          canvas.width = displayWidth * ratio;
+          canvas.height = displayHeight * ratio;
+          canvas.style.width = displayWidth + "px";
+          canvas.style.height = displayHeight + "px";
           ctx.scale(ratio, ratio);
-          ctx.drawImage(img, 0, 0, img.width, img.height);
+          // Draw the image scaled to the computed display size.
+          ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
           ctx.strokeStyle = "rgba(255,255,255,1)";
           ctx.lineWidth = 4;
           ctx.setLineDash([5, 5]);
-          const v1 = img.width / 3, v2 = (img.width * 2) / 3;
+          const v1 = displayWidth / 3, v2 = (displayWidth * 2) / 3;
           ctx.beginPath();
           ctx.moveTo(v1, 0);
-          ctx.lineTo(v1, img.height);
+          ctx.lineTo(v1, displayHeight);
           ctx.moveTo(v2, 0);
-          ctx.lineTo(v2, img.height);
-          const h1 = img.height / 3, h2 = (img.height * 2) / 3;
+          ctx.lineTo(v2, displayHeight);
+          const h1 = displayHeight / 3, h2 = (displayHeight * 2) / 3;
           ctx.moveTo(0, h1);
-          ctx.lineTo(img.width, h1);
+          ctx.lineTo(displayWidth, h1);
           ctx.moveTo(0, h2);
-          ctx.lineTo(img.width, h2);
+          ctx.lineTo(displayWidth, h2);
           ctx.stroke();
           ctx.setLineDash([]);
           canvas.style.cursor = 'pointer';
