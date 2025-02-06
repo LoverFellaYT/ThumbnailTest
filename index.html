@@ -194,10 +194,10 @@
         opacity: 0.9;
       }
 
-      /* MAIN CONTAINER - centered with extra blank space on both sides */
+      /* MAIN CONTAINER - Centered with extra blank space on both sides */
       .analyzer-container {
-        display: flex;
-        max-width: 1100px;
+        width: 90%;
+        max-width: 1200px;
         margin: 2rem auto;
         gap: 2rem;
         align-items: flex-start;
@@ -289,7 +289,7 @@
       }
       .modern-table {
         width: 100%;
-        min-width: 1200px; /* Widened table for 1440p displays */
+        min-width: 1200px;
         border-collapse: separate;
         border-spacing: 0;
         font-family: 'Roboto', sans-serif;
@@ -335,7 +335,6 @@
         z-index: 9;
         cursor: help;
       }
-      /* Adding subtle icons in the category header using emoji */
       .category-header::before {
         margin-right: 0.4rem;
       }
@@ -396,7 +395,7 @@
         color: #9ca3af;
       }
 
-      /* DESIGN INSIGHTS SECTION (Clean & Modern) */
+      /* DESIGN INSIGHTS SECTION (Simplified) */
       .auto-insights {
         background: var(--panel-light);
         border-radius: var(--radius);
@@ -417,19 +416,8 @@
         margin-bottom: 1rem;
         font-size: 1rem;
       }
-      /* Additional Insight Sections */
-      /* Font Size & Readability */
-      .auto-insights #readabilityResult { font-size: 1rem; }
-      /* Text Overcrowding */
-      .auto-insights #overcrowdingWarning { font-size: 1rem; color: #d9534f; }
-      /* Foreground Extraction */
-      .auto-insights #foregroundResult { font-size: 1rem; }
-      /* Color Harmony & Branding */
-      .auto-insights #colorHarmonyResult { font-size: 1rem; }
-      /* Title-Thumbnail Synergy */
-      .auto-insights #synergyResult { font-size: 1rem; }
-      /* Face Analysis */
-      .auto-insights #faceAnalysisResult { font-size: 1rem; }
+      /* Keep only the insights that work: Brightness/Contrast, Color Palette, Composition, Face Detection, Object Recognition, and Sharpness */
+      /* Remove extra analysis items */
 
       .color-suggestions-container {
         display: flex;
@@ -689,7 +677,7 @@
                   The thumbnail and title work together as a combined hook, though slight mismatches can occur.
                 </td>
                 <td data-category="6" data-rating="4" role="button" tabindex="0">
-                  Thumbnail and title form a seamless one-two punch—each building on the other’s hook for maximum click appeal. (Avoid mismatches like a shocking thumbnail paired with a mild title.)
+                  Thumbnail and title form a seamless one-two punch—each building on the other’s hook for maximum click appeal.
                 </td>
               </tr>
               <!-- 7: Thumbnail–Video Accuracy -->
@@ -734,7 +722,7 @@
                   Optimized for mobile with decent text contrast and clarity, though some fine details may be overlooked.
                 </td>
                 <td data-category="9" data-rating="3" role="button" tabindex="0">
-                  High-resolution with strong color contrast and sharp details that maintain visual appeal even when scaled down (though aspect ratio may need refinement).
+                  High-resolution with strong color contrast and sharp details that maintain visual appeal even when scaled down.
                 </td>
                 <td data-category="9" data-rating="4" role="button" tabindex="0">
                   Flawless execution with impeccable resolution, perfect contrast, crisp details, and a consistent aspect ratio (e.g., 16:9) that ensures the thumbnail pops on all devices.
@@ -744,7 +732,20 @@
           </table>
         </section>
 
-        <!-- Design Insights Section -->
+        <!-- Feedback Panel -->
+        <section class="feedback-panel glass-panel">
+          <h3>Feedback</h3>
+          <div class="feedback-entry">
+            <label for="humanFeedback" class="flex-label">Human Feedback</label>
+            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
+          </div>
+          <div class="feedback-entry">
+            <label for="aiFeedback" class="flex-label">AI Feedback</label>
+            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
+          </div>
+        </section>
+
+        <!-- Design Insights Section (Simplified) -->
         <section class="auto-insights glass-panel">
           <h3>Design Insights</h3>
           <div class="insight-message" id="brightnessMessage"></div>
@@ -766,29 +767,12 @@
 
           <h4>Face Detection</h4>
           <div class="insight-message" id="faceDetectionResults"></div>
-          <h4>Face Analysis</h4>
-          <div class="insight-message" id="faceAnalysisResult">Awaiting face analysis...</div>
 
           <h4>Object &amp; Scene Recognition</h4>
           <div class="insight-message" id="objectRecognitionResults"></div>
 
           <h4>Sharpness Evaluation</h4>
           <div class="insight-message" id="sharpnessResult"></div>
-
-          <h4>Font Size &amp; Readability</h4>
-          <div class="insight-message" id="readabilityResult">Recommended minimum font size for mobile: 18px.</div>
-
-          <h4>Text Overcrowding</h4>
-          <div class="insight-message" id="overcrowdingWarning">No overcrowding detected.</div>
-
-          <h4>Foreground Extraction</h4>
-          <div class="insight-message" id="foregroundResult">Main subject separation appears adequate. Consider adding an outline or glow if needed.</div>
-
-          <h4>Color Harmony &amp; Branding</h4>
-          <div class="insight-message" id="colorHarmonyResult">Your palette appears predominantly analogous. Consider adding a complementary accent color.</div>
-
-          <h4>Title-Thumbnail Synergy</h4>
-          <div class="insight-message" id="synergyResult">Awaiting analysis...</div>
         </section>
       </main>
     </div>
@@ -957,14 +941,8 @@
         document.getElementById('colorSuggestions').innerHTML = "";
         document.getElementById('compositionFeedback').innerHTML = "Composition Feedback: Your main subject may be off-center. Align it with the grid lines for better balance. <a href='#' onclick='openTutorial(\"composition\")'>Learn How</a>";
         document.getElementById('faceDetectionResults').textContent = "";
-        document.getElementById('faceAnalysisResult').textContent = "Awaiting face analysis...";
         document.getElementById('objectRecognitionResults').textContent = "";
         document.getElementById('sharpnessResult').textContent = "";
-        document.getElementById('readabilityResult').textContent = "Recommended minimum font size for mobile: 18px.";
-        document.getElementById('overcrowdingWarning').textContent = "No overcrowding detected.";
-        document.getElementById('foregroundResult').textContent = "Main subject separation appears adequate. Consider adding an outline or glow if needed.";
-        document.getElementById('colorHarmonyResult').textContent = "Your palette appears predominantly analogous. Consider adding a complementary accent color.";
-        document.getElementById('synergyResult').textContent = "Awaiting analysis...";
         window.currentPalette = [];
         window.lastPredictions = null;
         confettiShown = false;
@@ -990,9 +968,9 @@
 
       function checkTitleThumbnailSynergy() {
         var title = document.getElementById('videoTitle').value.toLowerCase();
-        var synergyDiv = document.getElementById('synergyResult');
+        var synergyDiv = document.getElementById('objectRecognitionResults');
         if (!title || !window.lastPredictions) {
-          synergyDiv.textContent = "Awaiting analysis...";
+          // No analysis yet.
           return;
         }
         var matchFound = false;
@@ -1001,11 +979,7 @@
             matchFound = true;
           }
         });
-        if (matchFound) {
-          synergyDiv.textContent = "Good synergy: Your title and thumbnail imagery are well-matched.";
-        } else {
-          synergyDiv.textContent = "Mismatch: Consider aligning your title with the imagery in your thumbnail.";
-        }
+        // Optionally, you might display a message here—but for now we rely on the object recognition insights.
       }
 
       /***************************************************
@@ -1176,7 +1150,7 @@
       }
 
       /***************************************************
-       * Face Detection & Analysis
+       * Face Detection
        ***************************************************/
       async function runFaceDetection(imageSrc) {
         if (typeof faceapi === "undefined") {
@@ -1190,23 +1164,20 @@
           const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
           if (detections.length === 0) {
             document.getElementById("faceDetectionResults").textContent = "No faces detected.";
-            document.getElementById("faceAnalysisResult").textContent = "";
           } else {
             let resultText = `${detections.length} face(s) detected. `;
-            let analysisMessage = "";
             detections.forEach((det, i) => {
               resultText += `Face ${i+1}: `;
               for (const expr in det.expressions) {
                 resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
               }
-              // Check if face size is less than 25% of image width
+              // Check if face is too small
               const box = det.detection.box;
               if (box.width < img.width * 0.25) {
-                analysisMessage += "A detected face is small; try featuring the subject's face more prominently. ";
+                resultText += " (Face appears small)";
               }
             });
             document.getElementById("faceDetectionResults").innerHTML = resultText + ` <a href="#" onclick="openTutorial('face')">Learn How</a>`;
-            document.getElementById("faceAnalysisResult").textContent = analysisMessage || "Faces are appropriately sized and positioned.";
           }
         };
       }
@@ -1243,7 +1214,7 @@
       }
 
       /***************************************************
-       * Sharpness Evaluation (Edge Clarity / Pixelation)
+       * Sharpness Evaluation
        ***************************************************/
       async function calculateSharpness(imageSrc) {
         return new Promise((resolve, reject) => {
