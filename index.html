@@ -18,12 +18,13 @@
     <!-- New Libraries for Image Analysis -->
     <!-- Face Detection & Expression Analysis -->
     <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-    <!-- OCR Text Detection (Removed) -->
     <!-- TensorFlow & MobileNet for Object Recognition -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
     <!-- html2canvas for PNG export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Canvas Confetti for outstanding score effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 
     <style>
       :root {
@@ -151,6 +152,20 @@
         -webkit-text-fill-color: transparent;
         transition: var(--transition);
       }
+      /* Score key tooltip on hover */
+      .total-score:hover::after {
+        content: "Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36-40: Outstanding, 30-35: Excellent, 20-29: Great, <19: Good";
+        position: absolute;
+        background: #333;
+        color: #fff;
+        padding: 0.4rem 0.6rem;
+        border-radius: 4px;
+        top: 100%;
+        left: 0;
+        white-space: pre-line;
+        font-size: 0.8rem;
+        z-index: 1000;
+      }
       .status-indicator {
         font-weight: 600;
       }
@@ -275,7 +290,7 @@
       }
       .modern-table {
         width: 100%;
-        min-width: 600px; /* Reduced from 800px to fit more horizontally */
+        min-width: 1200px; /* Increased to widen the table */
         border-collapse: separate;
         border-spacing: 0;
         font-family: 'Roboto', sans-serif;
@@ -321,6 +336,22 @@
         z-index: 9;
         cursor: help;
       }
+      /* Adding subtle icons in the category header */
+      .category-header::before {
+        margin-right: 0.4rem;
+      }
+      /* Specific icons for each category (using emoji) */
+      .cat-0::before { content: "⚡"; }
+      .cat-1::before { content: "🎨"; }
+      .cat-2::before { content: "🔍"; }
+      .cat-3::before { content: "✍️"; }
+      .cat-4::before { content: "❓"; }
+      .cat-5::before { content: "❤️"; }
+      .cat-6::before { content: "🔗"; }
+      .cat-7::before { content: "🎯"; }
+      .cat-8::before { content: "🏷️"; }
+      .cat-9::before { content: "✨"; }
+
       .modern-table td.selected {
         background: rgba(224, 231, 255, 0.5) !important;
         box-shadow: inset 4px 0 0 var(--primary-light);
@@ -473,8 +504,11 @@
   <body>
     <!-- HEADER -->
     <header class="analyzer-header glass-panel">
+      <!-- The score display now includes a tooltip and a label -->
       <div class="header-left">
-        <div class="total-score">Score: <span id="total">0</span>/40</div>
+        <div class="total-score" title="Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36-40: Outstanding, 30-35: Excellent, 20-29: Great, &lt;19: Good">
+          Score: <span id="total">0</span>/40 - <span id="scoreLabel">Good</span>
+        </div>
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
@@ -539,7 +573,7 @@
             <tbody>
               <!-- 0: Scroll-Stopping Power -->
               <tr>
-                <td class="category-header" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">Scroll-Stopping Power</td>
+                <td class="category-header cat-0" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">Scroll-Stopping Power</td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">
                   Uses plain colors and text; lacks dynamic elements and blends into the feed.
                 </td>
@@ -555,7 +589,7 @@
               </tr>
               <!-- 1: Composition & Design -->
               <tr>
-                <td class="category-header" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">Composition &amp; Design</td>
+                <td class="category-header cat-1" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">Composition &amp; Design</td>
                 <td data-category="1" data-rating="1" role="button" tabindex="0">
                   Layout is functional but lacks balance and a clear focal point.
                 </td>
@@ -571,7 +605,7 @@
               </tr>
               <!-- 2: Visual Hierarchy & Clarity -->
               <tr>
-                <td class="category-header" data-category="2" title="How well the thumbnail establishes a visual hierarchy. Does the focal point stand out clearly with unnecessary elements removed?">Visual Hierarchy &amp; Clarity</td>
+                <td class="category-header cat-2" data-category="2" title="How well the thumbnail establishes a visual hierarchy. Does the focal point stand out clearly with unnecessary elements removed?">Visual Hierarchy &amp; Clarity</td>
                 <td data-category="2" data-rating="1" role="button" tabindex="0">
                   Focal point is unclear; excessive background elements compete and distract.
                 </td>
@@ -587,7 +621,7 @@
               </tr>
               <!-- 3: Text Clarity -->
               <tr>
-                <td class="category-header" data-category="3" title="Evaluate the legibility and messaging of the text. Does it include a compelling hook or power word?">Text Clarity</td>
+                <td class="category-header cat-3" data-category="3" title="Evaluate the legibility and messaging of the text. Does it include a compelling hook or power word?">Text Clarity</td>
                 <td data-category="3" data-rating="1" role="button" tabindex="0">
                   Text is legible but overly wordy or generic, lacking a compelling hook.
                 </td>
@@ -603,7 +637,7 @@
               </tr>
               <!-- 4: Curiosity Gap -->
               <tr>
-                <td class="category-header" data-category="4" title="Does the thumbnail create an immediate question or intrigue without giving away the main reveal?">Curiosity Gap</td>
+                <td class="category-header cat-4" data-category="4" title="Does the thumbnail create an immediate question or intrigue without giving away the main reveal?">Curiosity Gap</td>
                 <td data-category="4" data-rating="1" role="button" tabindex="0">
                   Provides a slight hint of intrigue, but the teaser is vague.
                 </td>
@@ -619,7 +653,7 @@
               </tr>
               <!-- 5: Emotional Hook or Reaction -->
               <tr>
-                <td class="category-header" data-category="5" title="How much emotional response does the thumbnail evoke? Consider both positive and negative triggers.">Emotional Hook or Reaction</td>
+                <td class="category-header cat-5" data-category="5" title="How much emotional response does the thumbnail evoke? Consider both positive and negative triggers.">Emotional Hook or Reaction</td>
                 <td data-category="5" data-rating="1" role="button" tabindex="0">
                   Generates a neutral or mild reaction; lacks strong emotional cues.
                 </td>
@@ -635,7 +669,7 @@
               </tr>
               <!-- 6: Thumbnail–Title Synergy -->
               <tr>
-                <td class="category-header" data-category="6" title="How well does the thumbnail complement the video title? A mismatch can hurt click-through rates.">Thumbnail–Title Synergy</td>
+                <td class="category-header cat-6" data-category="6" title="How well does the thumbnail complement the video title? A mismatch can hurt click-through rates.">Thumbnail–Title Synergy</td>
                 <td data-category="6" data-rating="1" role="button" tabindex="0">
                   The thumbnail does not reinforce the title; there is no clear synergy.
                 </td>
@@ -651,7 +685,7 @@
               </tr>
               <!-- 7: Thumbnail–Video Accuracy -->
               <tr>
-                <td class="category-header" data-category="7" title="Does the thumbnail accurately represent the video content without resorting to clickbait?">Thumbnail–Video Accuracy</td>
+                <td class="category-header cat-7" data-category="7" title="Does the thumbnail accurately represent the video content without resorting to clickbait?">Thumbnail–Video Accuracy</td>
                 <td data-category="7" data-rating="1" role="button" tabindex="0">
                   Some alignment exists but the thumbnail may misrepresent key content, leaning toward clickbait.
                 </td>
@@ -667,7 +701,7 @@
               </tr>
               <!-- 8: Channel Identity & Branding -->
               <tr>
-                <td class="category-header" data-category="8" title="Is your channel’s style immediately identifiable and unique?">Channel Identity &amp; Branding</td>
+                <td class="category-header cat-8" data-category="8" title="Is your channel’s style immediately identifiable and unique?">Channel Identity &amp; Branding</td>
                 <td data-category="8" data-rating="1" role="button" tabindex="0">
                   Inconsistent from video to video; no recognizable brand style or identity.
                 </td>
@@ -683,7 +717,7 @@
               </tr>
               <!-- 9: Technical Polish -->
               <tr>
-                <td class="category-header" data-category="9" title="How well-executed and refined is the thumbnail in terms of resolution, contrast, and overall visual quality?">Technical Polish</td>
+                <td class="category-header cat-9" data-category="9" title="How well-executed and refined is the thumbnail in terms of resolution, contrast, and overall visual quality?">Technical Polish</td>
                 <td data-category="9" data-rating="1" role="button" tabindex="0">
                   Basic quality with no pixelation but lacking attention to finer details.
                 </td>
@@ -804,6 +838,7 @@
        ***************************************************/
       let scores = {};
       window.currentPalette = [];
+      let confettiShown = false; // Flag to prevent multiple confetti triggers
 
       // A constant to set the sampling step (adjust for speed vs. accuracy)
       const SAMPLE_STEP = 16;
@@ -853,22 +888,40 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
+        // Update score label based on total score
+        const scoreLabel = document.getElementById('scoreLabel');
+        if (total >= 36) {
+          scoreLabel.textContent = "Outstanding";
+          if (!confettiShown) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            confettiShown = true;
+          }
+        } else if (total >= 30) {
+          scoreLabel.textContent = "Excellent";
+          confettiShown = false;
+        } else if (total >= 20) {
+          scoreLabel.textContent = "Great";
+          confettiShown = false;
+        } else {
+          scoreLabel.textContent = "Good";
+          confettiShown = false;
+        }
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
           return;
         }
-        if (total <= 24) {
+        if (total <= 19) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = '#ef4444';
-        } else if (total <= 32) {
-          ranking.textContent = 'Good Start 🟡';
-          ranking.style.color = '#eab308';
-        } else if (total <= 38) {
+        } else if (total <= 29) {
           ranking.textContent = 'Great! 🟢';
           ranking.style.color = '#22c55e';
+        } else if (total <= 35) {
+          ranking.textContent = 'Excellent 🟡';
+          ranking.style.color = '#eab308';
         } else {
-          ranking.textContent = 'Perfect! 🔵';
+          ranking.textContent = 'Outstanding 🔵';
           ranking.style.color = '#3b82f6';
         }
       }
