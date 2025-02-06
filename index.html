@@ -70,7 +70,7 @@
         outline: 2px solid var(--accent-light);
       }
 
-      /* Panels with reduced bottom margin for tighter spacing */
+      /* Panels */
       .glass-panel {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
@@ -132,7 +132,7 @@
         gap: 1rem;
         flex-wrap: wrap;
       }
-      /* Group buttons on the left; push dark mode slider to far right */
+      /* Group buttons on left; push dark mode toggle to far right */
       .header-right .group {
         display: flex;
         align-items: center;
@@ -161,7 +161,7 @@
         opacity: 0.9;
       }
 
-      /* Toggle Switches – using icon sliders for all three toggles */
+      /* Toggle Switches – icon sliders for all three toggles */
       .toggle-label {
         display: inline-flex;
         align-items: center;
@@ -178,9 +178,9 @@
         width: 0;
         height: 0;
       }
-      /* Dark Mode Icon Slider (sun when off, moon when on) */
+      /* Dark Mode Slider */
       .icon-slider .slider {
-        background-color: #ccc;
+        background-color: #e0e0e0;
         transition: 0.4s;
         border-radius: 30px;
       }
@@ -206,9 +206,9 @@
         transform: translateX(30px);
         content: "🌙";
       }
-      /* Mute Icon Slider (speaker on/off) */
+      /* Mute Slider */
       .icon-slider-mute .slider {
-        background-color: #ccc;
+        background-color: #e0e0e0;
         transition: 0.4s;
         border-radius: 30px;
       }
@@ -234,9 +234,9 @@
         transform: translateX(30px);
         content: "🔇";
       }
-      /* Animations Icon Slider (play/pause) */
+      /* Animations Slider */
       .icon-slider-anim .slider {
-        background-color: #ccc;
+        background-color: #e0e0e0;
         transition: 0.4s;
         border-radius: 30px;
       }
@@ -296,11 +296,13 @@
         padding: 0 2rem 2rem;
       }
 
-      /* SIDEBAR – Make sticky so it remains visible on scroll */
+      /* SIDEBAR – make sticky so it always remains visible */
       aside.sidebar {
         position: sticky;
         top: 2rem;
         width: 340px;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
       }
       .preview-section {
         padding: 1.5rem;
@@ -327,7 +329,7 @@
       .upload-container {
         margin-bottom: 1rem;
       }
-      /* Modernized thumbnail border: thinner, solid */
+      /* Modernized thumbnail style */
       .thumbnail-wrap {
         background: #f1f5f9;
         border: 1px solid rgba(126, 34, 206, 0.2);
@@ -362,7 +364,7 @@
         white-space: normal;
         color: var(--yt-title-color-light);
       }
-      /* Ensure equal vertical spacing between upload area and preview boxes */
+      /* Equal spacing between upload area and previews */
       .previews-container {
         margin-top: 1rem;
         display: flex;
@@ -376,14 +378,14 @@
         transform: scale(1.05);
       }
 
-      /* MAIN CONTENT (Rubric & Insights) with reduced gap */
+      /* MAIN CONTENT (Rubric & Insights) – reduced gap */
       main.main-content {
         display: flex;
         flex-direction: column;
         gap: 1rem;
       }
 
-      /* Rubric Table – Header now only 5 columns */
+      /* Rubric Table */
       .rubric-table {
         /* Let the table expand naturally */
       }
@@ -445,6 +447,9 @@
       .category-header::before {
         margin-right: 0.4rem;
       }
+      /* Adjust emoji for Color Usage row */
+      .cat-9::before { content: "🌈"; }
+      /* Other category emoji definitions remain */
       .cat-0::before { content: "⚡"; }
       .cat-1::before { content: "🎨"; }
       .cat-2::before { content: "🔍"; }
@@ -454,7 +459,6 @@
       .cat-6::before { content: "🎯"; }
       .cat-7::before { content: "🏷️"; }
       .cat-8::before { content: "✨"; }
-      /* For our new Color Usage row, we’re using the same class as cat-?; adjust as needed */
       .modern-table td.selected {
         background: rgba(224, 231, 255, 0.5) !important;
         box-shadow: inset 4px 0 0 var(--primary-light);
@@ -501,7 +505,7 @@
         color: #9ca3af;
       }
 
-      /* DESIGN INSIGHTS SECTION – reduce wasted space above heading */
+      /* DESIGN INSIGHTS SECTION – reduced wasted space above heading */
       .auto-insights {
         background: var(--panel-light);
         border-radius: var(--radius);
@@ -536,7 +540,7 @@
         color: #555;
       }
 
-      /* Legend & Definitions */
+      /* Legend & Definitions – cleaned-up spacing */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
@@ -668,7 +672,7 @@
             </span>
           </label>
         </div>
-        <!-- Dark Mode Slider at Far Right (icon only) -->
+        <!-- Dark Mode Slider at Far Right (icon slider with full track) -->
         <div class="dark-mode">
           <span class="toggle-switch icon-slider">
             <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
@@ -760,7 +764,7 @@
                 <td data-category="3" data-rating="3" role="button" tabindex="0">Clear and concise; minor tweaks needed.</td>
                 <td data-category="3" data-rating="4" role="button" tabindex="0">Flawless text; power words and optimal fonts used.</td>
               </tr>
-              <!-- 5. Emotional & Curiosity Hook (Combined) -->
+              <!-- 5. Emotional & Curiosity Hook -->
               <tr>
                 <td class="category-header cat-4" data-category="4" title="Evoke emotion and spark curiosity with subtle hints.">Emotional &amp; Curiosity Hook</td>
                 <td data-category="4" data-rating="1" role="button" tabindex="0">Lacks clear emotional or curiosity triggers.</td>
@@ -800,7 +804,7 @@
                 <td data-category="8" data-rating="3" role="button" tabindex="0">High resolution with clear contrast.</td>
                 <td data-category="8" data-rating="4" role="button" tabindex="0">Flawless quality; meets recommended standards (1280×720, 16:9).</td>
               </tr>
-              <!-- 10. New Category: Color Usage (as a row, not an extra header) -->
+              <!-- 10. Color Usage (row only, not a header column) -->
               <tr>
                 <td class="category-header cat-9" data-category="9" title="Effective use of color enhances design and brand recognition.">Color Usage</td>
                 <td data-category="9" data-rating="1" role="button" tabindex="0">Poor color choices; lacks harmony.</td>
@@ -821,7 +825,7 @@
             <p><strong>Thumbnail–Title Synergy:</strong> Ensure the thumbnail and title work together without being redundant.</p>
             <p><strong>Thumbnail–Video Accuracy:</strong> The thumbnail must accurately represent the video’s content to build trust.</p>
             <p><strong>Channel Identity &amp; Branding:</strong> Use consistent logos, colors, and styles to create a recognizable brand.</p>
-            <p><strong>Technical Polish:</strong> Use high‑resolution images (at least 1280×720, 16:9), optimized file size, and ensure clarity on all devices.</p>
+            <p><strong>Technical Polish:</strong> Use high‑resolution images (at least 1280×720, 16:9), optimize file size, and ensure clarity on all devices.</p>
             <p><strong>Color Usage:</strong> Effective, on‑brand color palettes that enhance design and readability.</p>
             <h5>Rating Levels</h5>
             <ul>
@@ -1246,23 +1250,28 @@
         img.crossOrigin = "Anonymous";
         img.src = imageSrc;
         img.onload = function() {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          // Use devicePixelRatio to draw at higher resolution:
+          const ratio = window.devicePixelRatio || 1;
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+          canvas.style.width = img.width + "px";
+          canvas.style.height = img.height + "px";
+          ctx.scale(ratio, ratio);
+          ctx.drawImage(img, 0, 0, img.width, img.height);
           ctx.strokeStyle = "rgba(255,255,255,1)";
           ctx.lineWidth = 4;
           ctx.setLineDash([5, 5]);
-          const v1 = canvas.width / 3, v2 = (canvas.width * 2) / 3;
+          const v1 = img.width / 3, v2 = (img.width * 2) / 3;
           ctx.beginPath();
           ctx.moveTo(v1, 0);
-          ctx.lineTo(v1, canvas.height);
+          ctx.lineTo(v1, img.height);
           ctx.moveTo(v2, 0);
-          ctx.lineTo(v2, canvas.height);
-          const h1 = canvas.height / 3, h2 = (canvas.height * 2) / 3;
+          ctx.lineTo(v2, img.height);
+          const h1 = img.height / 3, h2 = (img.height * 2) / 3;
           ctx.moveTo(0, h1);
-          ctx.lineTo(canvas.width, h1);
+          ctx.lineTo(img.width, h1);
           ctx.moveTo(0, h2);
-          ctx.lineTo(canvas.width, h2);
+          ctx.lineTo(img.width, h2);
           ctx.stroke();
           ctx.setLineDash([]);
           canvas.style.cursor = 'pointer';
