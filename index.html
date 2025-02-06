@@ -43,7 +43,7 @@
         --yt-title-color-light: #030303;
       }
 
-      /* Dark mode override – keep the blue gradient */
+      /* Dark mode – keep the blue gradient even in dark mode */
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
         --text-light: #f3f3f3;
@@ -52,7 +52,7 @@
         --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --primary-light: #4facfe;
         --accent-light: #00f2fe;
-        --table-cell-bg-light: rgba(30,30,30,0.85);
+        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
         --yt-title-color-light: #ffffff;
       }
 
@@ -128,9 +128,18 @@
       }
       .header-right {
         display: flex;
+        align-items: center;
         gap: 1rem;
         flex-wrap: wrap;
+      }
+      /* We'll group the regular buttons and toggles; dark mode slider will be pushed to the far right */
+      .header-right .group {
+        display: flex;
         align-items: center;
+        gap: 1rem;
+      }
+      .header-right .dark-mode {
+        margin-left: auto;
       }
       .btn {
         background: var(--gradient-light);
@@ -152,7 +161,7 @@
         opacity: 0.9;
       }
 
-      /* Custom Toggle Switches (for dark mode, mute, etc.) */
+      /* Toggle Switches – two styles: icon-slider (for dark mode) and simple-slider (for others) */
       .toggle-label {
         font-size: 0.9rem;
         display: flex;
@@ -170,18 +179,13 @@
         width: 0;
         height: 0;
       }
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+      /* For dark mode, use icons */
+      .icon-slider .slider {
         background-color: #ccc;
         transition: 0.4s;
         border-radius: 30px;
       }
-      .slider:before {
+      .icon-slider .slider:before {
         position: absolute;
         content: "☀";
         height: 26px;
@@ -196,12 +200,24 @@
         justify-content: center;
         font-size: 16px;
       }
-      .toggle-switch input:checked + .slider {
+      .icon-slider input:checked + .slider {
         background-color: var(--primary-light);
       }
-      .toggle-switch input:checked + .slider:before {
+      .icon-slider input:checked + .slider:before {
         transform: translateX(30px);
         content: "🌙";
+      }
+      /* For simple sliders, remove any icon */
+      .simple-slider .slider:before {
+        content: none;
+      }
+      .simple-slider .slider {
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 30px;
+      }
+      .simple-slider input:checked + .slider {
+        background-color: var(--primary-light);
       }
 
       /* Progress Bar */
@@ -319,7 +335,7 @@
       main.main-content {
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 1.5rem;
       }
 
       /* Rubric Table */
@@ -337,8 +353,6 @@
         transition: transform 0.2s ease;
       }
       .modern-table thead th {
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        color: #fff;
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         position: sticky;
@@ -346,6 +360,16 @@
         backdrop-filter: blur(10px);
         z-index: 10;
       }
+      /* First header (Category) uses the blue gradient */
+      .modern-table thead th:first-child {
+        background: var(--gradient-light);
+        color: #fff;
+      }
+      /* Color-code the rating columns */
+      .modern-table thead th:nth-child(2) { background: #f87171 !important; }
+      .modern-table thead th:nth-child(3) { background: #fb923c !important; }
+      .modern-table thead th:nth-child(4) { background: #facc15 !important; }
+      .modern-table thead th:nth-child(5) { background: #4ade80 !important; }
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -466,6 +490,34 @@
         color: #555;
       }
 
+      /* LEGEND for Rubric */
+      #legend {
+        display: none;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        padding: 1rem;
+      }
+      #legend h4 {
+        margin-top: 0;
+      }
+      #toggleLegend {
+        margin-bottom: 1rem;
+        padding: 0.4rem 0.8rem;
+        background: var(--gradient-light);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      #toggleLegend:hover {
+        opacity: 0.9;
+      }
+
       /* MODAL */
       .modal-bg {
         position: fixed;
@@ -552,32 +604,32 @@
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
-        <!-- Dark Mode Toggle as a slider with sun/moon icons -->
-        <label class="toggle-label">
-          <span class="toggle-switch">
+        <div class="group">
+          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
+          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
+          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
+          <label class="toggle-label">
+            <span class="toggle-switch simple-slider">
+              <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
+              <span class="slider"></span>
+            </span>
+            Mute Sound
+          </label>
+          <label class="toggle-label">
+            <span class="toggle-switch simple-slider">
+              <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
+              <span class="slider"></span>
+            </span>
+            Disable Animations
+          </label>
+        </div>
+        <!-- Dark Mode Slider at Far Right (no text) -->
+        <div class="dark-mode">
+          <span class="toggle-switch icon-slider">
             <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
             <span class="slider"></span>
           </span>
-          Dark Mode
-        </label>
-        <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-        <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-        <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-        <!-- Other Toggles -->
-        <label class="toggle-label">
-          <span class="toggle-switch">
-            <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
-            <span class="slider"></span>
-          </span>
-          Mute Sound
-        </label>
-        <label class="toggle-label">
-          <span class="toggle-switch">
-            <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
-            <span class="slider"></span>
-          </span>
-          Disable Animations
-        </label>
+        </div>
       </div>
     </header>
 
@@ -593,7 +645,8 @@
             <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
             <p style="font-size:0.9rem; color:#555;">Or drag &amp; drop image below</p>
           </div>
-          <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" role="button" tabindex="0" aria-label="Drag and drop thumbnail image here">
+          <!-- Make the upload area clickable to enlarge -->
+          <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" onclick="enlargeImage('homePreview')" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" role="button" tabindex="0" aria-label="Drag and drop thumbnail image here">
             <img id="homePreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Default Thumbnail Preview" width="320" height="180" loading="lazy" />
           </div>
           <div class="previews-container">
@@ -632,88 +685,110 @@
             <tbody>
               <!-- Rubric rows with icons in the category header -->
               <tr>
-                <td class="category-header cat-0" data-category="0" title="Use bold colors, striking imagery, or faces to stop scrolling.">Scroll-Stopping Power</td>
-                <td data-category="0" data-rating="1" role="button" tabindex="0">Uses plain colors and text; blends into the feed.</td>
-                <td data-category="0" data-rating="2" role="button" tabindex="0">Employs one high-impact element but needs more punch.</td>
-                <td data-category="0" data-rating="3" role="button" tabindex="0">Uses at least two high-impact visual elements to grab attention instantly.</td>
-                <td data-category="0" data-rating="4" role="button" tabindex="0">Combines multiple elements with dynamic cues for a "must-click" urgency.</td>
+                <td class="category-header cat-0" data-category="0" title="Use bold colors, striking imagery, or faces to stop scrolling.">Scroll‑Stopping Power</td>
+                <td data-category="0" data-rating="1" role="button" tabindex="0">Uses plain colors/text; lacks impact.</td>
+                <td data-category="0" data-rating="2" role="button" tabindex="0">Adds one high‑impact element (e.g. color contrast).</td>
+                <td data-category="0" data-rating="3" role="button" tabindex="0">Combines multiple elements (e.g. facial expression &amp; vivid color) for immediate attention.</td>
+                <td data-category="0" data-rating="4" role="button" tabindex="0">Exemplifies dynamic, scroll‑stopping visuals strongly correlated with high CTR.</td>
               </tr>
               <tr>
-                <td class="category-header cat-1" data-category="1" title="Consider layout, rule-of-thirds, and alignment.">Composition &amp; Design</td>
-                <td data-category="1" data-rating="1" role="button" tabindex="0">Layout is functional but unbalanced.</td>
-                <td data-category="1" data-rating="2" role="button" tabindex="0">Uses rule-of-thirds or central alignment but with distractions.</td>
-                <td data-category="1" data-rating="3" role="button" tabindex="0">Utilizes leading lines and contrast to direct the viewer’s eye.</td>
-                <td data-category="1" data-rating="4" role="button" tabindex="0">Masterful composition that is instantly readable and balanced.</td>
+                <td class="category-header cat-1" data-category="1" title="Balanced layout using clear visual flow and strategic negative space.">Composition &amp; Design</td>
+                <td data-category="1" data-rating="1" role="button" tabindex="0">Layout functions but lacks balance and clarity.</td>
+                <td data-category="1" data-rating="2" role="button" tabindex="0">Applies rule‑of‑thirds or central alignment, yet minor distractions remain.</td>
+                <td data-category="1" data-rating="3" role="button" tabindex="0">Uses clear focal points, visual flow, and strategic negative space; minor refinements possible.</td>
+                <td data-category="1" data-rating="4" role="button" tabindex="0">Masterful design using rule‑of‑thirds, clear flow, and brand‑consistent colors.</td>
               </tr>
               <tr>
-                <td class="category-header cat-2" data-category="2" title="Ensure a clear visual hierarchy with a strong focal point.">Visual Hierarchy &amp; Clarity</td>
-                <td data-category="2" data-rating="1" role="button" tabindex="0">Focal point is unclear; background distracts.</td>
-                <td data-category="2" data-rating="2" role="button" tabindex="0">Basic hierarchy established, minor distractions persist.</td>
-                <td data-category="2" data-rating="3" role="button" tabindex="0">Strong hierarchy with a distinct focal point; distractions minimized.</td>
-                <td data-category="2" data-rating="4" role="button" tabindex="0">Crystal clear hierarchy with the subject popping out.</td>
+                <td class="category-header cat-2" data-category="2" title="Guide the viewer’s eye from the main element to secondary details.">Visual Hierarchy &amp; Clarity</td>
+                <td data-category="2" data-rating="1" role="button" tabindex="0">Unclear hierarchy; elements compete for attention.</td>
+                <td data-category="2" data-rating="2" role="button" tabindex="0">Basic hierarchy established; scale and spacing need work.</td>
+                <td data-category="2" data-rating="3" role="button" tabindex="0">Clear hierarchy with appropriate scale and sizing of elements.</td>
+                <td data-category="2" data-rating="4" role="button" tabindex="0">Exemplary hierarchy; the main subject stands out decisively with optimal scaling.</td>
               </tr>
               <tr>
-                <td class="category-header cat-3" data-category="3" title="Assess text legibility and impact.">Text Clarity</td>
-                <td data-category="3" data-rating="1" role="button" tabindex="0">Text is legible but generic and wordy.</td>
-                <td data-category="3" data-rating="2" role="button" tabindex="0">Short text that communicates the message, could be stronger.</td>
-                <td data-category="3" data-rating="3" role="button" tabindex="0">Concise, punchy text with a high-impact word or phrase.</td>
-                <td data-category="3" data-rating="4" role="button" tabindex="0">Flawless text messaging that is minimal and powerfully legible.</td>
+                <td class="category-header cat-3" data-category="3" title="Text must be legible, concise, and impactful.">Text Clarity</td>
+                <td data-category="3" data-rating="1" role="button" tabindex="0">Basic legibility but text is lengthy or generic.</td>
+                <td data-category="3" data-rating="2" role="button" tabindex="0">Concise text; could benefit from stronger, mobile‑friendly fonts.</td>
+                <td data-category="3" data-rating="3" role="button" tabindex="0">Clear and concise text with impact; minor tweaks possible.</td>
+                <td data-category="3" data-rating="4" role="button" tabindex="0">Flawless text messaging; uses power words and optimal font for maximum clarity.</td>
               </tr>
               <tr>
-                <td class="category-header cat-4" data-category="4" title="Create intrigue without revealing too much.">Curiosity Gap</td>
-                <td data-category="4" data-rating="1" role="button" tabindex="0">Provides a slight hint of intrigue.</td>
-                <td data-category="4" data-rating="2" role="button" tabindex="0">Clearly poses a subtle question or reveal.</td>
-                <td data-category="4" data-rating="3" role="button" tabindex="0">Effectively teases an unexpected element.</td>
-                <td data-category="4" data-rating="4" role="button" tabindex="0">Instantly prompts a compelling question without giving too much away.</td>
+                <td class="category-header cat-4" data-category="4" title="Generate intrigue with a partial reveal or provocative question.">Curiosity Gap</td>
+                <td data-category="4" data-rating="1" role="button" tabindex="0">Hints at intrigue but remains vague.</td>
+                <td data-category="4" data-rating="2" role="button" tabindex="0">Poses a subtle question or partial reveal.</td>
+                <td data-category="4" data-rating="3" role="button" tabindex="0">Effectively teases a surprising element; generates genuine curiosity.</td>
+                <td data-category="4" data-rating="4" role="button" tabindex="0">Creates an irresistible curiosity gap that compels viewers to click.</td>
               </tr>
               <tr>
-                <td class="category-header cat-5" data-category="5" title="Evaluate the emotional impact of the thumbnail.">Emotional Hook or Reaction</td>
-                <td data-category="5" data-rating="1" role="button" tabindex="0">Generates a neutral or mild reaction.</td>
-                <td data-category="5" data-rating="2" role="button" tabindex="0">Sparks basic curiosity or excitement.</td>
-                <td data-category="5" data-rating="3" role="button" tabindex="0">Triggers strong emotions that prompt a visceral response.</td>
-                <td data-category="5" data-rating="4" role="button" tabindex="0">Elicits a powerful, multi-dimensional emotional hook that connects instantly.</td>
+                <td class="category-header cat-5" data-category="5" title="Evokes an emotional reaction from the viewer.">Emotional Hook or Reaction</td>
+                <td data-category="5" data-rating="1" role="button" tabindex="0">Neutral reaction; no strong emotional pull.</td>
+                <td data-category="5" data-rating="2" role="button" tabindex="0">Sparks mild interest or amusement.</td>
+                <td data-category="5" data-rating="3" role="button" tabindex="0">Triggers strong emotions (e.g. humor, shock, empathy) that resonate.</td>
+                <td data-category="5" data-rating="4" role="button" tabindex="0">Creates a powerful, multi‑dimensional emotional impact.</td>
               </tr>
               <tr>
-                <td class="category-header cat-6" data-category="6" title="Does the thumbnail complement the title effectively?">Thumbnail–Title Synergy</td>
-                <td data-category="6" data-rating="1" role="button" tabindex="0">No clear synergy with the title.</td>
-                <td data-category="6" data-rating="2" role="button" tabindex="0">Hints at the title’s topic, but not consistent.</td>
-                <td data-category="6" data-rating="3" role="button" tabindex="0">Works together as a combined hook with the title.</td>
-                <td data-category="6" data-rating="4" role="button" tabindex="0">Forms a seamless one-two punch with the title for maximum click appeal.</td>
+                <td class="category-header cat-6" data-category="6" title="Thumbnail and title must work together without redundancy.">Thumbnail–Title Synergy</td>
+                <td data-category="6" data-rating="1" role="button" tabindex="0">No clear synergy between thumbnail and title.</td>
+                <td data-category="6" data-rating="2" role="button" tabindex="0">Hints at synergy; title and thumbnail loosely connected.</td>
+                <td data-category="6" data-rating="3" role="button" tabindex="0">Works well together; elements complement each other effectively.</td>
+                <td data-category="6" data-rating="4" role="button" tabindex="0">Exemplary synergy; the title and thumbnail form a cohesive, engaging narrative.</td>
               </tr>
               <tr>
-                <td class="category-header cat-7" data-category="7" title="Does the thumbnail accurately represent the video content?">Thumbnail–Video Accuracy</td>
-                <td data-category="7" data-rating="1" role="button" tabindex="0">Some alignment exists but may misrepresent key content.</td>
-                <td data-category="7" data-rating="2" role="button" tabindex="0">Accurately represents the main topic, though may lack nuance.</td>
-                <td data-category="7" data-rating="3" role="button" tabindex="0">Captures a compelling moment without spoilers.</td>
-                <td data-category="7" data-rating="4" role="button" tabindex="0">Provides perfect alignment with the content, fostering trust.</td>
+                <td class="category-header cat-7" data-category="7" title="Ensure the thumbnail accurately reflects the video content.">Thumbnail–Video Accuracy</td>
+                <td data-category="7" data-rating="1" role="button" tabindex="0">Some alignment exists but may mislead.</td>
+                <td data-category="7" data-rating="2" role="button" tabindex="0">Accurately represents the main topic with minor mismatches.</td>
+                <td data-category="7" data-rating="3" role="button" tabindex="0">Captures the essence without revealing too much.</td>
+                <td data-category="7" data-rating="4" role="button" tabindex="0">Perfectly aligns with the video content, fostering trust.</td>
               </tr>
               <tr>
-                <td class="category-header cat-8" data-category="8" title="Is your channel’s identity clear and unique?">Channel Identity &amp; Branding</td>
-                <td data-category="8" data-rating="1" role="button" tabindex="0">Inconsistent channel style; no clear identity.</td>
-                <td data-category="8" data-rating="2" role="button" tabindex="0">Some brand elements are present but not distinctive.</td>
-                <td data-category="8" data-rating="3" role="button" tabindex="0">Clearly identifiable style with consistent brand elements.</td>
-                <td data-category="8" data-rating="4" role="button" tabindex="0">Instantly recognizable with a cohesive color palette and unique style.</td>
+                <td class="category-header cat-8" data-category="8" title="Maintain a consistent and recognizable brand identity.">Channel Identity &amp; Branding</td>
+                <td data-category="8" data-rating="1" role="button" tabindex="0">Inconsistent style; lacks brand elements.</td>
+                <td data-category="8" data-rating="2" role="button" tabindex="0">Some brand elements present; not fully cohesive.</td>
+                <td data-category="8" data-rating="3" role="button" tabindex="0">Clearly reflects brand identity with consistent style.</td>
+                <td data-category="8" data-rating="4" role="button" tabindex="0">Iconic branding; uses logos, consistent colors, and style effortlessly.</td>
               </tr>
               <tr>
-                <td class="category-header cat-9" data-category="9" title="Examine resolution, contrast, and overall clarity.">Technical Polish</td>
-                <td data-category="9" data-rating="1" role="button" tabindex="0">Basic quality with no pixelation but lacking fine detail.</td>
-                <td data-category="9" data-rating="2" role="button" tabindex="0">Optimized for mobile; some fine details may be missed.</td>
-                <td data-category="9" data-rating="3" role="button" tabindex="0">High resolution with strong contrast and clear details.</td>
-                <td data-category="9" data-rating="4" role="button" tabindex="0">Flawless execution with impeccable resolution and clarity across devices.</td>
+                <td class="category-header cat-9" data-category="9" title="Technical quality including resolution, aspect ratio, and clarity.">Technical Polish</td>
+                <td data-category="9" data-rating="1" role="button" tabindex="0">Basic quality; lacks fine detail and optimal resolution.</td>
+                <td data-category="9" data-rating="2" role="button" tabindex="0">Adequate for mobile; some loss of detail on larger screens.</td>
+                <td data-category="9" data-rating="3" role="button" tabindex="0">High resolution with strong contrast and clarity.</td>
+                <td data-category="9" data-rating="4" role="button" tabindex="0">Flawless execution; meets or exceeds recommended resolution (1280×720, 16:9) and device tests.</td>
               </tr>
             </tbody>
           </table>
+          <!-- Legend & Definitions Section (collapsible) -->
+          <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
+          <div id="legend">
+            <h4>Legend &amp; Definitions</h4>
+            <p><strong>Scroll‑Stopping Power:</strong> Use bold colors, dynamic movement, or expressive faces. High scores correlate with high CTR.</p>
+            <p><strong>Composition &amp; Design:</strong> Achieve balance using the rule‑of‑thirds, clear visual flow, and strategic negative space. Consistent color harmony is key.</p>
+            <p><strong>Visual Hierarchy &amp; Clarity:</strong> Guide the viewer’s eye by scaling elements appropriately—largest for the key subject, then supporting text or imagery.</p>
+            <p><strong>Text Clarity:</strong> Keep text concise, legible on mobile, and impactful. Use power words and limit text length.</p>
+            <p><strong>Curiosity Gap:</strong> Generate intrigue by posing a question or hinting at an outcome without revealing too much.</p>
+            <p><strong>Emotional Hook or Reaction:</strong> Use humor, shock, nostalgia, or empathy to create a strong emotional connection.</p>
+            <p><strong>Thumbnail–Title Synergy:</strong> Ensure the thumbnail and title complement each other without repeating the same information.</p>
+            <p><strong>Thumbnail–Video Accuracy:</strong> The thumbnail should accurately represent the video’s content—avoid misleading imagery.</p>
+            <p><strong>Channel Identity &amp; Branding:</strong> Reflect consistent brand elements (colors, logos, style) to build recognition.</p>
+            <p><strong>Technical Polish:</strong> Use high‑resolution images (at least 1280×720, 16:9 aspect ratio), optimize file size (under 2 MB), and test on multiple devices.</p>
+            <h5>Rating Levels</h5>
+            <ul>
+              <li><strong>Good (1):</strong> Meets the bare essentials but lacks impact. <em>Action:</em> Improve contrast, add a focal point, and reduce clutter.</li>
+              <li><strong>Great (2):</strong> Contains some impactful elements, but minor distractions remain. <em>Action:</em> Remove competing elements and refine the text.</li>
+              <li><strong>Excellent (3):</strong> Highly effective with clear focal points; could push further on uniqueness. <em>Action:</em> Try adding a surprising visual cue or punchier text.</li>
+              <li><strong>Outstanding (4):</strong> Practically flawless and compelling at a glance. <em>Action:</em> Experiment with advanced design techniques while staying on-brand.</li>
+            </ul>
+          </div>
         </section>
 
         <!-- Feedback Panel -->
         <section class="feedback-panel glass-panel">
           <h3>Feedback</h3>
           <div class="feedback-entry">
-            <label for="humanFeedback" class="flex-label">Human Feedback</label>
+            <label for="humanFeedback">Human Feedback</label>
             <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
           </div>
           <div class="feedback-entry">
-            <label for="aiFeedback" class="flex-label">AI Feedback</label>
+            <label for="aiFeedback">AI Feedback</label>
             <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
           </div>
         </section>
@@ -734,7 +809,7 @@
           <h4>Composition Grid (Rule of Thirds)</h4>
           <canvas id="compositionCanvas" style="border:1px solid #ccc; width:100%; max-width:320px;"></canvas>
           <p id="compositionFeedback">
-            Composition Feedback: Your main subject may be off-center. Align it with the grid lines for better balance.
+            Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
             <a href="#" onclick="openTutorial('composition')">Learn How</a>
           </p>
 
@@ -766,7 +841,7 @@
         <ul>
           <li>Enter your video title; previews update live.</li>
           <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
-          <li>Click on the preview boxes to enlarge the thumbnail.</li>
+          <li>Click on any preview (including the main upload) to enlarge the image.</li>
           <li>Rate your thumbnail on various criteria using the rubric table.</li>
           <li>Provide feedback using the Human and AI feedback boxes.</li>
           <li>Review the Design Insights for technical feedback and suggestions.</li>
@@ -949,7 +1024,7 @@
         document.getElementById('contrastMessage').textContent = "";
         document.getElementById('paletteContainer').innerHTML = "";
         document.getElementById('colorSuggestions').innerHTML = "";
-        document.getElementById('compositionFeedback').innerHTML = "Composition Feedback: Your main subject may be off-center. Align it with the grid lines for better balance. <a href='#' onclick='openTutorial(\"composition\")'>Learn How</a>";
+        document.getElementById('compositionFeedback').innerHTML = "Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance. <a href='#' onclick='openTutorial(\"composition\")'>Learn How</a>";
         document.getElementById('faceDetectionResults').textContent = "";
         document.getElementById('objectRecognitionResults').textContent = "";
         document.getElementById('sharpnessResult').textContent = "";
@@ -992,7 +1067,7 @@
         window.lastPredictions.forEach(pred => {
           if (title.indexOf(pred.className.toLowerCase()) !== -1) matchFound = true;
         });
-        // Optionally, display a synergy message.
+        // Optionally display a synergy cue.
       }
 
       /***************************************************
@@ -1015,7 +1090,6 @@
         const reader = new FileReader();
         reader.onload = ev => processImage(ev.target.result);
         reader.readAsDataURL(file);
-        // Reset so same file can be re-uploaded.
         e.target.value = "";
       }
       function updateAllPreviews(dataUrl) {
@@ -1240,7 +1314,7 @@
       async function showSharpness(imageSrc) {
         const sharpness = await calculateSharpness(imageSrc);
         let sharpnessText = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
-        if (sharpness < 10) sharpnessText += " - Image appears blurry, consider re-exporting at a higher resolution.";
+        if (sharpness < 10) sharpnessText += " - Image appears blurry, consider re‑exporting at a higher resolution.";
         document.getElementById("sharpnessResult").textContent = sharpnessText;
       }
 
@@ -1265,7 +1339,6 @@
       /***************************************************
        * Theme & Animation Toggles
        ***************************************************/
-      // Dark mode toggle now uses the slider's state.
       function toggleTheme(input) {
         const html = document.documentElement;
         if (input.checked) {
@@ -1314,11 +1387,11 @@
         } else if (topic === 'contrast') {
           content = "<h2>Improving Contrast</h2><p>Ensure text overlays have sufficient contrast. Adjust contrast or text color in your editor. <a href='https://example.com/contrast-tutorial' target='_blank'>Learn More</a></p>";
         } else if (topic === 'composition') {
-          content = "<h2>Enhancing Composition</h2><p>If your main subject is off-center, try aligning it with the rule-of-thirds grid for better balance. <a href='https://example.com/composition-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Enhancing Composition</h2><p>If your main subject is off‑center, try aligning it with the rule‑of‑thirds grid for better balance. <a href='https://example.com/composition-tutorial' target='_blank'>Learn More</a></p>";
         } else if (topic === 'object') {
-          content = "<h2>Object Positioning</h2><p>Ensure key objects are well-positioned and not obscured. <a href='https://example.com/object-positioning-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Object Positioning</h2><p>Ensure key objects are well‑positioned and not obscured. <a href='https://example.com/object-positioning-tutorial' target='_blank'>Learn More</a></p>";
         } else if (topic === 'face') {
-          content = "<h2>Face Detection &amp; Composition</h2><p>If faces are too small or mispositioned, consider enlarging or repositioning them for better engagement. <a href='https://example.com/face-detection-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Face Detection &amp; Composition</h2><p>If faces are too small or mis‑positioned, consider enlarging or repositioning them for better engagement. <a href='https://example.com/face-detection-tutorial' target='_blank'>Learn More</a></p>";
         } else {
           content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
         }
@@ -1330,9 +1403,23 @@
       }
 
       /***************************************************
+       * Legend Toggle Function
+       ***************************************************/
+      function toggleLegend() {
+        const legend = document.getElementById("legend");
+        const btn = document.getElementById("toggleLegend");
+        if (legend.style.display === "none" || legend.style.display === "") {
+          legend.style.display = "block";
+          btn.textContent = "Hide Legend & Definitions";
+        } else {
+          legend.style.display = "none";
+          btn.textContent = "Show Legend & Definitions";
+        }
+      }
+
+      /***************************************************
        * Easter Egg Surprise!
        ***************************************************/
-      // Press Alt+E to trigger a fun easter egg.
       document.addEventListener("keydown", function(e) {
         if (e.altKey && e.key.toLowerCase() === "e") {
           triggerEasterEgg();
