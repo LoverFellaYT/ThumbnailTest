@@ -29,8 +29,8 @@
     <style>
       :root {
         /* Colors & Theme Variables */
-        --primary-light: #7e22ce;
-        --accent-light: #ec4899;
+        --primary-light: #4facfe;
+        --accent-light: #00f2fe;
         --bg-light: #f9fafb;
         --text-light: #1e293b;
         --panel-light: rgba(255, 255, 255, 0.96);
@@ -47,7 +47,6 @@
         --transition: all 0.3s ease;
         --radius: 14px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-        --gradient-dark: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
 
         /* Table & Title Colors */
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
@@ -89,7 +88,7 @@
         --text-light: var(--text-dark);
         --panel-light: var(--panel-dark);
         --border-light: var(--border-dark);
-        --gradient-light: var(--gradient-dark);
+        --gradient-light: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
         --primary-light: var(--primary-dark);
         --accent-light: var(--accent-dark);
         --table-cell-bg-light: var(--table-cell-bg-dark);
@@ -270,6 +269,8 @@
         gap: 2rem;
         margin-top: 0;
       }
+      
+      /* Modernized Rubric Table */
       .rubric-table {
         overflow-x: auto;
       }
@@ -278,11 +279,16 @@
         min-width: 800px;
         border-collapse: separate;
         border-spacing: 0;
+        font-family: 'Roboto', sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
       }
       .modern-table thead th {
-        background: var(--gradient-light);
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
         color: #fff;
-        padding: 1.2rem;
+        padding: 0.8rem 1rem;
         font-weight: 600;
         position: sticky;
         top: 0;
@@ -290,16 +296,17 @@
         z-index: 10;
       }
       .modern-table tbody td {
-        padding: 1.2rem;
-        border-bottom: 1px solid rgba(224, 231, 255, 0.3);
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
-        vertical-align: top;
-        min-width: 160px;
+        vertical-align: middle;
+        min-width: 120px;
         cursor: pointer;
         background: var(--table-cell-bg-light);
       }
-      .modern-table td[data-rating] {
-        outline: none;
+      .modern-table tbody tr:hover td {
+        background-color: rgba(0, 0, 0, 0.03);
+        transform: scale(1.01);
       }
       .modern-table td[data-rating]:hover,
       .modern-table td[data-rating]:focus {
@@ -527,10 +534,10 @@
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Basic (1)</th>
-                <th>Good (2)</th>
-                <th>Great (3)</th>
-                <th>Excellent (4)</th>
+                <th>Good (1)</th>
+                <th>Great (2)</th>
+                <th>Excellent (3)</th>
+                <th>Outstanding (4)</th>
               </tr>
             </thead>
             <tbody>
@@ -538,160 +545,160 @@
               <tr>
                 <td class="category-header" data-category="0" title="How well the thumbnail stops scrolling. Use bold colors, striking imagery, or faces.">Scroll-Stopping Power</td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">
-                  Basic: Uses plain colors and text; lacks dynamic elements and blends into the feed.
+                  Uses plain colors and text; lacks dynamic elements and blends into the feed.
                 </td>
                 <td data-category="0" data-rating="2" role="button" tabindex="0">
-                  Good: Employs one high-impact element (e.g., a bright color, face, or dynamic imagery) but still needs more punch.
+                  Employs one high-impact element (e.g., a bright color, face, or dynamic imagery) but still needs more punch.
                 </td>
                 <td data-category="0" data-rating="3" role="button" tabindex="0">
-                  Great: Uses at least two high-impact visual elements (faces, money, danger) to grab attention instantly.
+                  Uses at least two high-impact visual elements (faces, money, danger) to grab attention instantly.
                 </td>
                 <td data-category="0" data-rating="4" role="button" tabindex="0">
-                  Excellent: Combines multiple high-impact elements with dynamic cues to create an irresistible "must-click" urgency.
+                  Combines multiple high-impact elements with dynamic cues to create an irresistible "must-click" urgency.
                 </td>
               </tr>
               <!-- 1: Composition & Design -->
               <tr>
                 <td class="category-header" data-category="1" title="Assess the layout and design. Consider rule-of-thirds, alignment, and dynamic contrasts.">Composition &amp; Design</td>
                 <td data-category="1" data-rating="1" role="button" tabindex="0">
-                  Basic: Layout is functional but lacks balance and a clear focal point.
+                  Layout is functional but lacks balance and a clear focal point.
                 </td>
                 <td data-category="1" data-rating="2" role="button" tabindex="0">
-                  Good: Applies the rule-of-thirds or central alignment; however, competing elements may dilute the focus.
+                  Applies the rule-of-thirds or central alignment; however, competing elements may dilute the focus.
                 </td>
                 <td data-category="1" data-rating="3" role="button" tabindex="0">
-                  Great: Uses leading lines and dynamic contrast to direct the viewer’s eye to a clear focal point.
+                  Uses leading lines and dynamic contrast to direct the viewer’s eye to a clear focal point.
                 </td>
                 <td data-category="1" data-rating="4" role="button" tabindex="0">
-                  Excellent: Masterful composition that is instantly readable and perfectly balanced, directing attention immediately—especially on mobile.
+                  Masterful composition that is instantly readable and perfectly balanced, directing attention immediately—especially on mobile.
                 </td>
               </tr>
               <!-- 2: Visual Hierarchy & Clarity -->
               <tr>
                 <td class="category-header" data-category="2" title="How well the thumbnail establishes a visual hierarchy. Does the focal point stand out clearly with unnecessary elements removed?">Visual Hierarchy &amp; Clarity</td>
                 <td data-category="2" data-rating="1" role="button" tabindex="0">
-                  Basic: Focal point is unclear; excessive background elements compete and distract.
+                  Focal point is unclear; excessive background elements compete and distract.
                 </td>
                 <td data-category="2" data-rating="2" role="button" tabindex="0">
-                  Good: Basic hierarchy is established, but minor distractions still persist.
+                  Basic hierarchy is established, but minor distractions still persist.
                 </td>
                 <td data-category="2" data-rating="3" role="button" tabindex="0">
-                  Great: Strong hierarchy with a distinct focal point; extraneous elements are minimized.
+                  Strong hierarchy with a distinct focal point; extraneous elements are minimized.
                 </td>
                 <td data-category="2" data-rating="4" role="button" tabindex="0">
-                  Excellent: Crystal clear visual hierarchy where the subject pops and seamlessly guides the viewer’s eye.
+                  Crystal clear visual hierarchy where the subject pops and seamlessly guides the viewer’s eye.
                 </td>
               </tr>
               <!-- 3: Text Clarity -->
               <tr>
                 <td class="category-header" data-category="3" title="Evaluate the legibility and messaging of the text. Does it include a compelling hook or power word?">Text Clarity</td>
                 <td data-category="3" data-rating="1" role="button" tabindex="0">
-                  Basic: Text is legible but overly wordy or generic, lacking a compelling hook.
+                  Text is legible but overly wordy or generic, lacking a compelling hook.
                 </td>
                 <td data-category="3" data-rating="2" role="button" tabindex="0">
-                  Good: Short, readable text on mobile that communicates the message, yet could use a stronger power word.
+                  Short, readable text on mobile that communicates the message, yet could use a stronger power word.
                 </td>
                 <td data-category="3" data-rating="3" role="button" tabindex="0">
-                  Great: Concise text that includes a high-impact power word or phrase, using a color and size that stands out at thumbnail scale.
+                  Concise text that includes a high-impact power word or phrase, using a color and size that stands out at thumbnail scale.
                 </td>
                 <td data-category="3" data-rating="4" role="button" tabindex="0">
-                  Excellent: Perfect text messaging—minimal, powerful, and flawlessly legible on all devices with strategic color/outline for maximum readability.
+                  Perfect text messaging—minimal, powerful, and flawlessly legible on all devices with strategic color/outline for maximum readability.
                 </td>
               </tr>
               <!-- 4: Curiosity Gap -->
               <tr>
                 <td class="category-header" data-category="4" title="Does the thumbnail create an immediate question or intrigue without giving away the main reveal?">Curiosity Gap</td>
                 <td data-category="4" data-rating="1" role="button" tabindex="0">
-                  Basic: Provides a slight hint of intrigue, but the teaser is vague.
+                  Provides a slight hint of intrigue, but the teaser is vague.
                 </td>
                 <td data-category="4" data-rating="2" role="button" tabindex="0">
-                  Good: Clearly poses an intriguing question or partial reveal, though in a subtle manner.
+                  Clearly poses an intriguing question or partial reveal, though in a subtle manner.
                 </td>
                 <td data-category="4" data-rating="3" role="button" tabindex="0">
-                  Great: Effectively teases an unexpected element using techniques like blurred images or partial reveals.
+                  Effectively teases an unexpected element using techniques like blurred images or partial reveals.
                 </td>
                 <td data-category="4" data-rating="4" role="button" tabindex="0">
-                  Excellent: Instantly prompts a specific, compelling question in the viewer’s mind with clear visual or text-based teasers—without giving away the main reveal.
+                  Instantly prompts a specific, compelling question in the viewer’s mind with clear visual or text-based teasers—without giving away the main reveal.
                 </td>
               </tr>
               <!-- 5: Emotional Hook or Reaction -->
               <tr>
                 <td class="category-header" data-category="5" title="How much emotional response does the thumbnail evoke? Consider both positive and negative triggers.">Emotional Hook or Reaction</td>
                 <td data-category="5" data-rating="1" role="button" tabindex="0">
-                  Basic: Generates a neutral or mild reaction; lacks strong emotional cues.
+                  Generates a neutral or mild reaction; lacks strong emotional cues.
                 </td>
                 <td data-category="5" data-rating="2" role="button" tabindex="0">
-                  Good: Sparks basic curiosity or excitement, evoking a subtle emotional pull.
+                  Sparks basic curiosity or excitement, evoking a subtle emotional pull.
                 </td>
                 <td data-category="5" data-rating="3" role="button" tabindex="0">
-                  Great: Triggers strong emotions—such as FOMO, shock, or excitement—that prompt a visceral response.
+                  Triggers strong emotions—such as FOMO, shock, or excitement—that prompt a visceral response.
                 </td>
                 <td data-category="5" data-rating="4" role="button" tabindex="0">
-                  Excellent: Elicits a powerful, multi-dimensional emotional hook (fear, awe, joy, humor, or intrigue) that instantly connects with the viewer.
+                  Elicits a powerful, multi-dimensional emotional hook (fear, awe, joy, humor, or intrigue) that instantly connects with the viewer.
                 </td>
               </tr>
               <!-- 6: Thumbnail–Title Synergy -->
               <tr>
                 <td class="category-header" data-category="6" title="How well does the thumbnail complement the video title? A mismatch can hurt click-through rates.">Thumbnail–Title Synergy</td>
                 <td data-category="6" data-rating="1" role="button" tabindex="0">
-                  Basic: The thumbnail does not reinforce the title; there is no clear synergy.
+                  The thumbnail does not reinforce the title; there is no clear synergy.
                 </td>
                 <td data-category="6" data-rating="2" role="button" tabindex="0">
-                  Good: The thumbnail hints at the title’s topic but may lack a consistent tone or intensity.
+                  The thumbnail hints at the title’s topic but may lack a consistent tone or intensity.
                 </td>
                 <td data-category="6" data-rating="3" role="button" tabindex="0">
-                  Great: The thumbnail and title work together as a combined hook, though slight mismatches can occur.
+                  The thumbnail and title work together as a combined hook, though slight mismatches can occur.
                 </td>
                 <td data-category="6" data-rating="4" role="button" tabindex="0">
-                  Excellent: Thumbnail and title form a seamless one-two punch—each building on the other’s hook for maximum click appeal. (Avoid mismatches like a shocking thumbnail paired with a mild title.)
+                  Thumbnail and title form a seamless one-two punch—each building on the other’s hook for maximum click appeal. (Avoid mismatches like a shocking thumbnail paired with a mild title.)
                 </td>
               </tr>
               <!-- 7: Thumbnail–Video Accuracy -->
               <tr>
                 <td class="category-header" data-category="7" title="Does the thumbnail accurately represent the video content without resorting to clickbait?">Thumbnail–Video Accuracy</td>
                 <td data-category="7" data-rating="1" role="button" tabindex="0">
-                  Basic: Some alignment exists but the thumbnail may misrepresent key content, leaning toward clickbait.
+                  Some alignment exists but the thumbnail may misrepresent key content, leaning toward clickbait.
                 </td>
                 <td data-category="7" data-rating="2" role="button" tabindex="0">
-                  Good: Accurately represents the main topic, though it might lack nuance in reflecting the video’s tone.
+                  Accurately represents the main topic, though it might lack nuance in reflecting the video’s tone.
                 </td>
                 <td data-category="7" data-rating="3" role="button" tabindex="0">
-                  Great: Captures a compelling moment without spoilers, accurately reflecting the video’s content.
+                  Captures a compelling moment without spoilers, accurately reflecting the video’s content.
                 </td>
                 <td data-category="7" data-rating="4" role="button" tabindex="0">
-                  Excellent: Provides perfect alignment with the content—viewers get exactly what was promised, fostering trust and steering clear of clickbait.
+                  Provides perfect alignment with the content—viewers get exactly what was promised, fostering trust and steering clear of clickbait.
                 </td>
               </tr>
               <!-- 8: Channel Identity & Branding -->
               <tr>
                 <td class="category-header" data-category="8" title="Is your channel’s style immediately identifiable and unique?">Channel Identity &amp; Branding</td>
                 <td data-category="8" data-rating="1" role="button" tabindex="0">
-                  Basic: Inconsistent from video to video; no recognizable brand style or identity.
+                  Inconsistent from video to video; no recognizable brand style or identity.
                 </td>
                 <td data-category="8" data-rating="2" role="button" tabindex="0">
-                  Good: Some brand elements are present, but the overall style is not yet distinctive.
+                  Some brand elements are present, but the overall style is not yet distinctive.
                 </td>
                 <td data-category="8" data-rating="3" role="button" tabindex="0">
-                  Great: Clearly identifiable style with consistent use of brand colors and elements.
+                  Clearly identifiable style with consistent use of brand colors and elements.
                 </td>
                 <td data-category="8" data-rating="4" role="button" tabindex="0">
-                  Excellent: Instantly recognizable at a glance with a cohesive color palette, logo, and unique visual style across the channel.
+                  Instantly recognizable at a glance with a cohesive color palette, logo, and unique visual style across the channel.
                 </td>
               </tr>
               <!-- 9: Technical Polish -->
               <tr>
                 <td class="category-header" data-category="9" title="How well-executed and refined is the thumbnail in terms of resolution, contrast, and overall visual quality?">Technical Polish</td>
                 <td data-category="9" data-rating="1" role="button" tabindex="0">
-                  Basic: Basic quality with no pixelation but lacking attention to finer details.
+                  Basic quality with no pixelation but lacking attention to finer details.
                 </td>
                 <td data-category="9" data-rating="2" role="button" tabindex="0">
-                  Good: Optimized for mobile with decent text contrast and clarity, though some fine details may be overlooked.
+                  Optimized for mobile with decent text contrast and clarity, though some fine details may be overlooked.
                 </td>
                 <td data-category="9" data-rating="3" role="button" tabindex="0">
-                  Great: High-resolution with strong color contrast and sharp details that maintain visual appeal even when scaled down (though aspect ratio may need refinement).
+                  High-resolution with strong color contrast and sharp details that maintain visual appeal even when scaled down (though aspect ratio may need refinement).
                 </td>
                 <td data-category="9" data-rating="4" role="button" tabindex="0">
-                  Excellent: Flawless execution with impeccable resolution, perfect contrast, crisp details, and a consistent aspect ratio (e.g., 16:9) that ensures the thumbnail pops on all devices.
+                  Flawless execution with impeccable resolution, perfect contrast, crisp details, and a consistent aspect ratio (e.g., 16:9) that ensures the thumbnail pops on all devices.
                 </td>
               </tr>
             </tbody>
