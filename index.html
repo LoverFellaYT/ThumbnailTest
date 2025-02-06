@@ -57,6 +57,19 @@
         --focus-outline: 2px solid var(--accent-light);
       }
 
+      /* Dark mode support using data-theme on html */
+      html[data-theme="dark"] {
+        --bg-light: var(--bg-dark);
+        --text-light: var(--text-dark);
+        --panel-light: var(--panel-dark);
+        --border-light: var(--border-dark);
+        --gradient-light: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
+        --primary-light: var(--primary-dark);
+        --accent-light: var(--accent-dark);
+        --table-cell-bg-light: var(--table-cell-bg-dark);
+        --yt-title-color-light: var(--yt-title-color-dark);
+      }
+
       body {
         margin: 0;
         padding: 0;
@@ -71,6 +84,7 @@
         outline: var(--focus-outline);
       }
 
+      /* Added margin-bottom to panels for cleaner spacing */
       .glass-panel {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
@@ -79,18 +93,7 @@
         backdrop-filter: blur(12px);
         transition: var(--transition);
         padding: 1rem;
-      }
-
-      html[data-theme="dark"] {
-        --bg-light: var(--bg-dark);
-        --text-light: var(--text-dark);
-        --panel-light: var(--panel-dark);
-        --border-light: var(--border-dark);
-        --gradient-light: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-dark) 100%);
-        --primary-light: var(--primary-dark);
-        --accent-light: var(--accent-dark);
-        --table-cell-bg-light: var(--table-cell-bg-dark);
-        --yt-title-color-light: var(--yt-title-color-dark);
+        margin-bottom: 1.5rem;
       }
 
       /* Tooltip for score */
@@ -238,7 +241,7 @@
         grid-template-columns: 340px 1fr;
         gap: 2rem;
         width: 95%;
-        max-width: 1600px; /* Expanded for larger screens */
+        max-width: 1600px;
         margin: 2rem auto;
         padding: 0 2rem 2rem;
       }
@@ -317,7 +320,7 @@
 
       /* Rubric Table */
       .rubric-table {
-        /* Removed overflow-x so the table can expand fully */
+        /* No forced overflow so table expands fully */
       }
       .modern-table {
         width: 100%;
@@ -332,7 +335,7 @@
       .modern-table thead th {
         background: linear-gradient(135deg, #4facfe, #00f2fe);
         color: #fff;
-        padding: 0.75rem 1.5rem; /* increased padding for a cleaner look */
+        padding: 0.75rem 1.5rem;
         font-weight: 600;
         position: sticky;
         top: 0;
@@ -360,7 +363,7 @@
         background: rgba(126, 34, 206, 0.1);
         position: sticky;
         left: 0;
-        min-width: 200px; /* slightly wider for better balance */
+        min-width: 200px;
         backdrop-filter: blur(6px);
         border-right: 1px solid rgba(224, 231, 255, 0.3);
         z-index: 9;
@@ -541,12 +544,12 @@
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
-        <button class="btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓 Theme</button>
+        <!-- Toggle Dark Mode button -->
+        <button class="btn" onclick="toggleTheme()" aria-label="Toggle Dark Mode">🌙 Toggle Dark Mode</button>
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
         <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-        <button class="btn" onclick="cycleTheme()" aria-label="Cycle Theme">🎭 Cycle Theme</button>
-        <!-- Improved Toggle Switches -->
+        <!-- Toggle Switches for Sound and Animations -->
         <label class="toggle-label">
           <span class="toggle-switch">
             <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
@@ -816,14 +819,13 @@
        * DOMContentLoaded Setup
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        // Use event delegation for the rubric table cells:
+        // Event delegation for rubric table cells:
         document.querySelector('.modern-table').addEventListener('click', (e) => {
           const cell = e.target.closest('td[data-rating]');
           if (cell) {
             selectRating(cell);
           }
         });
-        // Also support keyboard Enter/Space via delegation:
         document.querySelector('.modern-table').addEventListener('keydown', (e) => {
           if (e.key === "Enter" || e.key === " ") {
             const cell = e.target.closest('td[data-rating]');
@@ -982,7 +984,7 @@
             matchFound = true;
           }
         });
-        // (Optional) Provide a visual cue if synergy is detected.
+        // Optionally, you could display a message if synergy is detected.
       }
 
       /***************************************************
@@ -1007,7 +1009,7 @@
           processImage(ev.target.result);
         };
         reader.readAsDataURL(file);
-        // Clear the file input so the same file can be re-uploaded if needed.
+        // Reset the file input value so the same file can be uploaded again.
         e.target.value = "";
       }
       function updateAllPreviews(dataUrl) {
@@ -1269,27 +1271,21 @@
       /***************************************************
        * Theme & Animation Toggles
        ***************************************************/
+      // Toggle Dark Mode: add or remove the data-theme="dark" attribute on html.
+      function toggleTheme() {
+        const html = document.documentElement;
+        if (html.getAttribute("data-theme") === "dark") {
+          html.removeAttribute("data-theme");
+        } else {
+          html.setAttribute("data-theme", "dark");
+        }
+      }
       function toggleSound(el) {
         muteSound = el.checked;
       }
       function toggleAnimations(el) {
         disableAnimations = el.checked;
       }
-      const themes = ["default", "carnival", "space", "underwater"];
-      let currentThemeIndex = 0;
-      function cycleTheme() {
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-        document.body.className = themes[currentThemeIndex];
-      }
-
-      /***************************************************
-       * Theme CSS (additional)
-       ***************************************************/
-      /* Example thematic backgrounds */
-      body.default { background: var(--bg-light); }
-      body.carnival { background: #fff5e6; }
-      body.space { background: #1a1a2e; }
-      body.underwater { background: #e0f7fa; }
 
       /***************************************************
        * Lightbox Functions
