@@ -161,7 +161,7 @@
         opacity: 0.9;
       }
 
-      /* Toggle Switches – icon sliders for all three toggles */
+      /* Toggle Switches – icon sliders with full tracks for all three toggles */
       .toggle-label {
         display: inline-flex;
         align-items: center;
@@ -183,6 +183,7 @@
         background-color: #e0e0e0;
         transition: 0.4s;
         border-radius: 30px;
+        position: relative;
       }
       .icon-slider .slider:before {
         position: absolute;
@@ -211,6 +212,7 @@
         background-color: #e0e0e0;
         transition: 0.4s;
         border-radius: 30px;
+        position: relative;
       }
       .icon-slider-mute .slider:before {
         position: absolute;
@@ -239,6 +241,7 @@
         background-color: #e0e0e0;
         transition: 0.4s;
         border-radius: 30px;
+        position: relative;
       }
       .icon-slider-anim .slider:before {
         position: absolute;
@@ -296,10 +299,11 @@
         padding: 0 2rem 2rem;
       }
 
-      /* SIDEBAR – make sticky so it always remains visible */
+      /* SIDEBAR – make sticky so the video title & thumbnail section never scrolls out of view */
       aside.sidebar {
         position: sticky;
         top: 2rem;
+        z-index: 1000;
         width: 340px;
         max-height: calc(100vh - 2rem);
         overflow-y: auto;
@@ -312,7 +316,6 @@
       }
       .title-input {
         width: 100%;
-        max-width: 600px;
         padding: 0.8rem;
         border: 2px solid #e2e8f0;
         border-radius: var(--radius);
@@ -346,8 +349,10 @@
         border-color: var(--accent-light);
         background: rgba(236, 72, 153, 0.05);
       }
+      /* Force images to fill container without stretching */
       .youtube-thumb {
-        display: block;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
         transition: var(--transition);
       }
@@ -364,7 +369,7 @@
         white-space: normal;
         color: var(--yt-title-color-light);
       }
-      /* Equal spacing between upload area and previews */
+      /* Equal spacing between upload area and preview boxes */
       .previews-container {
         margin-top: 1rem;
         display: flex;
@@ -447,9 +452,9 @@
       .category-header::before {
         margin-right: 0.4rem;
       }
-      /* Adjust emoji for Color Usage row */
+      /* Emoji for Color Usage row */
       .cat-9::before { content: "🌈"; }
-      /* Other category emoji definitions remain */
+      /* Other category emoji definitions */
       .cat-0::before { content: "⚡"; }
       .cat-1::before { content: "🎨"; }
       .cat-2::before { content: "🔍"; }
@@ -505,7 +510,7 @@
         color: #9ca3af;
       }
 
-      /* DESIGN INSIGHTS SECTION – reduced wasted space above heading */
+      /* DESIGN INSIGHTS SECTION – reduced wasted space */
       .auto-insights {
         background: var(--panel-light);
         border-radius: var(--radius);
@@ -540,7 +545,7 @@
         color: #555;
       }
 
-      /* Legend & Definitions – cleaned-up spacing */
+      /* Legend & Definitions – cleaned-up appearance */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
@@ -696,22 +701,22 @@
           </div>
           <!-- The upload area is clickable to enlarge -->
           <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" onclick="enlargeImage('homePreview')" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" role="button" tabindex="0" aria-label="Drag and drop thumbnail image here">
-            <img id="homePreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Default Thumbnail Preview" width="320" height="180" loading="lazy" />
+            <img id="homePreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Default Thumbnail Preview" loading="lazy" />
           </div>
           <div class="previews-container">
             <div class="preview-box">
               <div class="preview-label">YouTube Home</div>
               <div class="thumbnail-wrap" style="width:210px; height:118px;" onclick="enlargeImage('homePreview')" role="button" tabindex="0" aria-label="Enlarge Home Thumbnail">
-                <img id="homePreviewSmall" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small YouTube Home Thumbnail" width="210" height="118" loading="lazy" />
+                <img id="homePreviewSmall" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small YouTube Home Thumbnail" loading="lazy" />
               </div>
-              <div id="homeTitle" class="youtube-title" style="max-width:210px;"></div>
+              <div id="homeTitle" class="youtube-title"></div>
             </div>
             <div class="preview-box">
               <div class="preview-label">Suggested Video</div>
               <div class="thumbnail-wrap" style="width:168px; height:94px;" onclick="enlargeImage('suggestedPreview')" role="button" tabindex="0" aria-label="Enlarge Suggested Thumbnail">
-                <img id="suggestedPreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small Suggested Video Thumbnail" width="168" height="94" loading="lazy" />
+                <img id="suggestedPreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small Suggested Video Thumbnail" loading="lazy" />
               </div>
-              <div id="suggestedTitle" class="youtube-title" style="max-width:168px;"></div>
+              <div id="suggestedTitle" class="youtube-title"></div>
             </div>
           </div>
         </section>
@@ -804,7 +809,7 @@
                 <td data-category="8" data-rating="3" role="button" tabindex="0">High resolution with clear contrast.</td>
                 <td data-category="8" data-rating="4" role="button" tabindex="0">Flawless quality; meets recommended standards (1280×720, 16:9).</td>
               </tr>
-              <!-- 10. Color Usage (row only, not a header column) -->
+              <!-- 10. Color Usage (row only) -->
               <tr>
                 <td class="category-header cat-9" data-category="9" title="Effective use of color enhances design and brand recognition.">Color Usage</td>
                 <td data-category="9" data-rating="1" role="button" tabindex="0">Poor color choices; lacks harmony.</td>
@@ -864,7 +869,7 @@
           <div id="colorSuggestions" class="color-suggestions-container"></div>
 
           <h4>Composition Grid (Rule of Thirds)</h4>
-          <canvas id="compositionCanvas" style="border:1px solid #ccc; width:100%; max-width:320px;"></canvas>
+          <canvas id="compositionCanvas" style="border:1px solid #ccc; max-width:320px;"></canvas>
           <p id="compositionFeedback">
             Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
             <a href="#" onclick="openTutorial('composition')">Learn How</a>
@@ -1250,7 +1255,7 @@
         img.crossOrigin = "Anonymous";
         img.src = imageSrc;
         img.onload = function() {
-          // Use devicePixelRatio to draw at higher resolution:
+          // Draw using devicePixelRatio so the grid lines are crisp
           const ratio = window.devicePixelRatio || 1;
           canvas.width = img.width * ratio;
           canvas.height = img.height * ratio;
@@ -1402,6 +1407,7 @@
        * Theme & Animation Toggles
        ***************************************************/
       function toggleTheme(input) {
+        console.log("Dark mode toggled:", input.checked);
         const html = document.documentElement;
         if (input.checked) {
           html.setAttribute("data-theme", "dark");
