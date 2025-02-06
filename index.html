@@ -56,11 +56,6 @@
         --yt-title-color-light: #ffffff;
       }
 
-      /* Additional dark mode fix for toggle sliders */
-      html[data-theme="dark"] .toggle-switch .slider {
-        background-color: #444;
-      }
-
       body {
         margin: 0;
         padding: 0;
@@ -106,7 +101,7 @@
       header.analyzer-header {
         position: sticky;
         top: 0;
-        z-index: 999;
+        z-index: 2000; /* Raised so header always sits on top */
         padding: 1.5rem 2rem;
         margin-bottom: 1.5rem;
         display: flex;
@@ -137,15 +132,58 @@
         gap: 1rem;
         flex-wrap: wrap;
       }
-      /* Group buttons on left; push dark mode toggle to far right */
+      /* Group buttons on left; push toggles to far right */
       .header-right .group {
         display: flex;
         align-items: center;
         gap: 1rem;
       }
-      .header-right .dark-mode {
-        margin-left: auto;
+      
+      /* NEW Dark Mode Slider */
+      .dark-mode {
+        /* Container for dark mode toggle */
       }
+      .toggle-label.dark-mode-label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+      .dark-mode-slider {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+        transition: background-color 0.3s;
+      }
+      .dark-mode-slider .mode-label {
+        font-size: 16px;
+      }
+      .dark-mode-slider .slider-thumb {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+      }
+      /* Hide the checkbox input */
+      input#darkModeToggle {
+        display: none;
+      }
+      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
+        transform: translateX(30px);
+      }
+      input#darkModeToggle:checked + .dark-mode-slider {
+        background-color: var(--primary-light);
+      }
+
       .btn {
         background: var(--gradient-light);
         color: #fff;
@@ -166,7 +204,7 @@
         opacity: 0.9;
       }
 
-      /* Toggle Switches – icon sliders with full tracks for all three toggles */
+      /* Toggle Switches – Other toggles remain as before */
       .toggle-label {
         display: inline-flex;
         align-items: center;
@@ -182,35 +220,6 @@
         opacity: 0;
         width: 0;
         height: 0;
-      }
-      /* Dark Mode Slider */
-      .icon-slider .slider {
-        background-color: #e0e0e0;
-        transition: 0.4s;
-        border-radius: 30px;
-        position: relative;
-      }
-      .icon-slider .slider:before {
-        position: absolute;
-        content: "☀";
-        height: 26px;
-        width: 26px;
-        left: 2px;
-        bottom: 2px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-      }
-      .icon-slider input:checked + .slider {
-        background-color: var(--primary-light);
-      }
-      .icon-slider input:checked + .slider:before {
-        transform: translateX(30px);
-        content: "🌙";
       }
       /* Mute Slider */
       .icon-slider-mute .slider {
@@ -304,13 +313,13 @@
         padding: 0 2rem 2rem;
       }
 
-      /* SIDEBAR – make sticky so the video title & thumbnail section never scrolls out of view */
+      /* SIDEBAR – Updated so it stays below the header */
       aside.sidebar {
         position: sticky;
-        top: 2rem;
-        z-index: 1000;
+        top: 120px; /* Adjust this value if needed */
+        z-index: 900; /* Lower than header so header always appears on top */
         width: 340px;
-        max-height: calc(100vh - 2rem);
+        max-height: calc(100vh - 120px);
         overflow-y: auto;
       }
       .preview-section {
@@ -682,12 +691,16 @@
             </span>
           </label>
         </div>
-        <!-- Dark Mode Slider at Far Right (icon slider with full track) -->
+        <!-- New Dark Mode Slider -->
         <div class="dark-mode">
-          <span class="toggle-switch icon-slider">
+          <label class="toggle-label dark-mode-label">
             <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
-            <span class="slider"></span>
-          </span>
+            <div class="dark-mode-slider">
+              <span class="mode-label mode-light">☀️</span>
+              <span class="mode-label mode-dark">🌙</span>
+              <div class="slider-thumb"></div>
+            </div>
+          </label>
         </div>
       </div>
     </header>
@@ -874,7 +887,7 @@
           <div id="colorSuggestions" class="color-suggestions-container"></div>
 
           <h4>Composition Grid (Rule of Thirds)</h4>
-          <!-- Note: The canvas is styled with max-width:320px in HTML.
+          <!-- The canvas is styled with max-width:320px in HTML.
                The drawCompositionGrid function now scales the image to the canvas clientWidth. -->
           <canvas id="compositionCanvas" style="border:1px solid #ccc; max-width:320px;"></canvas>
           <p id="compositionFeedback">
