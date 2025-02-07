@@ -164,14 +164,17 @@
       text-align: left;
       position: sticky;
       top: 0;
+    }
+    /* First header (Category) remains styled */
+    .modern-table th:first-child {
       background: var(--primary);
       color: white;
     }
-    /* Rating header colors */
-    .modern-table th:nth-child(2) { color: red; }
-    .modern-table th:nth-child(3) { color: orange; }
-    .modern-table th:nth-child(4) { color: yellow; }
-    .modern-table th:nth-child(5) { color: green; }
+    /* Rating headers now get background colors (not text color) */
+    .modern-table th:nth-child(2) { background: #f87171; color: white; }
+    .modern-table th:nth-child(3) { background: #fb923c; color: white; }
+    .modern-table th:nth-child(4) { background: #facc15; color: black; }
+    .modern-table th:nth-child(5) { background: #4ade80; color: white; }
     .modern-table td {
       padding: 1rem;
       background: var(--surface);
@@ -193,7 +196,7 @@
       background: var(--highlight) !important;
       border-left: 4px solid var(--primary);
     }
-    /* Add emojis to category headers using a data attribute */
+    /* Add emojis to category headers using data attributes */
     .category-header[data-category="0"]::before { content: "⚡ "; }
     .category-header[data-category="1"]::before { content: "🎯 "; }
     .category-header[data-category="2"]::before { content: "📊 "; }
@@ -261,6 +264,122 @@
 
   <!-- Main Content -->
   <main>
+    <!-- Rubric Table (Moved to appear immediately below the header) -->
+    <div class="glass-panel rubric-table" id="rubricSection">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Good (1)</th>
+            <th>Great (2)</th>
+            <th>Excellent (3)</th>
+            <th>Outstanding (4)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
+            <td data-category="0" data-rating="1">Slow start; no hook</td>
+            <td data-category="0" data-rating="2">Basic hook</td>
+            <td data-category="0" data-rating="3">Intriguing hook</td>
+            <td data-category="0" data-rating="4">Unignorable opener</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
+            <td data-category="1" data-rating="1">No clear purpose</td>
+            <td data-category="1" data-rating="2">Goal exists but gets lost</td>
+            <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
+            <td data-category="1" data-rating="4">Crystal‑clear premise</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
+            <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
+            <td data-category="2" data-rating="2">A few engaging moments</td>
+            <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
+            <td data-category="2" data-rating="4">Masterful tension arcs</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
+            <td data-category="3" data-rating="1">Feels forced; no connection</td>
+            <td data-category="3" data-rating="2">Some genuine moments</td>
+            <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
+            <td data-category="3" data-rating="4">Deeply authentic</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
+            <td data-category="4" data-rating="1">Flat; no highs/lows</td>
+            <td data-category="4" data-rating="2">Moments of excitement</td>
+            <td data-category="4" data-rating="3">Clear emotional journey</td>
+            <td data-category="4" data-rating="4">Masterpiece arcs</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
+            <td data-category="5" data-rating="1">Low urgency</td>
+            <td data-category="5" data-rating="2">Basic stakes</td>
+            <td data-category="5" data-rating="3">High stakes/punishments</td>
+            <td data-category="5" data-rating="4">Unavoidable drama</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
+            <td data-category="6" data-rating="1">No or weak CTA</td>
+            <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
+            <td data-category="6" data-rating="3">Clear creative CTA</td>
+            <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend‑Jacking</td>
+            <td data-category="7" data-rating="1">Cliché concept</td>
+            <td data-category="7" data-rating="2">Minor twist on trends</td>
+            <td data-category="7" data-rating="3">Fresh angle</td>
+            <td data-category="7" data-rating="4">Boundary‑pushing</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
+            <td data-category="8" data-rating="1">Forgettable</td>
+            <td data-category="8" data-rating="2">Some memeable moments</td>
+            <td data-category="8" data-rating="3">Highly shareable</td>
+            <td data-category="8" data-rating="4">Clip‑worthy highlights</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
+            <td data-category="9" data-rating="1">No branding</td>
+            <td data-category="9" data-rating="2">Basic branding</td>
+            <td data-category="9" data-rating="3">Consistent style</td>
+            <td data-category="9" data-rating="4">Iconic brand identity</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="10" title="Well‑developed characters add depth.">Character Development</td>
+            <td data-category="10" data-rating="1">Flat, one‑dimensional characters</td>
+            <td data-category="10" data-rating="2">Some traits are evident</td>
+            <td data-category="10" data-rating="3">Well‑developed with clear motivations</td>
+            <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
+            <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
+            <td data-category="11" data-rating="2">Some lines feel genuine</td>
+            <td data-category="11" data-rating="3">Dialogue flows naturally</td>
+            <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World‑Building</td>
+            <td data-category="12" data-rating="1">Vague setting with little detail</td>
+            <td data-category="12" data-rating="2">Some descriptive elements</td>
+            <td data-category="12" data-rating="3">Engaging and immersive world‑building</td>
+            <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
+          </tr>
+          <tr>
+            <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
+            <td data-category="13" data-rating="1">Story drags; uneven pace</td>
+            <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
+            <td data-category="13" data-rating="3">Generally well‑paced</td>
+            <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- The remaining sections follow -->
     <!-- Quick Summary -->
     <div class="glass-panel input-section" id="quickSummarySection">
       <h2>Quick Summary</h2>
@@ -309,121 +428,6 @@
       <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
       <button onclick="submitPeerReview()">Submit Peer Review</button>
       <ul id="peerReviewList" class="peer-review-list"></ul>
-    </div>
-
-    <!-- Rubric Table (Moved Further Up) -->
-    <div class="glass-panel rubric-table" id="rubricSection">
-      <table class="modern-table">
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Good (1)</th>
-            <th>Great (2)</th>
-            <th>Excellent (3)</th>
-            <th>Outstanding (4)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
-            <td data-category="0" data-rating="1">Slow start; no hook</td>
-            <td data-category="0" data-rating="2">Basic hook</td>
-            <td data-category="0" data-rating="3">Intriguing hook</td>
-            <td data-category="0" data-rating="4">Unignorable opener</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
-            <td data-category="1" data-rating="1">No clear purpose</td>
-            <td data-category="1" data-rating="2">Goal exists but gets lost</td>
-            <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
-            <td data-category="1" data-rating="4">Crystal-clear premise</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
-            <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
-            <td data-category="2" data-rating="2">A few engaging moments</td>
-            <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
-            <td data-category="2" data-rating="4">Masterful tension arcs</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
-            <td data-category="3" data-rating="1">Feels forced; no connection</td>
-            <td data-category="3" data-rating="2">Some genuine moments</td>
-            <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
-            <td data-category="3" data-rating="4">Deeply authentic</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
-            <td data-category="4" data-rating="1">Flat; no highs/lows</td>
-            <td data-category="4" data-rating="2">Moments of excitement</td>
-            <td data-category="4" data-rating="3">Clear emotional journey</td>
-            <td data-category="4" data-rating="4">Masterpiece arcs</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
-            <td data-category="5" data-rating="1">Low urgency</td>
-            <td data-category="5" data-rating="2">Basic stakes</td>
-            <td data-category="5" data-rating="3">High stakes/punishments</td>
-            <td data-category="5" data-rating="4">Unavoidable drama</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
-            <td data-category="6" data-rating="1">No or weak CTA</td>
-            <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
-            <td data-category="6" data-rating="3">Clear creative CTA</td>
-            <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend-Jacking</td>
-            <td data-category="7" data-rating="1">Cliché concept</td>
-            <td data-category="7" data-rating="2">Minor twist on trends</td>
-            <td data-category="7" data-rating="3">Fresh angle</td>
-            <td data-category="7" data-rating="4">Boundary-pushing</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
-            <td data-category="8" data-rating="1">Forgettable</td>
-            <td data-category="8" data-rating="2">Some memeable moments</td>
-            <td data-category="8" data-rating="3">Highly shareable</td>
-            <td data-category="8" data-rating="4">Clip-worthy highlights</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
-            <td data-category="9" data-rating="1">No branding</td>
-            <td data-category="9" data-rating="2">Basic branding</td>
-            <td data-category="9" data-rating="3">Consistent style</td>
-            <td data-category="9" data-rating="4">Iconic brand identity</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="10" title="Well-developed characters add depth.">Character Development</td>
-            <td data-category="10" data-rating="1">Flat, one-dimensional characters</td>
-            <td data-category="10" data-rating="2">Some traits are evident</td>
-            <td data-category="10" data-rating="3">Well-developed with clear motivations</td>
-            <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
-            <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
-            <td data-category="11" data-rating="2">Some lines feel genuine</td>
-            <td data-category="11" data-rating="3">Dialogue flows naturally</td>
-            <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World-Building</td>
-            <td data-category="12" data-rating="1">Vague setting with little detail</td>
-            <td data-category="12" data-rating="2">Some descriptive elements</td>
-            <td data-category="12" data-rating="3">Engaging and immersive world-building</td>
-            <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
-          </tr>
-          <tr>
-            <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
-            <td data-category="13" data-rating="1">Story drags; uneven pace</td>
-            <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
-            <td data-category="13" data-rating="3">Generally well-paced</td>
-            <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
 
     <!-- Feedback Panel (No AI Suggestions) -->
@@ -768,13 +772,13 @@
       const doc = new jsPDF('p', 'mm', 'a4');
       const elements = [
         document.querySelector('header.analyzer-header'),
+        document.querySelector('#rubricSection'),
         document.querySelector('#quickSummarySection'),
         document.querySelector('#storySection'),
         document.querySelector('#beatSheetSection'),
         document.querySelector('#revisionHistorySection'),
         document.querySelector('#humanFeedbackSection'),
         document.querySelector('#peerReviewSection'),
-        document.querySelector('#rubricSection'),
         document.querySelector('.feedback-panel')
       ];
       let yPos = 10;
