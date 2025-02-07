@@ -202,6 +202,8 @@
         vertical-align: top;
         min-width: 200px;
         cursor: pointer;
+        /* Ensure the cells receive pointer events */
+        pointer-events: auto;
       }
       /* ===== Interactive Hover Effects for Rubric Cells ===== */
       .modern-table tbody td:hover:not(.category-header) {
@@ -234,7 +236,6 @@
         display: inline-block;
         margin-right: 4px;
       }
-      /* Instead of hardcoding emojis in each rule, add a data-emoji attribute to each category header in the HTML below. */
       
       /* ===== Human Suggestions & Additional Feedback ===== */
       .human-suggestions {
