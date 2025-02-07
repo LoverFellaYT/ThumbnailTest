@@ -175,7 +175,7 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        min-width: 1000px; /* wider rubric */
+        min-width: 1200px; /* increased width for the rubric */
       }
       .modern-table thead th {
         padding: 1.25rem;
@@ -213,10 +213,11 @@
       .modern-table tbody tr:hover td:not(.category-header) {
         background: rgba(209,250,229,0.2);
       }
-      /* Category header: always show emoji next to title & use a slightly lighter font weight */
+      /* ===== Category Header: Neon Blue Style ===== */
       .category-header {
-        font-weight: 600;  /* Less bold than before */
-        background: rgba(16,185,129,0.08);
+        font-weight: 600;  /* Slightly lighter than before */
+        background: rgba(4, 217, 255, 0.2); /* Light neon blue background */
+        color: #04D9FF; /* Neon blue text */
         position: sticky;
         left: 0;
         min-width: 180px;
@@ -227,7 +228,7 @@
         transition: background 0.3s ease, transform 0.3s ease;
       }
       .category-header:hover {
-        background: rgba(16,185,129,0.15);
+        background: rgba(4, 217, 255, 0.3);
         transform: scale(1.02);
       }
       /* Ensure emoji always appears inline next to the category title */
