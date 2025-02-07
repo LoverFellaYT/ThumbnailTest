@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Idea Forge Pro | Viral Content Generator</title>
-    <!-- Roboto Font (optional – used in the sample) -->
+    <!-- Roboto Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -250,7 +250,7 @@
         background: rgba(209,250,229,0.3);
         transform: scale(1.02);
       }
-      /* When a cell is selected, apply a low-opacity neon light blue highlight with a subtle glow */
+      /* When a cell is selected, highlight it with a low-opacity neon light blue background and subtle glow */
       .modern-table tbody td.selected {
         background: rgba(4,217,255,0.3);
         box-shadow: 0 0 8px rgba(4,217,255,0.5);
@@ -512,7 +512,7 @@
         const categoryIndex = Number(cell.getAttribute('data-category'));
         const rating = parseInt(cell.getAttribute('data-rating'));
         const row = cell.parentElement;
-        // Remove 'selected' class from all other cells in this row (except the first cell)
+        // Remove 'selected' class from all cells (except the category header) in this row
         row.querySelectorAll('td').forEach(td => {
           if (td !== row.firstElementChild) td.classList.remove('selected');
         });
@@ -522,18 +522,18 @@
       }
       
       function updateTotal() {
-        // Calculate total score from ratings (if needed)
+        // Calculate total score (optional use)
         const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = totalScore;
         
-        // Calculate progress based solely on the number of categories selected.
-        // There are 10 categories; each selection adds 10%.
+        // Calculate progress based on the number of categories selected
+        // With 10 categories, each selected category equals 10%
         const categoriesSelected = Object.keys(scores).length;
         const progressPercentage = (categoriesSelected / 10) * 100;
         document.getElementById('smallProgressBar').style.width = progressPercentage + "%";
         document.getElementById('progressText').textContent = Math.round(progressPercentage) + "%";
         
-        // Update a ranking/status indicator (optional)
+        // Update ranking/status (optional)
         const ranking = document.getElementById('ranking');
         if (categoriesSelected < 10) {
           ranking.textContent = 'Incomplete';
@@ -552,9 +552,14 @@
           ranking.style.color = '#3b82f6';
         }
         
-        // Trigger confetti if totalScore > 33 (optional)
+        // Trigger pink confetti if the final score is over 33
         if (totalScore > 33 && !confettiTriggered) {
-          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#ff69b4']  // Hot pink confetti
+          });
           confettiTriggered = true;
         } else if (totalScore <= 33) {
           confettiTriggered = false;
