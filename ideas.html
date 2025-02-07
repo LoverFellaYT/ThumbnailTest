@@ -58,7 +58,7 @@
         align-items: center;
         gap: 1rem;
       }
-      /* New small progress bar (with percentage text) */
+      /* New small progress bar with percentage text */
       .progress-container-small {
         position: relative;
         width: 150px;
@@ -191,10 +191,12 @@
         backdrop-filter: blur(10px);
         color: white;
       }
-      /* Score header colors */
-      .modern-table thead th:nth-child(1) {
-        background: linear-gradient(90deg, #ff004f, #ff5e78);
+      /* Make the "Category" header in the table header use the same neon blue style */
+      .modern-table thead th:first-child {
+        background: rgba(4,217,255,0.2);
+        color: #04D9FF;
       }
+      /* Score header colors for other columns */
       .modern-table thead th:nth-child(2) { background: #f87171; }
       .modern-table thead th:nth-child(3) { background: #fb923c; }
       .modern-table thead th:nth-child(4) { background: #facc15; }
@@ -212,18 +214,19 @@
         position: relative;
         z-index: 1;
       }
-      /* Only the cell hovered over glows */
+      /* Only the individual cell hovered over glows (not the whole row) */
       .modern-table tbody td:hover:not(.category-header) {
         background: rgba(209,250,229,0.3);
         transform: scale(1.02);
       }
-      /* Light blue outline for selected cell */
+      /* When a cell is selected, highlight it with a low opacity neon blue background and subtle glow */
       .modern-table tbody td.selected {
-        outline: 2px solid #04D9FF;
+        background: rgba(4,217,255,0.3);
+        box-shadow: 0 0 8px rgba(4,217,255,0.5);
         z-index: 2;
       }
       
-      /* ===== Category Header: Neon Blue Style ===== */
+      /* ===== Category Header: Neon Blue Style (No Hover Effect) ===== */
       .category-header {
         font-weight: 600;
         background: rgba(4,217,255,0.2);
@@ -235,11 +238,12 @@
         backdrop-filter: blur(5px);
         border-right: 1px solid rgba(229,231,235,0.3);
         cursor: help;
-        transition: background 0.3s ease, transform 0.3s ease;
+        transition: none;
       }
+      /* Remove hover highlight on category headers */
       .category-header:hover {
-        background: rgba(4,217,255,0.3);
-        transform: scale(1.02);
+        background: rgba(4,217,255,0.2);
+        transform: none;
       }
       .category-header::before {
         content: attr(data-emoji);
@@ -604,7 +608,6 @@
         document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
         document.getElementById('specificFeedback').innerHTML = '';
         updateTotal();
-        // Optionally update any other elements as needed
       }
       
       /***************************************************
