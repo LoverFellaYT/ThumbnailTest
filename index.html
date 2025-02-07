@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thumbnail Analyzer Pro+ (Final)</title>
-
-    <!-- Roboto Font -->
+    <title>Idea Forge Pro | Viral Content Generator</title>
+    <!-- Roboto Font (optional – used in the sample) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,21 +12,14 @@
       rel="stylesheet"
     />
 
-    <!-- Color Thief for Palette Extraction -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
-    <!-- Face-api.js for Face Detection -->
-    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-    <!-- TensorFlow & MobileNet for Object Recognition -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
-    <!-- html2canvas for PNG Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Canvas Confetti for Outstanding Score Effect -->
+    <!-- Canvas Confetti for celebratory effects -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-
+    <!-- html2canvas and jsPDF for export options -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
       :root {
-        /* Colors & Theme Variables */
+        /* Colors & Theme Variables (from your sample) */
         --primary-light: #4facfe;
         --accent-light: #00f2fe;
         --bg-light: #f9fafb;
@@ -42,8 +34,8 @@
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
         --yt-title-color-light: #030303;
       }
-
-      /* Dark mode – maintain blue gradient */
+      
+      /* Dark mode – (if used) */
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
         --text-light: #f3f3f3;
@@ -55,7 +47,7 @@
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
         --yt-title-color-light: #ffffff;
       }
-
+      
       body {
         margin: 0;
         padding: 0;
@@ -64,126 +56,80 @@
         color: var(--text-light);
         transition: var(--transition);
       }
-
-      button:focus,
-      [tabindex]:focus {
-        outline: 2px solid var(--accent-light);
+      
+      a {
+        text-decoration: none;
+        color: inherit;
       }
-
-      /* Panels */
-      .glass-panel {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        transition: var(--transition);
-        padding: 1rem;
-        margin-bottom: 1rem;
+      
+      /* ---------- Page Title Banner ---------- */
+      .page-title {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: linear-gradient(90deg, #ff004f, #ff5e78);
+        color: white;
       }
-
-      /* Tooltip for score */
-      .total-score:hover::after {
-        content: "Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40.\A36–40: Outstanding\A30–35: Excellent\A20–29: Great\A<19: Good";
-        position: absolute;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 4px;
-        top: 110%;
-        left: 0;
-        white-space: pre-line;
-        font-size: 0.85rem;
-        z-index: 1000;
-      }
-
-      /* HEADER */
+      
+      /* ---------- Sticky Header (Banner) ---------- */
       header.analyzer-header {
         position: sticky;
         top: 0;
-        z-index: 2000; /* Raised so header always sits on top */
+        z-index: 2000;
         padding: 1.5rem 2rem;
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
       }
       .header-left {
         display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        position: relative;
+        align-items: center;
+        gap: 1rem;
       }
-      .total-score {
-        font-size: 1.75rem;
-        font-weight: 700;
-        background: var(--gradient-light);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        transition: var(--transition);
+      /* Small progress bar with percentage text */
+      .progress-container-small {
         position: relative;
+        width: 150px;
+        height: 20px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-right: 1rem;
       }
-      .status-indicator {
+      #smallProgressBar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ff004f, #ff5e78);
+        transition: width 0.5s ease;
+      }
+      #progressText {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        line-height: 20px;
+        font-size: 0.9rem;
+        color: #fff;
+      }
+      .score-label {
+        font-size: 1.2rem;
         font-weight: 600;
       }
       .header-right {
         display: flex;
         align-items: center;
         gap: 1rem;
-        flex-wrap: wrap;
       }
-      /* Group buttons on left; push toggles to far right */
-      .header-right .group {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      
-      /* NEW Dark Mode Slider */
-      .dark-mode {
-        /* Container for dark mode toggle */
-      }
-      .toggle-label.dark-mode-label {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-      }
-      .dark-mode-slider {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        background-color: #e0e0e0;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
-        transition: background-color 0.3s;
-      }
-      .dark-mode-slider .mode-label {
-        font-size: 16px;
-      }
-      .dark-mode-slider .slider-thumb {
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s;
-      }
-      /* Hide the checkbox input */
-      input#darkModeToggle {
-        display: none;
-      }
-      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        transform: translateX(30px);
-      }
-      input#darkModeToggle:checked + .dark-mode-slider {
-        background-color: var(--primary-light);
-      }
-
       .btn {
         background: var(--gradient-light);
         color: #fff;
@@ -201,830 +147,378 @@
       .btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
-        opacity: 0.9;
       }
-
-      /* Toggle Switches – Other toggles remain as before */
-      .toggle-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-      }
-      .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 30px;
-      }
-      .toggle-switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-      /* Mute Slider */
-      .icon-slider-mute .slider {
-        background-color: #e0e0e0;
-        transition: 0.4s;
-        border-radius: 30px;
-        position: relative;
-      }
-      .icon-slider-mute .slider:before {
-        position: absolute;
-        content: "🔊";
-        height: 26px;
-        width: 26px;
-        left: 2px;
-        bottom: 2px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-      }
-      .icon-slider-mute input:checked + .slider {
-        background-color: var(--primary-light);
-      }
-      .icon-slider-mute input:checked + .slider:before {
-        transform: translateX(30px);
-        content: "🔇";
-      }
-      /* Animations Slider */
-      .icon-slider-anim .slider {
-        background-color: #e0e0e0;
-        transition: 0.4s;
-        border-radius: 30px;
-        position: relative;
-      }
-      .icon-slider-anim .slider:before {
-        position: absolute;
-        content: "▶";
-        height: 26px;
-        width: 26px;
-        left: 2px;
-        bottom: 2px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-      }
-      .icon-slider-anim input:checked + .slider {
-        background-color: var(--primary-light);
-      }
-      .icon-slider-anim input:checked + .slider:before {
-        transform: translateX(30px);
-        content: "⏸";
-      }
-
-      /* Progress Bar */
-      #progressBarContainer {
-        position: relative;
-        width: 100%;
-        height: 20px;
-        background: #eee;
-        border-radius: 10px;
-        margin-top: 0.5rem;
-      }
-      #progressBar {
-        height: 100%;
-        width: 0%;
-        background: var(--gradient-light);
-        border-radius: 10px;
-        transition: width 0.3s ease;
-      }
-      #milestoneMessage {
-        font-size: 0.9rem;
-        color: #555;
-        margin-top: 0.5rem;
-      }
-
-      /* MAIN CONTAINER */
-      .analyzer-container {
-        display: grid;
-        grid-template-columns: 340px 1fr;
-        gap: 3rem;
-        width: 95%;
-        max-width: 1600px;
+      
+      /* ---------- Main Report Container (Widened to 1200px) ---------- */
+      #report {
+        max-width: 1200px;
         margin: 2rem auto;
-        padding: 0 2rem 2rem;
+        padding: 0 1rem 2rem;
       }
-
-      /* SIDEBAR – Updated so it stays below the header */
-      aside.sidebar {
-        position: sticky;
-        top: 120px; /* Adjust this value if needed */
-        z-index: 900; /* Lower than header so header always appears on top */
-        width: 340px;
-        max-height: calc(100vh - 120px);
-        overflow-y: auto;
-      }
-      .preview-section {
-        padding: 1.5rem;
-      }
-      .preview-section h2 {
-        margin: 0 0 1rem 0;
-      }
-      .title-input {
-        width: 100%;
-        padding: 0.8rem;
-        border: 2px solid #e2e8f0;
+      
+      /* ---------- Brainstorm / Idea Incubator Section ---------- */
+      .brainstorm-section {
+        background: var(--panel-light);
+        padding: 2rem;
         border-radius: var(--radius);
-        font-size: 1rem;
-        transition: var(--transition);
-        margin-bottom: 0.75rem;
-        box-sizing: border-box;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-light);
       }
-      .title-input:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
-      }
-      .upload-container {
-        margin-bottom: 1rem;
-      }
-      /* Modernized thumbnail style */
-      .thumbnail-wrap {
-        background: #f1f5f9;
-        border: 1px solid rgba(126, 34, 206, 0.2);
-        border-radius: var(--radius);
-        overflow: hidden;
-        cursor: pointer;
-        transition: var(--transition);
+      .brainstorm-header {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
       }
-      .thumbnail-wrap.dragover {
-        border-color: var(--accent-light);
-        background: rgba(236, 72, 153, 0.05);
+      .brainstorm-header h2 {
+        margin: 0;
+        background: linear-gradient(90deg, #ff004f, #ff5e78);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
-      /* Force images to fill container without stretching */
-      .youtube-thumb {
+      #ideaInput {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: 150px;
+        padding: 1.5rem;
+        border: 2px solid #E5E7EB;
+        border-radius: var(--radius);
+        margin: 1rem 0;
+        font-size: 1rem;
+        resize: vertical;
+        background: rgba(249,250,251,0.8);
         transition: var(--transition);
       }
-      .youtube-title {
-        font-family: 'Roboto', sans-serif;
-        font-size: 14px;
+      #ideaInput:focus {
+        outline: none;
+        border-color: #10B981;
+        box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+      }
+      .word-count {
+        text-align: right;
+        font-size: 0.9rem;
+        color: #4B5563;
         margin-top: 0.5rem;
-        line-height: 1.4;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        white-space: normal;
-        color: var(--yt-title-color-light);
       }
-      /* Equal spacing between upload area and preview boxes */
-      .previews-container {
-        margin-top: 1rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
-      .preview-box {
-        transition: transform 0.2s ease;
-      }
-      .preview-box:hover {
-        transform: scale(1.05);
-      }
-
-      /* MAIN CONTENT (Rubric & Insights) – reduced gap */
-      main.main-content {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      /* Rubric Table */
+      
+      /* ---------- Rubric Table ---------- */
       .rubric-table {
-        /* Let the table expand naturally */
+        background: var(--panel-light);
+        border-radius: var(--radius);
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        overflow-x: visible;
+        border: 1px solid var(--border-light);
       }
       .modern-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        font-family: 'Roboto', sans-serif;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
-        transition: transform 0.2s ease;
+      }
+      @media (min-width: 1200px) {
+        .modern-table {
+          min-width: 1200px;
+        }
       }
       .modern-table thead th {
-        padding: 0.75rem 1.5rem;
+        padding: 1.25rem;
         font-weight: 600;
         position: sticky;
         top: 0;
         backdrop-filter: blur(10px);
-        z-index: 10;
+        color: white;
       }
-      /* First header (Category) uses blue gradient */
+      /* Make the table header "Category" cell neon blue */
       .modern-table thead th:first-child {
-        background: var(--gradient-light);
-        color: #fff;
+        background: rgba(4,217,255,0.2);
+        color: #04D9FF;
       }
-      /* Color‑code the rating columns */
-      .modern-table thead th:nth-child(2) { background: #f87171 !important; }
-      .modern-table thead th:nth-child(3) { background: #fb923c !important; }
-      .modern-table thead th:nth-child(4) { background: #facc15 !important; }
-      .modern-table thead th:nth-child(5) { background: #4ade80 !important; }
+      /* Other header cells */
+      .modern-table thead th:nth-child(2) { background: #f87171; }
+      .modern-table thead th:nth-child(3) { background: #fb923c; }
+      .modern-table thead th:nth-child(4) { background: #facc15; }
+      .modern-table thead th:nth-child(5) { background: #4ade80; }
+      
       .modern-table tbody td {
-        padding: 0.75rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        transition: var(--transition);
-        vertical-align: middle;
-        min-width: 100px;
-        cursor: pointer;
+        padding: 1.25rem;
         background: var(--table-cell-bg-light);
+        border-bottom: 1px solid rgba(229,231,235,0.3);
+        transition: var(--transition);
+        vertical-align: top;
+        min-width: 200px;
+        cursor: pointer;
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 1;
       }
-      .modern-table tbody tr:hover td {
-        background-color: rgba(0, 0, 0, 0.03);
+      /* Only the individual cell hovered over glows */
+      .modern-table tbody td:hover:not(.category-header) {
+        background: rgba(209,250,229,0.3);
+        transform: scale(1.02);
       }
-      .modern-table td[data-rating]:hover,
-      .modern-table td[data-rating]:focus {
-        background: rgba(224, 231, 255, 0.3);
+      /* When a cell is selected, apply a low opacity neon light blue highlight and glow */
+      .modern-table tbody td.selected {
+        background: rgba(4,217,255,0.3);
+        box-shadow: 0 0 8px rgba(4,217,255,0.5);
+        z-index: 2;
       }
+      
+      /* ---------- Category Header: Neon Blue Style (No Hover Effect) ---------- */
       .category-header {
         font-weight: 600;
-        background: rgba(126, 34, 206, 0.1);
+        background: rgba(4,217,255,0.2);
+        color: #04D9FF;
         position: sticky;
         left: 0;
-        min-width: 200px;
-        backdrop-filter: blur(6px);
-        border-right: 1px solid rgba(224, 231, 255, 0.3);
-        z-index: 9;
+        min-width: 180px;
+        padding: 1.25rem;
+        backdrop-filter: blur(5px);
+        border-right: 1px solid rgba(229,231,235,0.3);
         cursor: help;
+        transition: none;
+      }
+      .category-header:hover {
+        background: rgba(4,217,255,0.2);
+        transform: none;
       }
       .category-header::before {
-        margin-right: 0.4rem;
+        content: attr(data-emoji);
+        display: inline-block;
+        margin-right: 4px;
       }
-      /* Emoji for Color Usage row */
-      .cat-9::before { content: "🌈"; }
-      /* Other category emoji definitions */
-      .cat-0::before { content: "⚡"; }
-      .cat-1::before { content: "🎨"; }
-      .cat-2::before { content: "🔍"; }
-      .cat-3::before { content: "✍️"; }
-      .cat-4::before { content: "❓"; }
-      .cat-5::before { content: "🔗"; }
-      .cat-6::before { content: "🎯"; }
-      .cat-7::before { content: "🏷️"; }
-      .cat-8::before { content: "✨"; }
-      .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5) !important;
-        box-shadow: inset 4px 0 0 var(--primary-light);
-      }
-
-      /* FEEDBACK PANEL */
-      .feedback-panel {
-        margin-top: 1rem;
-      }
-      .feedback-panel h3 {
-        margin-top: 0;
-      }
-      .feedback-panel .feedback-entry {
-        margin-bottom: 1rem;
-      }
-      .feedback-panel label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 0.3rem;
-      }
-      .feedback-input {
-        display: block;
-        width: 100%;
-        max-width: 600px;
-        box-sizing: border-box;
-        min-height: 80px;
-        padding: 0.8rem;
-        border: 2px solid #e2e8f0;
-        border-radius: var(--radius);
-        font-size: 1rem;
-        font-family: 'Inter', sans-serif;
-        transition: var(--transition);
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow: auto;
-      }
-      .feedback-input:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
-      }
-      .feedback-input:empty::before {
-        content: attr(data-placeholder);
-        color: #9ca3af;
-      }
-
-      /* DESIGN INSIGHTS SECTION – reduced wasted space */
-      .auto-insights {
+      
+      /* ---------- Human Suggestions & Additional Feedback ---------- */
+      .human-suggestions {
         background: var(--panel-light);
-        border-radius: var(--radius);
-        padding: 1rem;
-        margin-top: 0;
-      }
-      .auto-insights h3 {
-        margin-bottom: 0.75rem;
-        font-size: 1.6rem;
-      }
-      .auto-insights h4 {
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-        font-size: 1.2rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        padding-bottom: 0.25rem;
-      }
-      .auto-insights .insight-message {
-        margin-bottom: 0.75rem;
-        font-size: 1rem;
-      }
-      .color-suggestions-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 0.5rem;
-      }
-
-      #compositionFeedback {
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        color: #555;
-      }
-
-      /* Legend & Definitions – cleaned-up appearance */
-      #toggleLegend {
-        margin: 0.5rem 0;
-        padding: 0.4rem 0.8rem;
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: var(--transition);
-      }
-      #toggleLegend:hover {
-        opacity: 0.9;
-      }
-      #legend {
-        display: none;
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        padding: 0.75rem;
-      }
-      #legend h4 {
-        margin-top: 0;
-      }
-
-      /* MODAL */
-      .modal-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: 1rem;
-      }
-      .modal-bg.show {
-        display: flex;
-        animation: fadeIn 0.3s ease-in-out;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      .modal-content {
-        position: relative;
-        background: #fff;
-        border-radius: var(--radius);
-        max-width: 90%;
-        max-height: 90%;
-        overflow-y: auto;
         padding: 1.5rem;
+        border-radius: var(--radius);
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-light);
       }
-      .modal-content img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
+      .human-suggestions h3 {
+        margin-top: 0;
       }
-      .close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        cursor: pointer;
+      #humanFeedback {
+        width: 100%;
+        height: 80px;
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 8px;
+        resize: vertical;
+        font-size: 1rem;
       }
-      .close-btn:hover {
-        background: rgba(255, 255, 255, 1);
+      
+      /* ---------- Feedback Panel ---------- */
+      .feedback-panel {
+        background: var(--panel-light);
+        padding: 2rem;
+        border-radius: var(--radius);
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-light);
       }
-
-      /* RESPONSIVE */
-      @media (max-width: 992px) {
-        .analyzer-container {
-          display: block;
-          padding: 0 1rem 2rem;
+      
+      /* ---------- Responsive Adjustments ---------- */
+      @media (max-width: 768px) {
+        .modern-table thead th,
+        .modern-table tbody td {
+          padding: 1rem;
+          min-width: 160px;
         }
-        aside.sidebar {
-          position: static;
-          width: 100%;
-          margin-bottom: 2rem;
-        }
-        main.main-content {
-          margin-top: 0;
+        .category-header {
+          min-width: 140px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- HEADER -->
+    <!-- Small Page Title Banner -->
+    <header class="page-title">Idea Forge Pro</header>
+    
+    <!-- Sticky Header (Banner) -->
     <header class="analyzer-header glass-panel">
       <div class="header-left">
-        <div class="total-score" title="Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36–40: Outstanding, 30–35: Excellent, 20–29: Great, &lt;19: Good">
-          Score: <span id="total">0</span>/40 – <span id="scoreLabel">Good</span>
+        <div class="progress-container-small">
+          <div id="smallProgressBar"></div>
+          <span id="progressText">0%</span>
         </div>
-        <!-- Progress Bar -->
-        <div id="progressBarContainer">
-          <div id="progressBar"></div>
-        </div>
-        <div id="milestoneMessage"></div>
-        <div class="status-indicator" id="ranking">Incomplete</div>
+        <div class="score-label">Score: <span id="total">0</span>/40</div>
       </div>
       <div class="header-right">
-        <div class="group">
-          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Mute and Disable Animations toggles -->
-          <label class="toggle-label">
-            <span class="toggle-switch icon-slider-mute">
-              <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
-              <span class="slider"></span>
-            </span>
-          </label>
-          <label class="toggle-label">
-            <span class="toggle-switch icon-slider-anim">
-              <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
-              <span class="slider"></span>
-            </span>
-          </label>
-        </div>
-        <!-- New Dark Mode Slider -->
-        <div class="dark-mode">
-          <label class="toggle-label dark-mode-label">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
-            <div class="dark-mode-slider">
-              <span class="mode-label mode-light">☀️</span>
-              <span class="mode-label mode-dark">🌙</span>
-              <div class="slider-thumb"></div>
-            </div>
-          </label>
-        </div>
+        <button class="btn" onclick="resetScores()">🔄 Reset</button>
+        <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
+        <button class="btn" onclick="openHowTo()">❓ How To</button>
       </div>
     </header>
-
-    <!-- MAIN CONTAINER (Grid Layout) -->
-    <div class="analyzer-container">
-      <!-- SIDEBAR (Thumbnail Upload Section) -->
-      <aside class="sidebar glass-panel">
-        <section class="preview-section">
-          <h2>Video Title &amp; Thumbnails</h2>
-          <input type="text" id="videoTitle" class="title-input" placeholder="Enter video title here..." aria-label="Video Title" />
-          <div class="upload-container">
-            <button class="btn" onclick="document.getElementById('thumbnailUpload').click()" aria-label="Upload Image">📁 Upload Image</button>
-            <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
-            <p style="font-size:0.9rem; color:#555;">Or drag &amp; drop image below</p>
-          </div>
-          <!-- The upload area is clickable to enlarge -->
-          <div class="thumbnail-wrap" id="uploadArea" style="width:320px; height:180px;" onclick="enlargeImage('homePreview')" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" role="button" tabindex="0" aria-label="Drag and drop thumbnail image here">
-            <img id="homePreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Default Thumbnail Preview" loading="lazy" />
-          </div>
-          <div class="previews-container">
-            <div class="preview-box">
-              <div class="preview-label">YouTube Home</div>
-              <div class="thumbnail-wrap" style="width:210px; height:118px;" onclick="enlargeImage('homePreview')" role="button" tabindex="0" aria-label="Enlarge Home Thumbnail">
-                <img id="homePreviewSmall" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small YouTube Home Thumbnail" loading="lazy" />
-              </div>
-              <div id="homeTitle" class="youtube-title"></div>
-            </div>
-            <div class="preview-box">
-              <div class="preview-label">Suggested Video</div>
-              <div class="thumbnail-wrap" style="width:168px; height:94px;" onclick="enlargeImage('suggestedPreview')" role="button" tabindex="0" aria-label="Enlarge Suggested Thumbnail">
-                <img id="suggestedPreview" class="youtube-thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Small Suggested Video Thumbnail" loading="lazy" />
-              </div>
-              <div id="suggestedTitle" class="youtube-title"></div>
-            </div>
-          </div>
-        </section>
-      </aside>
-
-      <!-- MAIN CONTENT (Rubric & Insights) -->
-      <main class="main-content">
-        <!-- Rubric Table -->
-        <section class="rubric-table glass-panel">
-          <table class="modern-table">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Good (1)</th>
-                <th>Great (2)</th>
-                <th>Excellent (3)</th>
-                <th>Outstanding (4)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 1. Scroll‑Stopping Power -->
-              <tr>
-                <td class="category-header cat-0" data-category="0" title="Use bold colors, movement, or expressive faces.">Scroll‑Stopping Power</td>
-                <td data-category="0" data-rating="1" role="button" tabindex="0">Uses plain colors/text; lacks impact.</td>
-                <td data-category="0" data-rating="2" role="button" tabindex="0">Adds one high‑impact element (e.g. contrast).</td>
-                <td data-category="0" data-rating="3" role="button" tabindex="0">Combines multiple elements (e.g. expression &amp; vivid color).</td>
-                <td data-category="0" data-rating="4" role="button" tabindex="0">Dynamic visuals with clear call‑to‑action; strong CTR correlation.</td>
-              </tr>
-              <!-- 2. Composition & Design -->
-              <tr>
-                <td class="category-header cat-1" data-category="1" title="Balanced layout using clear visual flow and strategic negative space.">Composition &amp; Design</td>
-                <td data-category="1" data-rating="1" role="button" tabindex="0">Layout functions but lacks balance.</td>
-                <td data-category="1" data-rating="2" role="button" tabindex="0">Applies rule‑of‑thirds; minor distractions persist.</td>
-                <td data-category="1" data-rating="3" role="button" tabindex="0">Clear focal points and visual flow; room for refinement.</td>
-                <td data-category="1" data-rating="4" role="button" tabindex="0">Masterful design with strategic negative space and brand consistency.</td>
-              </tr>
-              <!-- 3. Visual Hierarchy & Clarity -->
-              <tr>
-                <td class="category-header cat-2" data-category="2" title="Guide the viewer’s eye from the main element to secondary details.">Visual Hierarchy &amp; Clarity</td>
-                <td data-category="2" data-rating="1" role="button" tabindex="0">Unclear hierarchy; elements compete for attention.</td>
-                <td data-category="2" data-rating="2" role="button" tabindex="0">Basic hierarchy established; scale and spacing need work.</td>
-                <td data-category="2" data-rating="3" role="button" tabindex="0">Clear hierarchy with appropriate scale and size.</td>
-                <td data-category="2" data-rating="4" role="button" tabindex="0">Exemplary hierarchy; the main subject stands out decisively.</td>
-              </tr>
-              <!-- 4. Text Clarity -->
-              <tr>
-                <td class="category-header cat-3" data-category="3" title="Text must be legible, concise, and impactful.">Text Clarity</td>
-                <td data-category="3" data-rating="1" role="button" tabindex="0">Basic legibility; text is lengthy or generic.</td>
-                <td data-category="3" data-rating="2" role="button" tabindex="0">Concise text; could benefit from stronger fonts.</td>
-                <td data-category="3" data-rating="3" role="button" tabindex="0">Clear and concise; minor tweaks needed.</td>
-                <td data-category="3" data-rating="4" role="button" tabindex="0">Flawless text; power words and optimal fonts used.</td>
-              </tr>
-              <!-- 5. Emotional & Curiosity Hook -->
-              <tr>
-                <td class="category-header cat-4" data-category="4" title="Evoke emotion and spark curiosity with subtle hints.">Emotional &amp; Curiosity Hook</td>
-                <td data-category="4" data-rating="1" role="button" tabindex="0">Lacks clear emotional or curiosity triggers.</td>
-                <td data-category="4" data-rating="2" role="button" tabindex="0">Sparks mild interest; more impact needed.</td>
-                <td data-category="4" data-rating="3" role="button" tabindex="0">Triggers noticeable emotion and curiosity; can be refined.</td>
-                <td data-category="4" data-rating="4" role="button" tabindex="0">Creates a strong emotional response and genuine intrigue.</td>
-              </tr>
-              <!-- 6. Thumbnail–Title Synergy -->
-              <tr>
-                <td class="category-header cat-5" data-category="5" title="Ensure the thumbnail and title complement without redundancy.">Thumbnail–Title Synergy</td>
-                <td data-category="5" data-rating="1" role="button" tabindex="0">No clear synergy between thumbnail and title.</td>
-                <td data-category="5" data-rating="2" role="button" tabindex="0">Loose connection; could be more aligned.</td>
-                <td data-category="5" data-rating="3" role="button" tabindex="0">Works together; elements complement each other.</td>
-                <td data-category="5" data-rating="4" role="button" tabindex="0">Strong synergy with a cohesive narrative.</td>
-              </tr>
-              <!-- 7. Thumbnail–Video Accuracy -->
-              <tr>
-                <td class="category-header cat-6" data-category="6" title="The thumbnail should accurately represent the video content.">Thumbnail–Video Accuracy</td>
-                <td data-category="6" data-rating="1" role="button" tabindex="0">May mislead; lacks accuracy.</td>
-                <td data-category="6" data-rating="2" role="button" tabindex="0">Mostly accurate with minor mismatches.</td>
-                <td data-category="6" data-rating="3" role="button" tabindex="0">Accurately reflects the video’s topic.</td>
-                <td data-category="6" data-rating="4" role="button" tabindex="0">Strong accuracy; builds trust.</td>
-              </tr>
-              <!-- 8. Channel Identity & Branding -->
-              <tr>
-                <td class="category-header cat-7" data-category="7" title="Maintain consistent brand identity.">Channel Identity &amp; Branding</td>
-                <td data-category="7" data-rating="1" role="button" tabindex="0">Inconsistent style; lacks brand elements.</td>
-                <td data-category="7" data-rating="2" role="button" tabindex="0">Some brand elements present; not fully cohesive.</td>
-                <td data-category="7" data-rating="3" role="button" tabindex="0">Clearly reflects brand identity.</td>
-                <td data-category="7" data-rating="4" role="button" tabindex="0">Consistent branding with strong visual elements.</td>
-              </tr>
-              <!-- 9. Technical Polish -->
-              <tr>
-                <td class="category-header cat-8" data-category="8" title="Quality including resolution, aspect ratio, and clarity.">Technical Polish</td>
-                <td data-category="8" data-rating="1" role="button" tabindex="0">Basic quality; lacks detail and optimal resolution.</td>
-                <td data-category="8" data-rating="2" role="button" tabindex="0">Adequate for mobile; some loss of detail on larger screens.</td>
-                <td data-category="8" data-rating="3" role="button" tabindex="0">High resolution with clear contrast.</td>
-                <td data-category="8" data-rating="4" role="button" tabindex="0">Flawless quality; meets recommended standards (1280×720, 16:9).</td>
-              </tr>
-              <!-- 10. Color Usage (row only) -->
-              <tr>
-                <td class="category-header cat-9" data-category="9" title="Effective use of color enhances design and brand recognition.">Color Usage</td>
-                <td data-category="9" data-rating="1" role="button" tabindex="0">Poor color choices; lacks harmony.</td>
-                <td data-category="9" data-rating="2" role="button" tabindex="0">Basic color scheme; minimal brand consistency.</td>
-                <td data-category="9" data-rating="3" role="button" tabindex="0">Good color harmony that complements design.</td>
-                <td data-category="9" data-rating="4" role="button" tabindex="0">Exceptional, on‑brand color palette that elevates the design.</td>
-              </tr>
-            </tbody>
-          </table>
-          <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
-          <div id="legend">
-            <h4>Legend &amp; Definitions</h4>
-            <p><strong>Scroll‑Stopping Power:</strong> Use bold colors, dynamic movement, and expressive faces. High scores indicate visuals that strongly increase CTR.</p>
-            <p><strong>Composition &amp; Design:</strong> Balance elements using the rule‑of‑thirds, negative space, and consistent color harmony.</p>
-            <p><strong>Visual Hierarchy &amp; Clarity:</strong> Guide the viewer’s eye by scaling and positioning elements—largest for the key subject, then supporting elements.</p>
-            <p><strong>Text Clarity:</strong> Keep text concise and legible with impactful, mobile‑friendly fonts.</p>
-            <p><strong>Emotional &amp; Curiosity Hook:</strong> Evoke emotion and spark intrigue with subtle cues (e.g. humor, shock, or a provocative hint).</p>
-            <p><strong>Thumbnail–Title Synergy:</strong> Ensure the thumbnail and title work together without being redundant.</p>
-            <p><strong>Thumbnail–Video Accuracy:</strong> The thumbnail must accurately represent the video’s content to build trust.</p>
-            <p><strong>Channel Identity &amp; Branding:</strong> Use consistent logos, colors, and styles to create a recognizable brand.</p>
-            <p><strong>Technical Polish:</strong> Use high‑resolution images (at least 1280×720, 16:9), optimize file size, and ensure clarity on all devices.</p>
-            <p><strong>Color Usage:</strong> Effective, on‑brand color palettes that enhance design and readability.</p>
-            <h5>Rating Levels</h5>
-            <ul>
-              <li><strong>Good (1):</strong> Meets the bare essentials but lacks strong impact. <em>Action:</em> Improve contrast, add a focal point, and reduce clutter.</li>
-              <li><strong>Great (2):</strong> Contains some impactful elements; minor distractions remain. <em>Action:</em> Remove competing elements and refine the text.</li>
-              <li><strong>Excellent (3):</strong> Highly effective with clear focal points; could push further on uniqueness. <em>Action:</em> Add a surprising visual cue or punchier text.</li>
-              <li><strong>Outstanding (4):</strong> Practically flawless; compelling at a glance. <em>Action:</em> Experiment with advanced design techniques while staying on‑brand.</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- Feedback Panel -->
-        <section class="feedback-panel glass-panel">
-          <h3>Feedback</h3>
-          <div class="feedback-entry">
-            <label for="humanFeedback">Human Feedback</label>
-            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
-          </div>
-          <div class="feedback-entry">
-            <label for="aiFeedback">AI Feedback</label>
-            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
-          </div>
-        </section>
-
-        <!-- Design Insights Section -->
-        <section class="auto-insights glass-panel">
-          <h3>Design Insights</h3>
-          <div class="insight-message" id="brightnessMessage"></div>
-          <div class="insight-message" id="contrastMessage"></div>
-
-          <h4>Color Palette</h4>
-          <p style="margin:0;">Dominant Colors Extracted:</p>
-          <div id="paletteContainer" class="palette-container"></div>
-
-          <h4>Color Suggestions (Complementary)</h4>
-          <div id="colorSuggestions" class="color-suggestions-container"></div>
-
-          <h4>Composition Grid (Rule of Thirds)</h4>
-          <!-- The canvas is styled with max-width:320px in HTML.
-               The drawCompositionGrid function now scales the image to the canvas clientWidth. -->
-          <canvas id="compositionCanvas" style="border:1px solid #ccc; max-width:320px;"></canvas>
-          <p id="compositionFeedback">
-            Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
-            <a href="#" onclick="openTutorial('composition')">Learn How</a>
-          </p>
-
-          <h4>Face Detection</h4>
-          <div class="insight-message" id="faceDetectionResults"></div>
-
-          <h4>Object &amp; Scene Recognition</h4>
-          <div class="insight-message" id="objectRecognitionResults"></div>
-
-          <h4>Sharpness Evaluation</h4>
-          <div class="insight-message" id="sharpnessResult"></div>
-        </section>
-      </main>
-    </div>
-
-    <!-- Lightbox Modal -->
-    <div class="modal-bg" id="imgModal" role="dialog" aria-modal="true">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()" aria-label="Close Modal">✕</span>
-        <img id="modalImg" src="" alt="Enlarged thumbnail" />
+    
+    <!-- Main Report Container -->
+    <div id="report">
+      <!-- Brainstorm / Idea Incubator Section -->
+      <div class="brainstorm-section">
+        <div class="brainstorm-header">
+          <svg class="spark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="28" height="28">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <h2>Idea Incubator</h2>
+        </div>
+        <textarea id="ideaInput" placeholder="✨ Describe your video concept here..." oninput="updateIdea()"></textarea>
+        <div class="word-count" id="ideaWordCount">0 words, 0 characters</div>
+      </div>
+      
+      <!-- Rubric Table -->
+      <div class="rubric-table">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Good (1)</th>
+              <th>Great (2)</th>
+              <th>Excellent (3)</th>
+              <th>Outstanding (4)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 0: Originality & Concept -->
+            <tr>
+              <td class="category-header" data-category="0" data-emoji="💡" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
+              <td data-category="0" data-rating="1" onclick="selectRating(this)">Basic, generic idea</td>
+              <td data-category="0" data-rating="2" onclick="selectRating(this)">Some intrigue but needs refinement</td>
+              <td data-category="0" data-rating="3" onclick="selectRating(this)">Engaging with clear potential</td>
+              <td data-category="0" data-rating="4" onclick="selectRating(this)">Exceptionally bold &amp; entertaining</td>
+            </tr>
+            <!-- Row 1: Transformation/Progression -->
+            <tr>
+              <td class="category-header" data-category="1" data-emoji="🔄" title="How well does the idea develop or transform?">Transformation/Progression</td>
+              <td data-category="1" data-rating="1" onclick="selectRating(this)">No clear growth</td>
+              <td data-category="1" data-rating="2" onclick="selectRating(this)">Mild progression</td>
+              <td data-category="1" data-rating="3" onclick="selectRating(this)">Clear transformation</td>
+              <td data-category="1" data-rating="4" onclick="selectRating(this)">Dramatic, impactful progression</td>
+            </tr>
+            <!-- Row 2: Retention Potential -->
+            <tr>
+              <td class="category-header" data-category="2" data-emoji="⏳" title="How well does the concept retain viewer interest?">Retention Potential</td>
+              <td data-category="2" data-rating="1" onclick="selectRating(this)">No clear hook or progression</td>
+              <td data-category="2" data-rating="2" onclick="selectRating(this)">Might hold attention, but risks drop-offs</td>
+              <td data-category="2" data-rating="3" onclick="selectRating(this)">Strong potential to keep viewers engaged</td>
+              <td data-category="2" data-rating="4" onclick="selectRating(this)">Built-in tension, pacing, and payoffs maximizing retention</td>
+            </tr>
+            <!-- Row 3: Neural Network Link -->
+            <tr>
+              <td class="category-header" data-category="3" data-emoji="🧠" title="How well does the idea connect to previous content?">Neural Network Link</td>
+              <td data-category="3" data-rating="1" onclick="selectRating(this)">Doesn’t connect to past videos</td>
+              <td data-category="3" data-rating="2" onclick="selectRating(this)">Minor connection to previous themes</td>
+              <td data-category="3" data-rating="3" onclick="selectRating(this)">Expands on previous mechanics or lore</td>
+              <td data-category="3" data-rating="4" onclick="selectRating(this)">Deeply integrates into channel’s worldbuilding</td>
+            </tr>
+            <!-- Row 4: Viewer Curiosity & Clickability -->
+            <tr>
+              <td class="category-header" data-category="4" data-emoji="👀" title="How well does the title and thumbnail spark interest?">Viewer Curiosity &amp; Clickability</td>
+              <td data-category="4" data-rating="1" onclick="selectRating(this)">Title &amp; thumbnail would struggle to stand out</td>
+              <td data-category="4" data-rating="2" onclick="selectRating(this)">Might generate interest but lacks urgency</td>
+              <td data-category="4" data-rating="3" onclick="selectRating(this)">Creates a strong curiosity gap</td>
+              <td data-category="4" data-rating="4" onclick="selectRating(this)">Instant click magnet, impossible to ignore</td>
+            </tr>
+            <!-- Row 5: Potential for Escalation -->
+            <tr>
+              <td class="category-header" data-category="5" data-emoji="🔥" title="How well can the concept escalate in complexity and excitement?">Potential for Escalation</td>
+              <td data-category="5" data-rating="1" onclick="selectRating(this)">Premise has limited depth</td>
+              <td data-category="5" data-rating="2" onclick="selectRating(this)">Some room for unexpected twists</td>
+              <td data-category="5" data-rating="3" onclick="selectRating(this)">Can build into a compelling narrative</td>
+              <td data-category="5" data-rating="4" onclick="selectRating(this)">Has a natural progression that keeps getting crazier</td>
+            </tr>
+            <!-- Row 6: Minecraft Mechanics Creativity -->
+            <tr>
+              <td class="category-header" data-category="6" data-emoji="🎮" title="How creative is the gameplay concept?">Minecraft Mechanics Creativity</td>
+              <td data-category="6" data-rating="1" onclick="selectRating(this)">Standard gameplay ideas</td>
+              <td data-category="6" data-rating="2" onclick="selectRating(this)">Somewhat creative but not groundbreaking</td>
+              <td data-category="6" data-rating="3" onclick="selectRating(this)">Clever use of game mechanics</td>
+              <td data-category="6" data-rating="4" onclick="selectRating(this)">Reinvents or breaks the game in a way that stuns viewers</td>
+            </tr>
+            <!-- Row 7: Trend & Algorithm Fit -->
+            <tr>
+              <td class="category-header" data-category="7" data-emoji="📈" title="How well does the concept align with trends and algorithms?">Trend &amp; Algorithm Fit</td>
+              <td data-category="7" data-rating="1" onclick="selectRating(this)">No relevance to trends or searchability</td>
+              <td data-category="7" data-rating="2" onclick="selectRating(this)">Loosely inspired by trends but not optimized</td>
+              <td data-category="7" data-rating="3" onclick="selectRating(this)">Taps into an existing viral format</td>
+              <td data-category="7" data-rating="4" onclick="selectRating(this)">Could start a new trend or redefine the niche</td>
+            </tr>
+            <!-- Row 8: Surprise Factor & Unpredictability -->
+            <tr>
+              <td class="category-header" data-category="8" data-emoji="🎲" title="How unpredictable and surprising is the concept?">Surprise Factor &amp; Unpredictability</td>
+              <td data-category="8" data-rating="1" onclick="selectRating(this)">Entirely predictable</td>
+              <td data-category="8" data-rating="2" onclick="selectRating(this)">Some minor surprises but nothing shocking</td>
+              <td data-category="8" data-rating="3" onclick="selectRating(this)">Unexpected twists that keep viewers engaged</td>
+              <td data-category="8" data-rating="4" onclick="selectRating(this)">Completely unpredictable outcomes</td>
+            </tr>
+            <!-- Row 9: Execution Feasibility -->
+            <tr>
+              <td class="category-header" data-category="9" data-emoji="✅" title="How realistic is it to execute the idea?">Execution Feasibility</td>
+              <td data-category="9" data-rating="1" onclick="selectRating(this)">Impractical</td>
+              <td data-category="9" data-rating="2" onclick="selectRating(this)">Possible but difficult</td>
+              <td data-category="9" data-rating="3" onclick="selectRating(this)">Practical with ROI</td>
+              <td data-category="9" data-rating="4" onclick="selectRating(this)">Easy &amp; high ROI</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Human Suggestions Section -->
+      <div class="human-suggestions">
+        <h3>Human Suggestions</h3>
+        <div id="humanSuggestions">No suggestions yet.</div>
+        <textarea id="humanFeedback" placeholder="Type your additional feedback here..."></textarea>
+      </div>
+      
+      <!-- Feedback Panel -->
+      <div class="feedback-panel" id="feedback">
+        <h3>Improvement Recommendations</h3>
+        <div id="specificFeedback"></div>
+        <div class="ai-suggestions" id="aiSuggestions"></div>
       </div>
     </div>
-
-    <!-- How-To Modal -->
-    <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeHowTo()" aria-label="Close How To">✕</span>
-        <h2>How to Use Thumbnail Analyzer Pro+</h2>
+    
+    <!-- HOW-TO MODAL -->
+    <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 1200;">
+      <div class="modal-content" style="position: relative; background: #fff; border-radius: var(--radius); max-width: 90%; max-height: 90%; overflow-y: auto; padding: 1.5rem;">
+        <span class="close-btn" onclick="closeHowTo()" aria-label="Close How To" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.8); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer;">✕</span>
+        <h2>How to Use Idea Forge Pro</h2>
         <ul>
-          <li>Enter your video title; previews update live.</li>
-          <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
-          <li>Click any preview (including the main upload image) to enlarge it.</li>
-          <li>Rate your thumbnail on various criteria using the rubric table.</li>
-          <li>Provide feedback using the Human and AI feedback boxes.</li>
-          <li>Review the Design Insights for technical feedback and suggestions.</li>
+          <li>Type or paste your video concept in the Idea Incubator.</li>
+          <li>Watch the word/character count update as you type.</li>
+          <li>Rate your idea using the rubric table and review detailed improvement recommendations below.</li>
+          <li>Use the AI Suggestions button for automated feedback.</li>
+          <li>Export your complete report as a PDF or PNG when you’re ready.</li>
         </ul>
       </div>
     </div>
-
-    <!-- Tutorial Modal -->
-    <div class="modal-bg" id="tutorialModal" role="dialog" aria-modal="true">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">✕</span>
+    
+    <!-- Tutorial Modal (if needed) -->
+    <div class="modal-bg" id="tutorialModal" role="dialog" aria-modal="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 1200;">
+      <div class="modal-content" style="position: relative; background: #fff; border-radius: var(--radius); max-width: 90%; max-height: 90%; overflow-y: auto; padding: 1.5rem;">
+        <span class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.8); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer;">✕</span>
         <div id="tutorialContent"></div>
       </div>
     </div>
-
+    
     <!-- Hidden Audio Elements for Sound Effects -->
     <audio id="victorySound" src="victory.mp3"></audio>
     <audio id="wompSound" src="womp.mp3"></audio>
-
-    <!-- JAVASCRIPT -->
+    
+    <!-- ===== JavaScript ===== -->
     <script>
-      /***************************************************
-       * Helper Functions
-       ***************************************************/
-      function rgbToHex(r, g, b) {
-        return "#" + [r, g, b].map(x => {
-          const hex = x.toString(16);
-          return hex.length === 1 ? "0" + hex : hex;
-        }).join("");
-      }
-      function copyHex(elem) {
-        var hex = elem.getAttribute("data-hex");
-        navigator.clipboard.writeText(hex).then(() => {
-          elem.style.borderColor = "lime";
-          setTimeout(() => { elem.style.borderColor = "#ccc"; }, 1000);
-        });
-      }
-
-      /***************************************************
-       * Global Variables
-       ***************************************************/
+      /* ------------------ Global Variables ------------------ */
       let scores = {};
-      window.currentPalette = [];
-      let confettiShown = false;
-      window.lastPredictions = null;
-      const SAMPLE_STEP = 16;
-      let muteSound = false;
-      let disableAnimations = false;
-      let milestoneTriggered = {}; // Track milestones (10,20,30,40)
-
-      const milestoneMessages = {
-        10: "Almost there—keep going!",
-        20: "Great progress!",
-        30: "So close, don’t give up!",
-        40: "You leveled up to Thumbnail Master!"
-      };
-
-      const progressAudio = {
-        victory: document.getElementById("victorySound"),
-        womp: document.getElementById("wompSound")
-      };
-
-      /***************************************************
-       * DOMContentLoaded Setup
-       ***************************************************/
-      document.addEventListener("DOMContentLoaded", () => {
-        // Event delegation for rubric table cells:
-        document.querySelector('.modern-table').addEventListener('click', (e) => {
-          const cell = e.target.closest('td[data-rating]');
-          if (cell) selectRating(cell);
-        });
-        document.querySelector('.modern-table').addEventListener('keydown', (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            const cell = e.target.closest('td[data-rating]');
-            if (cell) {
-              e.preventDefault();
-              selectRating(cell);
-            }
-          }
-        });
-        document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
-        document.getElementById('videoTitle').addEventListener('input', () => {
-          updateTitlePreview();
-          checkTitleThumbnailSynergy();
-        });
-        loadMobileNet();
-        if (typeof faceapi !== "undefined") {
-          Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri('/models')
-          ]).then(() => console.log("Face-api models loaded"));
-        }
-        document.getElementById("compositionCanvas").addEventListener("click", enlargeComposition);
-      });
-
-      /***************************************************
-       * Rubric Functions
-       ***************************************************/
+      let confettiTriggered = false;
+      let saveDraftTimeout;
+      
+      /* ------------------ Rubric Functions ------------------ */
       function selectRating(cell) {
         const categoryIndex = Number(cell.getAttribute('data-category'));
         const rating = parseInt(cell.getAttribute('data-rating'));
         const row = cell.parentElement;
+        // Remove the 'selected' class from all other cells in this row
         row.querySelectorAll('td').forEach(td => {
           if (td !== row.firstElementChild) td.classList.remove('selected');
         });
@@ -1032,27 +526,16 @@
         scores[categoryIndex] = rating;
         updateTotal();
       }
-
+      
       function updateTotal() {
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
-        const scoreLabel = document.getElementById('scoreLabel');
-        if (total >= 36) {
-          scoreLabel.textContent = "Outstanding";
-          if (!confettiShown && !disableAnimations) {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            confettiShown = true;
-          }
-        } else if (total >= 30) {
-          scoreLabel.textContent = "Excellent";
-          confettiShown = false;
-        } else if (total >= 20) {
-          scoreLabel.textContent = "Great";
-          confettiShown = false;
-        } else {
-          scoreLabel.textContent = "Good";
-          confettiShown = false;
-        }
+        // Update the small progress bar and its percentage text
+        const percentage = (total / 40) * 100;
+        document.getElementById('smallProgressBar').style.width = percentage + "%";
+        document.getElementById('progressText').textContent = Math.round(percentage) + "%";
+        
+        // (Optional) Update a ranking/status indicator if desired
         const ranking = document.getElementById('ranking');
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
@@ -1060,7 +543,6 @@
         } else if (total <= 19) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = '#ef4444';
-          if (!muteSound) progressAudio.womp.play();
         } else if (total <= 29) {
           ranking.textContent = 'Great! 🟢';
           ranking.style.color = '#22c55e';
@@ -1070,408 +552,82 @@
         } else {
           ranking.textContent = 'Outstanding 🔵';
           ranking.style.color = '#3b82f6';
-          if (!muteSound) progressAudio.victory.play();
         }
-        updateProgressBar(total);
-      }
-
-      function updateProgressBar(total) {
-        const percentage = (total / 40) * 100;
-        document.getElementById("progressBar").style.width = percentage + "%";
-        const milestoneDiv = document.getElementById("milestoneMessage");
-        if (milestoneMessages[total] && !milestoneTriggered[total]) {
-          milestoneDiv.textContent = milestoneMessages[total];
-          milestoneTriggered[total] = true;
-          setTimeout(() => { milestoneDiv.textContent = ""; }, 3000);
+        
+        // Trigger confetti if score > 33 and not already triggered
+        if (total > 33 && !confettiTriggered) {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          confettiTriggered = true;
+        } else if (total <= 33) {
+          confettiTriggered = false;
         }
       }
-
-      /***************************************************
-       * Reset Function
-       ***************************************************/
-      function resetScores() {
-        scores = {};
-        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => cell.classList.remove('selected'));
-        document.getElementById('total').textContent = '0';
-        document.getElementById('scoreLabel').textContent = 'Good';
-        document.getElementById('ranking').textContent = 'Incomplete';
-        document.getElementById('videoTitle').value = '';
-        document.getElementById('homeTitle').textContent = '';
-        document.getElementById('suggestedTitle').textContent = '';
-        var defaultImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-        document.getElementById('homePreview').src = defaultImg;
-        document.getElementById('homePreviewSmall').src = defaultImg;
-        document.getElementById('suggestedPreview').src = defaultImg;
-        document.getElementById('brightnessMessage').textContent = "";
-        document.getElementById('contrastMessage').textContent = "";
-        document.getElementById('paletteContainer').innerHTML = "";
-        document.getElementById('colorSuggestions').innerHTML = "";
-        document.getElementById('compositionFeedback').innerHTML = "Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance. <a href='#' onclick='openTutorial(\"composition\")'>Learn How</a>";
-        document.getElementById('faceDetectionResults').textContent = "";
-        document.getElementById('objectRecognitionResults').textContent = "";
-        document.getElementById('sharpnessResult').textContent = "";
-        window.currentPalette = [];
-        window.lastPredictions = null;
-        confettiShown = false;
-        milestoneTriggered = {};
-        // Clear composition grid (canvas)
-        var compCanvas = document.getElementById("compositionCanvas");
-        if (compCanvas) {
-          var ctx = compCanvas.getContext("2d");
-          ctx.clearRect(0, 0, compCanvas.width, compCanvas.height);
-          compCanvas.width = compCanvas.height = 0;
-        }
-        // Reset progress bar
-        document.getElementById("progressBar").style.width = "0%";
-        document.getElementById("milestoneMessage").textContent = "";
+      
+      function showFeedback() {
+        // (Optional) Implement feedback based on rubric scores
       }
-
-      /***************************************************
-       * Title Preview & Synergy Functions
-       ***************************************************/
-      let debounceTimer;
-      function updateTitlePreview() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-          const title = document.getElementById('videoTitle').value || '';
-          document.getElementById('homeTitle').textContent = truncateTitle(title, 66);
-          document.getElementById('suggestedTitle').textContent = truncateTitle(title, 60);
-          checkTitleThumbnailSynergy();
-        }, 300);
-      }
-      function truncateTitle(str, limit) {
-        return (str.length <= limit) ? str : str.slice(0, limit - 3) + '...';
-      }
-      function checkTitleThumbnailSynergy() {
-        var title = document.getElementById('videoTitle').value.toLowerCase();
-        if (!title || !window.lastPredictions) return;
-        var matchFound = false;
-        window.lastPredictions.forEach(pred => {
-          if (title.indexOf(pred.className.toLowerCase()) !== -1) matchFound = true;
-        });
-        // Optionally display a synergy cue.
-      }
-
-      /***************************************************
-       * Image Upload & Drag-and-Drop Functions
-       ***************************************************/
-      function processImage(dataUrl) {
-        updateAllPreviews(dataUrl);
-        extractColors(dataUrl);
+      
+      /* ------------------ AI Suggestions, Export, and Modal Functions ------------------ */
+      async function getAISuggestions() {
+        const aiDiv = document.getElementById('aiSuggestions');
+        aiDiv.innerHTML = '<div class="loading-spinner">⏳</div> Analyzing concept...';
         setTimeout(() => {
-          checkContrastAndBrightness(dataUrl);
-          drawCompositionGrid(dataUrl);
-          runFaceDetection(dataUrl);
-          runObjectRecognition(dataUrl);
-          showSharpness(dataUrl);
-        }, 300);
+          const suggestions = [
+            "Optimize your video title by incorporating high‑converting keywords and emotional triggers.",
+            "Experiment with bold title formats to boost click‑through rates.",
+            "Integrate unexpected twists for a 10x engaging narrative.",
+            "Refine weak points by adjusting pacing and visual hooks.",
+            "A/B test title and thumbnail combinations to find the best fit."
+          ];
+          aiDiv.innerHTML = '<strong>AI Recommendations:</strong><br>' + suggestions.map(s => `• ${s}`).join('<br>');
+        }, 2000);
       }
-      function handleImageUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => processImage(ev.target.result);
-        reader.readAsDataURL(file);
-        e.target.value = "";
-      }
-      function updateAllPreviews(dataUrl) {
-        document.getElementById('homePreview').src = dataUrl;
-        document.getElementById('suggestedPreview').src = dataUrl;
-        document.getElementById('homePreviewSmall').src = dataUrl;
-      }
-      function handleDragOver(e) {
-        e.preventDefault();
-        document.getElementById('uploadArea').classList.add('dragover');
-      }
-      function handleDrop(e) {
-        e.preventDefault();
-        document.getElementById('uploadArea').classList.remove('dragover');
-        const file = e.dataTransfer.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = ev => processImage(ev.target.result);
-          reader.readAsDataURL(file);
+      
+      async function exportPDF() {
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          const reportElement = document.getElementById('report');
+          const canvas = await html2canvas(reportElement, { scale: 2 });
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth() - 20;
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          doc.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+          doc.save('idea-analysis-report.pdf');
+        } catch (error) {
+          console.error("Error exporting PDF: ", error);
+          alert("Failed to export PDF. Please try again.");
         }
       }
-
-      /***************************************************
-       * Color Extraction & Suggestions
-       ***************************************************/
-      function extractColors(imageSrc) {
-        const paletteContainer = document.getElementById('paletteContainer');
-        paletteContainer.innerHTML = 'Detecting palette…';
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.src = imageSrc;
-        img.onload = () => {
-          const colorThief = new ColorThief();
-          try {
-            const palette = colorThief.getPalette(img, 6);
-            window.currentPalette = palette;
-            paletteContainer.innerHTML = palette.map(color => {
-              const hex = rgbToHex(color[0], color[1], color[2]);
-              return `<div class="color-block" style="background:${hex};" data-hex="${hex}" onclick="copyHex(this)"></div>`;
-            }).join('');
-            generateColorSuggestions();
-          } catch {
-            paletteContainer.innerHTML = 'Unable to extract palette.';
-          }
-        };
-      }
-      function generateColorSuggestions() {
-        if (!window.currentPalette || window.currentPalette.length === 0) {
-          document.getElementById("colorSuggestions").textContent = "No color suggestions available.";
-          return;
-        }
-        let suggestionsHTML = "";
-        window.currentPalette.forEach(color => {
-          const origHex = rgbToHex(color[0], color[1], color[2]);
-          const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
-          suggestionsHTML += `<div style="display: flex; flex-direction: column; align-items: center;">
-              <div class="color-block" data-hex="${origHex}" style="background:${origHex};" onclick="copyHex(this)"></div>
-              <div class="color-block" data-hex="${compHex}" style="background:${compHex};" onclick="copyHex(this)"></div>
-            </div>`;
-        });
-        document.getElementById("colorSuggestions").innerHTML = suggestionsHTML;
-      }
-
-      /***************************************************
-       * Brightness & Contrast Analysis
-       ***************************************************/
-      function checkContrastAndBrightness(imageSrc) {
-        const brightnessMessage = document.getElementById('brightnessMessage');
-        const contrastMessage = document.getElementById('contrastMessage');
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.src = imageSrc;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-          let total = 0, count = 0;
-          for (let i = 0; i < data.length; i += 4 * SAMPLE_STEP) {
-            const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
-            total += brightness;
-            count++;
-          }
-          const avg = total / count;
-          brightnessMessage.innerHTML = `Average Brightness: ${Math.round(avg)}/255 `;
-          brightnessMessage.innerHTML += avg < 80 ? '(Very Dark) ' : (avg < 160 ? '(Moderate) ' : '(Bright) ');
-          brightnessMessage.innerHTML += `<a href="#" onclick="openTutorial('brightness')">Learn How</a>`;
-          contrastMessage.innerHTML = 'Ensure text overlay meets accessibility contrast standards (~4.5:1). <a href="#" onclick="openTutorial(\'contrast\')">Learn How</a>';
-        };
-      }
-
-      /***************************************************
-       * Composition Grid (Rule of Thirds)
-       ***************************************************/
-      function drawCompositionGrid(imageSrc) {
-        const canvas = document.getElementById("compositionCanvas");
-        const ctx = canvas.getContext("2d");
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = imageSrc;
-        img.onload = function() {
-          // Use the canvas's clientWidth (set via CSS max-width) to compute the display size.
-          const maxDisplayWidth = canvas.clientWidth || 320; // fallback to 320 if not defined
-          const scaleFactor = maxDisplayWidth / img.width;
-          const displayWidth = maxDisplayWidth;
-          const displayHeight = img.height * scaleFactor;
-          const ratio = window.devicePixelRatio || 1;
-          canvas.width = displayWidth * ratio;
-          canvas.height = displayHeight * ratio;
-          canvas.style.width = displayWidth + "px";
-          canvas.style.height = displayHeight + "px";
-          ctx.scale(ratio, ratio);
-          // Draw the image scaled to the computed display size.
-          ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
-          ctx.strokeStyle = "rgba(255,255,255,1)";
-          ctx.lineWidth = 4;
-          ctx.setLineDash([5, 5]);
-          const v1 = displayWidth / 3, v2 = (displayWidth * 2) / 3;
-          ctx.beginPath();
-          ctx.moveTo(v1, 0);
-          ctx.lineTo(v1, displayHeight);
-          ctx.moveTo(v2, 0);
-          ctx.lineTo(v2, displayHeight);
-          const h1 = displayHeight / 3, h2 = (displayHeight * 2) / 3;
-          ctx.moveTo(0, h1);
-          ctx.lineTo(displayWidth, h1);
-          ctx.moveTo(0, h2);
-          ctx.lineTo(displayWidth, h2);
-          ctx.stroke();
-          ctx.setLineDash([]);
-          canvas.style.cursor = 'pointer';
-        };
-      }
-      function enlargeComposition() {
-        const canvas = document.getElementById("compositionCanvas");
-        const dataUrl = canvas.toDataURL();
-        document.getElementById('modalImg').src = dataUrl;
-        document.getElementById('imgModal').classList.add('show');
-      }
-
-      /***************************************************
-       * Face Detection
-       ***************************************************/
-      async function runFaceDetection(imageSrc) {
-        if (typeof faceapi === "undefined") {
-          document.getElementById("faceDetectionResults").textContent = "Face detection library not loaded.";
-          return;
-        }
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = imageSrc;
-        img.onload = async function() {
-          const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
-          if (detections.length === 0) {
-            document.getElementById("faceDetectionResults").textContent = "No faces detected.";
-          } else {
-            let resultText = `${detections.length} face(s) detected. `;
-            detections.forEach((det, i) => {
-              resultText += `Face ${i+1}: `;
-              for (const expr in det.expressions) {
-                resultText += `${expr}: ${Math.round(det.expressions[expr] * 100)}% `;
-              }
-              const box = det.detection.box;
-              if (box.width < img.width * 0.25) resultText += " (Face appears small)";
-            });
-            document.getElementById("faceDetectionResults").innerHTML = resultText + ` <a href="#" onclick="openTutorial('face')">Learn How</a>`;
-          }
-        };
-      }
-
-      /***************************************************
-       * Object & Scene Recognition using MobileNet
-       ***************************************************/
-      async function loadMobileNet() {
-        if (typeof mobilenet === "undefined") {
-          console.log("TensorFlow MobileNet not loaded.");
-          return;
-        }
-        mobileNetModel = await mobilenet.load();
-      }
-      async function runObjectRecognition(imageSrc) {
-        if (!mobileNetModel) {
-          document.getElementById("objectRecognitionResults").textContent = "Object recognition model not loaded.";
-          return;
-        }
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = imageSrc;
-        img.onload = async function() {
-          const predictions = await mobileNetModel.classify(img);
-          window.lastPredictions = predictions;
-          if (predictions.length > 0) {
-            let text = predictions.map(p => `${p.className} (${(p.probability*100).toFixed(1)}%)`).join(', ');
-            document.getElementById("objectRecognitionResults").innerHTML = `Predictions: ${text} <a href="#" onclick="openTutorial('object')">Learn How</a>`;
-          } else {
-            document.getElementById("objectRecognitionResults").textContent = "No objects recognized.";
-          }
-          checkTitleThumbnailSynergy();
-        };
-      }
-
-      /***************************************************
-       * Sharpness Evaluation
-       ***************************************************/
-      async function calculateSharpness(imageSrc) {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.crossOrigin = "Anonymous";
-          img.src = imageSrc;
-          img.onload = function() {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
-            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            let sumDiff = 0, count = 0;
-            for (let i = 0; i < data.length - 4; i += 4 * SAMPLE_STEP) {
-              const brightness1 = (data[i] + data[i+1] + data[i+2]) / 3;
-              const brightness2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
-              sumDiff += Math.abs(brightness1 - brightness2);
-              count++;
-            }
-            const avgDiff = sumDiff / count;
-            resolve(avgDiff);
-          };
-          img.onerror = reject;
-        });
-      }
-      async function showSharpness(imageSrc) {
-        const sharpness = await calculateSharpness(imageSrc);
-        let sharpnessText = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
-        if (sharpness < 10) sharpnessText += " - Image appears blurry, consider re‑exporting at a higher resolution.";
-        document.getElementById("sharpnessResult").textContent = sharpnessText;
-      }
-
-      /***************************************************
-       * Export Function (PNG)
-       ***************************************************/
+      
       async function exportPNG() {
-        const header = document.querySelector("header.analyzer-header");
-        const originalPosition = header.style.position;
-        header.style.position = "static";
-        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
-        const dataUrl = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = 'thumbnail-analysis.png';
-        link.href = dataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        header.style.position = originalPosition;
-      }
-
-      /***************************************************
-       * Theme & Animation Toggles
-       ***************************************************/
-      function toggleTheme(input) {
-        console.log("Dark mode toggled:", input.checked);
-        const html = document.documentElement;
-        if (input.checked) {
-          html.setAttribute("data-theme", "dark");
-        } else {
-          html.removeAttribute("data-theme");
+        try {
+          const reportElement = document.getElementById('report');
+          const canvas = await html2canvas(reportElement, { scale: 2 });
+          const dataURL = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = dataURL;
+          link.download = 'idea-analysis-report.png';
+          link.click();
+        } catch (error) {
+          console.error("Error exporting PNG: ", error);
+          alert("Failed to export PNG. Please try again.");
         }
       }
-      function toggleSound(el) {
-        muteSound = el.checked;
+      
+      function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
       }
-      function toggleAnimations(el) {
-        disableAnimations = el.checked;
-      }
-
-      /***************************************************
-       * Lightbox Functions
-       ***************************************************/
-      function enlargeImage(imgId) {
-        const src = document.getElementById(imgId).src;
-        document.getElementById('modalImg').src = src;
-        document.getElementById('imgModal').classList.add('show');
-      }
-      function closeModal() {
-        document.getElementById('imgModal').classList.remove('show');
-      }
-
-      /***************************************************
-       * How-To Modal Functions
-       ***************************************************/
+      
       function openHowTo() {
-        document.getElementById('howToModal').classList.add('show');
+        document.getElementById('howToModal').style.display = 'flex';
       }
+      
       function closeHowTo() {
-        document.getElementById('howToModal').classList.remove('show');
+        document.getElementById('howToModal').style.display = 'none';
       }
-
-      /***************************************************
-       * Tutorial Modal Functions
-       ***************************************************/
+      
       function openTutorial(topic) {
         const tutorialContent = document.getElementById('tutorialContent');
         let content = "";
@@ -1489,38 +645,26 @@
           content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
         }
         tutorialContent.innerHTML = content;
-        document.getElementById('tutorialModal').classList.add('show');
+        document.getElementById('tutorialModal').style.display = 'flex';
       }
+      
       function closeTutorial() {
-        document.getElementById('tutorialModal').classList.remove('show');
+        document.getElementById('tutorialModal').style.display = 'none';
       }
-
-      /***************************************************
-       * Legend Toggle Function
-       ***************************************************/
-      function toggleLegend() {
-        const legend = document.getElementById("legend");
-        const btn = document.getElementById("toggleLegend");
-        if (legend.style.display === "none" || legend.style.display === "") {
-          legend.style.display = "block";
-          btn.textContent = "Hide Legend & Definitions";
-        } else {
-          legend.style.display = "none";
-          btn.textContent = "Show Legend & Definitions";
-        }
+      
+      function updateIdea() {
+        const ideaText = document.getElementById('ideaInput').value;
+        updateWordCount(ideaText);
+        clearTimeout(saveDraftTimeout);
+        saveDraftTimeout = setTimeout(() => {
+          localStorage.setItem('ideaDraft', ideaText);
+        }, 500);
       }
-
-      /***************************************************
-       * Easter Egg Surprise!
-       ***************************************************/
-      document.addEventListener("keydown", function(e) {
-        if (e.altKey && e.key.toLowerCase() === "e") {
-          triggerEasterEgg();
-        }
-      });
-      function triggerEasterEgg() {
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
-        alert("🎉 You found the secret easter egg! Keep being awesome and enjoy coding!");
+      
+      function updateWordCount(text) {
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const characters = text.length;
+        document.getElementById('ideaWordCount').textContent = `${words} words, ${characters} characters`;
       }
     </script>
   </body>
