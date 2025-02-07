@@ -26,7 +26,7 @@
         color: inherit;
       }
       
-      /* ===== Page Title Banner ===== */
+      /* ===== Page Title Banner (not sticky) ===== */
       .page-title {
         width: 100%;
         padding: 1.5rem;
@@ -35,15 +35,12 @@
         font-weight: bold;
         background: linear-gradient(90deg, #ff004f, #ff5e78);
         color: white;
-        position: sticky;
-        top: 0;
-        z-index: 1100;
       }
       
       /* ===== Sticky Controls Bar ===== */
       .controls {
         position: sticky;
-        top: 60px; /* Leaves room for the title banner */
+        top: 0; /* Sticky controls start at the top (below the title banner) */
         background: #ffffff;
         z-index: 1050;
         padding: 0.75rem 1rem;
@@ -70,21 +67,21 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(255,0,79,0.3);
       }
-      /* Dynamic progress bar inside the sticky controls */
+      /* Dynamic Progress Bar styled to resemble ThumbnailTest */
       .progress-container {
         flex: 1;
         min-width: 150px;
         background: #e0e0e0;
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: hidden;
-        height: 12px;
+        height: 20px;
         margin-left: auto;
       }
       #stickyProgressBar {
         height: 100%;
         width: 0%;
-        background: linear-gradient(to right, darkred, #ff004f);
-        transition: width 0.3s ease;
+        background: linear-gradient(90deg, #ff004f, #ff5e78);
+        transition: width 0.5s ease;
       }
       
       /* ===== Main Report Container ===== */
@@ -212,12 +209,11 @@
         transform: scale(1.02);
       }
       .modern-table tbody tr:hover td:not(.category-header) {
-        /* Slightly highlight the entire row on hover */
         background: rgba(209,250,229,0.2);
       }
-      /* Make rubric category headers bolder and interactive */
+      /* Category header: always show emoji next to title & use a slightly lighter font weight */
       .category-header {
-        font-weight: 700;
+        font-weight: 600;  /* Less bold than before */
         background: rgba(16,185,129,0.08);
         position: sticky;
         left: 0;
@@ -232,17 +228,13 @@
         background: rgba(16,185,129,0.15);
         transform: scale(1.02);
       }
-      /* Add emojis to each category header based on data-category */
-      .category-header[data-category="0"]::before { content: "💡 "; }
-      .category-header[data-category="1"]::before { content: "🔄 "; }
-      .category-header[data-category="2"]::before { content: "⏳ "; }
-      .category-header[data-category="3"]::before { content: "🧠 "; }
-      .category-header[data-category="4"]::before { content: "👀 "; }
-      .category-header[data-category="5"]::before { content: "🔥 "; }
-      .category-header[data-category="6"]::before { content: "🎮 "; }
-      .category-header[data-category="7"]::before { content: "📈 "; }
-      .category-header[data-category="8"]::before { content: "🎲 "; }
-      .category-header[data-category="9"]::before { content: "✅ "; }
+      /* Ensure emoji always appears inline next to the category title */
+      .category-header::before {
+        content: attr(data-emoji);
+        display: inline-block;
+        margin-right: 4px;
+      }
+      /* Instead of hardcoding emojis in each rule, add a data-emoji attribute to each category header in the HTML below. */
       
       /* ===== Human Suggestions & Additional Feedback ===== */
       .human-suggestions {
@@ -291,7 +283,7 @@
     </style>
   </head>
   <body>
-    <!-- Page Title Banner -->
+    <!-- Page Title Banner (Not Sticky) -->
     <header class="page-title">Idea Forge Pro</header>
     
     <!-- Sticky Controls Bar -->
@@ -345,7 +337,7 @@
           <tbody>
             <!-- Row 0: Originality & Concept -->
             <tr>
-              <td class="category-header" data-category="0" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
+              <td class="category-header" data-category="0" data-emoji="💡" title="How unique and intriguing is the idea?">Originality &amp; Concept</td>
               <td data-category="0" data-rating="1" onclick="selectRating(this)">Basic, generic idea</td>
               <td data-category="0" data-rating="2" onclick="selectRating(this)">Some intrigue but needs refinement</td>
               <td data-category="0" data-rating="3" onclick="selectRating(this)">Engaging with clear potential</td>
@@ -353,7 +345,7 @@
             </tr>
             <!-- Row 1: Transformation/Progression -->
             <tr>
-              <td class="category-header" data-category="1" title="How well does the idea develop or transform?">Transformation/Progression</td>
+              <td class="category-header" data-category="1" data-emoji="🔄" title="How well does the idea develop or transform?">Transformation/Progression</td>
               <td data-category="1" data-rating="1" onclick="selectRating(this)">No clear growth</td>
               <td data-category="1" data-rating="2" onclick="selectRating(this)">Mild progression</td>
               <td data-category="1" data-rating="3" onclick="selectRating(this)">Clear transformation</td>
@@ -361,7 +353,7 @@
             </tr>
             <!-- Row 2: Retention Potential -->
             <tr>
-              <td class="category-header" data-category="2" title="How well does the concept retain viewer interest?">Retention Potential</td>
+              <td class="category-header" data-category="2" data-emoji="⏳" title="How well does the concept retain viewer interest?">Retention Potential</td>
               <td data-category="2" data-rating="1" onclick="selectRating(this)">No clear hook or progression</td>
               <td data-category="2" data-rating="2" onclick="selectRating(this)">Might hold attention, but risks drop-offs</td>
               <td data-category="2" data-rating="3" onclick="selectRating(this)">Strong potential to keep viewers engaged</td>
@@ -369,7 +361,7 @@
             </tr>
             <!-- Row 3: Neural Network Link -->
             <tr>
-              <td class="category-header" data-category="3" title="How well does the idea connect to previous content?">Neural Network Link</td>
+              <td class="category-header" data-category="3" data-emoji="🧠" title="How well does the idea connect to previous content?">Neural Network Link</td>
               <td data-category="3" data-rating="1" onclick="selectRating(this)">Doesn’t connect to past videos</td>
               <td data-category="3" data-rating="2" onclick="selectRating(this)">Minor connection to previous themes</td>
               <td data-category="3" data-rating="3" onclick="selectRating(this)">Expands on previous mechanics or lore</td>
@@ -377,7 +369,7 @@
             </tr>
             <!-- Row 4: Viewer Curiosity & Clickability -->
             <tr>
-              <td class="category-header" data-category="4" title="How well does the title and thumbnail spark interest?">Viewer Curiosity &amp; Clickability</td>
+              <td class="category-header" data-category="4" data-emoji="👀" title="How well does the title and thumbnail spark interest?">Viewer Curiosity &amp; Clickability</td>
               <td data-category="4" data-rating="1" onclick="selectRating(this)">Title &amp; thumbnail would struggle to stand out</td>
               <td data-category="4" data-rating="2" onclick="selectRating(this)">Might generate interest but lacks urgency</td>
               <td data-category="4" data-rating="3" onclick="selectRating(this)">Creates a strong curiosity gap</td>
@@ -385,7 +377,7 @@
             </tr>
             <!-- Row 5: Potential for Escalation -->
             <tr>
-              <td class="category-header" data-category="5" title="How well can the concept escalate in complexity and excitement?">Potential for Escalation</td>
+              <td class="category-header" data-category="5" data-emoji="🔥" title="How well can the concept escalate in complexity and excitement?">Potential for Escalation</td>
               <td data-category="5" data-rating="1" onclick="selectRating(this)">Premise has limited depth</td>
               <td data-category="5" data-rating="2" onclick="selectRating(this)">Some room for unexpected twists</td>
               <td data-category="5" data-rating="3" onclick="selectRating(this)">Can build into a compelling narrative</td>
@@ -393,7 +385,7 @@
             </tr>
             <!-- Row 6: Minecraft Mechanics Creativity -->
             <tr>
-              <td class="category-header" data-category="6" title="How creative is the gameplay concept?">Minecraft Mechanics Creativity</td>
+              <td class="category-header" data-category="6" data-emoji="🎮" title="How creative is the gameplay concept?">Minecraft Mechanics Creativity</td>
               <td data-category="6" data-rating="1" onclick="selectRating(this)">Standard gameplay ideas</td>
               <td data-category="6" data-rating="2" onclick="selectRating(this)">Somewhat creative but not groundbreaking</td>
               <td data-category="6" data-rating="3" onclick="selectRating(this)">Clever use of game mechanics</td>
@@ -401,7 +393,7 @@
             </tr>
             <!-- Row 7: Trend & Algorithm Fit -->
             <tr>
-              <td class="category-header" data-category="7" title="How well does the concept align with trends and algorithms?">Trend &amp; Algorithm Fit</td>
+              <td class="category-header" data-category="7" data-emoji="📈" title="How well does the concept align with trends and algorithms?">Trend &amp; Algorithm Fit</td>
               <td data-category="7" data-rating="1" onclick="selectRating(this)">No relevance to trends or searchability</td>
               <td data-category="7" data-rating="2" onclick="selectRating(this)">Loosely inspired by trends but not optimized</td>
               <td data-category="7" data-rating="3" onclick="selectRating(this)">Taps into an existing viral format</td>
@@ -409,7 +401,7 @@
             </tr>
             <!-- Row 8: Surprise Factor & Unpredictability -->
             <tr>
-              <td class="category-header" data-category="8" title="How unpredictable and surprising is the concept?">Surprise Factor &amp; Unpredictability</td>
+              <td class="category-header" data-category="8" data-emoji="🎲" title="How unpredictable and surprising is the concept?">Surprise Factor &amp; Unpredictability</td>
               <td data-category="8" data-rating="1" onclick="selectRating(this)">Entirely predictable</td>
               <td data-category="8" data-rating="2" onclick="selectRating(this)">Some minor surprises but nothing shocking</td>
               <td data-category="8" data-rating="3" onclick="selectRating(this)">Unexpected twists that keep viewers engaged</td>
@@ -417,7 +409,7 @@
             </tr>
             <!-- Row 9: Execution Feasibility -->
             <tr>
-              <td class="category-header" data-category="9" title="How realistic is it to execute the idea?">Execution Feasibility</td>
+              <td class="category-header" data-category="9" data-emoji="✅" title="How realistic is it to execute the idea?">Execution Feasibility</td>
               <td data-category="9" data-rating="1" onclick="selectRating(this)">Impractical</td>
               <td data-category="9" data-rating="2" onclick="selectRating(this)">Possible but difficult</td>
               <td data-category="9" data-rating="3" onclick="selectRating(this)">Practical with ROI</td>
@@ -475,7 +467,7 @@
         const categoryIndex = Number(cell.getAttribute('data-category'));
         const rating = parseInt(cell.getAttribute('data-rating'));
         const row = cell.parentElement;
-        // Remove previously selected cell in this row (except the first column)
+        // Remove any previously selected cell in this row (except the first column)
         row.querySelectorAll('td').forEach(td => {
           if (td !== row.firstElementChild) td.classList.remove('selected');
         });
@@ -511,7 +503,7 @@
         const percentage = (total / 40) * 100;
         document.getElementById('stickyProgressBar').style.width = percentage + "%";
         
-        // If score is more than 33 and confetti hasn’t been triggered, launch confetti.
+        // Trigger confetti if score > 33 and not already triggered
         if (total > 33 && !confettiTriggered) {
           confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
           confettiTriggered = true;
