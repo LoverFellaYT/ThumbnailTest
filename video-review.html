@@ -13,10 +13,18 @@
       rel="stylesheet"
     />
 
+    <!-- Animate.css for subtle animations -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+
     <!-- html2canvas for PNG Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Canvas Confetti for Outstanding Score Effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <!-- CountUp.js for animated score counter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.8/countUp.min.js"></script>
 
     <style>
       :root {
@@ -97,6 +105,7 @@
         -webkit-text-fill-color: transparent;
         transition: var(--transition);
         cursor: default;
+        position: relative;
       }
       /* Updated tooltip for editing review */
       .total-score:hover::after {
@@ -194,7 +203,7 @@
       /* MAIN CONTAINER */
       .analyzer-container {
         width: 95%;
-        max-width: 800px;
+        max-width: 1200px;
         margin: 2rem auto;
         padding: 0 1rem 2rem;
       }
@@ -214,7 +223,7 @@
         transition: transform 0.2s ease;
       }
       .modern-table thead th {
-        padding: 0.75rem 1.5rem;
+        padding: 1rem 1.5rem;
         font-weight: 600;
         position: sticky;
         top: 0;
@@ -232,22 +241,26 @@
       .modern-table thead th:nth-child(4) { background: #facc15; }
       .modern-table thead th:nth-child(5) { background: #4ade80; }
       .modern-table tbody td {
-        padding: 0.75rem 1.5rem;
+        padding: 1rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
         vertical-align: middle;
-        min-width: 100px;
+        min-width: 120px;
         cursor: pointer;
         background: var(--table-cell-bg-light);
       }
-      .modern-table tbody tr:hover td {
-        background-color: rgba(0, 0, 0, 0.03);
+      /* Subtle hover animation on table cells */
+      .modern-table tbody td:hover {
+        transform: scale(1.02);
       }
       .modern-table td.selected {
         background: rgba(224, 231, 255, 0.5) !important;
         box-shadow: inset 4px 0 0 var(--primary-light);
       }
-
+      /* Category header: add bold emojis */
+      .category-header {
+        font-weight: 700;
+      }
       /* Feedback Panel */
       .feedback-panel h3 {
         margin-top: 0;
@@ -313,7 +326,7 @@
         margin-top: 0;
       }
 
-      /* MODAL: How-To & Tutorial */
+      /* MODALS (How-To, Tutorial, Tip, Fun Fact) */
       .modal-bg {
         position: fixed;
         top: 0;
@@ -344,6 +357,9 @@
         overflow-y: auto;
         padding: 1.5rem;
       }
+      .modal-content.animate__animated.animate__fadeIn {
+        /* animate.css will handle the animation */
+      }
       .close-btn {
         position: absolute;
         top: 1rem;
@@ -362,11 +378,18 @@
         background: rgba(255, 255, 255, 1);
       }
 
-      /* RESPONSIVE */
-      @media (max-width: 992px) {
-        .analyzer-container {
-          padding: 0 1rem 2rem;
-        }
+      /* Motivational Quote Section */
+      .motivational-quote {
+        width: 95%;
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 1rem;
+        text-align: center;
+      }
+      .motivational-quote p {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
       }
     </style>
   </head>
@@ -384,19 +407,9 @@
           <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
           <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
           <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Toggles for sound and animations -->
-          <label class="toggle-label">
-            <span class="toggle-switch">
-              <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
-              <!-- (Sound toggle icon can be added here if desired) -->
-            </span>
-          </label>
-          <label class="toggle-label">
-            <span class="toggle-switch">
-              <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
-              <!-- (Animation toggle icon can be added here if desired) -->
-            </span>
-          </label>
+          <!-- New fun feature buttons -->
+          <button class="btn" onclick="showRandomTip()" aria-label="Random Editing Tip">💡 Tip</button>
+          <button class="btn" onclick="showRandomFact()" aria-label="Fun Fact">🎉 Fun Fact</button>
         </div>
         <!-- Dark Mode Toggle -->
         <div class="dark-mode">
@@ -428,13 +441,13 @@
             </tr>
           </thead>
           <tbody>
-            <!-- 1. Narrative Flow &amp; Storytelling -->
+            <!-- 1. Narrative Flow & Storytelling -->
             <tr>
-              <td class="category-header" title="Evaluate how coherent and engaging the story or sequence is.">
-                Narrative Flow &amp; Storytelling
+              <td class="category-header" data-category="0" title="Evaluate how coherent and engaging the story or sequence is.">
+                <strong>🎬 Narrative Flow &amp; Storytelling</strong>
               </td>
               <td data-category="0" data-rating="1" role="button" tabindex="0">
-                Basic flow; some disjointed cuts and unclear storytelling.
+                Basic flow; disjointed cuts and unclear storytelling.
               </td>
               <td data-category="0" data-rating="2" role="button" tabindex="0">
                 Clear narrative with moderate pacing and occasional creative elements.
@@ -448,8 +461,8 @@
             </tr>
             <!-- 2. Cutting & Transitions -->
             <tr>
-              <td class="category-header" title="Assess the smoothness, timing, and creativity of cuts and transitions.">
-                Cutting &amp; Transitions
+              <td class="category-header" data-category="1" title="Assess the smoothness, timing, and creativity of cuts and transitions.">
+                <strong>✂️ Cutting &amp; Transitions</strong>
               </td>
               <td data-category="1" data-rating="1" role="button" tabindex="0">
                 Basic cuts with occasional jarring transitions.
@@ -464,10 +477,10 @@
                 Flawless editing with innovative, perfectly timed transitions.
               </td>
             </tr>
-            <!-- 3. Audio Quality &amp; Synchronization -->
+            <!-- 3. Audio Quality & Synchronization -->
             <tr>
-              <td class="category-header" title="Assess clarity of audio, mixing, and synchronization with visuals.">
-                Audio Quality &amp; Synchronization
+              <td class="category-header" data-category="2" title="Assess clarity of audio, mixing, and synchronization with visuals.">
+                <strong>🎧 Audio Quality &amp; Synchronization</strong>
               </td>
               <td data-category="2" data-rating="1" role="button" tabindex="0">
                 Acceptable audio with minor sync issues.
@@ -482,10 +495,10 @@
                 Studio-level audio quality with perfect integration into visuals.
               </td>
             </tr>
-            <!-- 4. Visual Effects &amp; Graphics -->
+            <!-- 4. Visual Effects & Graphics -->
             <tr>
-              <td class="category-header" title="Evaluate the quality and relevance of visual effects, titles, and graphics.">
-                Visual Effects &amp; Graphics
+              <td class="category-header" data-category="3" title="Evaluate the quality and relevance of visual effects, titles, and graphics.">
+                <strong>✨ Visual Effects &amp; Graphics</strong>
               </td>
               <td data-category="3" data-rating="1" role="button" tabindex="0">
                 Basic graphics and minimal effects.
@@ -500,10 +513,10 @@
                 Cinematic-quality visuals and innovative effects that elevate the edit.
               </td>
             </tr>
-            <!-- 5. Color Grading &amp; Visual Consistency -->
+            <!-- 5. Color Grading & Visual Consistency -->
             <tr>
-              <td class="category-header" title="Assess the effectiveness of color correction, grading, and visual consistency.">
-                Color Grading &amp; Visual Consistency
+              <td class="category-header" data-category="4" title="Assess the effectiveness of color correction, grading, and visual consistency.">
+                <strong>🎨 Color Grading &amp; Visual Consistency</strong>
               </td>
               <td data-category="4" data-rating="1" role="button" tabindex="0">
                 Basic correction; inconsistent visual tone.
@@ -518,10 +531,10 @@
                 Masterful grading with a striking, cohesive aesthetic.
               </td>
             </tr>
-            <!-- 6. Technical Quality &amp; Export -->
+            <!-- 6. Technical Quality & Export -->
             <tr>
-              <td class="category-header" title="Examine resolution, rendering, and technical polish.">
-                Technical Quality &amp; Export
+              <td class="category-header" data-category="5" title="Examine resolution, rendering, and technical polish.">
+                <strong>🖥️ Technical Quality &amp; Export</strong>
               </td>
               <td data-category="5" data-rating="1" role="button" tabindex="0">
                 Acceptable quality with minor technical issues.
@@ -538,8 +551,8 @@
             </tr>
             <!-- 7. Overall Impact -->
             <tr>
-              <td class="category-header" title="Summarize the overall effectiveness and production value of the editing.">
-                Overall Impact
+              <td class="category-header" data-category="6" title="Summarize the overall effectiveness and production value of the editing.">
+                <strong>🌟 Overall Impact</strong>
               </td>
               <td data-category="6" data-rating="1" role="button" tabindex="0">
                 Meets basic requirements; limited impact.
@@ -590,15 +603,22 @@
       </section>
     </div>
 
+    <!-- Motivational Quote Section -->
+    <div class="motivational-quote glass-panel">
+      <p id="quoteText"></p>
+      <button class="btn" onclick="refreshQuote()">Refresh Quote</button>
+    </div>
+
     <!-- HOW-TO MODAL -->
     <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
-      <div class="modal-content">
+      <div class="modal-content animate__animated animate__fadeIn">
         <span class="close-btn" onclick="closeHowTo()" aria-label="Close How To">✕</span>
         <h2>How to Use Editing Review Pro+</h2>
         <ul>
           <li>Review each editing criterion by clicking on the appropriate rating cell.</li>
           <li>The total score and status update live as you select ratings.</li>
           <li>Provide additional feedback in the Human and AI feedback boxes.</li>
+          <li>Use the Tip and Fun Fact buttons for extra inspiration.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
       </div>
@@ -606,9 +626,25 @@
 
     <!-- TUTORIAL MODAL -->
     <div class="modal-bg" id="tutorialModal" role="dialog" aria-modal="true">
-      <div class="modal-content">
+      <div class="modal-content animate__animated animate__fadeIn">
         <span class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">✕</span>
         <div id="tutorialContent"></div>
+      </div>
+    </div>
+
+    <!-- TIP MODAL -->
+    <div class="modal-bg" id="tipModal" role="dialog" aria-modal="true">
+      <div class="modal-content animate__animated animate__fadeIn">
+        <span class="close-btn" onclick="closeTip()" aria-label="Close Tip">✕</span>
+        <div id="tipContent"></div>
+      </div>
+    </div>
+
+    <!-- FUN FACT MODAL -->
+    <div class="modal-bg" id="factModal" role="dialog" aria-modal="true">
+      <div class="modal-content animate__animated animate__fadeIn">
+        <span class="close-btn" onclick="closeFact()" aria-label="Close Fun Fact">✕</span>
+        <div id="factContent"></div>
       </div>
     </div>
 
@@ -623,9 +659,7 @@
        ***************************************************/
       let scores = {};
       let confettiShown = false;
-      let muteSound = false;
-      let disableAnimations = false;
-      let milestoneTriggered = {}; // Track milestones for 7-factor scoring
+      let milestoneTriggered = {}; // For 7-factor scoring
       const milestoneMessages = {
         7: "Initial review complete!",
         14: "Halfway to perfection!",
@@ -636,16 +670,47 @@
         victory: document.getElementById("victorySound"),
         womp: document.getElementById("wompSound")
       };
+      let scoreCounter; // CountUp instance
+
+      // Arrays for random tips, fun facts, and motivational quotes
+      const editingTips = [
+        "Try using a J-cut for smoother audio transitions.",
+        "Color grading can dramatically change the mood of your edit.",
+        "Short, snappy cuts can keep your audience engaged.",
+        "Experiment with speed ramping for dynamic effects.",
+        "Always preview your edit on multiple devices for consistency."
+      ];
+      const funFacts = [
+        "Did you know? The first movie ever edited was created in 1895.",
+        "Fun Fact: Alfred Hitchcock was known for his meticulous editing.",
+        "Editing tip: Sometimes, less is more.",
+        "Many famous directors started their careers as editors.",
+        "The term 'jump cut' became popular in French New Wave films."
+      ];
+      const motivationalQuotes = [
+        "Creativity is intelligence having fun. – Albert Einstein",
+        "Editing is where the magic happens.",
+        "Great edits inspire great stories.",
+        "Keep pushing boundaries and refine your art.",
+        "Every cut is a chance to make your story shine."
+      ];
 
       /***************************************************
        * DOMContentLoaded Setup
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
+        // Initialize CountUp for animated score counter
+        scoreCounter = new CountUp("total", 0);
+        if (!scoreCounter.error) {
+          scoreCounter.update(0);
+        }
         // Event delegation for rubric table cells:
         document.querySelector('.modern-table').addEventListener('click', (e) => {
           const cell = e.target.closest('td[data-rating]');
           if (cell) selectRating(cell);
         });
+        // Set an initial motivational quote
+        refreshQuote();
       });
 
       /***************************************************
@@ -666,9 +731,9 @@
 
       function updateTotal() {
         let total = Object.values(scores).reduce((a, b) => a + b, 0);
-        document.getElementById('total').textContent = total;
+        // Animate the score update using CountUp
+        scoreCounter.update(total);
         const scoreLabel = document.getElementById('scoreLabel');
-        // Update overall status based on thresholds (max score = 28)
         if (Object.keys(scores).length < 7) {
           document.getElementById('ranking').textContent = 'Incomplete';
           document.getElementById('ranking').style.color = '#64748b';
@@ -676,7 +741,7 @@
           scoreLabel.textContent = "Good";
           document.getElementById('ranking').textContent = 'Needs Work 🔴';
           document.getElementById('ranking').style.color = '#ef4444';
-          if (!muteSound) progressAudio.womp.play();
+          progressAudio.womp.play();
         } else if (total < 20) {
           scoreLabel.textContent = "Great";
           document.getElementById('ranking').textContent = 'Great! 🟢';
@@ -689,8 +754,8 @@
           scoreLabel.textContent = "Outstanding";
           document.getElementById('ranking').textContent = 'Outstanding 🔵';
           document.getElementById('ranking').style.color = '#3b82f6';
-          if (!muteSound) progressAudio.victory.play();
-          if (!confettiShown && !disableAnimations) {
+          progressAudio.victory.play();
+          if (!confettiShown) {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             confettiShown = true;
           }
@@ -700,14 +765,13 @@
 
       function updateProgressBar(total) {
         const percentage = (total / 28) * 100;
-        // For simplicity, assume a progress bar element exists if desired.
+        // Optional: Update a progress bar if added
         // Display milestone messages if applicable.
-        const milestoneDiv = document.getElementById("milestoneMessage");
-        if (milestoneMessages[total] && !milestoneTriggered[total]) {
-          if (milestoneDiv) {
-            milestoneDiv.textContent = milestoneMessages[total];
-            milestoneTriggered[total] = true;
-            setTimeout(() => { milestoneDiv.textContent = ""; }, 3000);
+        // (This demo uses milestone messages in the console.)
+        for (let key in milestoneMessages) {
+          if (total >= key && !milestoneTriggered[key]) {
+            console.log(milestoneMessages[key]);
+            milestoneTriggered[key] = true;
           }
         }
       }
@@ -718,7 +782,7 @@
       function resetScores() {
         scores = {};
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => cell.classList.remove('selected'));
-        document.getElementById('total').textContent = '0';
+        scoreCounter.update(0);
         document.getElementById('scoreLabel').textContent = 'Good';
         document.getElementById('ranking').textContent = 'Incomplete';
         milestoneTriggered = {};
@@ -744,7 +808,7 @@
       }
 
       /***************************************************
-       * Theme & Toggle Functions
+       * Theme Toggle
        ***************************************************/
       function toggleTheme(input) {
         const html = document.documentElement;
@@ -754,15 +818,9 @@
           html.removeAttribute("data-theme");
         }
       }
-      function toggleSound(el) {
-        muteSound = el.checked;
-      }
-      function toggleAnimations(el) {
-        disableAnimations = el.checked;
-      }
 
       /***************************************************
-       * Modal Functions (How-To & Tutorial)
+       * Modal Functions (How-To, Tutorial, Tip, Fun Fact)
        ***************************************************/
       function openHowTo() {
         document.getElementById('howToModal').classList.add('show');
@@ -797,19 +855,30 @@
         document.getElementById('tutorialModal').classList.remove('show');
       }
 
+      function showRandomTip() {
+        const tip = editingTips[Math.floor(Math.random() * editingTips.length)];
+        document.getElementById('tipContent').innerHTML = `<h2>Editing Tip</h2><p>${tip}</p>`;
+        document.getElementById('tipModal').classList.add('show');
+      }
+      function closeTip() {
+        document.getElementById('tipModal').classList.remove('show');
+      }
+
+      function showRandomFact() {
+        const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
+        document.getElementById('factContent').innerHTML = `<h2>Fun Fact</h2><p>${fact}</p>`;
+        document.getElementById('factModal').classList.add('show');
+      }
+      function closeFact() {
+        document.getElementById('factModal').classList.remove('show');
+      }
+
       /***************************************************
-       * Legend Toggle Function
+       * Motivational Quote Section
        ***************************************************/
-      function toggleLegend() {
-        const legend = document.getElementById("legend");
-        const btn = document.getElementById("toggleLegend");
-        if (legend.style.display === "none" || legend.style.display === "") {
-          legend.style.display = "block";
-          btn.textContent = "Hide Legend & Definitions";
-        } else {
-          legend.style.display = "none";
-          btn.textContent = "Show Legend & Definitions";
-        }
+      function refreshQuote() {
+        const quote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+        document.getElementById('quoteText').textContent = quote;
       }
 
       /***************************************************
