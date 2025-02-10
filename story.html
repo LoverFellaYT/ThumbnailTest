@@ -83,7 +83,7 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.5rem;
     }
-    /* Updated header: maximum score now displays as /56 */
+    /* Display maximum score as "/56" appended via CSS */
     .total-score span#total::after {
       content: "/56";
       margin-left: 0.25rem;
@@ -457,6 +457,8 @@
     <!-- Peer Reviews -->
     <div class="glass-panel input-section" id="peerReviewSection">
       <h2>💬 Peer Reviews</h2>
+      <!-- New Username Input for Peer Reviews -->
+      <input type="text" id="peerReviewUsername" placeholder="Enter your username..." style="padding:0.5rem; width:70%; border:2px solid rgba(99,102,241,0.1); border-radius:8px; margin-bottom:0.5rem;">
       <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
       <button onclick="submitPeerReview()">Submit Peer Review</button>
       <ul id="peerReviewList" class="peer-review-list"></ul>
@@ -601,7 +603,7 @@
         ranking.style.color = '#64748b';
         return;
       }
-      // Updated thresholds for maximum score of 56:
+      // Thresholds for maximum score of 56:
       if (total < 29) {
         ranking.textContent = 'Needs Work 🔴';
         ranking.style.color = 'red';
@@ -635,6 +637,7 @@
     /***************************************************
      * AI Review Function
      * Reviews ONLY the quick summary (story content) and provides specific, story-focused improvements.
+     * Each click randomly selects one of several review idea sets so you can refresh for more ideas.
      ***************************************************/
     function runAIReview() {
       const summary = document.getElementById('quickSummary').value.trim();
@@ -644,17 +647,64 @@
         return;
       }
       
+      // Define multiple review idea sets.
+      const reviewIdeas = [
+        {
+          improvements: [
+            "Clarify the central conflict by explicitly stating the stakes involved.",
+            "Deepen your protagonist's motivation by highlighting internal dilemmas.",
+            "Refine the narrative structure to better build suspense."
+          ],
+          suggestions: [
+            "Revise the opening to immediately hook the viewer with a strong inciting incident.",
+            "Emphasize a pivotal moment that clearly transitions the story toward its climax."
+          ]
+        },
+        {
+          improvements: [
+            "Strengthen the emotional resonance by providing more backstory.",
+            "Ensure that every plot twist reinforces the overall theme.",
+            "Adjust the pacing to allow critical moments to breathe."
+          ],
+          suggestions: [
+            "Introduce a memorable tagline that encapsulates your video's core message.",
+            "Highlight a transformative moment that challenges the status quo."
+          ]
+        },
+        {
+          improvements: [
+            "Focus on the uniqueness of your concept by underlining its innovative elements.",
+            "Elaborate on the conflict to give viewers a clear sense of the story's stakes.",
+            "Polish the narrative flow to create a more immersive experience."
+          ],
+          suggestions: [
+            "Rework the summary’s introduction to better reflect your video's distinct style.",
+            "Include a succinct conclusion that leaves the audience with a lingering thought."
+          ]
+        }
+      ];
+      
+      // Randomly pick a review idea set.
+      const randomIndex = Math.floor(Math.random() * reviewIdeas.length);
+      const reviewSet = reviewIdeas[randomIndex];
+      
+      // Create a preview of the summary (first 10 words).
+      const summaryWords = summary.split(" ");
+      const summaryPreview = summaryWords.slice(0, 10).join(" ") + (summaryWords.length > 10 ? "..." : "");
+      
       let reviewHTML = "<h3>🤖 AI Story Review</h3>";
+      reviewHTML += `<p>Based on your concept: "<em>${summaryPreview}</em>", consider the following ideas:</p>`;
       reviewHTML += "<h4>Three Specific Improvements:</h4>";
       reviewHTML += "<ol>";
-      reviewHTML += "<li><strong>Clarify the Conflict:</strong> Specify the central conflict in your story to create a stronger narrative drive.</li>";
-      reviewHTML += "<li><strong>Deepen Character Motivation:</strong> Elaborate on your protagonist's internal struggles and desires to make their journey more compelling.</li>";
-      reviewHTML += "<li><strong>Enhance Narrative Pacing:</strong> Restructure the summary so that key turning points are clearly defined and tension builds naturally.</li>";
+      reviewSet.improvements.forEach(item => {
+        reviewHTML += `<li>${item}</li>`;
+      });
       reviewHTML += "</ol>";
       reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
       reviewHTML += "<ol>";
-      reviewHTML += "<li><strong>Revise the Opening:</strong> Introduce your main character and conflict more dynamically to immediately hook the reader.</li>";
-      reviewHTML += "<li><strong>Strengthen the Climax:</strong> Emphasize a pivotal moment that marks a clear turning point in the narrative.</li>";
+      reviewSet.suggestions.forEach(item => {
+        reviewHTML += `<li>${item}</li>`;
+      });
       reviewHTML += "</ol>";
       
       resultDiv.innerHTML = reviewHTML;
@@ -664,18 +714,22 @@
      * Peer Review Functions
      ***************************************************/
     function submitPeerReview() {
+      const username = document.getElementById('peerReviewUsername').value.trim();
       const reviewInput = document.getElementById('peerReviewInput');
       const reviewText = reviewInput.value.trim();
+      if (!username) {
+        alert("Please enter your username for the peer review.");
+        return;
+      }
       if (!reviewText) return;
-      const timestamp = new Date().toLocaleString();
-      peerReviews.push({ text: reviewText, time: timestamp });
+      peerReviews.push({ username: username, text: reviewText });
       updatePeerReviews();
       reviewInput.value = '';
     }
     function updatePeerReviews() {
       const peerReviewList = document.getElementById('peerReviewList');
       peerReviewList.innerHTML = peerReviews.map(rev =>
-        `<li>${rev.time}: ${rev.text}</li>`
+        `<li>${rev.username}: ${rev.text}</li>`
       ).join('');
     }
 
@@ -717,8 +771,6 @@
       // Create a container for the thumbnail, title, and remove button.
       const thumbContainer = document.createElement('div');
       thumbContainer.className = 'video-thumbnail';
-      
-      // Append the video link (thumbnail image).
       thumbContainer.appendChild(videoLink);
       
       // Create the title element.
@@ -733,7 +785,6 @@
       removeBtn.textContent = "❌";
       removeBtn.title = "Remove this video";
       removeBtn.addEventListener('click', (e) => {
-        // Prevent click event from bubbling to the parent elements.
         e.stopPropagation();
         thumbContainer.remove();
       });
@@ -765,15 +816,26 @@
     async function exportPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
-      const elements = [
-        document.querySelector('header.analyzer-header'),
-        document.querySelector('#quickSummarySection'),
-        document.querySelector('#similarVideosSection'),
-        document.querySelector('#aiReviewSection'),
-        document.querySelector('#rubricSection'),
-        document.querySelector('#humanFeedbackSection'),
-        document.querySelector('#peerReviewSection')
-      ];
+      // Build array of elements to export:
+      const elements = [ document.querySelector('header.analyzer-header') ];
+      if(document.getElementById('quickSummary').value.trim() !== "") {
+          elements.push(document.getElementById('quickSummarySection'));
+      }
+      if(document.getElementById('similarVideosList').childElementCount > 0) {
+          elements.push(document.getElementById('similarVideosSection'));
+      }
+      if(document.getElementById('aiReviewResult').innerHTML.trim() !== "") {
+          elements.push(document.getElementById('aiReviewSection'));
+      }
+      if(Object.keys(scores).length > 0) {
+          elements.push(document.getElementById('rubricSection'));
+      }
+      if(document.getElementById('humanFeedback').value.trim() !== "") {
+          elements.push(document.getElementById('humanFeedbackSection'));
+      }
+      if(document.getElementById('peerReviewList').children.length > 0) {
+          elements.push(document.getElementById('peerReviewSection'));
+      }
       let yPos = 10;
       try {
         for (const element of elements) {
@@ -797,11 +859,45 @@
     }
 
     async function exportPNG() {
+      // Always include the header.
       const header = document.querySelector('header.analyzer-header');
       const originalPosition = header.style.position;
       header.style.position = 'static';
+      
+      // Build array of elements to export.
+      const elements = [ header ];
+      if(document.getElementById('quickSummary').value.trim() !== "") {
+          elements.push(document.getElementById('quickSummarySection'));
+      }
+      if(document.getElementById('similarVideosList').childElementCount > 0) {
+          elements.push(document.getElementById('similarVideosSection'));
+      }
+      if(document.getElementById('aiReviewResult').innerHTML.trim() !== "") {
+          elements.push(document.getElementById('aiReviewSection'));
+      }
+      if(Object.keys(scores).length > 0) {
+          elements.push(document.getElementById('rubricSection'));
+      }
+      if(document.getElementById('humanFeedback').value.trim() !== "") {
+          elements.push(document.getElementById('humanFeedbackSection'));
+      }
+      if(document.getElementById('peerReviewList').children.length > 0) {
+          elements.push(document.getElementById('peerReviewSection'));
+      }
+      
+      // Create a temporary container for export.
+      const tempContainer = document.createElement('div');
+      tempContainer.style.background = "#f8fafc";
+      tempContainer.style.padding = "1rem";
+      elements.forEach(el => {
+          // Clone each element so we don't modify the original.
+          const clone = el.cloneNode(true);
+          tempContainer.appendChild(clone);
+      });
+      document.body.appendChild(tempContainer);
+      
       try {
-        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true });
+        const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.download = 'storycraft-analysis.png';
@@ -813,6 +909,7 @@
         console.error('PNG export failed:', error);
         alert('Error exporting PNG. Please try again.');
       }
+      tempContainer.remove();
       header.style.position = originalPosition;
     }
 
