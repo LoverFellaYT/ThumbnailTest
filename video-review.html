@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Video Review Scoring</title>
+  <!-- Include html2canvas for exporting the review area as PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* Reset and basic styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark {
+      background: #222;
+      color: #ddd;
+    }
+    /* Sticky header */
+    header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #ddd;
+      z-index: 1000;
+    }
+    body.dark header {
+      background: #333;
+      border-bottom: 1px solid #444;
+    }
+    header .score-display {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    header .controls {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .export-btn {
+      background: #007bff;
+      color: #fff;
+    }
+    .dark-mode-toggle {
+      background: #28a745;
+      color: #fff;
+    }
+    /* Main content styling */
+    main {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    h1, h2 {
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background: #007bff;
+      color: #fff;
+    }
+    body.dark table th {
+      background: #0056b3;
+    }
+    /* Score input styling */
+    .criteria-row input[type="number"] {
+      width: 60px;
+      padding: 4px;
+    }
+    .criteria-row input[type="text"] {
+      width: 100%;
+      padding: 4px;
+    }
+    /* Color coding based on score */
+    .score-low {
+      background: #ffcccc;
+    }
+    .score-medium {
+      background: #fff3cd;
+    }
+    .score-high {
+      background: #d4edda;
+    }
+    /* Additional notes area */
+    #notes textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sticky Header -->
+  <header>
+    <div class="score-display">Total Score: <span id="totalScore">0</span></div>
+    <div class="controls">
+      <button class="export-btn" id="exportBtn">Export to PNG</button>
+      <button class="dark-mode-toggle" id="darkModeToggle">🌞 Light Mode</button>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main id="reviewArea">
+    <h1>Video Review Rubric</h1>
+    <table id="rubricTable">
+      <thead>
+        <tr>
+          <th>Criteria</th>
+          <th>Score (0-10)</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="criteria-row">
+          <td>Content Accuracy</td>
+          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
+          <td><input type="text" placeholder="Enter comments"></td>
+        </tr>
+        <tr class="criteria-row">
+          <td>Audio/Visual Quality</td>
+          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
+          <td><input type="text" placeholder="Enter comments"></td>
+        </tr>
+        <tr class="criteria-row">
+          <td>Branding & SEO</td>
+          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
+          <td><input type="text" placeholder="Enter comments"></td>
+        </tr>
+        <tr class="criteria-row">
+          <td>Compliance & Copyright</td>
+          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
+          <td><input type="text" placeholder="Enter comments"></td>
+        </tr>
+        <tr class="criteria-row">
+          <td>Overall Impact</td>
+          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
+          <td><input type="text" placeholder="Enter comments"></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Additional Notes Section -->
+    <section id="notes">
+      <h2>Additional Notes</h2>
+      <textarea rows="4" placeholder="Enter any additional notes or feedback..."></textarea>
+    </section>
+  </main>
+
+  <script>
+    /* DARK MODE TOGGLE */
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      darkModeToggle.textContent = document.body.classList.contains('dark') ? '🌜 Dark Mode' : '🌞 Light Mode';
+    });
+
+    /* SCORE CALCULATION & COLOR CODING */
+    const scoreInputs = document.querySelectorAll('.score-input');
+    const totalScoreElem = document.getElementById('totalScore');
+
+    // Add input event listeners to each score input
+    scoreInputs.forEach(input => {
+      input.addEventListener('input', updateScores);
+    });
+
+    function updateScores() {
+      let total = 0;
+      scoreInputs.forEach(input => {
+        const row = input.closest('tr');
+        const score = parseInt(input.value) || 0;
+        total += score;
+        // Reset row background class
+        row.classList.remove('score-low', 'score-medium', 'score-high');
+        // Color-code based on score value
+        if (score <= 3) {
+          row.classList.add('score-low');
+        } else if (score <= 7) {
+          row.classList.add('score-medium');
+        } else {
+          row.classList.add('score-high');
+        }
+      });
+      totalScoreElem.textContent = total;
+    }
+
+    /* EXPORT TO PNG FUNCTIONALITY */
+    const exportBtn = document.getElementById('exportBtn');
+    exportBtn.addEventListener('click', () => {
+      const reviewArea = document.getElementById('reviewArea');
+      html2canvas(reviewArea).then(canvas => {
+        // Create a temporary link to trigger the download
+        const link = document.createElement('a');
+        link.download = 'video_review.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    });
+  </script>
+</body>
+</html>
