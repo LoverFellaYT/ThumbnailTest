@@ -230,11 +230,12 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       transition: var(--transition);
+      position: relative;
     }
     .video-thumbnail img {
       width: 100%;
       height: 150px;
-      object-fit: cover; /* This ensures the image covers the container without showing black bars */
+      object-fit: cover;
       display: block;
     }
     .video-title {
@@ -244,6 +245,18 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0 4px;
+      line-height: 1;
     }
     .video-thumbnail:hover {
       transform: scale(1.02);
@@ -293,13 +306,13 @@
   <main>
     <!-- Quick Summary -->
     <div class="glass-panel input-section" id="quickSummarySection">
-      <h2>Quick Summary</h2>
+      <h2>📝 Quick Summary</h2>
       <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
     </div>
     
     <!-- Similar Videos (Placed immediately below Quick Summary) -->
     <div class="glass-panel input-section" id="similarVideosSection">
-      <h2>Similar Videos</h2>
+      <h2>📺 Similar Videos</h2>
       <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." style="padding:0.5rem; width:70%; border:2px solid rgba(99,102,241,0.1); border-radius:8px;"/>
       <button onclick="addYouTubeVideo()">Add Video</button>
       <div id="similarVideosList" class="similar-videos-list" style="margin-top:1rem;"></div>
@@ -307,13 +320,14 @@
     
     <!-- AI Review Section -->
     <div class="glass-panel input-section" id="aiReviewSection">
-      <h2>AI Review</h2>
+      <h2>🤖 AI Review</h2>
       <button onclick="runAIReview()">Run AI Review</button>
       <div id="aiReviewResult" style="margin-top: 1rem;"></div>
     </div>
 
     <!-- Rubric Table -->
     <div class="glass-panel rubric-table" id="rubricSection">
+      <h2>📊 Rubric Table</h2>
       <table class="modern-table">
         <thead>
           <tr>
@@ -429,13 +443,13 @@
 
     <!-- Human Feedback -->
     <div class="glass-panel input-section" id="humanFeedbackSection">
-      <h2>Human Feedback</h2>
+      <h2>👥 Human Feedback</h2>
       <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
     </div>
 
     <!-- Peer Reviews -->
     <div class="glass-panel input-section" id="peerReviewSection">
-      <h2>Peer Reviews</h2>
+      <h2>💬 Peer Reviews</h2>
       <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
       <button onclick="submitPeerReview()">Submit Peer Review</button>
       <ul id="peerReviewList" class="peer-review-list"></ul>
@@ -622,17 +636,17 @@
         return;
       }
       
-      let reviewHTML = "<h3>AI Story Review</h3>";
+      let reviewHTML = "<h3>🤖 AI Story Review</h3>";
       reviewHTML += "<h4>Three Specific Improvements:</h4>";
       reviewHTML += "<ol>";
       reviewHTML += "<li><strong>Clarify the Conflict:</strong> Specify the central conflict in your story to create a stronger narrative drive.</li>";
       reviewHTML += "<li><strong>Deepen Character Motivation:</strong> Elaborate on your protagonist's internal struggles and desires to make their journey more compelling.</li>";
-      reviewHTML += "<li><strong>Enhance Narrative Pacing:</strong> Restructure the summary to build tension progressively, ensuring that key turning points are clearly defined.</li>";
+      reviewHTML += "<li><strong>Enhance Narrative Pacing:</strong> Restructure the summary so that key turning points are clearly defined and tension builds naturally.</li>";
       reviewHTML += "</ol>";
       reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
       reviewHTML += "<ol>";
-      reviewHTML += "<li><strong>Revise the Opening:</strong> Introduce your main character and their conflict more dynamically to immediately engage your reader.</li>";
-      reviewHTML += "<li><strong>Strengthen the Climax:</strong> Highlight a pivotal moment in your summary that marks a clear turning point in the narrative.</li>";
+      reviewHTML += "<li><strong>Revise the Opening:</strong> Introduce your main character and conflict more dynamically to immediately hook the reader.</li>";
+      reviewHTML += "<li><strong>Strengthen the Climax:</strong> Emphasize a pivotal moment that marks a clear turning point in the narrative.</li>";
       reviewHTML += "</ol>";
       
       resultDiv.innerHTML = reviewHTML;
@@ -692,9 +706,11 @@
       img.alt = title || 'YouTube Video Thumbnail';
       videoLink.appendChild(img);
       
-      // Create a container for the thumbnail and title.
+      // Create a container for the thumbnail, title, and remove button.
       const thumbContainer = document.createElement('div');
       thumbContainer.className = 'video-thumbnail';
+      
+      // Append the video link (thumbnail image).
       thumbContainer.appendChild(videoLink);
       
       // Create the title element.
@@ -702,6 +718,16 @@
       titleDiv.className = 'video-title';
       titleDiv.textContent = title || '';
       thumbContainer.appendChild(titleDiv);
+      
+      // Create the remove button.
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = "❌";
+      removeBtn.title = "Remove this video";
+      removeBtn.addEventListener('click', () => {
+        thumbContainer.remove();
+      });
+      thumbContainer.appendChild(removeBtn);
       
       document.getElementById('similarVideosList').appendChild(thumbContainer);
       document.getElementById('youtubeLinkInput').value = '';
