@@ -5,21 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Rubrics Home</title>
   <style>
+    /* Global Styles */
     body {
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
       margin: 0;
       padding: 0;
+      background-color: #f9f9f9;
     }
     header, footer {
       background-color: #007bff;
       color: #fff;
       text-align: center;
-      padding: 15px 0;
+      padding: 15px;
     }
     nav {
       background-color: #0056b3;
-      padding: 10px 0;
+      padding: 10px;
       text-align: center;
     }
     nav a {
@@ -33,7 +34,7 @@
       margin: 20px auto;
       padding: 0 20px;
     }
-    h1, h2 {
+    h1, h2, h3 {
       text-align: center;
       color: #333;
     }
@@ -57,38 +58,67 @@
     .rubric-link:hover {
       background-color: #0056b3;
     }
-    .about {
+    .about, .featured, .resources, .feedback {
       margin: 20px 0;
       padding: 20px;
       background-color: #e9ecef;
       border-radius: 5px;
+    }
+    .search-box {
+      max-width: 400px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      nav a {
+        display: block;
+        margin: 5px 0;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Video Rubrics Home</h1>
+    <!-- Optional logo can be added below -->
+    <!-- <img src="logo.png" alt="Logo" style="max-width:100px;"> -->
   </header>
 
   <nav>
     <a href="#rubrics">Rubrics</a>
     <a href="#about">About</a>
+    <a href="#featured">Featured</a>
+    <a href="#resources">Resources</a>
+    <a href="#feedback">Feedback</a>
     <a href="#contact">Contact</a>
   </nav>
 
   <div class="container">
+    <!-- Search Functionality -->
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search Rubrics..." onkeyup="filterRubrics()">
+    </div>
+
     <!-- About Section -->
     <section id="about" class="about">
       <h2>About This Site</h2>
       <p>
-        Welcome! This site hosts a collection of video review rubrics designed to help you improve your content. Whether you're looking for feedback on thumbnails, storytelling, editing, or ideas, you'll find the right tool here.
+        Welcome! This site hosts a collection of video review rubrics designed to help you improve your content.
+        Whether you're looking for feedback on thumbnails, storytelling, editing, or ideas, you'll find the right tool here.
       </p>
     </section>
 
     <!-- Rubrics Section -->
     <section id="rubrics">
       <h2>Video Rubrics</h2>
-      <ul>
+      <ul id="rubricList">
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
             Thumbnail Reviews
@@ -111,16 +141,78 @@
         </li>
       </ul>
     </section>
+
+    <!-- Featured Reviews Section -->
+    <section id="featured" class="featured">
+      <h2>Featured Reviews</h2>
+      <p>Check out our latest or most popular reviews for some inspiration!</p>
+      <!-- Placeholder for featured content -->
+      <ul>
+        <li>
+          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
+            Featured Thumbnail Review
+          </a>
+        </li>
+        <!-- Additional featured items can be added here -->
+      </ul>
+    </section>
+
+    <!-- Additional Resources Section -->
+    <section id="resources" class="resources">
+      <h2>Additional Resources</h2>
+      <p>
+        Explore related tutorials, guides, and blog posts to enhance your video production skills.
+      </p>
+      <ul>
+        <li>
+          <a href="https://example.com/tutorial1" target="_blank">Tutorial: Creating Engaging Thumbnails</a>
+        </li>
+        <li>
+          <a href="https://example.com/blog-post" target="_blank">Blog Post: Storytelling in Video Content</a>
+        </li>
+        <!-- More resources can be added here -->
+      </ul>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedback" class="feedback">
+      <h2>Feedback</h2>
+      <p>
+        We value your feedback! Let us know what you think or how we can improve our rubrics.
+      </p>
+      <form id="feedbackForm" action="mailto:your-email@example.com" method="post" enctype="text/plain">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="feedbackText">Feedback:</label><br>
+        <textarea id="feedbackText" name="feedbackText" rows="4" required></textarea><br><br>
+        <input type="submit" value="Submit Feedback">
+      </form>
+    </section>
   </div>
 
   <footer id="contact">
     <p>Contact: <a href="mailto:your-email@example.com" style="color:#fff; text-decoration:underline;">your-email@example.com</a></p>
     <p>
       Follow me on
-      <a href="https://youtube.com/yourchannel" target="_blank" style="color:#fff; text-decoration:underline;">YouTube</a>
-      |
+      <a href="https://youtube.com/yourchannel" target="_blank" style="color:#fff; text-decoration:underline;">YouTube</a> |
       <a href="https://twitter.com/yourhandle" target="_blank" style="color:#fff; text-decoration:underline;">Twitter</a>
     </p>
   </footer>
+
+  <script>
+    // Simple search filter for rubrics
+    function filterRubrics() {
+      var input = document.getElementById('searchInput');
+      var filter = input.value.toUpperCase();
+      var ul = document.getElementById("rubricList");
+      var li = ul.getElementsByTagName('li');
+
+      for (var i = 0; i < li.length; i++) {
+        var a = li[i].getElementsByTagName("a")[0];
+        var txtValue = a.textContent || a.innerText;
+        li[i].style.display = (txtValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+      }
+    }
+  </script>
 </body>
 </html>
