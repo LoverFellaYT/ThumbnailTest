@@ -35,6 +35,7 @@
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
       }
 
+      /* Dark mode */
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
         --text-light: #f3f3f3;
@@ -46,18 +47,22 @@
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
       }
 
+      /* Body with a subtle starry (pixie dust) background */
       body {
         margin: 0;
         padding: 0;
         font-family: 'Roboto', system-ui, -apple-system, sans-serif;
-        background: var(--bg-light);
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
+        background-size: 30px 30px;
         color: var(--text-light);
         transition: var(--transition);
       }
+
       button:focus,
       [tabindex]:focus {
         outline: 2px solid var(--accent-light);
       }
+
       /* Panels */
       .glass-panel {
         background: var(--panel-light);
@@ -69,7 +74,8 @@
         padding: 1rem;
         margin-bottom: 1rem;
       }
-      /* HEADER */
+
+      /* HEADER with Disney-inspired golden glow */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -79,7 +85,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        animation: disneyMagic 3s infinite alternate;
       }
+      @keyframes disneyMagic {
+        from { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        to { box-shadow: 0 0 30px rgba(255,215,0,1); }
+      }
+
       .header-left {
         display: flex;
         flex-direction: column;
@@ -96,7 +108,7 @@
         cursor: default;
       }
       .total-score:hover::after {
-        content: "Your video editing is rated on 12 factors, each up to 4 points, for a total of 48. \A  41–48: Outstanding \A  33–40: Excellent \A  25–32: Great \A  <25: Good";
+        content: "Your video editing is rated on 10 factors, each up to 4 points, for a total of 40.\A31–40: Outstanding\A21–30: Excellent\A11–20: Great\A<11: Good";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -184,21 +196,24 @@
       input#darkModeToggle:checked + .dark-mode-slider {
         background-color: var(--primary-light);
       }
-      /* New Quote & Fun Fact Sections */
-      .quote-section, .fun-fact-section {
+
+      /* Quote Section (at the top) with fade-in animation */
+      .quote-section {
         text-align: center;
-        margin: 1rem 0;
+        margin: 1rem auto;
         font-style: italic;
         padding: 0.5rem;
         background: var(--panel-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         animation: fadeIn 0.8s ease-in-out;
+        max-width: 800px;
       }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
       }
+
       /* MAIN CONTAINER */
       .analyzer-container {
         width: 95%;
@@ -206,6 +221,7 @@
         margin: 2rem auto;
         padding: 0 1rem 2rem;
       }
+
       /* Rubric Table */
       .rubric-table {
         margin-bottom: 1rem;
@@ -229,12 +245,11 @@
         backdrop-filter: blur(10px);
         z-index: 10;
       }
-      /* First header uses blue gradient */
       .modern-table thead th:first-child {
         background: var(--gradient-light);
         color: #fff;
       }
-      /* Color‑coding for rating columns */
+      /* Rating columns */
       .modern-table thead th:nth-child(2) { background: #f87171; }
       .modern-table thead th:nth-child(3) { background: #fb923c; }
       .modern-table thead th:nth-child(4) { background: #facc15; }
@@ -258,7 +273,8 @@
       .category-header {
         font-weight: bold;
       }
-      /* Feedback Panel */
+
+      /* FEEDBACK PANEL */
       .feedback-panel h3 {
         margin-top: 0;
       }
@@ -294,6 +310,7 @@
         content: attr(data-placeholder);
         color: #9ca3af;
       }
+
       /* Legend & Definitions */
       #toggleLegend {
         margin: 0.5rem 0;
@@ -321,6 +338,7 @@
       #legend h4 {
         margin-top: 0;
       }
+
       /* MODAL: How-To & Tutorial */
       .modal-bg {
         position: fixed;
@@ -365,6 +383,20 @@
       .close-btn:hover {
         background: rgba(255, 255, 255, 1);
       }
+
+      /* Fun Fact Section at the bottom */
+      .fun-fact-section {
+        text-align: center;
+        margin: 1rem auto;
+        font-style: italic;
+        padding: 0.5rem;
+        background: var(--panel-light);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        animation: fadeIn 0.8s ease-in-out;
+        max-width: 800px;
+      }
+
       /* RESPONSIVE */
       @media (max-width: 992px) {
         .analyzer-container {
@@ -377,8 +409,8 @@
     <!-- HEADER -->
     <header class="analyzer-header glass-panel">
       <div class="header-left">
-        <div class="total-score" title="Your video editing is rated on 12 factors, each up to 4 points, for a total of 48. 41–48: Outstanding, 33–40: Excellent, 25–32: Great, <25: Good">
-          Score: <span id="total">0</span>/48 – <span id="scoreLabel">Good</span>
+        <div class="total-score" title="Your video editing is rated on 10 factors, each up to 4 points, for a total of 40. 31–40: Outstanding, 21–30: Excellent, 11–20: Great, <11: Good">
+          Score: <span id="total">0</span>/40 – <span id="scoreLabel">Good</span>
         </div>
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
@@ -402,12 +434,9 @@
       </div>
     </header>
 
-    <!-- QUOTE & FUN FACT SECTIONS -->
+    <!-- QUOTE OF WISDOM SECTION (Top) -->
     <div class="quote-section glass-panel" id="quoteSection">
-      <!-- A random editor's quote will appear here -->
-    </div>
-    <div class="fun-fact-section glass-panel" id="funFactSection">
-      <!-- A random fun fact or tip will appear here -->
+      <!-- A random inspirational quote will appear here -->
     </div>
 
     <!-- MAIN CONTAINER -->
@@ -426,151 +455,151 @@
             </tr>
           </thead>
           <tbody>
-            <!-- 1. Narrative Flow & Storytelling -->
+            <!-- 0. Overall Impact -->
             <tr>
-              <td class="category-header" data-category="0"><strong>🎬 Narrative Flow & Storytelling</strong></td>
+              <td class="category-header" data-category="0"><strong>🌟 Overall Impact</strong></td>
               <td data-category="0" data-rating="1" role="button" tabindex="0">
-                The video has a general structure but suffers from frequent logical gaps or abrupt scene changes that make the story unclear.
+                Meets basic requirements but lacks significant emotional or creative impact.
               </td>
               <td data-category="0" data-rating="2" role="button" tabindex="0">
-                The video follows a recognizable structure with occasional lapses in clarity and flow.
+                An engaging edit that supports the video’s purpose with noticeable creative effort.
               </td>
               <td data-category="0" data-rating="3" role="button" tabindex="0">
-                The narrative is engaging, with clear sequencing and transitions that support the story.
+                Highly effective editing that engages the viewer and enhances the content’s impact.
               </td>
               <td data-category="0" data-rating="4" role="button" tabindex="0">
+                Masterful editing that captivates the audience, evokes strong emotions, and drives action.
+              </td>
+            </tr>
+            <!-- 1. Narrative Flow & Storytelling -->
+            <tr>
+              <td class="category-header" data-category="1"><strong>🎬 Narrative Flow & Storytelling</strong></td>
+              <td data-category="1" data-rating="1" role="button" tabindex="0">
+                The video has a general structure but suffers from frequent logical gaps or abrupt scene changes that make the story unclear.
+              </td>
+              <td data-category="1" data-rating="2" role="button" tabindex="0">
+                The narrative follows a recognizable structure with occasional lapses in clarity.
+              </td>
+              <td data-category="1" data-rating="3" role="button" tabindex="0">
+                The narrative is engaging, with clear sequencing and transitions that support the story.
+              </td>
+              <td data-category="1" data-rating="4" role="button" tabindex="0">
                 The narrative flows seamlessly, captivating the audience with a well-structured and emotionally engaging story.
               </td>
             </tr>
             <!-- 2. Cutting & Transitions -->
             <tr>
-              <td class="category-header" data-category="1"><strong>✂️ Cutting & Transitions</strong></td>
-              <td data-category="1" data-rating="1" role="button" tabindex="0">
+              <td class="category-header" data-category="2"><strong>✂️ Cutting & Transitions</strong></td>
+              <td data-category="2" data-rating="1" role="button" tabindex="0">
                 Cuts are basic and sometimes jarring, disrupting the viewing experience.
               </td>
-              <td data-category="1" data-rating="2" role="button" tabindex="0">
+              <td data-category="2" data-rating="2" role="button" tabindex="0">
                 Cuts generally complement the narrative flow with few noticeable disruptions.
               </td>
-              <td data-category="1" data-rating="3" role="button" tabindex="0">
+              <td data-category="2" data-rating="3" role="button" tabindex="0">
                 Transitions are smooth and effectively enhance the pacing and continuity.
               </td>
-              <td data-category="1" data-rating="4" role="button" tabindex="0">
+              <td data-category="2" data-rating="4" role="button" tabindex="0">
                 Cuts are executed with precision, employing creative transitions that elevate the overall edit.
               </td>
             </tr>
-            <!-- 3. Audio Quality & Synchronization -->
+            <!-- 3. Pacing & Timing -->
             <tr>
-              <td class="category-header" data-category="2"><strong>🔊 Audio Quality & Synchronization</strong></td>
-              <td data-category="2" data-rating="1" role="button" tabindex="0">
-                Audio is serviceable but may have issues such as background noise, slight echo, or inconsistent volume.
-              </td>
-              <td data-category="2" data-rating="2" role="button" tabindex="0">
-                Audio is clear with minimal background noise and generally good synchronization, though slight inconsistencies exist.
-              </td>
-              <td data-category="2" data-rating="3" role="button" tabindex="0">
-                Audio is professionally mixed with clear vocals, balanced EQ, and flawless synchronization.
-              </td>
-              <td data-category="2" data-rating="4" role="button" tabindex="0">
-                Audio is broadcast-quality with dynamic sound design, perfect sync, and exceptional clarity.
-              </td>
-            </tr>
-            <!-- 4. Visual Effects & Graphics -->
-            <tr>
-              <td class="category-header" data-category="3"><strong>🎨 Visual Effects & Graphics</strong></td>
+              <td class="category-header" data-category="3"><strong>⏱️ Pacing & Timing</strong></td>
               <td data-category="3" data-rating="1" role="button" tabindex="0">
-                Graphics are minimal—basic text, simple lower-thirds, or color overlays that do little to enhance the visual experience.
+                Pacing is uneven, with scenes that feel rushed or dragged out.
               </td>
               <td data-category="3" data-rating="2" role="button" tabindex="0">
-                Effective use of text, lower-thirds, and simple overlays that support the content.
+                Generally consistent pacing with minor timing issues in scene transitions.
               </td>
               <td data-category="3" data-rating="3" role="button" tabindex="0">
-                High-quality effects and graphics enhance the storytelling without distraction.
+                Pacing is well-managed with effective scene lengths that maintain viewer interest.
               </td>
               <td data-category="3" data-rating="4" role="button" tabindex="0">
-                Cinematic visual effects and innovative graphics elevate the production to an exceptional level.
+                Exemplary pacing and timing keep the audience engaged throughout with perfect scene rhythm.
               </td>
             </tr>
-            <!-- 5. Color Grading & Visual Consistency -->
+            <!-- 4. Technical Quality & Export -->
             <tr>
-              <td class="category-header" data-category="4"><strong>🎞️ Color Grading & Visual Consistency</strong></td>
+              <td class="category-header" data-category="4"><strong>💻 Technical Quality & Export</strong></td>
               <td data-category="4" data-rating="1" role="button" tabindex="0">
-                Basic color correction with inconsistent lighting and mood.
-              </td>
-              <td data-category="4" data-rating="2" role="button" tabindex="0">
-                Consistent grading that improves the visual tone, though slight variations in lighting persist.
-              </td>
-              <td data-category="4" data-rating="3" role="button" tabindex="0">
-                Professional color grading that enhances mood, with strong brand and palette consistency.
-              </td>
-              <td data-category="4" data-rating="4" role="button" tabindex="0">
-                Flawless grading with perfect lighting continuity and a compelling, consistent visual style.
-              </td>
-            </tr>
-            <!-- 6. Technical Quality & Export -->
-            <tr>
-              <td class="category-header" data-category="5"><strong>💻 Technical Quality & Export</strong></td>
-              <td data-category="5" data-rating="1" role="button" tabindex="0">
                 Resolution and export are acceptable but may exhibit compression artifacts, aspect ratio issues, or frame rate inconsistencies.
               </td>
-              <td data-category="5" data-rating="2" role="button" tabindex="0">
+              <td data-category="4" data-rating="2" role="button" tabindex="0">
                 Good resolution and export quality with only minor technical imperfections.
               </td>
-              <td data-category="5" data-rating="3" role="button" tabindex="0">
+              <td data-category="4" data-rating="3" role="button" tabindex="0">
                 High-quality export meeting industry standards, with correct aspect ratio and no visible artifacts.
               </td>
-              <td data-category="5" data-rating="4" role="button" tabindex="0">
+              <td data-category="4" data-rating="4" role="button" tabindex="0">
                 Exceptional technical quality with pristine resolution, flawless export, and consistent frame rate.
               </td>
             </tr>
-            <!-- 7. Overall Impact -->
+            <!-- 5. Story/Content Engagement -->
             <tr>
-              <td class="category-header" data-category="6"><strong>🌟 Overall Impact</strong></td>
-              <td data-category="6" data-rating="1" role="button" tabindex="0">
-                Meets basic requirements but lacks significant emotional or creative impact.
-              </td>
-              <td data-category="6" data-rating="2" role="button" tabindex="0">
-                An engaging edit that supports the video’s purpose with noticeable creative effort.
-              </td>
-              <td data-category="6" data-rating="3" role="button" tabindex="0">
-                Highly effective editing that engages the viewer and enhances the content’s impact.
-              </td>
-              <td data-category="6" data-rating="4" role="button" tabindex="0">
-                Masterful editing that captivates the audience, evokes strong emotions, and drives action.
-              </td>
-            </tr>
-            <!-- 8. Story/Content Engagement -->
-            <tr>
-              <td class="category-header" data-category="7"><strong>📖 Story/Content Engagement</strong></td>
-              <td data-category="7" data-rating="1" role="button" tabindex="0">
+              <td class="category-header" data-category="5"><strong>📖 Story/Content Engagement</strong></td>
+              <td data-category="5" data-rating="1" role="button" tabindex="0">
                 Content is passable but fails to fully engage the viewer or clarify the core message.
               </td>
-              <td data-category="7" data-rating="2" role="button" tabindex="0">
+              <td data-category="5" data-rating="2" role="button" tabindex="0">
                 The video content is engaging with a clear message, though it may lack depth.
               </td>
-              <td data-category="7" data-rating="3" role="button" tabindex="0">
+              <td data-category="5" data-rating="3" role="button" tabindex="0">
                 Content is compelling and resonates with the target audience, delivering a clear message.
               </td>
-              <td data-category="7" data-rating="4" role="button" tabindex="0">
+              <td data-category="5" data-rating="4" role="button" tabindex="0">
                 Exceptionally engaging content that deeply resonates, inspires, and holds the audience’s attention.
               </td>
             </tr>
-            <!-- 9. Use of Music & Sound Design -->
+            <!-- 6. Use of Music & Sound Design -->
             <tr>
-              <td class="category-header" data-category="8"><strong>🎵 Use of Music & Sound Design</strong></td>
-              <td data-category="8" data-rating="1" role="button" tabindex="0">
+              <td class="category-header" data-category="6"><strong>🎵 Use of Music & Sound Design</strong></td>
+              <td data-category="6" data-rating="1" role="button" tabindex="0">
                 Background music and sound effects are present but may be poorly balanced or distracting.
               </td>
-              <td data-category="8" data-rating="2" role="button" tabindex="0">
+              <td data-category="6" data-rating="2" role="button" tabindex="0">
                 Music and sound design enhance the video moderately, with only minor balance issues.
               </td>
-              <td data-category="8" data-rating="3" role="button" tabindex="0">
+              <td data-category="6" data-rating="3" role="button" tabindex="0">
                 Sound design is thoughtfully integrated, with well-chosen music and balanced effects.
               </td>
-              <td data-category="8" data-rating="4" role="button" tabindex="0">
+              <td data-category="6" data-rating="4" role="button" tabindex="0">
                 Exemplary use of music and sound design that elevates the emotional and narrative impact.
               </td>
             </tr>
-            <!-- 10. On-Screen Text and Titles -->
+            <!-- 7. Visual Effects & Graphics -->
+            <tr>
+              <td class="category-header" data-category="7"><strong>🎨 Visual Effects & Graphics</strong></td>
+              <td data-category="7" data-rating="1" role="button" tabindex="0">
+                Graphics are minimal—basic text, simple lower-thirds, or color overlays that do little to enhance the visual experience.
+              </td>
+              <td data-category="7" data-rating="2" role="button" tabindex="0">
+                Effective use of text, lower-thirds, and simple overlays that support the content.
+              </td>
+              <td data-category="7" data-rating="3" role="button" tabindex="0">
+                High-quality effects and graphics enhance the storytelling without distraction.
+              </td>
+              <td data-category="7" data-rating="4" role="button" tabindex="0">
+                Cinematic visual effects and innovative graphics elevate the production to an exceptional level.
+              </td>
+            </tr>
+            <!-- 8. Motion Graphics / Animated Elements -->
+            <tr>
+              <td class="category-header" data-category="8"><strong>✨ Motion Graphics / Animated Elements</strong></td>
+              <td data-category="8" data-rating="1" role="button" tabindex="0">
+                Motion graphics are minimal or rudimentary, lacking creative flair.
+              </td>
+              <td data-category="8" data-rating="2" role="button" tabindex="0">
+                Animated elements are used effectively but may be basic in style.
+              </td>
+              <td data-category="8" data-rating="3" role="button" tabindex="0">
+                Motion graphics are creative and enhance the visual storytelling.
+              </td>
+              <td data-category="8" data-rating="4" role="button" tabindex="0">
+                Innovative animated elements add a dynamic, polished feel to the edit.
+              </td>
+            </tr>
+            <!-- 9. On-Screen Text & Titles -->
             <tr>
               <td class="category-header" data-category="9"><strong>📝 On-Screen Text & Titles</strong></td>
               <td data-category="9" data-rating="1" role="button" tabindex="0">
@@ -586,55 +615,21 @@
                 Exemplary use of text and titles that are stylistically consistent, clear, and contribute powerfully to the overall message.
               </td>
             </tr>
-            <!-- 11. Use of Motion Graphics / Animated Elements -->
-            <tr>
-              <td class="category-header" data-category="10"><strong>✨ Motion Graphics / Animated Elements</strong></td>
-              <td data-category="10" data-rating="1" role="button" tabindex="0">
-                Motion graphics are minimal or rudimentary, lacking creative flair.
-              </td>
-              <td data-category="10" data-rating="2" role="button" tabindex="0">
-                Animated elements are used effectively but may be basic in style.
-              </td>
-              <td data-category="10" data-rating="3" role="button" tabindex="0">
-                Motion graphics are creative and enhance the visual storytelling.
-              </td>
-              <td data-category="10" data-rating="4" role="button" tabindex="0">
-                Innovative animated elements add a dynamic, polished feel to the edit.
-              </td>
-            </tr>
-            <!-- 12. Pacing and Timing -->
-            <tr>
-              <td class="category-header" data-category="11"><strong>⏱️ Pacing & Timing</strong></td>
-              <td data-category="11" data-rating="1" role="button" tabindex="0">
-                Pacing is uneven, with scenes that feel rushed or dragged out.
-              </td>
-              <td data-category="11" data-rating="2" role="button" tabindex="0">
-                Generally consistent pacing with minor timing issues in scene transitions.
-              </td>
-              <td data-category="11" data-rating="3" role="button" tabindex="0">
-                Pacing is well-managed with effective scene lengths that maintain viewer interest.
-              </td>
-              <td data-category="11" data-rating="4" role="button" tabindex="0">
-                Exemplary pacing and timing keep the audience engaged throughout with perfect scene rhythm.
-              </td>
-            </tr>
           </tbody>
         </table>
         <button id="toggleLegend" onclick="toggleLegend()">Show Legend & Definitions</button>
         <div id="legend">
           <h4>Legend & Definitions</h4>
+          <p><strong>Overall Impact:</strong> Measures viewer engagement, emotional resonance, creative flair, and call-to-action strength.</p>
           <p><strong>Narrative Flow & Storytelling:</strong> Evaluates the overall structure and clarity of the story.</p>
           <p><strong>Cutting & Transitions:</strong> Assesses how seamlessly cuts and transitions support the narrative.</p>
-          <p><strong>Audio Quality & Synchronization:</strong> Reviews clarity, background noise, EQ/mixing, and sync with visuals.</p>
-          <p><strong>Visual Effects & Graphics:</strong> Considers the use of text, lower-thirds, overlays, and other graphic elements.</p>
-          <p><strong>Color Grading & Visual Consistency:</strong> Examines lighting, color correction, brand consistency, and mood setting.</p>
+          <p><strong>Pacing & Timing:</strong> Measures the tempo and rhythm of the edit, ensuring scenes maintain engagement.</p>
           <p><strong>Technical Quality & Export:</strong> Evaluates resolution, aspect ratio, absence of compression artifacts, and frame rate consistency.</p>
-          <p><strong>Overall Impact:</strong> Measures viewer engagement, emotional resonance, creative flair, and call-to-action strength.</p>
           <p><strong>Story/Content Engagement:</strong> Assesses how compelling and resonant the content is with its target audience.</p>
-          <p><strong>Use of Music & Sound Design:</strong> Reviews how background music, sound effects, and overall sonic design enhance the edit.</p>
-          <p><strong>On-Screen Text & Titles:</strong> Evaluates the clarity, style, and contribution of on-screen text to the overall message.</p>
-          <p><strong>Motion Graphics / Animated Elements:</strong> Assesses the creativity and effectiveness of animated graphics.</p>
-          <p><strong>Pacing & Timing:</strong> Measures the tempo of the edit and how well the scene lengths maintain engagement.</p>
+          <p><strong>Use of Music & Sound Design:</strong> Reviews how background music and sound effects enhance the edit.</p>
+          <p><strong>Visual Effects & Graphics:</strong> Considers the use of text, lower-thirds, overlays, and overall graphic polish.</p>
+          <p><strong>Motion Graphics / Animated Elements:</strong> Assesses the creativity and effectiveness of animated elements.</p>
+          <p><strong>On-Screen Text & Titles:</strong> Evaluates clarity, style, and how well on-screen text supports the message.</p>
           <h5>Rating Levels</h5>
           <ul>
             <li><strong>Good (1):</strong> Meets basic requirements but with noticeable shortcomings.</li>
@@ -659,6 +654,11 @@
       </section>
     </div>
 
+    <!-- FUN FACT SECTION (Bottom) -->
+    <div class="fun-fact-section glass-panel" id="funFactSection">
+      <!-- A random fun fact or tip will appear here -->
+    </div>
+
     <!-- HOW-TO MODAL -->
     <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
       <div class="modal-content">
@@ -667,7 +667,7 @@
         <ul>
           <li>Review each editing criterion by clicking on the appropriate rating cell.</li>
           <li>The total score and status update live as you select ratings.</li>
-          <li>Read the daily editor’s wisdom and fun tip for inspiration.</li>
+          <li>Read the daily quote of wisdom for inspiration and a touch of Disney magic.</li>
           <li>Provide additional feedback in the Human and AI feedback boxes.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
@@ -693,42 +693,55 @@
        ***************************************************/
       let scores = {};
       let confettiShown = false;
-      let milestoneTriggered = {}; // Track milestones for 12-factor scoring
+      let milestoneTriggered = {}; // For 10-factor scoring (max score = 40)
       const milestoneMessages = {
-        12: "Initial review complete!",
-        24: "Halfway to perfection!",
-        36: "Almost there—great editing!",
-        48: "Editing Master: Outstanding work!"
+        10: "Initial review complete!",
+        20: "Halfway to perfection!",
+        30: "Almost there—great editing!",
+        40: "Editing Master: Outstanding work!"
       };
       const progressAudio = {
         victory: document.getElementById("victorySound"),
         womp: document.getElementById("wompSound")
       };
 
-      // Array of inspirational editor quotes
+      // Array of inspirational quotes (including famous editors and Disney wisdom)
       const editorQuotes = [
         "“In film editing, it's not about what you add, it's about what you leave out.” – Walter Murch",
         "“Cutting is rewriting.” – Thelma Schoonmaker",
         "“Editing is where the magic happens.” – Unknown",
         "“Good editing is invisible; great editing is felt.” – Unknown",
-        "“In editing, less is often more.” – Unknown"
+        "“In editing, less is often more.” – Unknown",
+        "“All our dreams can come true if we have the courage to pursue them.” – Walt Disney",
+        "“It's kind of fun to do the impossible.” – Walt Disney",
+        "“The past can hurt. But the way I see it, you can either run from it, or learn from it.” – Rafiki, The Lion King"
       ];
+
       // Array of fun facts and tips
       const funFacts = [
         "Did you know? 'Apocalypse Now' went through over 80 different edits before the final cut!",
         "Fun Tip: Trust your gut—if a cut feels off, try a different approach.",
-        "Did you know? Great editing can transform even mundane footage into cinematic art.",
-        "Fun Fact: Sometimes, a well-timed pause speaks louder than action-packed sequences.",
-        "Tip: Experiment with transitions—creative cuts can set your edit apart!"
+        "Great editing can transform mundane footage into cinematic art.",
+        "Sometimes, a well-timed pause speaks louder than action-packed sequences.",
+        "Experiment with transitions—creative cuts can set your edit apart!"
       ];
 
       /***************************************************
        * DOMContentLoaded Setup
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        // Set a random quote and fun fact
-        document.getElementById("quoteSection").innerText = editorQuotes[Math.floor(Math.random() * editorQuotes.length)];
+        // Set a random inspirational quote, ensuring it's different from the last one
+        const lastQuote = localStorage.getItem("lastQuoteIndex");
+        let newQuoteIndex;
+        do {
+          newQuoteIndex = Math.floor(Math.random() * editorQuotes.length);
+        } while (editorQuotes.length > 1 && newQuoteIndex == lastQuote);
+        localStorage.setItem("lastQuoteIndex", newQuoteIndex);
+        document.getElementById("quoteSection").innerText = editorQuotes[newQuoteIndex];
+
+        // Set a random fun fact (no repeat-check needed here)
         document.getElementById("funFactSection").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
+
         // Event delegation for rubric table cells:
         document.querySelector('.modern-table').addEventListener('click', (e) => {
           const cell = e.target.closest('td[data-rating]');
@@ -756,20 +769,20 @@
         let total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const scoreLabel = document.getElementById('scoreLabel');
-        // Update overall status based on thresholds (max score = 48)
-        if (Object.keys(scores).length < 12) {
+        // Check if all 10 factors have been rated
+        if (Object.keys(scores).length < 10) {
           document.getElementById('ranking').textContent = 'Incomplete';
           document.getElementById('ranking').style.color = '#64748b';
-        } else if (total < 25) {
+        } else if (total < 11) {
           scoreLabel.textContent = "Good";
           document.getElementById('ranking').textContent = 'Needs Work 🔴';
           document.getElementById('ranking').style.color = '#ef4444';
           progressAudio.womp.play && progressAudio.womp.play();
-        } else if (total < 33) {
+        } else if (total < 21) {
           scoreLabel.textContent = "Great";
           document.getElementById('ranking').textContent = 'Great! 🟢';
           document.getElementById('ranking').style.color = '#22c55e';
-        } else if (total < 41) {
+        } else if (total < 31) {
           scoreLabel.textContent = "Excellent";
           document.getElementById('ranking').textContent = 'Excellent 🟡';
           document.getElementById('ranking').style.color = '#eab308';
@@ -787,8 +800,8 @@
       }
 
       function updateProgressBar(total) {
-        const percentage = (total / 48) * 100;
-        // (Optional: You could update a visual progress bar if added to the UI)
+        const percentage = (total / 40) * 100;
+        // (Optional: update a visual progress bar if added to the UI)
         const milestoneDiv = document.getElementById("milestoneMessage");
         if (milestoneMessages[total] && !milestoneTriggered[total]) {
           if (milestoneDiv) {
@@ -831,7 +844,7 @@
       }
 
       /***************************************************
-       * Theme & Toggle Functions
+       * Theme & Modal Functions
        ***************************************************/
       function toggleTheme(input) {
         const html = document.documentElement;
@@ -841,10 +854,6 @@
           html.removeAttribute("data-theme");
         }
       }
-
-      /***************************************************
-       * Modal Functions (How-To & Tutorial)
-       ***************************************************/
       function openHowTo() {
         document.getElementById('howToModal').classList.add('show');
       }
@@ -862,8 +871,6 @@
           content = "<h2>Audio Synchronization</h2><p>Ensure that audio tracks match the visuals seamlessly. Use proper mixing, EQ, and balance sound levels.</p>";
         } else if (topic === 'effects') {
           content = "<h2>Visual Effects & Graphics</h2><p>Integrate effects and graphics that complement the story without overwhelming it.</p>";
-        } else if (topic === 'color') {
-          content = "<h2>Color Grading</h2><p>Apply consistent color correction and grading to set the mood and maintain visual cohesion.</p>";
         } else if (topic === 'technical') {
           content = "<h2>Technical Quality</h2><p>Export in high resolution with proper compression to preserve quality across devices.</p>";
         } else if (topic === 'overall') {
@@ -877,10 +884,6 @@
       function closeTutorial() {
         document.getElementById('tutorialModal').classList.remove('show');
       }
-
-      /***************************************************
-       * Legend Toggle Function
-       ***************************************************/
       function toggleLegend() {
         const legend = document.getElementById("legend");
         const btn = document.getElementById("toggleLegend");
