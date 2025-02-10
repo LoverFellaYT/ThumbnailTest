@@ -100,8 +100,6 @@
     }
     section:nth-of-type(1) { animation-delay: 0.3s; }
     section:nth-of-type(2) { animation-delay: 0.5s; }
-    section:nth-of-type(3) { animation-delay: 0.7s; }
-    section:nth-of-type(4) { animation-delay: 0.9s; }
     section h2 {
       text-align: center;
       margin-bottom: 1rem;
@@ -178,37 +176,6 @@
       transform: translateY(-2px);
     }
     
-    /* Form Elements */
-    form {
-      display: grid;
-      gap: 1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    form label {
-      font-weight: 600;
-    }
-    form input[type="text"],
-    form textarea {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-      transition: border 0.3s ease;
-    }
-    form input[type="text"]:focus,
-    form textarea:focus {
-      outline: none;
-      border-color: #4A90E2;
-    }
-    form input[type="submit"] {
-      width: fit-content;
-      margin: 0 auto;
-      cursor: pointer;
-      border: none;
-    }
-    
     /* Footer */
     footer {
       background: #34495e;
@@ -266,9 +233,6 @@
   <nav>
     <a href="#rubrics"><i class="fas fa-film"></i> Rubrics</a>
     <a href="#about"><i class="fas fa-info-circle"></i> About</a>
-    <a href="#featured"><i class="fas fa-star"></i> Featured</a>
-    <a href="#resources"><i class="fas fa-book"></i> Resources</a>
-    <a href="#feedback"><i class="fas fa-comment"></i> Feedback</a>
     <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
   </nav>
 
@@ -312,55 +276,6 @@
           </a>
         </li>
       </ul>
-    </section>
-
-    <!-- Featured Reviews Section -->
-    <section id="featured">
-      <h2>Featured Reviews</h2>
-      <p>Check out our latest and most popular reviews for some inspiration!</p>
-      <ul class="rubrics-list">
-        <li>
-          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
-            <i class="fas fa-star"></i> Featured Thumbnail Review
-          </a>
-        </li>
-        <!-- More featured items can be added here -->
-      </ul>
-    </section>
-
-    <!-- Additional Resources Section -->
-    <section id="resources">
-      <h2>Additional Resources</h2>
-      <p>
-        Explore related tutorials, guides, and blog posts to further enhance your video production skills.
-      </p>
-      <ul class="rubrics-list">
-        <li>
-          <a class="rubric-link" href="https://example.com/tutorial1" target="_blank">
-            <i class="fas fa-chalkboard-teacher"></i> Creating Engaging Thumbnails
-          </a>
-        </li>
-        <li>
-          <a class="rubric-link" href="https://example.com/blog-post" target="_blank">
-            <i class="fas fa-pen-fancy"></i> Storytelling in Video Content
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <!-- Feedback Section -->
-    <section id="feedback">
-      <h2>Feedback</h2>
-      <p>
-        We value your feedback! Let us know how we can improve our rubrics.
-      </p>
-      <form id="feedbackForm" action="mailto:your-email@example.com" method="post" enctype="text/plain">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="feedbackText">Feedback:</label>
-        <textarea id="feedbackText" name="feedbackText" rows="4" required></textarea>
-        <input type="submit" class="btn" value="Submit Feedback">
-      </form>
     </section>
   </div>
 
