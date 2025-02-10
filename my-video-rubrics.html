@@ -26,12 +26,6 @@
       color: inherit;
     }
     
-    /* Logo styling */
-    .logo {
-      max-width: 100px;
-      margin-bottom: 1rem;
-    }
-    
     /* Header & Hero */
     header {
       background: linear-gradient(135deg, #FF3B30, #C41C00);
@@ -40,7 +34,7 @@
       text-align: center;
       position: relative;
       overflow: hidden;
-      cursor: pointer; /* Indicates interactivity for the easter egg */
+      cursor: pointer; /* Indicates interactivity for the Easter egg */
     }
     header h1 {
       font-size: 2.75rem;
@@ -105,9 +99,12 @@
       transform: translateY(20px);
       animation: fadeInUp 0.8s ease forwards;
     }
+    /* Stagger animation delays for successive sections */
     section:nth-of-type(1) { animation-delay: 0.3s; }
     section:nth-of-type(2) { animation-delay: 0.5s; }
     section:nth-of-type(3) { animation-delay: 0.7s; }
+    section:nth-of-type(4) { animation-delay: 0.9s; }
+    section:nth-of-type(5) { animation-delay: 1.1s; }
     section h2 {
       text-align: center;
       margin-bottom: 1rem;
@@ -139,7 +136,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     
-    /* Rubrics and Data List using CSS Grid */
+    /* List Styles for Rubrics and Similar Sections */
     .rubrics-list {
       list-style: none;
       display: grid;
@@ -169,20 +166,10 @@
     .rubric-link:hover {
       background: #f7f7f7;
     }
-    
-    /* Button Style (if needed) */
-    .btn {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: #FF3B30;
-      color: #fff;
-      border-radius: 50px;
-      transition: background 0.3s ease, transform 0.3s ease;
-      font-weight: 600;
-    }
-    .btn:hover {
-      background: #E02B24;
-      transform: translateY(-2px);
+    /* Disabled style for under-construction sections */
+    .rubric-link.disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
     }
     
     /* Footer */
@@ -235,8 +222,6 @@
 </head>
 <body>
   <header>
-    <!-- Placeholder for LoverFella Logo; update the src to your actual logo file -->
-    <img src="loverfella-logo.png" alt="LoverFella Logo" class="logo">
     <h1>LoverFella Dashboard</h1>
     <p>Your ultimate hub for professional video reviews and custom analytics</p>
   </header>
@@ -267,23 +252,23 @@
       <h2>Video Rubrics</h2>
       <ul class="rubrics-list" id="rubricList">
         <li>
+          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/ideas" target="_blank">
+            <i class="fas fa-lightbulb"></i> Ideas
+          </a>
+        </li>
+        <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
-            <i class="fas fa-image"></i> Thumbnail Reviews
+            <i class="fas fa-image"></i> Thumbnails
           </a>
         </li>
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/story" target="_blank">
-            <i class="fas fa-book-open"></i> Story Reviews
+            <i class="fas fa-book-open"></i> Story
           </a>
         </li>
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/video-review" target="_blank">
-            <i class="fas fa-video"></i> Editing Reviews
-          </a>
-        </li>
-        <li>
-          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/ideas" target="_blank">
-            <i class="fas fa-lightbulb"></i> Idea Reviews
+            <i class="fas fa-video"></i> Editing
           </a>
         </li>
       </ul>
@@ -300,6 +285,30 @@
         </li>
       </ul>
     </section>
+
+    <!-- Talent Section (Under Construction) -->
+    <section id="talent">
+      <h2>Talent</h2>
+      <ul class="rubrics-list">
+        <li>
+          <div class="rubric-link disabled">
+            <i class="fas fa-user"></i> Talent (Under Construction)
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Merchandise Section (Under Construction) -->
+    <section id="merchandise">
+      <h2>Merchandise</h2>
+      <ul class="rubrics-list">
+        <li>
+          <div class="rubric-link disabled">
+            <i class="fas fa-shopping-cart"></i> Merchandise (Under Construction)
+          </div>
+        </li>
+      </ul>
+    </section>
   </div>
 
   <footer>
@@ -307,7 +316,6 @@
       "The only limit to your impact is your imagination and commitment."
     </blockquote>
     <p>— Tony Robbins</p>
-    <p style="font-size:0.8rem; margin-top:1rem;">Easter Egg: Double-click the header title or enter the Konami Code!</p>
   </footer>
 
   <script>
@@ -329,8 +337,7 @@
       alert("Easter Egg Activated: You're awesome! Keep making greatness happen!");
     });
 
-    // Konami Code Easter Egg
-    // Konami code sequence: up, up, down, down, left, right, left, right, B, A
+    // Konami Code Easter Egg (hidden feature)
     const konamiCode = [38,38,40,40,37,39,37,39,66,65];
     let konamiIndex = 0;
     document.addEventListener('keydown', function(e) {
