@@ -83,6 +83,13 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.5rem;
     }
+    /* Updated header: maximum score now displays as /56 */
+    .total-score span#total::after {
+      content: "/56";
+      margin-left: 0.25rem;
+      font-weight: normal;
+      color: var(--muted);
+    }
     .progress-bar-container {
       width: 100%;
       height: 6px;
@@ -285,7 +292,7 @@
   <header class="analyzer-header">
     <div class="header-left">
       <div class="total-score">
-        Score: <span id="total">0</span>/? 
+        Score: <span id="total">0</span>
         <span id="scoreLabel">Incomplete</span>
       </div>
       <div class="progress-bar-container">
@@ -594,13 +601,14 @@
         ranking.style.color = '#64748b';
         return;
       }
-      if (total <= 40) {
+      // Updated thresholds for maximum score of 56:
+      if (total < 29) {
         ranking.textContent = 'Needs Work 🔴';
         ranking.style.color = 'red';
-      } else if (total <= 60) {
+      } else if (total < 42) {
         ranking.textContent = 'Good Start 🟡';
         ranking.style.color = 'orange';
-      } else if (total <= 80) {
+      } else if (total < 56) {
         ranking.textContent = 'Great! 🟢';
         ranking.style.color = 'yellow';
       } else {
@@ -611,7 +619,7 @@
     }
 
     function updateProgressBar(total) {
-      const percentage = (total / 40) * 100;
+      const percentage = (total / 56) * 100;
       document.getElementById("progressBar").style.width = percentage + "%";
     }
 
@@ -724,7 +732,9 @@
       removeBtn.className = 'remove-btn';
       removeBtn.textContent = "❌";
       removeBtn.title = "Remove this video";
-      removeBtn.addEventListener('click', () => {
+      removeBtn.addEventListener('click', (e) => {
+        // Prevent click event from bubbling to the parent elements.
+        e.stopPropagation();
         thumbContainer.remove();
       });
       thumbContainer.appendChild(removeBtn);
