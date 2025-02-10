@@ -226,14 +226,24 @@
     }
     .video-thumbnail {
       width: 200px;
-      border-radius: var(--radius);
       overflow: hidden;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       transition: var(--transition);
     }
     .video-thumbnail img {
       width: 100%;
+      height: 150px;
+      object-fit: cover; /* This ensures the image covers the container without showing black bars */
       display: block;
+    }
+    .video-title {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .video-thumbnail:hover {
       transform: scale(1.02);
@@ -602,7 +612,7 @@
 
     /***************************************************
      * AI Review Function
-     * Provides three specific improvements for the video and two actionable suggestions.
+     * Reviews ONLY the quick summary (story content) and provides specific, story-focused improvements.
      ***************************************************/
     function runAIReview() {
       const summary = document.getElementById('quickSummary').value.trim();
@@ -612,17 +622,17 @@
         return;
       }
       
-      let reviewHTML = "<h3>AI Video Review</h3>";
+      let reviewHTML = "<h3>AI Story Review</h3>";
       reviewHTML += "<h4>Three Specific Improvements:</h4>";
       reviewHTML += "<ol>";
-      reviewHTML += "<li><strong>Enhance Lighting:</strong> Adjust your lighting setup to reduce harsh shadows and overexposed areas. Use diffused light sources or softboxes to achieve a balanced, natural look.</li>";
-      reviewHTML += "<li><strong>Improve Audio Quality:</strong> Upgrade to a high-quality external microphone and apply noise reduction techniques in post-production to ensure clear, crisp sound.</li>";
-      reviewHTML += "<li><strong>Smooth Editing Transitions:</strong> Incorporate consistent and fluid transitions between scenes. Use crossfades or motion-based effects that match the video’s pace to avoid jarring cuts.</li>";
+      reviewHTML += "<li><strong>Clarify the Conflict:</strong> Specify the central conflict in your story to create a stronger narrative drive.</li>";
+      reviewHTML += "<li><strong>Deepen Character Motivation:</strong> Elaborate on your protagonist's internal struggles and desires to make their journey more compelling.</li>";
+      reviewHTML += "<li><strong>Enhance Narrative Pacing:</strong> Restructure the summary to build tension progressively, ensuring that key turning points are clearly defined.</li>";
       reviewHTML += "</ol>";
       reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
       reviewHTML += "<ol>";
-      reviewHTML += "<li><strong>Add On-screen Captions:</strong> Implement captions to boost accessibility and reinforce key messages throughout the video.</li>";
-      reviewHTML += "<li><strong>Integrate Dynamic B-Roll:</strong> Supplement the main footage with relevant B-roll clips that enhance the storytelling and provide additional visual context.</li>";
+      reviewHTML += "<li><strong>Revise the Opening:</strong> Introduce your main character and their conflict more dynamically to immediately engage your reader.</li>";
+      reviewHTML += "<li><strong>Strengthen the Climax:</strong> Highlight a pivotal moment in your summary that marks a clear turning point in the narrative.</li>";
       reviewHTML += "</ol>";
       
       resultDiv.innerHTML = reviewHTML;
@@ -650,7 +660,6 @@
     /***************************************************
      * Similar Videos Functions
      ***************************************************/
-    // Extract the YouTube video ID from various URL formats.
     function getYouTubeVideoId(url) {
       const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       const match = url.match(regExp);
@@ -669,18 +678,30 @@
         alert('Invalid YouTube URL. Please enter a valid URL.');
         return;
       }
+      // Prompt user for the video title.
+      const title = prompt("Enter the video title:");
+      
       const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+      
+      // Create the clickable thumbnail image.
       const videoLink = document.createElement('a');
       videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
       videoLink.target = '_blank';
       const img = document.createElement('img');
       img.src = thumbnailUrl;
-      img.alt = 'YouTube Video Thumbnail';
+      img.alt = title || 'YouTube Video Thumbnail';
       videoLink.appendChild(img);
       
+      // Create a container for the thumbnail and title.
       const thumbContainer = document.createElement('div');
       thumbContainer.className = 'video-thumbnail';
       thumbContainer.appendChild(videoLink);
+      
+      // Create the title element.
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'video-title';
+      titleDiv.textContent = title || '';
+      thumbContainer.appendChild(titleDiv);
       
       document.getElementById('similarVideosList').appendChild(thumbContainer);
       document.getElementById('youtubeLinkInput').value = '';
