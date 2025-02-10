@@ -4,82 +4,255 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Rubrics Home</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Global Styles */
-    body {
-      font-family: Arial, sans-serif;
+    /* Reset and Base Styles */
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f9f9f9;
+      box-sizing: border-box;
     }
-    header, footer {
-      background-color: #007bff;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      line-height: 1.6;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Header & Hero */
+    header {
+      background: linear-gradient(135deg, #4A90E2, #9013FE);
       color: #fff;
+      padding: 2.5rem 1rem;
       text-align: center;
-      padding: 15px;
+      position: relative;
+      overflow: hidden;
     }
+    header h1 {
+      font-size: 2.75rem;
+      margin-bottom: 0.5rem;
+      animation: fadeInDown 1s ease forwards;
+      opacity: 0;
+    }
+    header p {
+      font-size: 1.2rem;
+      animation: fadeInUp 1s ease forwards;
+      opacity: 0;
+      animation-delay: 0.5s;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+    }
+    
+    /* Navigation */
     nav {
-      background-color: #0056b3;
-      padding: 10px;
-      text-align: center;
+      background: #34495e;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
     }
     nav a {
       color: #fff;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      transition: background 0.3s ease;
     }
+    nav a:hover {
+      background: #2c3e50;
+    }
+    nav a i {
+      margin-right: 8px;
+    }
+    
+    /* Container */
     .container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 0 20px;
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
-    h1, h2, h3 {
+    
+    /* Sections */
+    section {
+      background: #fff;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    section:nth-of-type(1) { animation-delay: 0.3s; }
+    section:nth-of-type(2) { animation-delay: 0.5s; }
+    section:nth-of-type(3) { animation-delay: 0.7s; }
+    section:nth-of-type(4) { animation-delay: 0.9s; }
+    section h2 {
       text-align: center;
-      color: #333;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: #4A90E2;
     }
-    ul {
+    section p {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    /* Search Box */
+    .search-box {
+      max-width: 500px;
+      margin: 1rem auto;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 50px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-size: 1rem;
+      transition: box-shadow 0.3s ease;
+    }
+    .search-box input:focus {
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    /* Rubrics List using CSS Grid */
+    .rubrics-list {
       list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
       padding: 0;
     }
-    li {
-      margin: 15px 0;
+    .rubrics-list li {
+      background: #f9f9f9;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .rubrics-list li:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
     .rubric-link {
       display: block;
-      background-color: #007bff;
-      color: #fff;
-      text-decoration: none;
-      padding: 15px;
+      padding: 1.5rem;
       text-align: center;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
+      font-weight: 600;
+      color: #333;
+      transition: background 0.3s ease;
     }
     .rubric-link:hover {
-      background-color: #0056b3;
+      background: #f0f0f0;
     }
-    .about, .featured, .resources, .feedback {
-      margin: 20px 0;
-      padding: 20px;
-      background-color: #e9ecef;
-      border-radius: 5px;
+    
+    /* Button Style */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #4A90E2;
+      color: #fff;
+      border-radius: 50px;
+      transition: background 0.3s ease, transform 0.3s ease;
+      font-weight: 600;
     }
-    .search-box {
-      max-width: 400px;
-      margin: 0 auto 20px;
-      display: block;
+    .btn:hover {
+      background: #357ABD;
+      transform: translateY(-2px);
     }
-    input[type="text"] {
+    
+    /* Form Elements */
+    form {
+      display: grid;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    form label {
+      font-weight: 600;
+    }
+    form input[type="text"],
+    form textarea {
       width: 100%;
-      padding: 10px;
+      padding: 0.75rem;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border 0.3s ease;
     }
-    /* Responsive Design */
+    form input[type="text"]:focus,
+    form textarea:focus {
+      outline: none;
+      border-color: #4A90E2;
+    }
+    form input[type="submit"] {
+      width: fit-content;
+      margin: 0 auto;
+      cursor: pointer;
+      border: none;
+    }
+    
+    /* Footer */
+    footer {
+      background: #34495e;
+      color: #fff;
+      padding: 1.5rem 0;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: #4A90E2;
+      margin: 0 0.5rem;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #9013FE;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive Navigation */
     @media (max-width: 600px) {
       nav a {
-        display: block;
-        margin: 5px 0;
+        flex: 1 0 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -87,17 +260,16 @@
 <body>
   <header>
     <h1>Video Rubrics Home</h1>
-    <!-- Optional logo can be added below -->
-    <!-- <img src="logo.png" alt="Logo" style="max-width:100px;"> -->
+    <p>Your ultimate hub for professional video reviews and content feedback</p>
   </header>
 
   <nav>
-    <a href="#rubrics">Rubrics</a>
-    <a href="#about">About</a>
-    <a href="#featured">Featured</a>
-    <a href="#resources">Resources</a>
-    <a href="#feedback">Feedback</a>
-    <a href="#contact">Contact</a>
+    <a href="#rubrics"><i class="fas fa-film"></i> Rubrics</a>
+    <a href="#about"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#featured"><i class="fas fa-star"></i> Featured</a>
+    <a href="#resources"><i class="fas fa-book"></i> Resources</a>
+    <a href="#feedback"><i class="fas fa-comment"></i> Feedback</a>
+    <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
   </nav>
 
   <div class="container">
@@ -107,109 +279,110 @@
     </div>
 
     <!-- About Section -->
-    <section id="about" class="about">
+    <section id="about">
       <h2>About This Site</h2>
       <p>
-        Welcome! This site hosts a collection of video review rubrics designed to help you improve your content.
-        Whether you're looking for feedback on thumbnails, storytelling, editing, or ideas, you'll find the right tool here.
+        Welcome! This site hosts a collection of video review rubrics designed to help you enhance your content.
+        Whether you're seeking feedback on thumbnails, storytelling, editing, or ideas, you'll find the perfect tool here.
       </p>
     </section>
 
     <!-- Rubrics Section -->
     <section id="rubrics">
       <h2>Video Rubrics</h2>
-      <ul id="rubricList">
+      <ul class="rubrics-list" id="rubricList">
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
-            Thumbnail Reviews
+            <i class="fas fa-image"></i> Thumbnail Reviews
           </a>
         </li>
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/story" target="_blank">
-            Story Reviews
+            <i class="fas fa-book-open"></i> Story Reviews
           </a>
         </li>
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/video-review" target="_blank">
-            Editing Reviews
+            <i class="fas fa-video"></i> Editing Reviews
           </a>
         </li>
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/ideas" target="_blank">
-            Idea Reviews
+            <i class="fas fa-lightbulb"></i> Idea Reviews
           </a>
         </li>
       </ul>
     </section>
 
     <!-- Featured Reviews Section -->
-    <section id="featured" class="featured">
+    <section id="featured">
       <h2>Featured Reviews</h2>
-      <p>Check out our latest or most popular reviews for some inspiration!</p>
-      <!-- Placeholder for featured content -->
-      <ul>
+      <p>Check out our latest and most popular reviews for some inspiration!</p>
+      <ul class="rubrics-list">
         <li>
           <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
-            Featured Thumbnail Review
+            <i class="fas fa-star"></i> Featured Thumbnail Review
           </a>
         </li>
-        <!-- Additional featured items can be added here -->
+        <!-- More featured items can be added here -->
       </ul>
     </section>
 
     <!-- Additional Resources Section -->
-    <section id="resources" class="resources">
+    <section id="resources">
       <h2>Additional Resources</h2>
       <p>
-        Explore related tutorials, guides, and blog posts to enhance your video production skills.
+        Explore related tutorials, guides, and blog posts to further enhance your video production skills.
       </p>
-      <ul>
+      <ul class="rubrics-list">
         <li>
-          <a href="https://example.com/tutorial1" target="_blank">Tutorial: Creating Engaging Thumbnails</a>
+          <a class="rubric-link" href="https://example.com/tutorial1" target="_blank">
+            <i class="fas fa-chalkboard-teacher"></i> Creating Engaging Thumbnails
+          </a>
         </li>
         <li>
-          <a href="https://example.com/blog-post" target="_blank">Blog Post: Storytelling in Video Content</a>
+          <a class="rubric-link" href="https://example.com/blog-post" target="_blank">
+            <i class="fas fa-pen-fancy"></i> Storytelling in Video Content
+          </a>
         </li>
-        <!-- More resources can be added here -->
       </ul>
     </section>
 
     <!-- Feedback Section -->
-    <section id="feedback" class="feedback">
+    <section id="feedback">
       <h2>Feedback</h2>
       <p>
-        We value your feedback! Let us know what you think or how we can improve our rubrics.
+        We value your feedback! Let us know how we can improve our rubrics.
       </p>
       <form id="feedbackForm" action="mailto:your-email@example.com" method="post" enctype="text/plain">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="feedbackText">Feedback:</label><br>
-        <textarea id="feedbackText" name="feedbackText" rows="4" required></textarea><br><br>
-        <input type="submit" value="Submit Feedback">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="feedbackText">Feedback:</label>
+        <textarea id="feedbackText" name="feedbackText" rows="4" required></textarea>
+        <input type="submit" class="btn" value="Submit Feedback">
       </form>
     </section>
   </div>
 
   <footer id="contact">
-    <p>Contact: <a href="mailto:your-email@example.com" style="color:#fff; text-decoration:underline;">your-email@example.com</a></p>
+    <p>Contact: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
     <p>
       Follow me on
-      <a href="https://youtube.com/yourchannel" target="_blank" style="color:#fff; text-decoration:underline;">YouTube</a> |
-      <a href="https://twitter.com/yourhandle" target="_blank" style="color:#fff; text-decoration:underline;">Twitter</a>
+      <a href="https://youtube.com/yourchannel" target="_blank"><i class="fab fa-youtube"></i></a>
+      <a href="https://twitter.com/yourhandle" target="_blank"><i class="fab fa-twitter"></i></a>
     </p>
   </footer>
 
   <script>
     // Simple search filter for rubrics
     function filterRubrics() {
-      var input = document.getElementById('searchInput');
-      var filter = input.value.toUpperCase();
-      var ul = document.getElementById("rubricList");
-      var li = ul.getElementsByTagName('li');
-
-      for (var i = 0; i < li.length; i++) {
-        var a = li[i].getElementsByTagName("a")[0];
-        var txtValue = a.textContent || a.innerText;
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toUpperCase();
+      const ul = document.getElementById("rubricList");
+      const li = ul.getElementsByTagName('li');
+      for (let i = 0; i < li.length; i++) {
+        const a = li[i].getElementsByTagName("a")[0];
+        const txtValue = a.textContent || a.innerText;
         li[i].style.display = (txtValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
       }
     }
