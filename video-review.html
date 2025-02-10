@@ -1,232 +1,829 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Video Review Scoring</title>
-  <!-- Include html2canvas for exporting the review area as PNG -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <style>
-    /* Reset and basic styling */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    body.dark {
-      background: #222;
-      color: #ddd;
-    }
-    /* Sticky header */
-    header {
-      position: sticky;
-      top: 0;
-      background: #fff;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #ddd;
-      z-index: 1000;
-    }
-    body.dark header {
-      background: #333;
-      border-bottom: 1px solid #444;
-    }
-    header .score-display {
-      font-size: 1.5em;
-      font-weight: bold;
-    }
-    header .controls {
-      display: flex;
-      gap: 10px;
-    }
-    button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background 0.2s ease;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .export-btn {
-      background: #007bff;
-      color: #fff;
-    }
-    .dark-mode-toggle {
-      background: #28a745;
-      color: #fff;
-    }
-    /* Main content styling */
-    main {
-      padding: 20px;
-      max-width: 800px;
-      margin: 20px auto;
-    }
-    h1, h2 {
-      margin-bottom: 15px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-    th {
-      background: #007bff;
-      color: #fff;
-    }
-    body.dark table th {
-      background: #0056b3;
-    }
-    /* Score input styling */
-    .criteria-row input[type="number"] {
-      width: 60px;
-      padding: 4px;
-    }
-    .criteria-row input[type="text"] {
-      width: 100%;
-      padding: 4px;
-    }
-    /* Color coding based on score */
-    .score-low {
-      background: #ffcccc;
-    }
-    .score-medium {
-      background: #fff3cd;
-    }
-    .score-high {
-      background: #d4edda;
-    }
-    /* Additional notes area */
-    #notes textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <!-- Sticky Header -->
-  <header>
-    <div class="score-display">Total Score: <span id="totalScore">0</span></div>
-    <div class="controls">
-      <button class="export-btn" id="exportBtn">Export to PNG</button>
-      <button class="dark-mode-toggle" id="darkModeToggle">🌞 Light Mode</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editing Review Pro+ (Final)</title>
+
+    <!-- Roboto Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- html2canvas for PNG Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Canvas Confetti for Outstanding Score Effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      :root {
+        /* Colors & Theme Variables */
+        --primary-light: #4facfe;
+        --accent-light: #00f2fe;
+        --bg-light: #f9fafb;
+        --text-light: #1e293b;
+        --panel-light: rgba(255, 255, 255, 0.96);
+        --border-light: rgba(255, 255, 255, 0.2);
+        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        --transition: all 0.2s ease;
+        --radius: 14px;
+        --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+        /* Table & Title Colors */
+        --table-cell-bg-light: rgba(255, 255, 255, 0.85);
+      }
+
+      /* Dark mode – maintain blue gradient */
+      html[data-theme="dark"] {
+        --bg-light: #1f1f1f;
+        --text-light: #f3f3f3;
+        --panel-light: rgba(18, 18, 18, 0.98);
+        --border-light: rgba(255, 255, 255, 0.2);
+        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-light: #4facfe;
+        --accent-light: #00f2fe;
+        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+        background: var(--bg-light);
+        color: var(--text-light);
+        transition: var(--transition);
+      }
+
+      button:focus,
+      [tabindex]:focus {
+        outline: 2px solid var(--accent-light);
+      }
+
+      /* Panels */
+      .glass-panel {
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+        transition: var(--transition);
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      /* HEADER */
+      header.analyzer-header {
+        position: sticky;
+        top: 0;
+        z-index: 2000;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .total-score {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: var(--gradient-light);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: var(--transition);
+        cursor: default;
+      }
+      /* Updated tooltip for editing review */
+      .total-score:hover::after {
+        content: "Your video editing is rated on 7 factors, each up to 4 points, for a total of 28.\A25–28: Outstanding\A20–24: Excellent\A14–19: Great\A<14: Good";
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 0.5rem;
+        border-radius: 4px;
+        top: 110%;
+        left: 0;
+        white-space: pre-line;
+        font-size: 0.85rem;
+        z-index: 1000;
+      }
+      .status-indicator {
+        font-weight: 600;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .header-right .group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .btn {
+        background: var(--gradient-light);
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
+        opacity: 0.9;
+      }
+
+      /* New Dark Mode Slider */
+      .dark-mode {
+        /* Container for dark mode toggle */
+      }
+      .toggle-label.dark-mode-label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+      .dark-mode-slider {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+        transition: background-color 0.3s;
+      }
+      .dark-mode-slider .mode-label {
+        font-size: 16px;
+      }
+      .dark-mode-slider .slider-thumb {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+      }
+      /* Hide the checkbox input */
+      input#darkModeToggle {
+        display: none;
+      }
+      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
+        transform: translateX(30px);
+      }
+      input#darkModeToggle:checked + .dark-mode-slider {
+        background-color: var(--primary-light);
+      }
+
+      /* MAIN CONTAINER */
+      .analyzer-container {
+        width: 95%;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem 2rem;
+      }
+
+      /* Rubric Table */
+      .rubric-table {
+        margin-bottom: 1rem;
+      }
+      .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-family: 'Roboto', sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.2s ease;
+      }
+      .modern-table thead th {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+      }
+      /* First header uses blue gradient */
+      .modern-table thead th:first-child {
+        background: var(--gradient-light);
+        color: #fff;
+      }
+      /* Color‑coding for rating columns */
+      .modern-table thead th:nth-child(2) { background: #f87171; }
+      .modern-table thead th:nth-child(3) { background: #fb923c; }
+      .modern-table thead th:nth-child(4) { background: #facc15; }
+      .modern-table thead th:nth-child(5) { background: #4ade80; }
+      .modern-table tbody td {
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: var(--transition);
+        vertical-align: middle;
+        min-width: 100px;
+        cursor: pointer;
+        background: var(--table-cell-bg-light);
+      }
+      .modern-table tbody tr:hover td {
+        background-color: rgba(0, 0, 0, 0.03);
+      }
+      .modern-table td.selected {
+        background: rgba(224, 231, 255, 0.5) !important;
+        box-shadow: inset 4px 0 0 var(--primary-light);
+      }
+
+      /* Feedback Panel */
+      .feedback-panel h3 {
+        margin-top: 0;
+      }
+      .feedback-panel .feedback-entry {
+        margin-bottom: 1rem;
+      }
+      .feedback-panel label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+      .feedback-input {
+        display: block;
+        width: 100%;
+        max-width: 600px;
+        box-sizing: border-box;
+        min-height: 80px;
+        padding: 0.8rem;
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow: auto;
+      }
+      .feedback-input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+      }
+      .feedback-input:empty::before {
+        content: attr(data-placeholder);
+        color: #9ca3af;
+      }
+
+      /* Legend & Definitions */
+      #toggleLegend {
+        margin: 0.5rem 0;
+        padding: 0.4rem 0.8rem;
+        background: var(--gradient-light);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      #toggleLegend:hover {
+        opacity: 0.9;
+      }
+      #legend {
+        display: none;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        padding: 0.75rem;
+      }
+      #legend h4 {
+        margin-top: 0;
+      }
+
+      /* MODAL: How-To & Tutorial */
+      .modal-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 1rem;
+      }
+      .modal-bg.show {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .modal-content {
+        position: relative;
+        background: #fff;
+        border-radius: var(--radius);
+        max-width: 90%;
+        max-height: 90%;
+        overflow-y: auto;
+        padding: 1.5rem;
+      }
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 1);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 992px) {
+        .analyzer-container {
+          padding: 0 1rem 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="analyzer-header glass-panel">
+      <div class="header-left">
+        <div class="total-score" title="Your video editing is rated on 7 factors, each up to 4 points, for a total of 28. 25–28: Outstanding, 20–24: Excellent, 14–19: Great, <14: Good">
+          Score: <span id="total">0</span>/28 – <span id="scoreLabel">Good</span>
+        </div>
+        <div class="status-indicator" id="ranking">Incomplete</div>
+      </div>
+      <div class="header-right">
+        <div class="group">
+          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
+          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
+          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
+          <!-- Toggles for sound and animations -->
+          <label class="toggle-label">
+            <span class="toggle-switch">
+              <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
+              <!-- (Sound toggle icon can be added here if desired) -->
+            </span>
+          </label>
+          <label class="toggle-label">
+            <span class="toggle-switch">
+              <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
+              <!-- (Animation toggle icon can be added here if desired) -->
+            </span>
+          </label>
+        </div>
+        <!-- Dark Mode Toggle -->
+        <div class="dark-mode">
+          <label class="toggle-label dark-mode-label">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
+            <div class="dark-mode-slider">
+              <span class="mode-label mode-light">☀️</span>
+              <span class="mode-label mode-dark">🌙</span>
+              <div class="slider-thumb"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="analyzer-container">
+      <!-- EDITING RUBRIC TABLE -->
+      <section class="rubric-table glass-panel">
+        <h2>Editing Review Rubric</h2>
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Good (1)</th>
+              <th>Great (2)</th>
+              <th>Excellent (3)</th>
+              <th>Outstanding (4)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 1. Narrative Flow &amp; Storytelling -->
+            <tr>
+              <td class="category-header" title="Evaluate how coherent and engaging the story or sequence is.">
+                Narrative Flow &amp; Storytelling
+              </td>
+              <td data-category="0" data-rating="1" role="button" tabindex="0">
+                Basic flow; some disjointed cuts and unclear storytelling.
+              </td>
+              <td data-category="0" data-rating="2" role="button" tabindex="0">
+                Clear narrative with moderate pacing and occasional creative elements.
+              </td>
+              <td data-category="0" data-rating="3" role="button" tabindex="0">
+                Well-paced sequence with engaging storytelling and creative transitions.
+              </td>
+              <td data-category="0" data-rating="4" role="button" tabindex="0">
+                Exceptionally engaging narrative; expert-level pacing and flow.
+              </td>
+            </tr>
+            <!-- 2. Cutting & Transitions -->
+            <tr>
+              <td class="category-header" title="Assess the smoothness, timing, and creativity of cuts and transitions.">
+                Cutting &amp; Transitions
+              </td>
+              <td data-category="1" data-rating="1" role="button" tabindex="0">
+                Basic cuts with occasional jarring transitions.
+              </td>
+              <td data-category="1" data-rating="2" role="button" tabindex="0">
+                Mostly smooth editing with some creative transitions.
+              </td>
+              <td data-category="1" data-rating="3" role="button" tabindex="0">
+                Seamless cuts and well-integrated transitions that enhance the flow.
+              </td>
+              <td data-category="1" data-rating="4" role="button" tabindex="0">
+                Flawless editing with innovative, perfectly timed transitions.
+              </td>
+            </tr>
+            <!-- 3. Audio Quality &amp; Synchronization -->
+            <tr>
+              <td class="category-header" title="Assess clarity of audio, mixing, and synchronization with visuals.">
+                Audio Quality &amp; Synchronization
+              </td>
+              <td data-category="2" data-rating="1" role="button" tabindex="0">
+                Acceptable audio with minor sync issues.
+              </td>
+              <td data-category="2" data-rating="2" role="button" tabindex="0">
+                Clear audio with generally good synchronization.
+              </td>
+              <td data-category="2" data-rating="3" role="button" tabindex="0">
+                Excellent audio clarity and precise synchronization.
+              </td>
+              <td data-category="2" data-rating="4" role="button" tabindex="0">
+                Studio-level audio quality with perfect integration into visuals.
+              </td>
+            </tr>
+            <!-- 4. Visual Effects &amp; Graphics -->
+            <tr>
+              <td class="category-header" title="Evaluate the quality and relevance of visual effects, titles, and graphics.">
+                Visual Effects &amp; Graphics
+              </td>
+              <td data-category="3" data-rating="1" role="button" tabindex="0">
+                Basic graphics and minimal effects.
+              </td>
+              <td data-category="3" data-rating="2" role="button" tabindex="0">
+                Effective graphics with occasional creative effects.
+              </td>
+              <td data-category="3" data-rating="3" role="button" tabindex="0">
+                High-quality effects and graphics that enhance content.
+              </td>
+              <td data-category="3" data-rating="4" role="button" tabindex="0">
+                Cinematic-quality visuals and innovative effects that elevate the edit.
+              </td>
+            </tr>
+            <!-- 5. Color Grading &amp; Visual Consistency -->
+            <tr>
+              <td class="category-header" title="Assess the effectiveness of color correction, grading, and visual consistency.">
+                Color Grading &amp; Visual Consistency
+              </td>
+              <td data-category="4" data-rating="1" role="button" tabindex="0">
+                Basic correction; inconsistent visual tone.
+              </td>
+              <td data-category="4" data-rating="2" role="button" tabindex="0">
+                Consistent grading with a generally appealing visual tone.
+              </td>
+              <td data-category="4" data-rating="3" role="button" tabindex="0">
+                Professional color grading that enhances mood and cohesion.
+              </td>
+              <td data-category="4" data-rating="4" role="button" tabindex="0">
+                Masterful grading with a striking, cohesive aesthetic.
+              </td>
+            </tr>
+            <!-- 6. Technical Quality &amp; Export -->
+            <tr>
+              <td class="category-header" title="Examine resolution, rendering, and technical polish.">
+                Technical Quality &amp; Export
+              </td>
+              <td data-category="5" data-rating="1" role="button" tabindex="0">
+                Acceptable quality with minor technical issues.
+              </td>
+              <td data-category="5" data-rating="2" role="button" tabindex="0">
+                Good resolution and rendering quality.
+              </td>
+              <td data-category="5" data-rating="3" role="button" tabindex="0">
+                High-quality export that meets industry standards.
+              </td>
+              <td data-category="5" data-rating="4" role="button" tabindex="0">
+                Flawless technical execution with perfect optimization.
+              </td>
+            </tr>
+            <!-- 7. Overall Impact -->
+            <tr>
+              <td class="category-header" title="Summarize the overall effectiveness and production value of the editing.">
+                Overall Impact
+              </td>
+              <td data-category="6" data-rating="1" role="button" tabindex="0">
+                Meets basic requirements; limited impact.
+              </td>
+              <td data-category="6" data-rating="2" role="button" tabindex="0">
+                Enhances the viewer experience with solid editing.
+              </td>
+              <td data-category="6" data-rating="3" role="button" tabindex="0">
+                Highly engaging and professional editing.
+              </td>
+              <td data-category="6" data-rating="4" role="button" tabindex="0">
+                Extraordinary editing that elevates the entire production.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
+        <div id="legend">
+          <h4>Legend &amp; Definitions</h4>
+          <p><strong>Narrative Flow &amp; Storytelling:</strong> Evaluate the overall narrative, pacing, and engagement.</p>
+          <p><strong>Cutting &amp; Transitions:</strong> Assess the smoothness, timing, and creativity of cuts and transitions.</p>
+          <p><strong>Audio Quality &amp; Synchronization:</strong> Measure clarity, mix quality, and sync with visuals.</p>
+          <p><strong>Visual Effects &amp; Graphics:</strong> Consider the quality and appropriateness of effects and graphics.</p>
+          <p><strong>Color Grading &amp; Visual Consistency:</strong> Review the color correction and overall visual tone.</p>
+          <p><strong>Technical Quality &amp; Export:</strong> Check resolution, export quality, and technical polish.</p>
+          <p><strong>Overall Impact:</strong> Summarize how effectively the editing enhances the viewer’s experience.</p>
+          <h5>Rating Levels</h5>
+          <ul>
+            <li><strong>Good (1):</strong> Meets the basics but lacks strong impact. <em>Action:</em> Refine pacing, transitions, and clarity.</li>
+            <li><strong>Great (2):</strong> Solid execution with minor areas for improvement. <em>Action:</em> Enhance creative elements and polish.</li>
+            <li><strong>Excellent (3):</strong> Professional and engaging editing; room for slight refinement. <em>Action:</em> Push creative boundaries.</li>
+            <li><strong>Outstanding (4):</strong> Extraordinary editing that elevates the production. <em>Action:</em> Maintain or exceed this standard.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Feedback Panel -->
+      <section class="feedback-panel glass-panel">
+        <h3>Feedback</h3>
+        <div class="feedback-entry">
+          <label for="humanFeedback">Human Feedback</label>
+          <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
+        </div>
+        <div class="feedback-entry">
+          <label for="aiFeedback">AI Feedback</label>
+          <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
+        </div>
+      </section>
     </div>
-  </header>
 
-  <!-- Main Content Area -->
-  <main id="reviewArea">
-    <h1>Video Review Rubric</h1>
-    <table id="rubricTable">
-      <thead>
-        <tr>
-          <th>Criteria</th>
-          <th>Score (0-10)</th>
-          <th>Comments</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="criteria-row">
-          <td>Content Accuracy</td>
-          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
-          <td><input type="text" placeholder="Enter comments"></td>
-        </tr>
-        <tr class="criteria-row">
-          <td>Audio/Visual Quality</td>
-          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
-          <td><input type="text" placeholder="Enter comments"></td>
-        </tr>
-        <tr class="criteria-row">
-          <td>Branding & SEO</td>
-          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
-          <td><input type="text" placeholder="Enter comments"></td>
-        </tr>
-        <tr class="criteria-row">
-          <td>Compliance & Copyright</td>
-          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
-          <td><input type="text" placeholder="Enter comments"></td>
-        </tr>
-        <tr class="criteria-row">
-          <td>Overall Impact</td>
-          <td><input type="number" min="0" max="10" value="0" class="score-input"></td>
-          <td><input type="text" placeholder="Enter comments"></td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Additional Notes Section -->
-    <section id="notes">
-      <h2>Additional Notes</h2>
-      <textarea rows="4" placeholder="Enter any additional notes or feedback..."></textarea>
-    </section>
-  </main>
+    <!-- HOW-TO MODAL -->
+    <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeHowTo()" aria-label="Close How To">✕</span>
+        <h2>How to Use Editing Review Pro+</h2>
+        <ul>
+          <li>Review each editing criterion by clicking on the appropriate rating cell.</li>
+          <li>The total score and status update live as you select ratings.</li>
+          <li>Provide additional feedback in the Human and AI feedback boxes.</li>
+          <li>When finished, you can reset scores or export the review as a PNG.</li>
+        </ul>
+      </div>
+    </div>
 
-  <script>
-    /* DARK MODE TOGGLE */
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    darkModeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      darkModeToggle.textContent = document.body.classList.contains('dark') ? '🌜 Dark Mode' : '🌞 Light Mode';
-    });
+    <!-- TUTORIAL MODAL -->
+    <div class="modal-bg" id="tutorialModal" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">✕</span>
+        <div id="tutorialContent"></div>
+      </div>
+    </div>
 
-    /* SCORE CALCULATION & COLOR CODING */
-    const scoreInputs = document.querySelectorAll('.score-input');
-    const totalScoreElem = document.getElementById('totalScore');
+    <!-- Hidden Audio Elements for Sound Effects -->
+    <audio id="victorySound" src="victory.mp3"></audio>
+    <audio id="wompSound" src="womp.mp3"></audio>
 
-    // Add input event listeners to each score input
-    scoreInputs.forEach(input => {
-      input.addEventListener('input', updateScores);
-    });
+    <!-- JAVASCRIPT -->
+    <script>
+      /***************************************************
+       * Global Variables & Milestones
+       ***************************************************/
+      let scores = {};
+      let confettiShown = false;
+      let muteSound = false;
+      let disableAnimations = false;
+      let milestoneTriggered = {}; // Track milestones for 7-factor scoring
+      const milestoneMessages = {
+        7: "Initial review complete!",
+        14: "Halfway to perfection!",
+        21: "Almost there—great editing!",
+        28: "Editing Master: Outstanding work!"
+      };
+      const progressAudio = {
+        victory: document.getElementById("victorySound"),
+        womp: document.getElementById("wompSound")
+      };
 
-    function updateScores() {
-      let total = 0;
-      scoreInputs.forEach(input => {
-        const row = input.closest('tr');
-        const score = parseInt(input.value) || 0;
-        total += score;
-        // Reset row background class
-        row.classList.remove('score-low', 'score-medium', 'score-high');
-        // Color-code based on score value
-        if (score <= 3) {
-          row.classList.add('score-low');
-        } else if (score <= 7) {
-          row.classList.add('score-medium');
+      /***************************************************
+       * DOMContentLoaded Setup
+       ***************************************************/
+      document.addEventListener("DOMContentLoaded", () => {
+        // Event delegation for rubric table cells:
+        document.querySelector('.modern-table').addEventListener('click', (e) => {
+          const cell = e.target.closest('td[data-rating]');
+          if (cell) selectRating(cell);
+        });
+      });
+
+      /***************************************************
+       * Rubric Functions
+       ***************************************************/
+      function selectRating(cell) {
+        const categoryIndex = Number(cell.getAttribute('data-category'));
+        const rating = parseInt(cell.getAttribute('data-rating'));
+        const row = cell.parentElement;
+        // Remove selection from all rating cells in the row
+        row.querySelectorAll('td').forEach(td => {
+          if (td !== row.firstElementChild) td.classList.remove('selected');
+        });
+        cell.classList.add('selected');
+        scores[categoryIndex] = rating;
+        updateTotal();
+      }
+
+      function updateTotal() {
+        let total = Object.values(scores).reduce((a, b) => a + b, 0);
+        document.getElementById('total').textContent = total;
+        const scoreLabel = document.getElementById('scoreLabel');
+        // Update overall status based on thresholds (max score = 28)
+        if (Object.keys(scores).length < 7) {
+          document.getElementById('ranking').textContent = 'Incomplete';
+          document.getElementById('ranking').style.color = '#64748b';
+        } else if (total < 14) {
+          scoreLabel.textContent = "Good";
+          document.getElementById('ranking').textContent = 'Needs Work 🔴';
+          document.getElementById('ranking').style.color = '#ef4444';
+          if (!muteSound) progressAudio.womp.play();
+        } else if (total < 20) {
+          scoreLabel.textContent = "Great";
+          document.getElementById('ranking').textContent = 'Great! 🟢';
+          document.getElementById('ranking').style.color = '#22c55e';
+        } else if (total < 25) {
+          scoreLabel.textContent = "Excellent";
+          document.getElementById('ranking').textContent = 'Excellent 🟡';
+          document.getElementById('ranking').style.color = '#eab308';
         } else {
-          row.classList.add('score-high');
+          scoreLabel.textContent = "Outstanding";
+          document.getElementById('ranking').textContent = 'Outstanding 🔵';
+          document.getElementById('ranking').style.color = '#3b82f6';
+          if (!muteSound) progressAudio.victory.play();
+          if (!confettiShown && !disableAnimations) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            confettiShown = true;
+          }
+        }
+        updateProgressBar(total);
+      }
+
+      function updateProgressBar(total) {
+        const percentage = (total / 28) * 100;
+        // For simplicity, assume a progress bar element exists if desired.
+        // Display milestone messages if applicable.
+        const milestoneDiv = document.getElementById("milestoneMessage");
+        if (milestoneMessages[total] && !milestoneTriggered[total]) {
+          if (milestoneDiv) {
+            milestoneDiv.textContent = milestoneMessages[total];
+            milestoneTriggered[total] = true;
+            setTimeout(() => { milestoneDiv.textContent = ""; }, 3000);
+          }
+        }
+      }
+
+      /***************************************************
+       * Reset Function
+       ***************************************************/
+      function resetScores() {
+        scores = {};
+        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => cell.classList.remove('selected'));
+        document.getElementById('total').textContent = '0';
+        document.getElementById('scoreLabel').textContent = 'Good';
+        document.getElementById('ranking').textContent = 'Incomplete';
+        milestoneTriggered = {};
+        confettiShown = false;
+      }
+
+      /***************************************************
+       * Export Function (PNG)
+       ***************************************************/
+      async function exportPNG() {
+        const header = document.querySelector("header.analyzer-header");
+        const originalPosition = header.style.position;
+        header.style.position = "static";
+        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true });
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'editing-review.png';
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        header.style.position = originalPosition;
+      }
+
+      /***************************************************
+       * Theme & Toggle Functions
+       ***************************************************/
+      function toggleTheme(input) {
+        const html = document.documentElement;
+        if (input.checked) {
+          html.setAttribute("data-theme", "dark");
+        } else {
+          html.removeAttribute("data-theme");
+        }
+      }
+      function toggleSound(el) {
+        muteSound = el.checked;
+      }
+      function toggleAnimations(el) {
+        disableAnimations = el.checked;
+      }
+
+      /***************************************************
+       * Modal Functions (How-To & Tutorial)
+       ***************************************************/
+      function openHowTo() {
+        document.getElementById('howToModal').classList.add('show');
+      }
+      function closeHowTo() {
+        document.getElementById('howToModal').classList.remove('show');
+      }
+      function openTutorial(topic) {
+        const tutorialContent = document.getElementById('tutorialContent');
+        let content = "";
+        if (topic === 'narrative') {
+          content = "<h2>Enhancing Narrative Flow</h2><p>Focus on the pacing and sequence of shots. Experiment with different cuts to build a compelling story.</p>";
+        } else if (topic === 'transitions') {
+          content = "<h2>Smooth Transitions</h2><p>Use creative but purposeful transitions. Avoid jarring cuts unless intentionally stylistic.</p>";
+        } else if (topic === 'audio') {
+          content = "<h2>Audio Synchronization</h2><p>Ensure that the audio tracks match the visuals seamlessly. Use proper mixing and balance sound levels.</p>";
+        } else if (topic === 'effects') {
+          content = "<h2>Visual Effects &amp; Graphics</h2><p>Integrate effects and graphics that complement the story without overwhelming it.</p>";
+        } else if (topic === 'color') {
+          content = "<h2>Color Grading</h2><p>Apply consistent color correction and grading to set the mood and maintain visual cohesion.</p>";
+        } else if (topic === 'technical') {
+          content = "<h2>Technical Quality</h2><p>Export in high resolution with proper compression to preserve quality across devices.</p>";
+        } else if (topic === 'overall') {
+          content = "<h2>Overall Impact</h2><p>Strive for a final edit that not only informs but also emotionally engages your audience.</p>";
+        } else {
+          content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
+        }
+        tutorialContent.innerHTML = content;
+        document.getElementById('tutorialModal').classList.add('show');
+      }
+      function closeTutorial() {
+        document.getElementById('tutorialModal').classList.remove('show');
+      }
+
+      /***************************************************
+       * Legend Toggle Function
+       ***************************************************/
+      function toggleLegend() {
+        const legend = document.getElementById("legend");
+        const btn = document.getElementById("toggleLegend");
+        if (legend.style.display === "none" || legend.style.display === "") {
+          legend.style.display = "block";
+          btn.textContent = "Hide Legend & Definitions";
+        } else {
+          legend.style.display = "none";
+          btn.textContent = "Show Legend & Definitions";
+        }
+      }
+
+      /***************************************************
+       * Easter Egg Surprise!
+       ***************************************************/
+      document.addEventListener("keydown", function(e) {
+        if (e.altKey && e.key.toLowerCase() === "e") {
+          triggerEasterEgg();
         }
       });
-      totalScoreElem.textContent = total;
-    }
-
-    /* EXPORT TO PNG FUNCTIONALITY */
-    const exportBtn = document.getElementById('exportBtn');
-    exportBtn.addEventListener('click', () => {
-      const reviewArea = document.getElementById('reviewArea');
-      html2canvas(reviewArea).then(canvas => {
-        // Create a temporary link to trigger the download
-        const link = document.createElement('a');
-        link.download = 'video_review.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    });
-  </script>
-</body>
+      function triggerEasterEgg() {
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
+        alert("🎉 You found the secret easter egg! Keep rocking that edit!");
+      }
+    </script>
+  </body>
 </html>
