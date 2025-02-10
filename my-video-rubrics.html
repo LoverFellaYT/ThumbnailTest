@@ -34,6 +34,7 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      cursor: pointer; /* Indicates interactivity for the easter egg */
     }
     header h1 {
       font-size: 2.75rem;
@@ -180,17 +181,17 @@
     footer {
       background: #34495e;
       color: #fff;
-      padding: 1.5rem 0;
+      padding: 2rem 1rem;
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      position: relative;
     }
-    footer a {
-      color: #4A90E2;
-      margin: 0 0.5rem;
-      transition: color 0.3s ease;
+    footer blockquote {
+      font-style: italic;
+      margin-bottom: 0.5rem;
     }
-    footer a:hover {
-      color: #9013FE;
+    footer p {
+      margin-top: 0.5rem;
     }
     
     /* Animations */
@@ -233,7 +234,7 @@
   <nav>
     <a href="#rubrics"><i class="fas fa-film"></i> Rubrics</a>
     <a href="#about"><i class="fas fa-info-circle"></i> About</a>
-    <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="https://analytics.loverfella.com/" target="_blank"><i class="fas fa-chart-line"></i> LoverFella Analytics</a>
   </nav>
 
   <div class="container">
@@ -279,13 +280,12 @@
     </section>
   </div>
 
-  <footer id="contact">
-    <p>Contact: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
-    <p>
-      Follow me on
-      <a href="https://youtube.com/yourchannel" target="_blank"><i class="fab fa-youtube"></i></a>
-      <a href="https://twitter.com/yourhandle" target="_blank"><i class="fab fa-twitter"></i></a>
-    </p>
+  <footer>
+    <blockquote>
+      "The only limit to your impact is your imagination and commitment."
+    </blockquote>
+    <p>— Tony Robbins</p>
+    <p style="font-size:0.8rem; margin-top:1rem;">Easter Egg: Double-click the header title or enter the Konami Code!</p>
   </footer>
 
   <script>
@@ -301,6 +301,27 @@
         li[i].style.display = (txtValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
       }
     }
+
+    // Easter Egg: Double-click header title to display a fun message
+    document.querySelector("header h1").addEventListener("dblclick", function() {
+      alert("Easter Egg Activated: You're awesome! Keep making greatness happen!");
+    });
+
+    // Konami Code Easter Egg
+    // Konami code sequence: up, up, down, down, left, right, left, right, B, A
+    const konamiCode = [38,38,40,40,37,39,37,39,66,65];
+    let konamiIndex = 0;
+    document.addEventListener('keydown', function(e) {
+      if (e.keyCode === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+          alert("Konami Code Activated: Greatness unlocked!");
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    });
   </script>
 </body>
 </html>
