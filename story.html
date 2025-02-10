@@ -25,7 +25,7 @@
       --shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
       --radius: 16px;
       --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      --highlight: rgba(51, 204, 255, 0.3); /* Light neon blue, 30% opacity */
+      --highlight: rgba(51, 204, 255, 0.3);
     }
 
     /* --------------------------------------------------------------
@@ -152,7 +152,6 @@
     }
     .modern-table {
       width: 100%;
-      /* Use separate borders to allow rounded corners */
       border-collapse: separate;
       border-spacing: 0;
       min-width: 800px;
@@ -166,12 +165,10 @@
       position: sticky;
       top: 0;
     }
-    /* First header (Category) remains styled */
     .modern-table th:first-child {
       background: var(--primary);
       color: white;
     }
-    /* Rating headers now get background colors (not text color) */
     .modern-table th:nth-child(2) { background: #f87171; color: white; }
     .modern-table th:nth-child(3) { background: #fb923c; color: white; }
     .modern-table th:nth-child(4) { background: #facc15; color: black; }
@@ -197,7 +194,6 @@
       background: var(--highlight) !important;
       border-left: 4px solid var(--primary);
     }
-    /* Add hover animations to rubric cells */
     .modern-table td[data-rating] {
       transition: background var(--transition), transform var(--transition);
     }
@@ -205,7 +201,6 @@
       background: var(--highlight);
       transform: scale(1.02);
     }
-    /* Add emojis to category headers using data attributes */
     .category-header[data-category="0"]::before { content: "⚡ "; }
     .category-header[data-category="1"]::before { content: "🎯 "; }
     .category-header[data-category="2"]::before { content: "📊 "; }
@@ -242,16 +237,6 @@
     }
     .video-thumbnail:hover {
       transform: scale(1.02);
-    }
-
-    /* --------------------------------------------------------------
-       Feedback Panel
-       -------------------------------------------------------------- */
-    .feedback-panel { margin: 1rem 0; }
-    .feedback-panel h2 {
-      margin-bottom: 1rem;
-      font-size: 1.25rem;
-      color: var(--primary);
     }
 
     /* --------------------------------------------------------------
@@ -296,12 +281,20 @@
 
   <!-- Main Content -->
   <main>
-    <!-- Quick Summary (Moved Above the Rubric) -->
+    <!-- Quick Summary -->
     <div class="glass-panel input-section" id="quickSummarySection">
       <h2>Quick Summary</h2>
       <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
     </div>
-
+    
+    <!-- Similar Videos (Placed immediately below Quick Summary) -->
+    <div class="glass-panel input-section" id="similarVideosSection">
+      <h2>Similar Videos</h2>
+      <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." style="padding:0.5rem; width:70%; border:2px solid rgba(99,102,241,0.1); border-radius:8px;"/>
+      <button onclick="addYouTubeVideo()">Add Video</button>
+      <div id="similarVideosList" class="similar-videos-list" style="margin-top:1rem;"></div>
+    </div>
+    
     <!-- AI Review Section -->
     <div class="glass-panel input-section" id="aiReviewSection">
       <h2>AI Review</h2>
@@ -424,13 +417,6 @@
       </table>
     </div>
 
-    <!-- Revision History (Now Saves Quick Summary Revisions) -->
-    <div class="glass-panel input-section" id="revisionHistorySection">
-      <h2>Revision History</h2>
-      <button onclick="saveRevision()">💾 Save Revision</button>
-      <ul id="revisionList" class="revision-list"></ul>
-    </div>
-
     <!-- Human Feedback -->
     <div class="glass-panel input-section" id="humanFeedbackSection">
       <h2>Human Feedback</h2>
@@ -443,21 +429,6 @@
       <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
       <button onclick="submitPeerReview()">Submit Peer Review</button>
       <ul id="peerReviewList" class="peer-review-list"></ul>
-    </div>
-
-    <!-- Similar Videos Section -->
-    <div class="glass-panel input-section" id="similarVideosSection">
-      <h2>Similar Videos</h2>
-      <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." style="padding:0.5rem; width:70%; border:2px solid rgba(99,102,241,0.1); border-radius:8px;"/>
-      <button onclick="addYouTubeVideo()">Add Video</button>
-      <div id="similarVideosList" class="similar-videos-list" style="margin-top:1rem;"></div>
-    </div>
-
-    <!-- Feedback Panel -->
-    <div class="glass-panel feedback-panel" id="feedback">
-      <h2>Improvement Recommendations</h2>
-      <div id="specificFeedback" style="margin-top: 1rem;"></div>
-      <div id="grammarCheckResult" style="margin-top: 1rem; font-style: italic; color: var(--muted);"></div>
     </div>
   </main>
 
@@ -558,8 +529,7 @@
     // Store rubric scores (categories 0‑13)
     let scores = {};
 
-    // Revision history & peer reviews arrays
-    let revisionHistory = [];
+    // Peer reviews array
     let peerReviews = [];
 
     /***************************************************
@@ -589,7 +559,6 @@
       cell.classList.add('selected');
       scores[categoryIndex] = rating;
       updateTotal();
-      showFeedback();
     }
 
     function updateTotal() {
@@ -622,27 +591,6 @@
       document.getElementById("progressBar").style.width = percentage + "%";
     }
 
-    function showFeedback() {
-      const feedbackDiv = document.getElementById('specificFeedback');
-      feedbackDiv.innerHTML = Object.keys(scores).map(cat => {
-        const rating = scores[cat];
-        const categoryName = document.querySelector('.category-header[data-category="' + cat + '"]')?.textContent.trim() || 'Category ' + cat;
-        return `
-          <div style="margin: 0.5rem 0; padding: 1rem; background: rgba(99,102,241,0.05); border-radius: 8px;">
-            <strong style="color: ${getCategoryColor(cat)}">${categoryName}:</strong>
-            <span style="color: #475569;"> ${improvementTips[cat][rating]}</span>
-          </div>`;
-      }).join('');
-    }
-
-    function getCategoryColor(cat) {
-      const colors = ['#6366f1', '#ec4899', '#eab308', '#10b981',
-        '#3b82f6', '#8b5cf6', '#ef4444', '#f97316',
-        '#14b8a6', '#64748b', '#d97706', '#9333ea', '#0ea5e9', '#22d3ee'
-      ];
-      return colors[Number(cat)] || '#1e293b';
-    }
-
     /***************************************************
      * Auto‑Resize Textareas
      ***************************************************/
@@ -654,6 +602,7 @@
 
     /***************************************************
      * AI Review Function
+     * Provides three specific improvements for the video and two actionable suggestions.
      ***************************************************/
     function runAIReview() {
       const summary = document.getElementById('quickSummary').value.trim();
@@ -662,38 +611,21 @@
         resultDiv.textContent = "Please enter a quick summary for AI review.";
         return;
       }
-      // Simulated AI analysis based on summary length
-      let suggestions = "";
-      if(summary.length < 50) {
-         suggestions = "The summary seems a bit short. Consider adding more detail about the plot, setting, or characters.";
-      } else if(summary.length < 150) {
-         suggestions = "Good summary! You might consider elaborating on the conflict and the main character's motivations.";
-      } else {
-         suggestions = "Your summary is comprehensive. To further improve, ensure clarity and conciseness by removing any redundant details.";
-      }
-      resultDiv.innerHTML = `<p>${suggestions}</p>`;
-    }
-
-    /***************************************************
-     * Revision History Functions (Using Quick Summary)
-     ***************************************************/
-    function saveRevision() {
-      const summaryText = document.getElementById('quickSummary').value;
-      if (!summaryText.trim()) return;
-      const timestamp = new Date().toLocaleString();
-      revisionHistory.push({ text: summaryText, time: timestamp });
-      updateRevisionHistory();
-    }
-    function updateRevisionHistory() {
-      const revisionList = document.getElementById('revisionList');
-      revisionList.innerHTML = revisionHistory.map((rev, index) =>
-        `<li onclick="loadRevision(${index})">Revision ${index + 1} - ${rev.time}</li>`
-      ).join('');
-    }
-    function loadRevision(index) {
-      if (confirm('Load this revision? Unsaved changes will be lost.')) {
-        document.getElementById('quickSummary').value = revisionHistory[index].text;
-      }
+      
+      let reviewHTML = "<h3>AI Video Review</h3>";
+      reviewHTML += "<h4>Three Specific Improvements:</h4>";
+      reviewHTML += "<ol>";
+      reviewHTML += "<li><strong>Enhance Lighting:</strong> Adjust your lighting setup to reduce harsh shadows and overexposed areas. Use diffused light sources or softboxes to achieve a balanced, natural look.</li>";
+      reviewHTML += "<li><strong>Improve Audio Quality:</strong> Upgrade to a high-quality external microphone and apply noise reduction techniques in post-production to ensure clear, crisp sound.</li>";
+      reviewHTML += "<li><strong>Smooth Editing Transitions:</strong> Incorporate consistent and fluid transitions between scenes. Use crossfades or motion-based effects that match the video’s pace to avoid jarring cuts.</li>";
+      reviewHTML += "</ol>";
+      reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
+      reviewHTML += "<ol>";
+      reviewHTML += "<li><strong>Add On-screen Captions:</strong> Implement captions to boost accessibility and reinforce key messages throughout the video.</li>";
+      reviewHTML += "<li><strong>Integrate Dynamic B-Roll:</strong> Supplement the main footage with relevant B-roll clips that enhance the storytelling and provide additional visual context.</li>";
+      reviewHTML += "</ol>";
+      
+      resultDiv.innerHTML = reviewHTML;
     }
 
     /***************************************************
@@ -737,7 +669,6 @@
         alert('Invalid YouTube URL. Please enter a valid URL.');
         return;
       }
-      // Create thumbnail element with a link
       const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
       const videoLink = document.createElement('a');
       videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
@@ -747,15 +678,11 @@
       img.alt = 'YouTube Video Thumbnail';
       videoLink.appendChild(img);
       
-      // Create container for thumbnail
       const thumbContainer = document.createElement('div');
       thumbContainer.className = 'video-thumbnail';
       thumbContainer.appendChild(videoLink);
       
-      // Append thumbnail to the list
       document.getElementById('similarVideosList').appendChild(thumbContainer);
-      
-      // Clear input
       document.getElementById('youtubeLinkInput').value = '';
     }
 
@@ -772,7 +699,7 @@
       } else {
         message += "Your grammar and style appear solid, but consider varying sentence lengths and checking for passive voice.";
       }
-      document.getElementById('grammarCheckResult').textContent = message;
+      document.getElementById('aiReviewResult').textContent = message;
     }
 
     /***************************************************
@@ -784,13 +711,11 @@
       const elements = [
         document.querySelector('header.analyzer-header'),
         document.querySelector('#quickSummarySection'),
+        document.querySelector('#similarVideosSection'),
         document.querySelector('#aiReviewSection'),
         document.querySelector('#rubricSection'),
-        document.querySelector('#revisionHistorySection'),
         document.querySelector('#humanFeedbackSection'),
-        document.querySelector('#peerReviewSection'),
-        document.querySelector('#similarVideosSection'),
-        document.querySelector('.feedback-panel')
+        document.querySelector('#peerReviewSection')
       ];
       let yPos = 10;
       try {
@@ -840,18 +765,13 @@
     function resetScores() {
       scores = {};
       document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-      document.getElementById('specificFeedback').innerHTML = '';
-      // Reset only the quick summary and human feedback now
       ['quickSummary','humanFeedback'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('ranking').textContent = 'Incomplete';
       document.getElementById('ranking').style.color = '#64748b';
-      // Clear revision history, peer reviews, and similar videos
-      document.getElementById('revisionList').innerHTML = '';
       document.getElementById('peerReviewList').innerHTML = '';
       document.getElementById('similarVideosList').innerHTML = '';
-      revisionHistory = [];
       peerReviews = [];
     }
   </script>
