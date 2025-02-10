@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Rubrics Home</title>
+  <title>LoverFella Dashboard</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
@@ -18,7 +18,7 @@
     body {
       font-family: 'Poppins', sans-serif;
       background: #f2f2f2;
-      color: #333;
+      color: #2C2C2E;
       line-height: 1.6;
     }
     a {
@@ -26,9 +26,15 @@
       color: inherit;
     }
     
+    /* Logo styling */
+    .logo {
+      max-width: 100px;
+      margin-bottom: 1rem;
+    }
+    
     /* Header & Hero */
     header {
-      background: linear-gradient(135deg, #4A90E2, #9013FE);
+      background: linear-gradient(135deg, #FF3B30, #C41C00);
       color: #fff;
       padding: 2.5rem 1rem;
       text-align: center;
@@ -61,7 +67,7 @@
     
     /* Navigation */
     nav {
-      background: #34495e;
+      background: #2C2C2E;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
@@ -75,7 +81,7 @@
       transition: background 0.3s ease;
     }
     nav a:hover {
-      background: #2c3e50;
+      background: #1C1C1E;
     }
     nav a i {
       margin-right: 8px;
@@ -106,7 +112,7 @@
       text-align: center;
       margin-bottom: 1rem;
       font-size: 2rem;
-      color: #4A90E2;
+      color: #FF3B30;
     }
     section p {
       text-align: center;
@@ -133,7 +139,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     
-    /* Rubrics List using CSS Grid */
+    /* Rubrics and Data List using CSS Grid */
     .rubrics-list {
       list-style: none;
       display: grid;
@@ -142,7 +148,7 @@
       padding: 0;
     }
     .rubrics-list li {
-      background: #f9f9f9;
+      background: #fff;
       border-radius: 8px;
       overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -156,31 +162,32 @@
       padding: 1.5rem;
       text-align: center;
       font-weight: 600;
-      color: #333;
-      transition: background 0.3s ease;
+      color: #2C2C2E;
+      background: #fff;
+      transition: background 0.3s ease, transform 0.3s ease;
     }
     .rubric-link:hover {
-      background: #f0f0f0;
+      background: #f7f7f7;
     }
     
-    /* Button Style */
+    /* Button Style (if needed) */
     .btn {
       display: inline-block;
       padding: 0.75rem 1.5rem;
-      background: #4A90E2;
+      background: #FF3B30;
       color: #fff;
       border-radius: 50px;
       transition: background 0.3s ease, transform 0.3s ease;
       font-weight: 600;
     }
     .btn:hover {
-      background: #357ABD;
+      background: #E02B24;
       transform: translateY(-2px);
     }
     
     /* Footer */
     footer {
-      background: #34495e;
+      background: #2C2C2E;
       color: #fff;
       padding: 2rem 1rem;
       text-align: center;
@@ -228,14 +235,16 @@
 </head>
 <body>
   <header>
-    <h1>Video Rubrics Home</h1>
-    <p>Your ultimate hub for professional video reviews and content feedback</p>
+    <!-- Placeholder for LoverFella Logo; update the src to your actual logo file -->
+    <img src="loverfella-logo.png" alt="LoverFella Logo" class="logo">
+    <h1>LoverFella Dashboard</h1>
+    <p>Your ultimate hub for professional video reviews and custom analytics</p>
   </header>
 
   <nav>
     <a href="#rubrics"><i class="fas fa-film"></i> Rubrics</a>
     <a href="#about"><i class="fas fa-info-circle"></i> About</a>
-    <!-- LoverFella Analytics link is now accessible in the Data section below -->
+    <!-- LoverFella Analytics is now featured in the Data section below -->
   </nav>
 
   <div class="container">
