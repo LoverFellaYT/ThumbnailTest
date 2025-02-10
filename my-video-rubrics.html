@@ -9,22 +9,42 @@
       font-family: Arial, sans-serif;
       background-color: #f9f9f9;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    h1 {
+    header, footer {
+      background-color: #007bff;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+    }
+    nav {
+      background-color: #0056b3;
+      padding: 10px 0;
+      text-align: center;
+    }
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    h1, h2 {
       text-align: center;
       color: #333;
     }
     ul {
       list-style: none;
       padding: 0;
-      max-width: 500px;
-      margin: 20px auto;
     }
     li {
-      margin: 10px 0;
+      margin: 15px 0;
     }
-    a {
+    .rubric-link {
       display: block;
       background-color: #007bff;
       color: #fff;
@@ -34,34 +54,73 @@
       border-radius: 5px;
       transition: background-color 0.3s ease;
     }
-    a:hover {
+    .rubric-link:hover {
       background-color: #0056b3;
+    }
+    .about {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #e9ecef;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>Video Rubrics Home</h1>
-  <ul>
-    <li>
-      <a href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
-        Thumbnail Reviews
-      </a>
-    </li>
-    <li>
-      <a href="https://loverfellayt.github.io/ThumbnailTest/story" target="_blank">
-        Story Reviews
-      </a>
-    </li>
-    <li>
-      <a href="https://loverfellayt.github.io/ThumbnailTest/video-review" target="_blank">
-        Editing Reviews
-      </a>
-    </li>
-    <li>
-      <a href="https://loverfellayt.github.io/ThumbnailTest/ideas" target="_blank">
-        Idea Reviews
-      </a>
-    </li>
-  </ul>
+  <header>
+    <h1>Video Rubrics Home</h1>
+  </header>
+
+  <nav>
+    <a href="#rubrics">Rubrics</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="container">
+    <!-- About Section -->
+    <section id="about" class="about">
+      <h2>About This Site</h2>
+      <p>
+        Welcome! This site hosts a collection of video review rubrics designed to help you improve your content. Whether you're looking for feedback on thumbnails, storytelling, editing, or ideas, you'll find the right tool here.
+      </p>
+    </section>
+
+    <!-- Rubrics Section -->
+    <section id="rubrics">
+      <h2>Video Rubrics</h2>
+      <ul>
+        <li>
+          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/" target="_blank">
+            Thumbnail Reviews
+          </a>
+        </li>
+        <li>
+          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/story" target="_blank">
+            Story Reviews
+          </a>
+        </li>
+        <li>
+          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/video-review" target="_blank">
+            Editing Reviews
+          </a>
+        </li>
+        <li>
+          <a class="rubric-link" href="https://loverfellayt.github.io/ThumbnailTest/ideas" target="_blank">
+            Idea Reviews
+          </a>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <footer id="contact">
+    <p>Contact: <a href="mailto:your-email@example.com" style="color:#fff; text-decoration:underline;">your-email@example.com</a></p>
+    <p>
+      Follow me on
+      <a href="https://youtube.com/yourchannel" target="_blank" style="color:#fff; text-decoration:underline;">YouTube</a>
+      |
+      <a href="https://twitter.com/yourhandle" target="_blank" style="color:#fff; text-decoration:underline;">Twitter</a>
+    </p>
+  </footer>
 </body>
 </html>
