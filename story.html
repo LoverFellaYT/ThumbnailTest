@@ -142,21 +142,22 @@
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
     }
-    .word-count, .readability-metrics {
-      color: var(--muted);
-      font-size: 0.875rem;
-      text-align: right;
-      margin-top: -0.5rem;
-    }
 
     /* --------------------------------------------------------------
        Rubric Table
        -------------------------------------------------------------- */
-    .rubric-table { overflow-x: auto; margin: 1rem 0; }
+    .rubric-table { 
+      overflow-x: auto; 
+      margin: 1rem 0; 
+    }
     .modern-table {
       width: 100%;
-      border-collapse: collapse;
+      /* Use separate borders to allow rounded corners */
+      border-collapse: separate;
+      border-spacing: 0;
       min-width: 800px;
+      border-radius: var(--radius);
+      overflow: hidden;
     }
     .modern-table th {
       padding: 1rem;
@@ -196,6 +197,14 @@
       background: var(--highlight) !important;
       border-left: 4px solid var(--primary);
     }
+    /* Add hover animations to rubric cells */
+    .modern-table td[data-rating] {
+      transition: background var(--transition), transform var(--transition);
+    }
+    .modern-table td[data-rating]:hover {
+      background: var(--highlight);
+      transform: scale(1.02);
+    }
     /* Add emojis to category headers using data attributes */
     .category-header[data-category="0"]::before { content: "⚡ "; }
     .category-header[data-category="1"]::before { content: "🎯 "; }
@@ -211,6 +220,29 @@
     .category-header[data-category="11"]::before { content: "💬 "; }
     .category-header[data-category="12"]::before { content: "🌍 "; }
     .category-header[data-category="13"]::before { content: "⏳ "; }
+
+    /* --------------------------------------------------------------
+       Similar Videos Section Styling
+       -------------------------------------------------------------- */
+    .similar-videos-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .video-thumbnail {
+      width: 200px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    .video-thumbnail img {
+      width: 100%;
+      display: block;
+    }
+    .video-thumbnail:hover {
+      transform: scale(1.02);
+    }
 
     /* --------------------------------------------------------------
        Feedback Panel
@@ -245,7 +277,7 @@
   <header class="analyzer-header">
     <div class="header-left">
       <div class="total-score">
-        Score: <span id="total">0</span>/?
+        Score: <span id="total">0</span>/? 
         <span id="scoreLabel">Incomplete</span>
       </div>
       <div class="progress-bar-container">
@@ -264,7 +296,20 @@
 
   <!-- Main Content -->
   <main>
-    <!-- Rubric Table (Moved to appear immediately below the header) -->
+    <!-- Quick Summary (Moved Above the Rubric) -->
+    <div class="glass-panel input-section" id="quickSummarySection">
+      <h2>Quick Summary</h2>
+      <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
+    </div>
+
+    <!-- AI Review Section -->
+    <div class="glass-panel input-section" id="aiReviewSection">
+      <h2>AI Review</h2>
+      <button onclick="runAIReview()">Run AI Review</button>
+      <div id="aiReviewResult" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Rubric Table -->
     <div class="glass-panel rubric-table" id="rubricSection">
       <table class="modern-table">
         <thead>
@@ -379,37 +424,7 @@
       </table>
     </div>
 
-    <!-- The remaining sections follow -->
-    <!-- Quick Summary -->
-    <div class="glass-panel input-section" id="quickSummarySection">
-      <h2>Quick Summary</h2>
-      <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
-    </div>
-
-    <!-- Story Input -->
-    <div class="glass-panel input-section" id="storySection">
-      <h2>Your Story</h2>
-      <textarea id="storyInput" class="story-input" placeholder="Start typing or paste your story here..."></textarea>
-      <div class="word-count" id="wordCount">0 words</div>
-      <div class="readability-metrics" id="readabilityMetrics">Readability: N/A</div>
-    </div>
-
-    <!-- Live Preview (Hidden by Default) -->
-    <div class="glass-panel input-section" id="livePreviewSection" style="display:none;">
-      <h2>Live Preview</h2>
-      <div id="livePreview"></div>
-    </div>
-
-    <!-- Beat Sheet -->
-    <div class="glass-panel input-section" id="beatSheetSection">
-      <h2>Story Beat Sheet</h2>
-      <input type="text" id="beatInput" placeholder="Add a new beat..." style="padding:0.5rem; width:70%; border:2px solid rgba(99,102,241,0.1); border-radius:8px;"/>
-      <button onclick="addBeat()">Add Beat</button>
-      <ul id="beatList" class="beat-list"></ul>
-      <p class="beat-instructions">Drag and drop beats to rearrange them.</p>
-    </div>
-
-    <!-- Revision History -->
+    <!-- Revision History (Now Saves Quick Summary Revisions) -->
     <div class="glass-panel input-section" id="revisionHistorySection">
       <h2>Revision History</h2>
       <button onclick="saveRevision()">💾 Save Revision</button>
@@ -430,7 +445,15 @@
       <ul id="peerReviewList" class="peer-review-list"></ul>
     </div>
 
-    <!-- Feedback Panel (No AI Suggestions) -->
+    <!-- Similar Videos Section -->
+    <div class="glass-panel input-section" id="similarVideosSection">
+      <h2>Similar Videos</h2>
+      <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." style="padding:0.5rem; width:70%; border:2px solid rgba(99,102,241,0.1); border-radius:8px;"/>
+      <button onclick="addYouTubeVideo()">Add Video</button>
+      <div id="similarVideosList" class="similar-videos-list" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- Feedback Panel -->
     <div class="glass-panel feedback-panel" id="feedback">
       <h2>Improvement Recommendations</h2>
       <div id="specificFeedback" style="margin-top: 1rem;"></div>
@@ -547,15 +570,9 @@
       document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
         cell.addEventListener('click', () => selectRating(cell));
       });
-      // Auto‑resize textareas
+      // Auto‑resize textareas for all .story-input elements
       document.querySelectorAll('.story-input').forEach(textarea => {
         textarea.addEventListener('input', autoResize);
-      });
-      // Update word count, readability, and live preview on story input
-      document.getElementById('storyInput').addEventListener('input', function(e) {
-        updateWordCount(e);
-        updateReadabilityMetrics();
-        updateLivePreview();
       });
     });
 
@@ -636,82 +653,35 @@
     }
 
     /***************************************************
-     * Word Count & Readability Functions
+     * AI Review Function
      ***************************************************/
-    function updateWordCount(e) {
-      const text = e.target.value;
-      const trimmed = text.trim();
-      const wordCount = trimmed ? trimmed.split(/\s+/).length : 0;
-      document.getElementById('wordCount').textContent = `${wordCount} words`;
-    }
-    function updateReadabilityMetrics() {
-      const text = document.getElementById('storyInput').value;
-      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-      const words = text.trim() ? text.trim().split(/\s+/) : [];
-      const sentenceCount = sentences.length || 1;
-      const wordCount = words.length;
-      const avgSentenceLength = (wordCount / sentenceCount).toFixed(1);
-      const readingTime = Math.ceil(wordCount / 200);
-      document.getElementById('readabilityMetrics').textContent = `Avg. Sentence Length: ${avgSentenceLength} words | Reading Time: ~${readingTime} min`;
-    }
-
-    /***************************************************
-     * Live Preview Function
-     ***************************************************/
-    function updateLivePreview() {
-      const text = document.getElementById('storyInput').value;
-      const paragraphs = text.split(/\n+/).filter(p => p.trim() !== '');
-      document.getElementById('livePreview').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
-    }
-    function togglePreview() {
-      const previewSection = document.getElementById('livePreviewSection');
-      previewSection.style.display = previewSection.style.display === 'none' ? 'block' : 'none';
-    }
-
-    /***************************************************
-     * Beat Sheet Functions (Drag & Drop)
-     ***************************************************/
-    function addBeat() {
-      const beatInput = document.getElementById('beatInput');
-      const beatText = beatInput.value.trim();
-      if (!beatText) return;
-      const li = document.createElement('li');
-      li.textContent = beatText;
-      li.draggable = true;
-      li.addEventListener('dragstart', handleDragStart);
-      li.addEventListener('dragover', handleDragOver);
-      li.addEventListener('drop', handleDrop);
-      document.getElementById('beatList').appendChild(li);
-      beatInput.value = '';
-    }
-    let dragSrcEl = null;
-    function handleDragStart(e) {
-      dragSrcEl = this;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.innerHTML);
-    }
-    function handleDragOver(e) {
-      if (e.preventDefault) e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      return false;
-    }
-    function handleDrop(e) {
-      if (e.stopPropagation) e.stopPropagation();
-      if (dragSrcEl !== this) {
-        dragSrcEl.innerHTML = this.innerHTML;
-        this.innerHTML = e.dataTransfer.getData('text/html');
+    function runAIReview() {
+      const summary = document.getElementById('quickSummary').value.trim();
+      const resultDiv = document.getElementById('aiReviewResult');
+      if (!summary) {
+        resultDiv.textContent = "Please enter a quick summary for AI review.";
+        return;
       }
-      return false;
+      // Simulated AI analysis based on summary length
+      let suggestions = "";
+      if(summary.length < 50) {
+         suggestions = "The summary seems a bit short. Consider adding more detail about the plot, setting, or characters.";
+      } else if(summary.length < 150) {
+         suggestions = "Good summary! You might consider elaborating on the conflict and the main character's motivations.";
+      } else {
+         suggestions = "Your summary is comprehensive. To further improve, ensure clarity and conciseness by removing any redundant details.";
+      }
+      resultDiv.innerHTML = `<p>${suggestions}</p>`;
     }
 
     /***************************************************
-     * Revision History Functions
+     * Revision History Functions (Using Quick Summary)
      ***************************************************/
     function saveRevision() {
-      const storyText = document.getElementById('storyInput').value;
-      if (!storyText.trim()) return;
+      const summaryText = document.getElementById('quickSummary').value;
+      if (!summaryText.trim()) return;
       const timestamp = new Date().toLocaleString();
-      revisionHistory.push({ text: storyText, time: timestamp });
+      revisionHistory.push({ text: summaryText, time: timestamp });
       updateRevisionHistory();
     }
     function updateRevisionHistory() {
@@ -722,10 +692,7 @@
     }
     function loadRevision(index) {
       if (confirm('Load this revision? Unsaved changes will be lost.')) {
-        document.getElementById('storyInput').value = revisionHistory[index].text;
-        updateWordCount({ target: document.getElementById('storyInput') });
-        updateReadabilityMetrics();
-        updateLivePreview();
+        document.getElementById('quickSummary').value = revisionHistory[index].text;
       }
     }
 
@@ -749,14 +716,58 @@
     }
 
     /***************************************************
-     * Simulated Grammar Check
+     * Similar Videos Functions
+     ***************************************************/
+    // Extract the YouTube video ID from various URL formats.
+    function getYouTubeVideoId(url) {
+      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      if (match && match[2].length == 11) {
+        return match[2];
+      } else {
+        return null;
+      }
+    }
+    
+    function addYouTubeVideo() {
+      const url = document.getElementById('youtubeLinkInput').value.trim();
+      if (!url) return;
+      const videoId = getYouTubeVideoId(url);
+      if (!videoId) {
+        alert('Invalid YouTube URL. Please enter a valid URL.');
+        return;
+      }
+      // Create thumbnail element with a link
+      const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+      const videoLink = document.createElement('a');
+      videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
+      videoLink.target = '_blank';
+      const img = document.createElement('img');
+      img.src = thumbnailUrl;
+      img.alt = 'YouTube Video Thumbnail';
+      videoLink.appendChild(img);
+      
+      // Create container for thumbnail
+      const thumbContainer = document.createElement('div');
+      thumbContainer.className = 'video-thumbnail';
+      thumbContainer.appendChild(videoLink);
+      
+      // Append thumbnail to the list
+      document.getElementById('similarVideosList').appendChild(thumbContainer);
+      
+      // Clear input
+      document.getElementById('youtubeLinkInput').value = '';
+    }
+
+    /***************************************************
+     * Simulated Grammar Check (Now Checks Quick Summary)
      ***************************************************/
     function checkGrammar() {
-      const storyText = document.getElementById('storyInput').value;
+      const summaryText = document.getElementById('quickSummary').value;
       let message = "Grammar check complete. ";
-      if (!storyText.trim()) {
+      if (!summaryText.trim()) {
         message += "No content to analyze.";
-      } else if (storyText.split(' ').length < 20) {
+      } else if (summaryText.split(' ').length < 20) {
         message += "Content is too short for an in-depth analysis.";
       } else {
         message += "Your grammar and style appear solid, but consider varying sentence lengths and checking for passive voice.";
@@ -772,13 +783,13 @@
       const doc = new jsPDF('p', 'mm', 'a4');
       const elements = [
         document.querySelector('header.analyzer-header'),
-        document.querySelector('#rubricSection'),
         document.querySelector('#quickSummarySection'),
-        document.querySelector('#storySection'),
-        document.querySelector('#beatSheetSection'),
+        document.querySelector('#aiReviewSection'),
+        document.querySelector('#rubricSection'),
         document.querySelector('#revisionHistorySection'),
         document.querySelector('#humanFeedbackSection'),
         document.querySelector('#peerReviewSection'),
+        document.querySelector('#similarVideosSection'),
         document.querySelector('.feedback-panel')
       ];
       let yPos = 10;
@@ -830,17 +841,16 @@
       scores = {};
       document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
       document.getElementById('specificFeedback').innerHTML = '';
-      ['storyInput','humanFeedback','quickSummary'].forEach(id => {
+      // Reset only the quick summary and human feedback now
+      ['quickSummary','humanFeedback'].forEach(id => {
         document.getElementById(id).value = '';
       });
-      document.getElementById('wordCount').textContent = '0 words';
-      document.getElementById('readabilityMetrics').textContent = 'Readability: N/A';
-      updateTotal();
       document.getElementById('ranking').textContent = 'Incomplete';
       document.getElementById('ranking').style.color = '#64748b';
-      document.getElementById('beatList').innerHTML = '';
+      // Clear revision history, peer reviews, and similar videos
       document.getElementById('revisionList').innerHTML = '';
       document.getElementById('peerReviewList').innerHTML = '';
+      document.getElementById('similarVideosList').innerHTML = '';
       revisionHistory = [];
       peerReviews = [];
     }
