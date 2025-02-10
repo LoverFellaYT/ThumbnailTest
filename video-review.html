@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editing Review Pro+ (Final)</title>
 
+    <!-- Font Awesome for editing icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Roboto Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,7 +38,6 @@
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
       }
 
-      /* Dark mode */
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
         --text-light: #f3f3f3;
@@ -97,6 +99,17 @@
         flex-direction: column;
         gap: 0.4rem;
       }
+      /* Site Title with Film Icon */
+      .site-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .site-title i {
+        color: var(--accent-light);
+      }
       .total-score {
         font-size: 1.75rem;
         font-weight: 700;
@@ -154,9 +167,7 @@
         opacity: 0.9;
       }
       /* Dark Mode Slider */
-      .dark-mode {
-        /* Container for dark mode toggle */
-      }
+      .dark-mode { }
       .toggle-label.dark-mode-label {
         cursor: pointer;
         display: inline-flex;
@@ -187,9 +198,7 @@
         left: 2px;
         transition: transform 0.3s;
       }
-      input#darkModeToggle {
-        display: none;
-      }
+      input#darkModeToggle { display: none; }
       input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
         transform: translateX(30px);
       }
@@ -197,7 +206,7 @@
         background-color: var(--primary-light);
       }
 
-      /* Quote Section (at the top) with fade-in animation */
+      /* Quote Section (Top) with fade-in */
       .quote-section {
         text-align: center;
         margin: 1rem auto;
@@ -208,10 +217,6 @@
         box-shadow: var(--shadow);
         animation: fadeIn 0.8s ease-in-out;
         max-width: 800px;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
       }
 
       /* MAIN CONTAINER */
@@ -249,7 +254,7 @@
         background: var(--gradient-light);
         color: #fff;
       }
-      /* Rating columns */
+      /* Rating Columns */
       .modern-table thead th:nth-child(2) { background: #f87171; }
       .modern-table thead th:nth-child(3) { background: #fb923c; }
       .modern-table thead th:nth-child(4) { background: #facc15; }
@@ -275,12 +280,8 @@
       }
 
       /* FEEDBACK PANEL */
-      .feedback-panel h3 {
-        margin-top: 0;
-      }
-      .feedback-panel .feedback-entry {
-        margin-bottom: 1rem;
-      }
+      .feedback-panel h3 { margin-top: 0; }
+      .feedback-panel .feedback-entry { margin-bottom: 1rem; }
       .feedback-panel label {
         font-weight: 600;
         display: block;
@@ -322,9 +323,7 @@
         cursor: pointer;
         transition: var(--transition);
       }
-      #toggleLegend:hover {
-        opacity: 0.9;
-      }
+      #toggleLegend:hover { opacity: 0.9; }
       #legend {
         display: none;
         margin-top: 0.5rem;
@@ -335,8 +334,40 @@
         border-radius: var(--radius);
         padding: 0.75rem;
       }
-      #legend h4 {
+      #legend h4 { margin-top: 0; }
+
+      /* Self-Assessment Checklist Section */
+      .self-assessment-section {
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+        margin: 1rem auto;
+        max-width: 800px;
+      }
+      .self-assessment-section h3 {
+        text-align: center;
         margin-top: 0;
+      }
+      .self-assessment-section ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      .self-assessment-section li {
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .self-assessment-section input[type="checkbox"] {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+      .assessment-result {
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1rem;
       }
 
       /* MODAL: How-To & Tutorial */
@@ -384,7 +415,7 @@
         background: rgba(255, 255, 255, 1);
       }
 
-      /* Fun Fact Section at the bottom */
+      /* Fun Fact Section (Bottom) */
       .fun-fact-section {
         text-align: center;
         margin: 1rem auto;
@@ -397,11 +428,25 @@
         max-width: 800px;
       }
 
+      /* Disney Magic Easter Egg Icon */
+      #disneyMagic {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        cursor: pointer;
+        font-size: 2em;
+        z-index: 10000;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+      }
+
       /* RESPONSIVE */
       @media (max-width: 992px) {
-        .analyzer-container {
-          padding: 0 1rem 2rem;
-        }
+        .analyzer-container { padding: 0 1rem 2rem; }
       }
     </style>
   </head>
@@ -409,6 +454,10 @@
     <!-- HEADER -->
     <header class="analyzer-header glass-panel">
       <div class="header-left">
+        <div class="site-title">
+          <i class="fas fa-film"></i>
+          Editing Review Pro+
+        </div>
         <div class="total-score" title="Your video editing is rated on 10 factors, each up to 4 points, for a total of 40. 31–40: Outstanding, 21–30: Excellent, 11–20: Great, <11: Good">
           Score: <span id="total">0</span>/40 – <span id="scoreLabel">Good</span>
         </div>
@@ -475,7 +524,7 @@
             <tr>
               <td class="category-header" data-category="1"><strong>🎬 Narrative Flow & Storytelling</strong></td>
               <td data-category="1" data-rating="1" role="button" tabindex="0">
-                The video has a general structure but suffers from frequent logical gaps or abrupt scene changes that make the story unclear.
+                The video has a general structure but suffers from frequent logical gaps or abrupt scene changes.
               </td>
               <td data-category="1" data-rating="2" role="button" tabindex="0">
                 The narrative follows a recognizable structure with occasional lapses in clarity.
@@ -497,10 +546,10 @@
                 Cuts generally complement the narrative flow with few noticeable disruptions.
               </td>
               <td data-category="2" data-rating="3" role="button" tabindex="0">
-                Transitions are smooth and effectively enhance the pacing and continuity.
+                Transitions are smooth and effectively enhance pacing and continuity.
               </td>
               <td data-category="2" data-rating="4" role="button" tabindex="0">
-                Cuts are executed with precision, employing creative transitions that elevate the overall edit.
+                Cuts are executed with precision, employing creative transitions that elevate the edit.
               </td>
             </tr>
             <!-- 3. Pacing & Timing -->
@@ -510,13 +559,13 @@
                 Pacing is uneven, with scenes that feel rushed or dragged out.
               </td>
               <td data-category="3" data-rating="2" role="button" tabindex="0">
-                Generally consistent pacing with minor timing issues in scene transitions.
+                Generally consistent pacing with minor timing issues.
               </td>
               <td data-category="3" data-rating="3" role="button" tabindex="0">
                 Pacing is well-managed with effective scene lengths that maintain viewer interest.
               </td>
               <td data-category="3" data-rating="4" role="button" tabindex="0">
-                Exemplary pacing and timing keep the audience engaged throughout with perfect scene rhythm.
+                Exemplary pacing and timing keep the audience fully engaged.
               </td>
             </tr>
             <!-- 4. Technical Quality & Export -->
@@ -539,29 +588,29 @@
             <tr>
               <td class="category-header" data-category="5"><strong>📖 Story/Content Engagement</strong></td>
               <td data-category="5" data-rating="1" role="button" tabindex="0">
-                Content is passable but fails to fully engage the viewer or clarify the core message.
+                Content is passable but fails to fully engage or clarify the core message.
               </td>
               <td data-category="5" data-rating="2" role="button" tabindex="0">
-                The video content is engaging with a clear message, though it may lack depth.
+                The content is engaging with a clear message, though it may lack depth.
               </td>
               <td data-category="5" data-rating="3" role="button" tabindex="0">
-                Content is compelling and resonates with the target audience, delivering a clear message.
+                Content is compelling and resonates well with the target audience.
               </td>
               <td data-category="5" data-rating="4" role="button" tabindex="0">
-                Exceptionally engaging content that deeply resonates, inspires, and holds the audience’s attention.
+                Exceptionally engaging content that deeply resonates and inspires the audience.
               </td>
             </tr>
             <!-- 6. Use of Music & Sound Design -->
             <tr>
               <td class="category-header" data-category="6"><strong>🎵 Use of Music & Sound Design</strong></td>
               <td data-category="6" data-rating="1" role="button" tabindex="0">
-                Background music and sound effects are present but may be poorly balanced or distracting.
+                Background music and sound effects are present but poorly balanced or distracting.
               </td>
               <td data-category="6" data-rating="2" role="button" tabindex="0">
-                Music and sound design enhance the video moderately, with only minor balance issues.
+                Music and sound design moderately enhance the video, with minor balance issues.
               </td>
               <td data-category="6" data-rating="3" role="button" tabindex="0">
-                Sound design is thoughtfully integrated, with well-chosen music and balanced effects.
+                Thoughtfully integrated sound design with well-chosen music and balanced effects.
               </td>
               <td data-category="6" data-rating="4" role="button" tabindex="0">
                 Exemplary use of music and sound design that elevates the emotional and narrative impact.
@@ -571,7 +620,7 @@
             <tr>
               <td class="category-header" data-category="7"><strong>🎨 Visual Effects & Graphics</strong></td>
               <td data-category="7" data-rating="1" role="button" tabindex="0">
-                Graphics are minimal—basic text, simple lower-thirds, or color overlays that do little to enhance the visual experience.
+                Graphics are minimal—basic text, simple lower-thirds, or overlays that do little to enhance the visual experience.
               </td>
               <td data-category="7" data-rating="2" role="button" tabindex="0">
                 Effective use of text, lower-thirds, and simple overlays that support the content.
@@ -587,7 +636,7 @@
             <tr>
               <td class="category-header" data-category="8"><strong>✨ Motion Graphics / Animated Elements</strong></td>
               <td data-category="8" data-rating="1" role="button" tabindex="0">
-                Motion graphics are minimal or rudimentary, lacking creative flair.
+                Animated elements are minimal or rudimentary, lacking creative flair.
               </td>
               <td data-category="8" data-rating="2" role="button" tabindex="0">
                 Animated elements are used effectively but may be basic in style.
@@ -606,13 +655,13 @@
                 On-screen text is minimal or inconsistently styled, detracting from clarity.
               </td>
               <td data-category="9" data-rating="2" role="button" tabindex="0">
-                Titles and captions are clear and support the video, though style consistency could improve.
+                Titles and captions are clear and support the video, though consistency could improve.
               </td>
               <td data-category="9" data-rating="3" role="button" tabindex="0">
                 Well-designed on-screen text and titles enhance understanding without distraction.
               </td>
               <td data-category="9" data-rating="4" role="button" tabindex="0">
-                Exemplary use of text and titles that are stylistically consistent, clear, and contribute powerfully to the overall message.
+                Exemplary use of text and titles that are stylistically consistent, clear, and powerfully support the message.
               </td>
             </tr>
           </tbody>
@@ -659,6 +708,23 @@
       <!-- A random fun fact or tip will appear here -->
     </div>
 
+    <!-- SELF-ASSESSMENT CHECKLIST SECTION -->
+    <section class="self-assessment-section">
+      <h3>Self-Assessment Checklist</h3>
+      <ul>
+        <li><input type="checkbox" id="check1"> <label for="check1">Did you confirm that all voiceovers match on-screen graphics?</label></li>
+        <li><input type="checkbox" id="check2"> <label for="check2">Have you normalized audio so the volume is consistent?</label></li>
+        <li><input type="checkbox" id="check3"> <label for="check3">Are all transitions smooth and visually appealing?</label></li>
+        <li><input type="checkbox" id="check4"> <label for="check4">Did you verify that on-screen text and titles are clear and free of typos?</label></li>
+        <li><input type="checkbox" id="check5"> <label for="check5">Is the overall narrative clear, engaging, and well-paced?</label></li>
+        <li><input type="checkbox" id="check6"> <label for="check6">Have you double-checked technical quality (resolution, aspect ratio, frame rate)?</label></li>
+        <li><input type="checkbox" id="check7"> <label for="check7">Did you incorporate creative editing elements that enhance the story?</label></li>
+        <li><input type="checkbox" id="check8"> <label for="check8">Have you confirmed that the use of music and sound design elevates the video?</label></li>
+      </ul>
+      <button class="btn" onclick="submitAssessment()">Submit Self-Assessment</button>
+      <div class="assessment-result" id="assessmentResult"></div>
+    </section>
+
     <!-- HOW-TO MODAL -->
     <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
       <div class="modal-content">
@@ -667,8 +733,9 @@
         <ul>
           <li>Review each editing criterion by clicking on the appropriate rating cell.</li>
           <li>The total score and status update live as you select ratings.</li>
-          <li>Read the daily quote of wisdom for inspiration and a touch of Disney magic.</li>
+          <li>Read the daily Quote of Wisdom for inspiration and a touch of Disney magic.</li>
           <li>Provide additional feedback in the Human and AI feedback boxes.</li>
+          <li>Use the Self-Assessment Checklist to evaluate your own work.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
       </div>
@@ -685,6 +752,9 @@
     <!-- Hidden Audio Elements for Sound Effects -->
     <audio id="victorySound" src="victory.mp3"></audio>
     <audio id="wompSound" src="womp.mp3"></audio>
+
+    <!-- DISNEY MAGIC EASTER EGG ICON -->
+    <div id="disneyMagic" title="Click for a little Disney Magic!">✨</div>
 
     <!-- JAVASCRIPT -->
     <script>
@@ -705,7 +775,7 @@
         womp: document.getElementById("wompSound")
       };
 
-      // Array of inspirational quotes (including famous editors and Disney wisdom)
+      // Array of inspirational quotes (editing wisdom, directors, Disney, etc.)
       const editorQuotes = [
         "“In film editing, it's not about what you add, it's about what you leave out.” – Walter Murch",
         "“Cutting is rewriting.” – Thelma Schoonmaker",
@@ -714,7 +784,17 @@
         "“In editing, less is often more.” – Unknown",
         "“All our dreams can come true if we have the courage to pursue them.” – Walt Disney",
         "“It's kind of fun to do the impossible.” – Walt Disney",
-        "“The past can hurt. But the way I see it, you can either run from it, or learn from it.” – Rafiki, The Lion King"
+        "“The past can hurt. But the way I see it, you can either run from it, or learn from it.” – Rafiki, The Lion King",
+        "“Cinema is truth at 24 frames per second.” – Jean-Luc Godard",
+        "“The secret to film editing is knowing when to cut.” – Unknown",
+        "“Every cut tells a story.” – Unknown",
+        "“Editing is the craft of transforming raw footage into art.” – Unknown",
+        "“A good cut is a silent hero.” – Unknown",
+        "“When you're editing, you're not just cutting footage; you're sculpting a story.” – Unknown",
+        "“The technique of film editing is to be invisible.” – Walter Murch",
+        "“The art of editing is the art of omission.” – Elia Kazan",
+        "“I’m convinced that nothing happens in the editing room.” – Francis Ford Coppola",
+        "“May your edits be as magical as pixie dust.” – Inspired by Disney"
       ];
 
       // Array of fun facts and tips
@@ -739,7 +819,7 @@
         localStorage.setItem("lastQuoteIndex", newQuoteIndex);
         document.getElementById("quoteSection").innerText = editorQuotes[newQuoteIndex];
 
-        // Set a random fun fact (no repeat-check needed here)
+        // Set a random fun fact
         document.getElementById("funFactSection").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
 
         // Event delegation for rubric table cells:
@@ -747,6 +827,9 @@
           const cell = e.target.closest('td[data-rating]');
           if (cell) selectRating(cell);
         });
+
+        // Add click event for the Disney Magic icon
+        document.getElementById("disneyMagic").addEventListener("click", triggerDisneyMagic);
       });
 
       /***************************************************
@@ -867,10 +950,6 @@
           content = "<h2>Enhancing Narrative Flow</h2><p>Focus on the pacing and sequence of shots. Experiment with different cuts to build a compelling story.</p>";
         } else if (topic === 'transitions') {
           content = "<h2>Smooth Transitions</h2><p>Use creative but purposeful transitions. Avoid jarring cuts unless intentionally stylistic.</p>";
-        } else if (topic === 'audio') {
-          content = "<h2>Audio Synchronization</h2><p>Ensure that audio tracks match the visuals seamlessly. Use proper mixing, EQ, and balance sound levels.</p>";
-        } else if (topic === 'effects') {
-          content = "<h2>Visual Effects & Graphics</h2><p>Integrate effects and graphics that complement the story without overwhelming it.</p>";
         } else if (topic === 'technical') {
           content = "<h2>Technical Quality</h2><p>Export in high resolution with proper compression to preserve quality across devices.</p>";
         } else if (topic === 'overall') {
@@ -897,17 +976,52 @@
       }
 
       /***************************************************
-       * Easter Egg Surprise!
+       * Self-Assessment Checklist Functions
+       ***************************************************/
+      function submitAssessment() {
+        const checklist = document.querySelectorAll('.self-assessment-section input[type="checkbox"]');
+        let checkedCount = 0;
+        checklist.forEach(box => {
+          if (box.checked) checkedCount++;
+        });
+        const totalItems = checklist.length;
+        let resultText = `You checked ${checkedCount} out of ${totalItems} items. `;
+        if (checkedCount === totalItems) {
+          resultText += "🎉 Master Editor Badge: You are a true editing wizard!";
+          confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+        } else if (checkedCount >= totalItems * 0.75) {
+          resultText += "Great job! You're almost there.";
+        } else {
+          resultText += "Keep refining your work for that perfect edit.";
+        }
+        document.getElementById("assessmentResult").innerText = resultText;
+      }
+
+      /***************************************************
+       * Disney Magic Easter Egg Function
+       ***************************************************/
+      function triggerDisneyMagic() {
+        // Trigger a confetti burst and display a random Disney quote alert
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        const disneyQuotes = [
+          "“All our dreams can come true if we have the courage to pursue them.” – Walt Disney",
+          "“It's kind of fun to do the impossible.” – Walt Disney",
+          "“The way to get started is to quit talking and begin doing.” – Walt Disney",
+          "“If you can dream it, you can do it.” – Walt Disney",
+          "“The more you like yourself, the less you are like anyone else, which makes you unique.” – Walt Disney"
+        ];
+        const randomIndex = Math.floor(Math.random() * disneyQuotes.length);
+        alert(disneyQuotes[randomIndex]);
+      }
+
+      /***************************************************
+       * Easter Egg Surprise (Alt+E)
        ***************************************************/
       document.addEventListener("keydown", function(e) {
         if (e.altKey && e.key.toLowerCase() === "e") {
-          triggerEasterEgg();
+          triggerDisneyMagic();
         }
       });
-      function triggerEasterEgg() {
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
-        alert("🎉 You found the secret easter egg! Keep rocking that edit!");
-      }
     </script>
   </body>
 </html>
