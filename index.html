@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Thumbnail Analyzer Pro+ (Final)</title>
 
     <!-- Roboto Font -->
@@ -82,7 +82,7 @@
 
       /* Tooltip for score */
       .total-score:hover::after {
-        content: "Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40.\A36–40: Outstanding\A30–35: Excellent\A20–29: Great\A<19: Good";
+        content: "Your thumbnail is rated on 11 factors, each up to 4 points.\A If you're capping at 40, ignore the extra row.\A36–40: Outstanding\A30–35: Excellent\A20–29: Great\A<19: Good";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -99,7 +99,7 @@
       header.analyzer-header {
         position: sticky;
         top: 0;
-        z-index: 2000; /* so header always sits on top */
+        z-index: 2000; /* always on top */
         padding: 1.5rem 2rem;
         margin-bottom: 1.5rem;
         display: flex;
@@ -112,7 +112,6 @@
         gap: 0.4rem;
         position: relative;
       }
-      /* New Home Button */
       .home-btn {
         background: none;
         border: none;
@@ -140,18 +139,14 @@
         gap: 1rem;
         flex-wrap: wrap;
       }
-      /* Group buttons on left; push toggles to far right */
       .header-right .group {
         display: flex;
         align-items: center;
         gap: 1rem;
       }
 
-      /* NEW Dark Mode Slider */
-      .dark-mode {
-        /* Container for dark mode toggle */
-      }
-      .toggle-label.dark-mode-label {
+      /* Dark Mode Slider */
+      .dark-mode-label {
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -177,12 +172,10 @@
         left: 2px;
         transition: transform 0.3s;
       }
-      /* Hide the checkbox input */
       input#darkModeToggle {
         display: none;
       }
       input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        /* Move from left:2px to right flush */
         transform: translateX(32px);
       }
       input#darkModeToggle:checked + .dark-mode-slider {
@@ -220,10 +213,9 @@
         padding: 0 2rem 2rem;
       }
 
-      /* SIDEBAR */
       aside.sidebar {
         position: sticky;
-        top: 120px; /* so sidebar stays in view under the header */
+        top: 120px;
         z-index: 900;
         width: 340px;
         max-height: calc(100vh - 120px);
@@ -285,7 +277,6 @@
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        white-space: normal;
         color: var(--yt-title-color-light);
       }
       .previews-container {
@@ -301,14 +292,13 @@
         transform: scale(1.05);
       }
 
-      /* MAIN CONTENT (Rubric & Insights) */
       main.main-content {
         display: flex;
         flex-direction: column;
         gap: 1rem;
       }
 
-      /* Rubric Table */
+      /* Modern Rubric Table */
       .modern-table {
         width: 100%;
         border-collapse: separate;
@@ -317,7 +307,6 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         overflow: hidden;
-        transition: transform 0.2s ease;
       }
       .modern-table thead th {
         padding: 0.75rem 1.5rem;
@@ -331,7 +320,6 @@
         background: var(--gradient-light);
         color: #fff;
       }
-      /* color-coded rating columns */
       .modern-table thead th:nth-child(2) { background: #f87171 !important; }
       .modern-table thead th:nth-child(3) { background: #fb923c !important; }
       .modern-table thead th:nth-child(4) { background: #facc15 !important; }
@@ -340,8 +328,7 @@
         padding: 0.75rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
-        vertical-align: middle;
-        min-width: 100px;
+        vertical-align: top;
         cursor: pointer;
         background: var(--table-cell-bg-light);
       }
@@ -433,7 +420,7 @@
         color: #555;
       }
 
-      /* Legend & Definitions toggle button */
+      /* Legend & Definitions */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
@@ -526,9 +513,13 @@
           width: 100%;
           margin-bottom: 2rem;
         }
+        main.main-content {
+          margin-top: 0;
+        }
       }
 
-      .palette-container, .color-suggestions-container {
+      .palette-container,
+      .color-suggestions-container {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -547,16 +538,26 @@
     <header class="analyzer-header glass-panel">
       <div class="header-left">
         <!-- Home Button -->
-        <a href="https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics" class="home-btn" aria-label="Home">🏠</a>
-        <div class="total-score" title="Your thumbnail is rated on 10 factors, each up to 4 points, for a total of 40. 36–40: Outstanding, 30–35: Excellent, 20–29: Great, &lt;19: Good">
-          Score: <span id="total">0</span>/40 – <span id="scoreLabel">Good</span>
+        <a href="https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics" 
+           class="home-btn" aria-label="Home">🏠
+        </a>
+        <div class="total-score" 
+             title="Your thumbnail is rated on 11 factors, each up to 4 points. 36–40: Outstanding, 30–35: Excellent, 20–29: Great, <19: Good">
+          Score: <span id="total">0</span>/40 – 
+          <span id="scoreLabel">Good</span>
         </div>
         <!-- Progress Bar -->
         <div id="progressBarContainer" style="position: relative; width: 100%; height: 20px; background: #eee; border-radius: 10px; margin-top: 0.5rem;">
-          <div id="progressBar" style="height: 100%; width: 0%; background: var(--gradient-light); border-radius: 10px; transition: width 0.3s ease;"></div>
+          <div id="progressBar" 
+               style="height: 100%; width: 0%; background: var(--gradient-light); border-radius: 10px; transition: width 0.3s ease;">
+          </div>
         </div>
-        <div id="milestoneMessage" style="font-size:0.9rem; color:#555; margin-top: 0.5rem;"></div>
-        <div class="status-indicator" id="ranking">Incomplete</div>
+        <div id="milestoneMessage" 
+             style="font-size:0.9rem; color:#555; margin-top: 0.5rem;">
+        </div>
+        <div class="status-indicator" 
+             id="ranking">Incomplete
+        </div>
       </div>
       <div class="header-right">
         <div class="group">
@@ -584,53 +585,60 @@
       <aside class="sidebar glass-panel">
         <section class="preview-section">
           <h2>Video Title &amp; Thumbnails</h2>
-          <input
-            type="text"
-            id="videoTitle"
-            class="title-input"
-            placeholder="Enter video title here..."
+          <input 
+            type="text" 
+            id="videoTitle" 
+            class="title-input" 
+            placeholder="Enter video title here..." 
             aria-label="Video Title"
           />
           <div class="upload-container">
             <button class="btn" onclick="document.getElementById('thumbnailUpload').click()" aria-label="Upload Image">
               📁 Upload Image
             </button>
-            <input type="file" id="thumbnailUpload" accept="image/*" style="display:none;" />
-            <p style="font-size:0.9rem; color:#555;">Or drag &amp; drop image below</p>
+            <input 
+              type="file" 
+              id="thumbnailUpload" 
+              accept="image/*" 
+              style="display:none;" 
+            />
+            <p style="font-size:0.9rem; color:#555;">
+              Or drag &amp; drop image below
+            </p>
           </div>
           <!-- The upload area is clickable to enlarge -->
-          <div
-            class="thumbnail-wrap"
+          <div 
+            class="thumbnail-wrap" 
             id="uploadArea"
             style="width:320px; height:180px;"
-            onclick="enlargeImage('homePreview')"
-            ondragover="handleDragOver(event)"
-            ondrop="handleDrop(event)"
-            role="button"
-            tabindex="0"
+            onclick="enlargeImage('homePreview')" 
+            ondragover="handleDragOver(event)" 
+            ondrop="handleDrop(event)" 
+            role="button" 
+            tabindex="0" 
             aria-label="Drag and drop thumbnail image here"
           >
-            <img
-              id="homePreview"
+            <img 
+              id="homePreview" 
               class="youtube-thumb"
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-              alt="Default Thumbnail Preview"
+              alt="Default Thumbnail Preview" 
               loading="lazy"
             />
           </div>
           <div class="previews-container">
             <div class="preview-box">
               <div class="preview-label">YouTube Home</div>
-              <div
-                class="thumbnail-wrap"
-                style="width:210px; height:118px;"
-                onclick="enlargeImage('homePreview')"
-                role="button"
-                tabindex="0"
+              <div 
+                class="thumbnail-wrap" 
+                style="width:210px; height:118px;" 
+                onclick="enlargeImage('homePreview')" 
+                role="button" 
+                tabindex="0" 
                 aria-label="Enlarge Home Thumbnail"
               >
-                <img
-                  id="homePreviewSmall"
+                <img 
+                  id="homePreviewSmall" 
                   class="youtube-thumb"
                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                   alt="Small YouTube Home Thumbnail"
@@ -641,15 +649,15 @@
             </div>
             <div class="preview-box">
               <div class="preview-label">Suggested Video</div>
-              <div
-                class="thumbnail-wrap"
-                style="width:168px; height:94px;"
-                onclick="enlargeImage('suggestedPreview')"
-                role="button"
-                tabindex="0"
+              <div 
+                class="thumbnail-wrap" 
+                style="width:168px; height:94px;" 
+                onclick="enlargeImage('suggestedPreview')" 
+                role="button" 
+                tabindex="0" 
                 aria-label="Enlarge Suggested Thumbnail"
               >
-                <img
+                <img 
                   id="suggestedPreview"
                   class="youtube-thumb"
                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
@@ -665,7 +673,7 @@
 
       <!-- MAIN CONTENT (Rubric & Insights) -->
       <main class="main-content">
-        <!-- NEW 11-Row Rubric Table with Emojis -->
+        <!-- 11-Row Rubric Table with data-category & data-rating -->
         <section class="rubric-table glass-panel">
           <table class="modern-table">
             <thead>
@@ -678,101 +686,256 @@
               </tr>
             </thead>
             <tbody>
+              <!-- 1: Curiosity & Intrigue (cat-0) -->
               <tr>
-                <td><strong>🤔 Curiosity &amp; Intrigue</strong></td>
-                <td>Offers something interesting; mild curiosity</td>
-                <td>Teases a scenario or question that hooks some viewers</td>
-                <td>Strongly compels viewers to see what happens next; hints at a bigger story</td>
-                <td>Creates an <em>irresistible</em> need to know; viewers feel they <strong>must</strong> click to uncover the surprise or outcome</td>
+                <td class="category-header" data-category="0">
+                  🤔 Curiosity &amp; Intrigue
+                </td>
+                <td data-category="0" data-rating="1" role="button" tabindex="0">
+                  Offers something interesting; mild curiosity
+                </td>
+                <td data-category="0" data-rating="2" role="button" tabindex="0">
+                  Teases a scenario or question that hooks some viewers
+                </td>
+                <td data-category="0" data-rating="3" role="button" tabindex="0">
+                  Strongly compels viewers to see what happens next; hints at a bigger story
+                </td>
+                <td data-category="0" data-rating="4" role="button" tabindex="0">
+                  Creates an <em>irresistible</em> need to know; viewers feel they <strong>must</strong> click
+                </td>
               </tr>
+              <!-- 2: Main Subject Clarity (cat-1) -->
               <tr>
-                <td><strong>👀 Main Subject Clarity</strong></td>
-                <td>Has a central image or subject, but may be slightly cluttered</td>
-                <td>Subject is recognizable at a glance; background elements don’t overpower</td>
-                <td>Very clear focal point with minimal distractions; easy to grasp in under a second</td>
-                <td>Crystal-clear subject with zero clutter; viewers instantly see what’s important and why</td>
+                <td class="category-header" data-category="1">
+                  👀 Main Subject Clarity
+                </td>
+                <td data-category="1" data-rating="1" role="button" tabindex="0">
+                  Has a central image or subject, but may be slightly cluttered
+                </td>
+                <td data-category="1" data-rating="2" role="button" tabindex="0">
+                  Subject is recognizable at a glance
+                </td>
+                <td data-category="1" data-rating="3" role="button" tabindex="0">
+                  Clear focal point with minimal distractions
+                </td>
+                <td data-category="1" data-rating="4" role="button" tabindex="0">
+                  Crystal-clear subject; zero clutter
+                </td>
               </tr>
+              <!-- 3: Human Element & Emotion (cat-2) -->
               <tr>
-                <td><strong>😀 Human Element &amp; Emotion</strong></td>
-                <td>Shows a person or character but emotion may be understated</td>
-                <td>Includes a noticeable expression or emotive character/face</td>
-                <td>Emotion or reaction is clearly visible and relevant; helps convey excitement or tone</td>
-                <td>Exudes a <em>magnetic</em> emotional pull (shock, excitement, awe); the expression alone intrigues viewers</td>
+                <td class="category-header" data-category="2">
+                  😀 Human Element &amp; Emotion
+                </td>
+                <td data-category="2" data-rating="1" role="button" tabindex="0">
+                  Shows a person/character but emotion is understated
+                </td>
+                <td data-category="2" data-rating="2" role="button" tabindex="0">
+                  Noticeable expression or emotive face
+                </td>
+                <td data-category="2" data-rating="3" role="button" tabindex="0">
+                  Clear emotional reaction; helps convey excitement or tone
+                </td>
+                <td data-category="2" data-rating="4" role="button" tabindex="0">
+                  Exudes a <em>magnetic</em> emotional pull; expression alone intrigues
+                </td>
               </tr>
+              <!-- 4: Game Context Clarity (cat-3) -->
               <tr>
-                <td><strong>🎮 Game Context Clarity</strong></td>
-                <td>Somewhat indicates which game is featured; not entirely obvious</td>
-                <td>Viewers can identify the game from key elements (character, logo, environment)</td>
-                <td>Game context is immediately clear; iconic visuals or text confirm the specific game</td>
-                <td>Instantly unmistakable for the game in question; draws in fans and intrigues new viewers by showcasing key recognizable aspects</td>
+                <td class="category-header" data-category="3">
+                  🎮 Game Context Clarity
+                </td>
+                <td data-category="3" data-rating="1" role="button" tabindex="0">
+                  Somewhat indicates which game; not entirely obvious
+                </td>
+                <td data-category="3" data-rating="2" role="button" tabindex="0">
+                  Viewers can identify the game from key elements
+                </td>
+                <td data-category="3" data-rating="3" role="button" tabindex="0">
+                  Game context is immediately clear; iconic visuals or text
+                </td>
+                <td data-category="3" data-rating="4" role="button" tabindex="0">
+                  Instantly unmistakable for the game; draws in fans/new viewers
+                </td>
               </tr>
+              <!-- 5: Title-Thumbnail Synergy (cat-4) -->
               <tr>
-                <td><strong>🔗 Title-Thumbnail Synergy</strong></td>
-                <td>Thumbnail loosely connects with the title; might repeat words</td>
-                <td>Thumbnail and title complement each other; form a reasonable “hook”</td>
-                <td>Each adds unique intrigue; forms a compelling mini-story; combination amplifies curiosity</td>
-                <td>Seamless synergy; the thumbnail + title create an <em>unforgettable</em> hook that practically demands a click</td>
+                <td class="category-header" data-category="4">
+                  🔗 Title-Thumbnail Synergy
+                </td>
+                <td data-category="4" data-rating="1" role="button" tabindex="0">
+                  Loosely connects with the title; might repeat words
+                </td>
+                <td data-category="4" data-rating="2" role="button" tabindex="0">
+                  Reasonable “hook”; complementary to the title
+                </td>
+                <td data-category="4" data-rating="3" role="button" tabindex="0">
+                  Adds unique intrigue; forms a compelling mini-story
+                </td>
+                <td data-category="4" data-rating="4" role="button" tabindex="0">
+                  Seamless synergy; an <em>unforgettable</em> hook demands a click
+                </td>
               </tr>
+              <!-- 6: Simplicity & Focus (cat-5) -->
               <tr>
-                <td><strong>👌 Simplicity &amp; Focus</strong></td>
-                <td>Slightly busy or includes minor unnecessary elements</td>
-                <td>Fairly clean layout; main visual stands out</td>
-                <td>Clean, focused design with just enough detail to enhance the subject</td>
-                <td>Perfectly minimal; every element serves a purpose; subject <em>leaps</em> out at any size</td>
+                <td class="category-header" data-category="5">
+                  👌 Simplicity &amp; Focus
+                </td>
+                <td data-category="5" data-rating="1" role="button" tabindex="0">
+                  Slightly busy; minor unnecessary elements
+                </td>
+                <td data-category="5" data-rating="2" role="button" tabindex="0">
+                  Fairly clean layout; main visual stands out
+                </td>
+                <td data-category="5" data-rating="3" role="button" tabindex="0">
+                  Focused design with just enough detail
+                </td>
+                <td data-category="5" data-rating="4" role="button" tabindex="0">
+                  Perfectly minimal; every element is purposeful
+                </td>
               </tr>
+              <!-- 7: Color & Contrast (cat-6) -->
               <tr>
-                <td><strong>🌈 Color &amp; Contrast</strong></td>
-                <td>Uses color decently, but subject might blend somewhat with the background</td>
-                <td>Solid contrast; colors draw attention to the main subject</td>
-                <td>Bold, vibrant palette that attracts the eye; subject pops clearly</td>
-                <td>Masterful color usage; thumbnail <em>radiates</em> off the feed with striking contrast</td>
+                <td class="category-header" data-category="6">
+                  🌈 Color &amp; Contrast
+                </td>
+                <td data-category="6" data-rating="1" role="button" tabindex="0">
+                  Decent colors; subject might blend into background
+                </td>
+                <td data-category="6" data-rating="2" role="button" tabindex="0">
+                  Solid contrast; draws attention to main subject
+                </td>
+                <td data-category="6" data-rating="3" role="button" tabindex="0">
+                  Bold, vibrant palette; subject pops clearly
+                </td>
+                <td data-category="6" data-rating="4" role="button" tabindex="0">
+                  Masterful color usage; <em>radiates</em> off the feed
+                </td>
               </tr>
+              <!-- 8: Composition & Layout (cat-7) -->
               <tr>
-                <td><strong>📐 Composition &amp; Layout</strong></td>
-                <td>Elements placed somewhat evenly; minor overlaps or awkward spacing</td>
-                <td>Balanced layout; key elements well-positioned; no major overlaps</td>
-                <td>Polished composition; eye goes to the main subject, then supporting details</td>
-                <td>Flawless design; top-tier visual hierarchy ensures immediate focus on the biggest hook</td>
+                <td class="category-header" data-category="7">
+                  📐 Composition &amp; Layout
+                </td>
+                <td data-category="7" data-rating="1" role="button" tabindex="0">
+                  Somewhat even placement; minor overlaps
+                </td>
+                <td data-category="7" data-rating="2" role="button" tabindex="0">
+                  Balanced layout; no major overlaps
+                </td>
+                <td data-category="7" data-rating="3" role="button" tabindex="0">
+                  Polished composition; eye flows to main subject first
+                </td>
+                <td data-category="7" data-rating="4" role="button" tabindex="0">
+                  Flawless design; top-tier visual hierarchy
+                </td>
               </tr>
+              <!-- 9: Text Usage (If Any) (cat-8) -->
               <tr>
-                <td><strong>📝 Text Usage (If Any)</strong></td>
-                <td>Text is present but may be too long, too small, or repetitive of the title</td>
-                <td>Short, legible text that adds some intrigue without cluttering</td>
-                <td>Minimal text, bold and clear; complements the title; stands out on all devices</td>
-                <td>Text is a <em>powerful teaser</em>; few words in a striking font/color that supercharge curiosity without overshadowing imagery</td>
+                <td class="category-header" data-category="8">
+                  📝 Text Usage (If Any)
+                </td>
+                <td data-category="8" data-rating="1" role="button" tabindex="0">
+                  Text may be too long, too small, or repeats title
+                </td>
+                <td data-category="8" data-rating="2" role="button" tabindex="0">
+                  Short, legible text that adds mild intrigue
+                </td>
+                <td data-category="8" data-rating="3" role="button" tabindex="0">
+                  Minimal text, bold &amp; clear; complements title
+                </td>
+                <td data-category="8" data-rating="4" role="button" tabindex="0">
+                  A <em>powerful teaser</em>; few words in a striking font
+                </td>
               </tr>
+              <!-- 10: Authenticity & Accuracy (cat-9) -->
               <tr>
-                <td><strong>✅ Authenticity &amp; Accuracy</strong></td>
-                <td>Mostly relevant to the video; mild exaggeration</td>
-                <td>Accurate representation with slight hype; no blatant clickbait</td>
-                <td>Fully aligned with video content; no misleading or unrelated visuals</td>
-                <td>100% honest yet still highly enticing; viewers trust the thumbnail and are wowed by the reveal</td>
+                <td class="category-header" data-category="9">
+                  ✅ Authenticity &amp; Accuracy
+                </td>
+                <td data-category="9" data-rating="1" role="button" tabindex="0">
+                  Mostly relevant; mild exaggeration
+                </td>
+                <td data-category="9" data-rating="2" role="button" tabindex="0">
+                  Accurate representation with slight hype
+                </td>
+                <td data-category="9" data-rating="3" role="button" tabindex="0">
+                  Fully aligned; no misleading visuals
+                </td>
+                <td data-category="9" data-rating="4" role="button" tabindex="0">
+                  100% honest yet highly enticing; builds trust
+                </td>
               </tr>
+              <!-- 11: Technical Quality (cat-10) -->
               <tr>
-                <td><strong>💎 Technical Quality</strong></td>
-                <td>Decent resolution; could be sharper or better lit</td>
-                <td>Clear, properly formatted (16:9, decent lighting); not pixelated</td>
-                <td>High-res, crisp visuals; excellent lighting/contrast</td>
-                <td>Superbly sharp, vibrant, and professional; stands out as top quality even among competing thumbnails</td>
+                <td class="category-header" data-category="10">
+                  💎 Technical Quality
+                </td>
+                <td data-category="10" data-rating="1" role="button" tabindex="0">
+                  Decent resolution; could be sharper
+                </td>
+                <td data-category="10" data-rating="2" role="button" tabindex="0">
+                  Clear, properly formatted; not pixelated
+                </td>
+                <td data-category="10" data-rating="3" role="button" tabindex="0">
+                  High-res, crisp visuals; excellent lighting
+                </td>
+                <td data-category="10" data-rating="4" role="button" tabindex="0">
+                  Superbly sharp, vibrant, pro-level
+                </td>
               </tr>
             </tbody>
           </table>
 
-          <h2>Explanation of Each Criterion</h2>
-          <ol>
-            <li><strong>Curiosity &amp; Intrigue:</strong> Thumbnails that immediately hook viewers with a mysterious or surprising element raise CTR significantly.</li>
-            <li><strong>Main Subject Clarity:</strong> A clearly defined focal point ensures viewers immediately understand the thumbnail’s subject.</li>
-            <li><strong>Human Element &amp; Emotion:</strong> Including a face or strong emotional reaction can create an instant emotional bond with the viewer.</li>
-            <li><strong>Game Context Clarity:</strong> Making the featured game obvious helps attract fans of that game and provides immediate recognition.</li>
-            <li><strong>Title-Thumbnail Synergy:</strong> The thumbnail should complement the title’s story or promise, not just repeat it.</li>
-            <li><strong>Simplicity &amp; Focus:</strong> Thumbnails with minimal clutter and a strong focus look better at small sizes and stand out more.</li>
-            <li><strong>Color &amp; Contrast:</strong> Bold, complementary colors and high contrast help thumbnails pop in a crowded feed.</li>
-            <li><strong>Composition &amp; Layout:</strong> Balanced placement of elements ensures the eye naturally goes to the most important part first.</li>
-            <li><strong>Text Usage (If Any):</strong> Keep text short, legible, and used only if it adds intrigue beyond the title.</li>
-            <li><strong>Authenticity &amp; Accuracy:</strong> Misleading thumbnails may yield clicks initially but hurt watch time and trust long-term.</li>
-            <li><strong>Technical Quality:</strong> Clear, high-resolution images convey professionalism and draw more clicks.</li>
-          </ol>
+          <!-- Legend Toggle Button -->
+          <button id="toggleLegend" onclick="toggleLegend()">
+            Show Legend &amp; Definitions
+          </button>
+          <!-- Legend Section (Initially hidden) -->
+          <div id="legend">
+            <h4>Legend &amp; Definitions</h4>
+            <p>
+              <strong>Curiosity &amp; Intrigue:</strong> Hooks viewers with a mysterious or surprising element.
+            </p>
+            <p>
+              <strong>Main Subject Clarity:</strong> Ensure the focal point is obvious at a glance.
+            </p>
+            <p>
+              <strong>Human Element &amp; Emotion:</strong> Faces or strong emotions create an instant personal connection.
+            </p>
+            <p>
+              <strong>Game Context Clarity:</strong> Make it clear which game is featured, especially for fans.
+            </p>
+            <p>
+              <strong>Title-Thumbnail Synergy:</strong> Complement the title’s promise; don’t just repeat it.
+            </p>
+            <p>
+              <strong>Simplicity &amp; Focus:</strong> Minimize clutter; highlight what matters most, even at small sizes.
+            </p>
+            <p>
+              <strong>Color &amp; Contrast:</strong> Bold, complementary colors help thumbnails stand out.
+            </p>
+            <p>
+              <strong>Composition &amp; Layout:</strong> Balanced placement draws the eye to key elements.
+            </p>
+            <p>
+              <strong>Text Usage (If Any):</strong> Keep text legible, minimal, and purposeful—avoid repeating the title.
+            </p>
+            <p>
+              <strong>Authenticity &amp; Accuracy:</strong> Don’t mislead viewers; trust is crucial for long-term engagement.
+            </p>
+            <p>
+              <strong>Technical Quality:</strong> High resolution, correct aspect ratio, crisp lighting, and no pixelation.
+            </p>
 
+            <h5>Rating Levels</h5>
+            <ul>
+              <li><strong>Good (1):</strong> Meets minimal requirements; weak design/impact. Improve contrast &amp; clarity.</li>
+              <li><strong>Great (2):</strong> Some effective elements, but still unrefined. Focus on brand alignment.</li>
+              <li><strong>Excellent (3):</strong> Highly effective design, clear focal point, and easy to read text.</li>
+              <li><strong>Outstanding (4):</strong> Flawless and compelling. Keep refining advanced techniques.</li>
+            </ul>
+          </div>
         </section>
 
         <!-- Feedback Panel -->
@@ -785,8 +948,8 @@
               class="feedback-input"
               contenteditable="true"
               data-placeholder="Enter your human feedback here..."
-              aria-label="Human Feedback"
-            ></div>
+              aria-label="Human Feedback">
+            </div>
           </div>
           <div class="feedback-entry">
             <label for="aiFeedback">AI Feedback</label>
@@ -795,8 +958,8 @@
               class="feedback-input"
               contenteditable="true"
               data-placeholder="Enter your AI feedback here..."
-              aria-label="AI Feedback"
-            ></div>
+              aria-label="AI Feedback">
+            </div>
           </div>
         </section>
 
@@ -846,9 +1009,10 @@
           <li>Enter your video title; previews update live.</li>
           <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
           <li>Click any preview (including the main upload image) to enlarge it.</li>
-          <li>Rate your thumbnail on various criteria using the rubric table.</li>
-          <li>Provide feedback using the Human and AI feedback boxes.</li>
-          <li>Review the Design Insights for technical feedback and suggestions.</li>
+          <li>Rate your thumbnail on each row (Good→Outstanding). Watch your score update.</li>
+          <li>Provide feedback using the Human and AI boxes if desired.</li>
+          <li>Review the Design Insights for auto‑analysis of colors, composition, etc.</li>
+          <li>Export a snapshot of your entire analysis as a PNG if needed.</li>
         </ul>
       </div>
     </div>
@@ -892,7 +1056,7 @@
       let confettiShown = false;
       window.lastPredictions = null;
       const SAMPLE_STEP = 16;
-      let milestoneTriggered = {}; // Track milestones (10,20,30,40)
+      let milestoneTriggered = {}; // track messages at certain scores
 
       const milestoneMessages = {
         10: "Almost there—keep going!",
@@ -909,10 +1073,10 @@
       let mobileNetModel = null;
 
       /***************************************************
-       * DOMContentLoaded Setup
+       * DOMContentLoaded
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        // Event delegation for rubric table cells:
+        // Table cell click/keydown
         document.querySelector('.modern-table').addEventListener('click', (e) => {
           const cell = e.target.closest('td[data-rating]');
           if (cell) selectRating(cell);
@@ -926,78 +1090,147 @@
             }
           }
         });
+
+        // Image upload
         document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
+
+        // Title input → preview
         document.getElementById('videoTitle').addEventListener('input', () => {
           updateTitlePreview();
           checkTitleThumbnailSynergy();
         });
+
+        // Load MobileNet for object detection
         loadMobileNet();
+
+        // Click composition canvas → enlarge
         document.getElementById("compositionCanvas").addEventListener("click", enlargeComposition);
       });
 
       /***************************************************
-       * Rubric Functions
+       * Rubric: selectRating
        ***************************************************/
       function selectRating(cell) {
-        // In this updated table, each row doesn't have a "data-category" attribute.
-        // If you want to track scores individually, you can add data-category to each row or cell.
-        // For now, this function only sets a "selected" highlight on the chosen cell.
-        // If you have 11 categories, assign them data-category indexes from 0..10 accordingly.
-        // Here’s a basic approach if needed:
-
-        const rating = parseInt(cell.getAttribute('data-rating') || "0");
-        // If there's no data-category, we won't store individual scores.
-        // The line below only toggles .selected for highlighting (no scoring).
+        const categoryIndex = Number(cell.getAttribute('data-category'));
+        const rating = parseInt(cell.getAttribute('data-rating'));
         const row = cell.parentElement;
-        row.querySelectorAll('td').forEach(td => td.classList.remove('selected'));
+
+        // Clear any previously selected cell in this row
+        row.querySelectorAll('td[data-rating]').forEach(td => td.classList.remove('selected'));
         cell.classList.add('selected');
 
-        // If you do want scoring by row, add something like:
-        // const categoryIndex = row.getAttribute('data-category');
-        // scores[categoryIndex] = rating;
-        // updateTotal();
+        // Store the rating in the global scores object
+        scores[categoryIndex] = rating;
+        updateTotal();
       }
 
-      // If you want a functioning "score" system across 11 categories:
-      // you can adapt the logic from the old table example below,
-      // or keep them all as 0 for demonstration.
-
+      /***************************************************
+       * Rubric: updateTotal
+       ***************************************************/
       function updateTotal() {
-        // This is where you would compute sum of the 11 categories, each 1..4
-        // For demonstration, we keep a 40-pt scale but show 0 if no logic is set.
-        let total = 0;
-        // If you want to store them properly:
-        // total = Object.values(scores).reduce((a, b) => a + b, 0);
-
+        // Sum all category scores
+        const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
 
-        // No advanced logic since we’re no longer rating each row with data-category
-        // Just keep an example placeholder for label changes:
-        let label = "Good";
-        if (total >= 36) label = "Outstanding";
-        else if (total >= 30) label = "Excellent";
-        else if (total >= 20) label = "Great";
+        // If ANY category is rated "1", auto "Rejected"
+        const hasScoreOne = Object.values(scores).includes(1);
+        if (hasScoreOne) {
+          document.getElementById('scoreLabel').textContent = "REJECTED";
+          document.getElementById('ranking').textContent = "Rejected";
+          document.getElementById('ranking').style.color = '#ef4444';
+          updateProgressBar(total);
+          return;
+        }
+
+        // Otherwise normal flow
+        let label = "";
+        if (total >= 36) {
+          label = "Outstanding";
+          if (!confettiShown) {
+            confetti({
+              particleCount: 150,
+              spread: 70,
+              origin: { y: 0.6 }
+            });
+            confettiShown = true;
+          }
+        } else if (total >= 30) {
+          label = "Excellent";
+          confettiShown = false;
+        } else if (total >= 20) {
+          label = "Great";
+          confettiShown = false;
+        } else {
+          label = "Good";
+          confettiShown = false;
+        }
+
+        // If total < 19 => "Redone from scratch"
+        if (total < 19) {
+          label += " (Redone from scratch)";
+        }
 
         document.getElementById('scoreLabel').textContent = label;
-        document.getElementById('ranking').textContent = "Incomplete";
-        document.getElementById('ranking').style.color = '#64748b';
 
-        // Reset the progress bar to 0 since we’re not computing a real total now.
+        // Evaluate final ranking color & label
+        const ranking = document.getElementById('ranking');
+        if (Object.keys(scores).length < 11) {
+          ranking.textContent = 'Incomplete';
+          ranking.style.color = '#64748b';
+        } else if (total <= 19) {
+          ranking.textContent = 'Needs Work 🔴';
+          ranking.style.color = '#ef4444';
+          progressAudio.womp.play();
+        } else if (total <= 29) {
+          ranking.textContent = 'Great! 🟢';
+          ranking.style.color = '#22c55e';
+        } else if (total <= 35) {
+          ranking.textContent = 'Excellent 🟡';
+          ranking.style.color = '#eab308';
+        } else {
+          ranking.textContent = 'Outstanding 🔵';
+          ranking.style.color = '#3b82f6';
+          progressAudio.victory.play();
+        }
+
         updateProgressBar(total);
       }
 
       function updateProgressBar(total) {
         const percentage = (total / 40) * 100;
-        document.getElementById("progressBar").style.width = percentage + "%";
+        const bar = document.getElementById("progressBar");
+        bar.style.width = percentage + "%";
+
+        const milestoneDiv = document.getElementById("milestoneMessage");
+        if (milestoneMessages[total] && !milestoneTriggered[total]) {
+          milestoneDiv.textContent = milestoneMessages[total];
+          milestoneTriggered[total] = true;
+          setTimeout(() => {
+            milestoneDiv.textContent = "";
+          }, 3000);
+        }
       }
 
+      /***************************************************
+       * Reset Scores
+       ***************************************************/
       function resetScores() {
         scores = {};
-        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => cell.classList.remove('selected'));
+        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+          cell.classList.remove('selected');
+        });
         document.getElementById('total').textContent = '0';
         document.getElementById('scoreLabel').textContent = 'Good';
         document.getElementById('ranking').textContent = 'Incomplete';
         document.getElementById('ranking').style.color = '#64748b';
+        confettiShown = false;
+        milestoneTriggered = {};
+
+        // Reset progress bar & message
+        document.getElementById("progressBar").style.width = "0%";
+        document.getElementById("milestoneMessage").textContent = "";
+
+        // Reset Title & Previews
         document.getElementById('videoTitle').value = '';
         document.getElementById('homeTitle').textContent = '';
         document.getElementById('suggestedTitle').textContent = '';
@@ -1005,72 +1238,51 @@
         document.getElementById('homePreview').src = defaultImg;
         document.getElementById('homePreviewSmall').src = defaultImg;
         document.getElementById('suggestedPreview').src = defaultImg;
+
+        // Clear any auto-insight messages
         document.getElementById('brightnessMessage').textContent = "";
         document.getElementById('contrastMessage').textContent = "";
         document.getElementById('paletteContainer').innerHTML = "";
         document.getElementById('colorSuggestions').innerHTML = "";
-        document.getElementById('compositionFeedback').innerHTML =
-          "Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance. <a href='#' onclick='openTutorial(\"composition\")'>Learn How</a>";
         document.getElementById('objectRecognitionResults').textContent = "";
         document.getElementById('sharpnessResult').textContent = "";
-        window.currentPalette = [];
-        window.lastPredictions = null;
-        confettiShown = false;
-        milestoneTriggered = {};
+        document.getElementById('compositionFeedback').innerHTML =
+          `Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
+           <a href="#" onclick="openTutorial('composition')">Learn How</a>`;
 
-        // Clear composition grid (canvas)
+        // Clear composition canvas
         const compCanvas = document.getElementById("compositionCanvas");
         if (compCanvas) {
           const ctx = compCanvas.getContext("2d");
           ctx.clearRect(0, 0, compCanvas.width, compCanvas.height);
           compCanvas.width = compCanvas.height = 0;
         }
-        // Reset progress bar
-        document.getElementById("progressBar").style.width = "0%";
-        document.getElementById("milestoneMessage").textContent = "";
       }
 
       /***************************************************
-       * Title Preview & Synergy Functions
+       * Title Preview & Synergy
        ***************************************************/
       let debounceTimer;
       function updateTitlePreview() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-          const title = document.getElementById('videoTitle').value || '';
+          const title = document.getElementById('videoTitle').value;
           document.getElementById('homeTitle').textContent = truncateTitle(title, 66);
           document.getElementById('suggestedTitle').textContent = truncateTitle(title, 60);
-          checkTitleThumbnailSynergy();
         }, 300);
       }
       function truncateTitle(str, limit) {
-        return (str.length <= limit) ? str : str.slice(0, limit - 3) + '...';
+        if (!str) return "";
+        return (str.length <= limit) ? str : str.slice(0, limit - 3) + "...";
       }
       function checkTitleThumbnailSynergy() {
-        const title = document.getElementById('videoTitle').value.toLowerCase();
-        if (!title || !window.lastPredictions) return;
-        // example synergy check
-        let matchFound = false;
-        window.lastPredictions.forEach(pred => {
-          if (title.indexOf(pred.className.toLowerCase()) !== -1) {
-            matchFound = true;
-          }
-        });
+        if (!window.lastPredictions) return;
+        // Example synergy logic if you want
       }
 
       /***************************************************
-       * Image Upload & Drag-and-Drop Functions
+       * Image Upload & Drag-and-Drop
        ***************************************************/
-      function processImage(dataUrl) {
-        updateAllPreviews(dataUrl);
-        extractColors(dataUrl);
-        setTimeout(() => {
-          checkContrastAndBrightness(dataUrl);
-          drawCompositionGrid(dataUrl);
-          runObjectRecognition(dataUrl);
-          showSharpness(dataUrl);
-        }, 300);
-      }
       function handleImageUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -1078,11 +1290,6 @@
         reader.onload = ev => processImage(ev.target.result);
         reader.readAsDataURL(file);
         e.target.value = "";
-      }
-      function updateAllPreviews(dataUrl) {
-        document.getElementById('homePreview').src = dataUrl;
-        document.getElementById('suggestedPreview').src = dataUrl;
-        document.getElementById('homePreviewSmall').src = dataUrl;
       }
       function handleDragOver(e) {
         e.preventDefault();
@@ -1098,6 +1305,24 @@
           reader.readAsDataURL(file);
         }
       }
+      function processImage(dataUrl) {
+        // Update previews
+        updateAllPreviews(dataUrl);
+
+        // Kick off auto-insights
+        extractColors(dataUrl);
+        setTimeout(() => {
+          checkContrastAndBrightness(dataUrl);
+          drawCompositionGrid(dataUrl);
+          runObjectRecognition(dataUrl);
+          showSharpness(dataUrl);
+        }, 300);
+      }
+      function updateAllPreviews(dataUrl) {
+        document.getElementById('homePreview').src = dataUrl;
+        document.getElementById('homePreviewSmall').src = dataUrl;
+        document.getElementById('suggestedPreview').src = dataUrl;
+      }
 
       /***************************************************
        * Color Extraction & Suggestions
@@ -1105,6 +1330,7 @@
       function extractColors(imageSrc) {
         const paletteContainer = document.getElementById('paletteContainer');
         paletteContainer.innerHTML = 'Detecting palette…';
+
         const img = new Image();
         img.src = imageSrc;
         img.onload = () => {
@@ -1112,12 +1338,17 @@
           try {
             const palette = colorThief.getPalette(img, 6);
             window.currentPalette = palette;
-            paletteContainer.innerHTML = palette
-              .map(color => {
-                const hex = rgbToHex(color[0], color[1], color[2]);
-                return `<div class="color-block" style="background:${hex};" data-hex="${hex}" onclick="copyHex(this)"></div>`;
-              })
-              .join('');
+            paletteContainer.innerHTML = palette.map(color => {
+              const hex = rgbToHex(color[0], color[1], color[2]);
+              return `
+                <div 
+                  class="color-block" 
+                  style="background:${hex};" 
+                  data-hex="${hex}" 
+                  onclick="copyHex(this)">
+                </div>
+              `;
+            }).join('');
             generateColorSuggestions();
           } catch (err) {
             paletteContainer.innerHTML = 'Unable to extract palette.';
@@ -1133,6 +1364,7 @@
         let suggestionsHTML = "";
         window.currentPalette.forEach(color => {
           const origHex = rgbToHex(color[0], color[1], color[2]);
+          // Simple complementary approach by inverting RGB
           const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
           suggestionsHTML += `
             <div style="display: flex; flex-direction: column; align-items: center;">
@@ -1145,11 +1377,12 @@
       }
 
       /***************************************************
-       * Brightness & Contrast Analysis
+       * Brightness & Contrast
        ***************************************************/
       function checkContrastAndBrightness(imageSrc) {
         const brightnessMessage = document.getElementById('brightnessMessage');
         const contrastMessage = document.getElementById('contrastMessage');
+
         const img = new Image();
         img.src = imageSrc;
         img.onload = () => {
@@ -1159,6 +1392,7 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
           const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
           let total = 0, count = 0;
           for (let i = 0; i < data.length; i += 4 * SAMPLE_STEP) {
             const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
@@ -1167,15 +1401,21 @@
           }
           const avg = total / count;
           brightnessMessage.innerHTML = `Average Brightness: ${Math.round(avg)}/255 `;
-          brightnessMessage.innerHTML += avg < 80 ? '(Very Dark) ' : (avg < 160 ? '(Moderate) ' : '(Bright) ';
+          brightnessMessage.innerHTML += (avg < 80) 
+              ? "(Very Dark) " 
+              : (avg < 160) 
+                  ? "(Moderate) " 
+                  : "(Bright) ";
           brightnessMessage.innerHTML += `<a href="#" onclick="openTutorial('brightness')">Learn How</a>`;
-          contrastMessage.innerHTML =
-            `Ensure text overlay meets accessibility contrast standards (~4.5:1). <a href="#" onclick="openTutorial('contrast')">Learn How</a>`;
+
+          contrastMessage.innerHTML = 
+            `Ensure text overlay meets accessibility contrast (~4.5:1). 
+             <a href="#" onclick="openTutorial('contrast')">Learn How</a>`;
         };
       }
 
       /***************************************************
-       * Composition Grid (Rule of Thirds)
+       * Composition Grid
        ***************************************************/
       function drawCompositionGrid(imageSrc) {
         const canvas = document.getElementById("compositionCanvas");
@@ -1194,6 +1434,8 @@
           canvas.style.height = displayHeight + "px";
           ctx.scale(ratio, ratio);
           ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
+
+          // draw rule-of-thirds lines
           ctx.strokeStyle = "rgba(255,255,255,1)";
           ctx.lineWidth = 4;
           ctx.setLineDash([5, 5]);
@@ -1203,6 +1445,7 @@
           ctx.lineTo(v1, displayHeight);
           ctx.moveTo(v2, 0);
           ctx.lineTo(v2, displayHeight);
+
           const h1 = displayHeight / 3, h2 = (displayHeight * 2) / 3;
           ctx.moveTo(0, h1);
           ctx.lineTo(displayWidth, h1);
@@ -1226,7 +1469,7 @@
        ***************************************************/
       async function loadMobileNet() {
         if (typeof mobilenet === "undefined") {
-          console.log("TensorFlow MobileNet not loaded.");
+          console.log("MobileNet not loaded.");
           return;
         }
         mobileNetModel = await mobilenet.load();
@@ -1242,13 +1485,14 @@
           const predictions = await mobileNetModel.classify(img);
           window.lastPredictions = predictions;
           if (predictions.length > 0) {
-            let text = predictions
+            const text = predictions
               .map(p => `${p.className} (${(p.probability * 100).toFixed(1)}%)`)
               .join(', ');
             document.getElementById("objectRecognitionResults").innerHTML =
               `Predictions: ${text} <a href="#" onclick="openTutorial('object')">Learn How</a>`;
           } else {
-            document.getElementById("objectRecognitionResults").textContent = "No objects recognized.";
+            document.getElementById("objectRecognitionResults").textContent = 
+              "No objects recognized.";
           }
           checkTitleThumbnailSynergy();
         };
@@ -1268,11 +1512,12 @@
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
             const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
             let sumDiff = 0, count = 0;
             for (let i = 0; i < data.length - 4; i += 4 * SAMPLE_STEP) {
-              const brightness1 = (data[i] + data[i+1] + data[i+2]) / 3;
-              const brightness2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
-              sumDiff += Math.abs(brightness1 - brightness2);
+              const b1 = (data[i] + data[i+1] + data[i+2]) / 3;
+              const b2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
+              sumDiff += Math.abs(b1 - b2);
               count++;
             }
             const avgDiff = sumDiff / count;
@@ -1284,20 +1529,24 @@
       async function showSharpness(imageSrc) {
         const sharpness = await calculateSharpness(imageSrc);
         let sharpnessText = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
-        if (sharpness < 10)
-          sharpnessText += " - Image appears blurry, consider re‑exporting at a higher resolution.";
+        if (sharpness < 10) {
+          sharpnessText += " - Image appears blurry; consider a higher-res export.";
+        }
         document.getElementById("sharpnessResult").textContent = sharpnessText;
       }
 
       /***************************************************
-       * Export Function (PNG)
+       * Export as PNG
        ***************************************************/
       async function exportPNG() {
         const header = document.querySelector("header.analyzer-header");
-        const originalPosition = header.style.position;
-        // Temporarily remove sticky positioning to ensure full capture
+        const originalPos = header.style.position;
         header.style.position = "static";
-        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
+        const canvas = await html2canvas(document.body, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true
+        });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.download = 'thumbnail-analysis.png';
@@ -1305,7 +1554,7 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        header.style.position = originalPosition;
+        header.style.position = originalPos;
       }
 
       /***************************************************
@@ -1321,7 +1570,7 @@
       }
 
       /***************************************************
-       * Lightbox Functions
+       * Lightbox
        ***************************************************/
       function enlargeImage(imgId) {
         const src = document.getElementById(imgId).src;
@@ -1333,7 +1582,7 @@
       }
 
       /***************************************************
-       * How-To Modal Functions
+       * How-To & Tutorial Modals
        ***************************************************/
       function openHowTo() {
         document.getElementById('howToModal').classList.add('show');
@@ -1341,25 +1590,21 @@
       function closeHowTo() {
         document.getElementById('howToModal').classList.remove('show');
       }
-
-      /***************************************************
-       * Tutorial Modal Functions
-       ***************************************************/
       function openTutorial(topic) {
-        const tutorialContent = document.getElementById('tutorialContent');
+        const contentEl = document.getElementById('tutorialContent');
         let content = "";
         if (topic === 'brightness') {
-          content = "<h2>Adjusting Brightness</h2><p>If your thumbnail appears too dark, try increasing the brightness or adding highlights. Look for 'Brightness/Contrast' adjustments in your editor. <a href='https://example.com/brightness-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Adjusting Brightness</h2><p>If it’s too dark, use 'Brightness/Contrast' in your editor. <a href='#'>Learn More</a></p>";
         } else if (topic === 'contrast') {
-          content = "<h2>Improving Contrast</h2><p>Ensure text overlays have sufficient contrast. Adjust contrast or text color in your editor. <a href='https://example.com/contrast-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Improving Contrast</h2><p>Ensure text stands out; aim for ~4.5:1 ratio. <a href='#'>Learn More</a></p>";
         } else if (topic === 'composition') {
-          content = "<h2>Enhancing Composition</h2><p>If your main subject is off‑center, try aligning it with the rule‑of‑thirds grid for better balance. <a href='https://example.com/composition-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Enhancing Composition</h2><p>Use the rule‑of‑thirds or symmetrical balance. <a href='#'>Learn More</a></p>";
         } else if (topic === 'object') {
-          content = "<h2>Object Positioning</h2><p>Ensure key objects are well‑positioned and not obscured. <a href='https://example.com/object-positioning-tutorial' target='_blank'>Learn More</a></p>";
+          content = "<h2>Object Positioning</h2><p>Keep important subjects un‑obscured. <a href='#'>Learn More</a></p>";
         } else {
-          content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
+          content = "<h2>Tutorial</h2><p>No tutorial available.</p>";
         }
-        tutorialContent.innerHTML = content;
+        contentEl.innerHTML = content;
         document.getElementById('tutorialModal').classList.add('show');
       }
       function closeTutorial() {
@@ -1367,7 +1612,7 @@
       }
 
       /***************************************************
-       * Legend Toggle Function (Optional)
+       * Legend Toggle
        ***************************************************/
       function toggleLegend() {
         const legend = document.getElementById("legend");
@@ -1382,7 +1627,7 @@
       }
 
       /***************************************************
-       * Easter Egg Surprise!
+       * Easter Egg
        ***************************************************/
       document.addEventListener("keydown", function(e) {
         if (e.altKey && e.key.toLowerCase() === "e") {
@@ -1390,7 +1635,11 @@
         }
       });
       function triggerEasterEgg() {
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
+        confetti({ 
+          particleCount: 200, 
+          spread: 100, 
+          origin: { y: 0.3 } 
+        });
         alert("🎉 You found the secret easter egg! Keep being awesome and enjoy coding!");
       }
     </script>
