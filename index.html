@@ -146,7 +146,7 @@
         align-items: center;
         gap: 1rem;
       }
-      
+
       /* NEW Dark Mode Slider */
       .dark-mode {
         /* Container for dark mode toggle */
@@ -162,10 +162,7 @@
         height: 30px;
         background-color: #e0e0e0;
         border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
+        /* Removed padding to ensure the knob goes fully right */
         transition: background-color 0.3s;
       }
       .dark-mode-slider .mode-label {
@@ -186,7 +183,7 @@
         display: none;
       }
       input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        /* Move from left:2px to right flush (2 + 32 = 34px, so 34+26=60px) */
+        /* Move from left:2px to right flush */
         transform: translateX(32px);
       }
       input#darkModeToggle:checked + .dark-mode-slider {
@@ -211,104 +208,6 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
         opacity: 0.9;
-      }
-
-      /* Toggle Switches – Other toggles remain as before */
-      .toggle-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-      }
-      .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 30px;
-      }
-      .toggle-switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-      /* Mute Slider */
-      .icon-slider-mute .slider {
-        background-color: #e0e0e0;
-        transition: 0.4s;
-        border-radius: 30px;
-        position: relative;
-      }
-      .icon-slider-mute .slider:before {
-        position: absolute;
-        content: "🔊";
-        height: 26px;
-        width: 26px;
-        left: 2px;
-        bottom: 2px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-      }
-      .icon-slider-mute input:checked + .slider {
-        background-color: var(--primary-light);
-      }
-      .icon-slider-mute input:checked + .slider:before {
-        transform: translateX(30px);
-        content: "🔇";
-      }
-      /* Animations Slider */
-      .icon-slider-anim .slider {
-        background-color: #e0e0e0;
-        transition: 0.4s;
-        border-radius: 30px;
-        position: relative;
-      }
-      .icon-slider-anim .slider:before {
-        position: absolute;
-        content: "▶";
-        height: 26px;
-        width: 26px;
-        left: 2px;
-        bottom: 2px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-      }
-      .icon-slider-anim input:checked + .slider {
-        background-color: var(--primary-light);
-      }
-      .icon-slider-anim input:checked + .slider:before {
-        transform: translateX(30px);
-        content: "⏸";
-      }
-
-      /* Progress Bar */
-      #progressBarContainer {
-        position: relative;
-        width: 100%;
-        height: 20px;
-        background: #eee;
-        border-radius: 10px;
-        margin-top: 0.5rem;
-      }
-      #progressBar {
-        height: 100%;
-        width: 0%;
-        background: var(--gradient-light);
-        border-radius: 10px;
-        transition: width 0.3s ease;
-      }
-      #milestoneMessage {
-        font-size: 0.9rem;
-        color: #555;
-        margin-top: 0.5rem;
       }
 
       /* MAIN CONTAINER */
@@ -533,7 +432,7 @@
         color: #9ca3af;
       }
 
-      /* DESIGN INSIGHTS SECTION – reduced wasted space */
+      /* DESIGN INSIGHTS SECTION */
       .auto-insights {
         background: var(--panel-light);
         border-radius: var(--radius);
@@ -568,7 +467,7 @@
         color: #555;
       }
 
-      /* Legend & Definitions – cleaned-up appearance */
+      /* Legend & Definitions */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
@@ -665,6 +564,20 @@
           margin-top: 0;
         }
       }
+
+      /* Color blocks for palette & suggestions */
+      .palette-container, .color-suggestions-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .color-block {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -677,10 +590,10 @@
           Score: <span id="total">0</span>/40 – <span id="scoreLabel">Good</span>
         </div>
         <!-- Progress Bar -->
-        <div id="progressBarContainer">
-          <div id="progressBar"></div>
+        <div id="progressBarContainer" style="position: relative; width: 100%; height: 20px; background: #eee; border-radius: 10px; margin-top: 0.5rem;">
+          <div id="progressBar" style="height: 100%; width: 0%; background: var(--gradient-light); border-radius: 10px; transition: width 0.3s ease;"></div>
         </div>
-        <div id="milestoneMessage"></div>
+        <div id="milestoneMessage" style="font-size:0.9rem; color:#555; margin-top: 0.5rem;"></div>
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
@@ -688,21 +601,9 @@
           <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
           <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
           <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Mute and Disable Animations toggles -->
-          <label class="toggle-label">
-            <span class="toggle-switch icon-slider-mute">
-              <input type="checkbox" id="muteToggle" onchange="toggleSound(this)">
-              <span class="slider"></span>
-            </span>
-          </label>
-          <label class="toggle-label">
-            <span class="toggle-switch icon-slider-anim">
-              <input type="checkbox" id="disableAnimToggle" onchange="toggleAnimations(this)">
-              <span class="slider"></span>
-            </span>
-          </label>
         </div>
-        <!-- New Dark Mode Slider -->
+        <!-- Removed Mute and Disable Animations toggles -->
+        <!-- Dark Mode Slider only -->
         <div class="dark-mode">
           <label class="toggle-label dark-mode-label">
             <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
@@ -770,7 +671,7 @@
               <tr>
                 <td class="category-header cat-0" data-category="0" title="Primarily a visual hook: use bold colors, high contrast, dynamic layout and impactful imagery.">Scroll‑Stopping Power</td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">Minimal visual impact; lacks bold color contrast or dynamic elements.</td>
-                <td data-category="0" data-rating="2" role="button" tabindex="0">Introduces one high‑impact visual element (e.g. contrast) but remains subtle.</td>
+                <td data-category="0" data-rating="2" role="button" tabindex="0">Introduces one high‑impact visual element but remains subtle.</td>
                 <td data-category="0" data-rating="3" role="button" tabindex="0">Combines multiple visual techniques (vivid colors, dynamic layout) to capture attention.</td>
                 <td data-category="0" data-rating="4" role="button" tabindex="0">Exceptionally arresting visuals—bold, high‑contrast, dynamic elements that immediately grab attention.</td>
               </tr>
@@ -838,7 +739,7 @@
                 <td data-category="8" data-rating="3" role="button" tabindex="0">High resolution with clear contrast and detail.</td>
                 <td data-category="8" data-rating="4" role="button" tabindex="0">Flawless quality meeting recommended standards (1280×720, 16:9) with perfect clarity.</td>
               </tr>
-              <!-- 10. Color Usage (row only) -->
+              <!-- 10. Color Usage -->
               <tr>
                 <td class="category-header cat-9" data-category="9" title="Effective use of color in a way that reinforces brand alignment and enhances design.">Color Usage</td>
                 <td data-category="9" data-rating="1" role="button" tabindex="0">Poor color choices; lacks harmony and brand consistency.</td>
@@ -976,8 +877,6 @@
       let confettiShown = false;
       window.lastPredictions = null;
       const SAMPLE_STEP = 16;
-      let muteSound = false;
-      let disableAnimations = false;
       let milestoneTriggered = {}; // Track milestones (10,20,30,40)
 
       const milestoneMessages = {
@@ -991,6 +890,8 @@
         victory: document.getElementById("victorySound"),
         womp: document.getElementById("wompSound")
       };
+
+      let mobileNetModel = null;
 
       /***************************************************
        * DOMContentLoaded Setup
@@ -1037,23 +938,46 @@
       function updateTotal() {
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
-        const scoreLabel = document.getElementById('scoreLabel');
+
+        // Check if any category has a rating of 1 => immediate REJECTION
+        const hasAnyScoreOne = Object.values(scores).includes(1);
+
+        // If any category is "1", override everything else:
+        if (hasAnyScoreOne) {
+          document.getElementById('scoreLabel').textContent = "REJECTED";
+          document.getElementById('ranking').textContent = "Rejected";
+          document.getElementById('ranking').style.color = '#ef4444'; // red
+          // No confetti or anything; just exit
+          updateProgressBar(total);
+          return;
+        }
+
+        // Otherwise, proceed with normal logic
+        let label = "";
         if (total >= 36) {
-          scoreLabel.textContent = "Outstanding";
-          if (!confettiShown && !disableAnimations) {
+          label = "Outstanding";
+          if (!confettiShown) {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             confettiShown = true;
           }
         } else if (total >= 30) {
-          scoreLabel.textContent = "Excellent";
+          label = "Excellent";
           confettiShown = false;
         } else if (total >= 20) {
-          scoreLabel.textContent = "Great";
+          label = "Great";
           confettiShown = false;
         } else {
-          scoreLabel.textContent = "Good";
+          label = "Good";
           confettiShown = false;
         }
+
+        // If total < 19 => "Redone from scratch"
+        if (total < 19) {
+          label += " (Redone from scratch)";
+        }
+
+        document.getElementById('scoreLabel').textContent = label;
+
         const ranking = document.getElementById('ranking');
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
@@ -1061,7 +985,7 @@
         } else if (total <= 19) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = '#ef4444';
-          if (!muteSound) progressAudio.womp.play();
+          progressAudio.womp.play();
         } else if (total <= 29) {
           ranking.textContent = 'Great! 🟢';
           ranking.style.color = '#22c55e';
@@ -1071,7 +995,7 @@
         } else {
           ranking.textContent = 'Outstanding 🔵';
           ranking.style.color = '#3b82f6';
-          if (!muteSound) progressAudio.victory.play();
+          progressAudio.victory.play();
         }
         updateProgressBar(total);
       }
@@ -1096,6 +1020,7 @@
         document.getElementById('total').textContent = '0';
         document.getElementById('scoreLabel').textContent = 'Good';
         document.getElementById('ranking').textContent = 'Incomplete';
+        document.getElementById('ranking').style.color = '#64748b';
         document.getElementById('videoTitle').value = '';
         document.getElementById('homeTitle').textContent = '';
         document.getElementById('suggestedTitle').textContent = '';
@@ -1149,7 +1074,7 @@
         window.lastPredictions.forEach(pred => {
           if (title.indexOf(pred.className.toLowerCase()) !== -1) matchFound = true;
         });
-        // Optionally display a synergy cue.
+        // Optionally do something if synergy is detected
       }
 
       /***************************************************
@@ -1200,11 +1125,7 @@
         const paletteContainer = document.getElementById('paletteContainer');
         paletteContainer.innerHTML = 'Detecting palette…';
         const img = new Image();
-        // If imageSrc is not a data URL, set crossOrigin to allow ColorThief extraction.
-        if (!imageSrc.startsWith("data:")) {
-          img.crossOrigin = 'Anonymous';
-        }
-        img.src = imageSrc;
+        img.src = imageSrc; // No crossOrigin for local base64
         img.onload = () => {
           const colorThief = new ColorThief();
           try {
@@ -1215,8 +1136,9 @@
               return `<div class="color-block" style="background:${hex};" data-hex="${hex}" onclick="copyHex(this)"></div>`;
             }).join('');
             generateColorSuggestions();
-          } catch {
+          } catch (err) {
             paletteContainer.innerHTML = 'Unable to extract palette.';
+            console.error(err);
           }
         };
       }
@@ -1228,6 +1150,7 @@
         let suggestionsHTML = "";
         window.currentPalette.forEach(color => {
           const origHex = rgbToHex(color[0], color[1], color[2]);
+          // Quick complementary: just invert R,G,B
           const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
           suggestionsHTML += `<div style="display: flex; flex-direction: column; align-items: center;">
               <div class="color-block" data-hex="${origHex}" style="background:${origHex};" onclick="copyHex(this)"></div>
@@ -1244,7 +1167,6 @@
         const brightnessMessage = document.getElementById('brightnessMessage');
         const contrastMessage = document.getElementById('contrastMessage');
         const img = new Image();
-        img.crossOrigin = 'Anonymous';
         img.src = imageSrc;
         img.onload = () => {
           const canvas = document.createElement('canvas');
@@ -1274,7 +1196,6 @@
         const canvas = document.getElementById("compositionCanvas");
         const ctx = canvas.getContext("2d");
         const img = new Image();
-        img.crossOrigin = "Anonymous";
         img.src = imageSrc;
         img.onload = function() {
           const maxDisplayWidth = canvas.clientWidth || 320;
@@ -1309,6 +1230,7 @@
       }
       function enlargeComposition() {
         const canvas = document.getElementById("compositionCanvas");
+        if (!canvas.width) return;
         const dataUrl = canvas.toDataURL();
         document.getElementById('modalImg').src = dataUrl;
         document.getElementById('imgModal').classList.add('show');
@@ -1330,7 +1252,6 @@
           return;
         }
         const img = new Image();
-        img.crossOrigin = "Anonymous";
         img.src = imageSrc;
         img.onload = async function() {
           const predictions = await mobileNetModel.classify(img);
@@ -1351,7 +1272,6 @@
       async function calculateSharpness(imageSrc) {
         return new Promise((resolve, reject) => {
           const img = new Image();
-          img.crossOrigin = "Anonymous";
           img.src = imageSrc;
           img.onload = function() {
             const canvas = document.createElement("canvas");
@@ -1386,6 +1306,7 @@
       async function exportPNG() {
         const header = document.querySelector("header.analyzer-header");
         const originalPosition = header.style.position;
+        // Temporarily remove sticky positioning to ensure full capture
         header.style.position = "static";
         const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
         const dataUrl = canvas.toDataURL('image/png');
@@ -1399,7 +1320,7 @@
       }
 
       /***************************************************
-       * Theme & Animation Toggles
+       * Theme Toggle
        ***************************************************/
       function toggleTheme(input) {
         const html = document.documentElement;
@@ -1408,12 +1329,6 @@
         } else {
           html.removeAttribute("data-theme");
         }
-      }
-      function toggleSound(el) {
-        muteSound = el.checked;
-      }
-      function toggleAnimations(el) {
-        disableAnimations = el.checked;
       }
 
       /***************************************************
