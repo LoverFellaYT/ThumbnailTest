@@ -58,8 +58,7 @@
         margin: 0;
         padding: 0;
         font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
-          var(--bg-light);
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
         background-size: 30px 30px;
         color: var(--text-light);
         transition: var(--transition);
@@ -105,16 +104,13 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      /* Display total score as "0/56" */
-      .total-score span#total::after {
-        content: "/56";
-        font-weight: normal;
-      }
+      /* Remove the extra "/56" from the score */
+      /* (Simply do not add any ::after content on #total) */
       .progress-bar-container {
         width: 100%;
-        height: 6px;
+        height: 10px;  /* Thicker progress bar */
         background: #eee;
-        border-radius: 3px;
+        border-radius: 5px;
         overflow: hidden;
         margin-bottom: 0.5rem;
       }
@@ -224,8 +220,8 @@
       }
       .story-input {
         width: 100%;
-        min-height: 80px;  /* Reduced height */
-        padding: 0.5rem;   /* Reduced padding */
+        min-height: 80px;
+        padding: 0.5rem;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
         font-size: 1rem;
@@ -308,8 +304,12 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         transition: var(--transition);
       }
+      /* Make the table shorter by reducing padding */
+      .modern-table th,
+      .modern-table td {
+        padding: 0.5rem 1rem;
+      }
       .modern-table th {
-        padding: 0.75rem 1.5rem;
         font-weight: 500;
         text-align: left;
         position: sticky;
@@ -324,14 +324,15 @@
       .modern-table th:nth-child(4) { background: #facc15; color: #000; }
       .modern-table th:nth-child(5) { background: #4ade80; color: #fff; }
       .modern-table td {
-        padding: 0.75rem 1.5rem;
         background: var(--table-cell-bg-light);
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
         vertical-align: top;
       }
-      .modern-table td:hover:not(.category-header) {
-        background: rgba(224, 231, 255, 0.3);
+      /* Hover animation for rubric options */
+      .modern-table td[data-rating]:hover:not(.selected) {
+        background: rgba(224, 231, 255, 0.4);
+        transform: scale(1.05);
       }
       .modern-table td.selected {
         background: rgba(224, 231, 255, 0.5) !important;
@@ -362,7 +363,7 @@
     <header class="analyzer-header">
       <div class="header-left">
         <div class="total-score">
-          Score: <span id="total">0</span>/56 <span id="scoreLabel">Incomplete</span>
+          Score: <span id="total">0</span> <span id="scoreLabel">Incomplete</span>
         </div>
         <div class="progress-bar-container">
           <div class="progress-bar" id="progressBar"></div>
@@ -497,17 +498,59 @@
             </tbody>
           </table>
         </div>
-        <!-- Human Feedback Section -->
-        <div class="glass-panel input-section" id="humanFeedbackSection">
-          <h2>👥 Human Feedback</h2>
-          <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 80px;"></textarea>
+        <!-- Self-Assessment Checklist Section -->
+        <div class="glass-panel input-section" id="selfAssessmentSection">
+          <h2>✅ Self-Assessment Checklist</h2>
+          <ul>
+            <li>
+              <input type="checkbox" id="check1" />
+              <label for="check1"><strong>Hook:</strong> Does the opening grab attention in the first few seconds?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check2" />
+              <label for="check2"><strong>Goal:</strong> Is the main objective/challenge clearly defined?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check3" />
+              <label for="check3"><strong>Conflict &amp; Stakes:</strong> Are obstacles and stakes high enough to keep viewers invested?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check4" />
+              <label for="check4"><strong>Structure:</strong> Does the story flow logically from setup to escalation to resolution?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check5" />
+              <label for="check5"><strong>Audience Retention Hooks:</strong> Have you planned moments or reveals that keep viewers from clicking away?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check6" />
+              <label for="check6"><strong>Credibility &amp; Believability:</strong> Do plot points and scenarios feel authentic, not forced?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check7" />
+              <label for="check7"><strong>CTA or Interaction Point:</strong> Is there a clear moment where you invite audience participation (like, comment, etc.)?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check8" />
+              <label for="check8"><strong>Uniqueness:</strong> Do you offer something fresh or tap into current trends in a new way?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check9" />
+              <label for="check9"><strong>Pacing:</strong> Does each scene/segment have a strong reason to exist without dragging?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check10" />
+              <label for="check10"><strong>Shareability:</strong> Is there a “wow” factor or memorable highlight that encourages sharing?</label>
+            </li>
+          </ul>
         </div>
+        <!-- End Self-Assessment Checklist Section -->
       </div>
     </main>
 
     <!-- JavaScript -->
     <script>
-      // Store rubric scores (categories 0‑9)
+      // For the new 10-item rubric, maximum total = 10 x 4 = 40.
       let scores = {};
 
       document.addEventListener('DOMContentLoaded', () => {
@@ -523,6 +566,7 @@
         const categoryIndex = Number(cell.getAttribute('data-category'));
         const rating = parseInt(cell.getAttribute('data-rating'));
         const row = cell.parentElement;
+        // Remove "selected" class from all other cells in this row
         row.querySelectorAll('td').forEach(td => {
           if (td !== row.firstElementChild) td.classList.remove('selected');
         });
@@ -535,18 +579,21 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
+        // Only update ranking if all 10 categories have been rated
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
+          updateProgressBar(total);
           return;
         }
-        if (total < 29) {
+        // Use thresholds based on a maximum of 40:
+        if (total < 21) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
-        } else if (total < 42) {
+        } else if (total < 30) {
           ranking.textContent = 'Good Start 🟡';
           ranking.style.color = 'orange';
-        } else if (total < 56) {
+        } else if (total < 40) {
           ranking.textContent = 'Great! 🟢';
           ranking.style.color = 'green';
         } else {
@@ -560,7 +607,8 @@
       }
 
       function updateProgressBar(total) {
-        const percentage = (total / 56) * 100;
+        // Update progress bar based on a max score of 40
+        const percentage = (total / 40) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
 
