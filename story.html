@@ -58,7 +58,8 @@
         margin: 0;
         padding: 0;
         font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
+          var(--bg-light);
         background-size: 30px 30px;
         color: var(--text-light);
         transition: var(--transition);
@@ -104,11 +105,15 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      /* Remove the extra "/56" from the score */
-      /* (Simply do not add any ::after content on #total) */
+      /* Now directly include "/40" in the header text */
+      .total-score::after {
+        content: "/40";
+        margin-left: 0.25rem;
+        font-weight: normal;
+      }
       .progress-bar-container {
         width: 100%;
-        height: 10px;  /* Thicker progress bar */
+        height: 10px;
         background: #eee;
         border-radius: 5px;
         overflow: hidden;
@@ -208,9 +213,10 @@
         padding: 2rem;
         margin: 1rem 0;
       }
-      /* Remove extra blank space above section headings */
+      /* Center all headings */
       .glass-panel h2 {
         margin-top: 0;
+        text-align: center;
       }
       /* --------------------------------------------------------------
          Input Areas & Textarea Styling
@@ -329,7 +335,7 @@
         transition: var(--transition);
         vertical-align: top;
       }
-      /* Hover animation for rubric options */
+      /* Hover animations on rubric options */
       .modern-table td[data-rating]:hover:not(.selected) {
         background: rgba(224, 231, 255, 0.4);
         transform: scale(1.05);
@@ -344,6 +350,22 @@
         position: sticky;
         left: 0;
         min-width: 180px;
+      }
+      /* --------------------------------------------------------------
+         Self-Assessment Checklist Styling
+         -------------------------------------------------------------- */
+      #selfAssessmentSection ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0 auto;
+        max-width: 600px;
+        text-align: left;
+      }
+      #selfAssessmentSection li {
+        margin-bottom: 0.5rem;
+      }
+      #selfAssessmentSection li label {
+        cursor: pointer;
       }
       @media (max-width: 768px) {
         header.analyzer-header {
@@ -363,7 +385,7 @@
     <header class="analyzer-header">
       <div class="header-left">
         <div class="total-score">
-          Score: <span id="total">0</span> <span id="scoreLabel">Incomplete</span>
+          Score: <span id="total">0</span>/40 <span id="scoreLabel">Incomplete</span>
         </div>
         <div class="progress-bar-container">
           <div class="progress-bar" id="progressBar"></div>
@@ -417,7 +439,7 @@
             <tbody>
               <!-- 1. Hook & Opening -->
               <tr>
-                <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
+                <td class="category-header" data-category="0" title="The opener should immediately grab attention.">🎣 Hook &amp; Opening</td>
                 <td data-category="0" data-rating="1">Slow start or unclear hook; doesn’t entice immediate engagement.</td>
                 <td data-category="0" data-rating="2">Basic but functional hook; viewers might stay out of mild curiosity.</td>
                 <td data-category="0" data-rating="3">Clear, intriguing opening that sparks immediate interest.</td>
@@ -425,7 +447,7 @@
               </tr>
               <!-- 2. Clarity of Goal -->
               <tr>
-                <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
+                <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">🎯 Clarity of Goal</td>
                 <td data-category="1" data-rating="1">Goal is vague, hidden, or tacked on; viewers may not know why they’re watching.</td>
                 <td data-category="1" data-rating="2">A stated goal exists but can get lost or muddled mid‐video.</td>
                 <td data-category="1" data-rating="3">The central goal is well‐defined, and each segment clearly ties back to it.</td>
@@ -433,7 +455,7 @@
               </tr>
               <!-- 3. Audience Retention -->
               <tr>
-                <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
+                <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">👀 Audience Retention</td>
                 <td data-category="2" data-rating="1">Loses viewer interest quickly; minimal hooks throughout.</td>
                 <td data-category="2" data-rating="2">A few engaging points or “spikes” but inconsistent pacing or lulls.</td>
                 <td data-category="2" data-rating="3">Strong pacing, timely reveals, and mini‐cliffhangers sustain attention.</td>
@@ -441,7 +463,7 @@
               </tr>
               <!-- 4. Conflict & Stakes -->
               <tr>
-                <td class="category-header" data-category="3" title="Conflict drives engagement.">Conflict &amp; Stakes</td>
+                <td class="category-header" data-category="3" title="Conflict drives engagement.">⚔️ Conflict &amp; Stakes</td>
                 <td data-category="3" data-rating="1">Low urgency; conflicts feel trivial or manufactured.</td>
                 <td data-category="3" data-rating="2">Basic obstacles are present but can feel predictable.</td>
                 <td data-category="3" data-rating="3">High stakes that keep viewers invested in how events will unfold.</td>
@@ -449,7 +471,7 @@
               </tr>
               <!-- 5. CTA & Audience Interaction -->
               <tr>
-                <td class="category-header" data-category="4" title="Calls to action drive viewer participation.">CTA &amp; Audience Interaction</td>
+                <td class="category-header" data-category="4" title="Calls to action drive viewer participation.">📢 CTA &amp; Audience Interaction</td>
                 <td data-category="4" data-rating="1">Weak or generic CTA (“like/subscribe”) with no real urgency.</td>
                 <td data-category="4" data-rating="2">Standard CTA that matches typical platform norms.</td>
                 <td data-category="4" data-rating="3">Creative or timely CTA that spurs actual viewer response (e.g., poll, question).</td>
@@ -457,7 +479,7 @@
               </tr>
               <!-- 6. Originality & Trend‐Jacking -->
               <tr>
-                <td class="category-header" data-category="5" title="Unique angles set you apart.">Originality &amp; Trend‐Jacking</td>
+                <td class="category-header" data-category="5" title="Unique angles set you apart.">💡 Originality &amp; Trend‐Jacking</td>
                 <td data-category="5" data-rating="1">Overdone or cliché concept with no unique spin.</td>
                 <td data-category="5" data-rating="2">Minor twist on popular trends but still somewhat familiar.</td>
                 <td data-category="5" data-rating="3">A distinct approach or fresh angle that helps it stand out.</td>
@@ -465,7 +487,7 @@
               </tr>
               <!-- 7. Replayability & Shareability -->
               <tr>
-                <td class="category-header" data-category="6" title="Encourages viewers to revisit or share.">Replayability &amp; Shareability</td>
+                <td class="category-header" data-category="6" title="Encourages viewers to revisit or share.">🔄 Replayability &amp; Shareability</td>
                 <td data-category="6" data-rating="1">Forgettable; viewers likely wouldn’t watch again.</td>
                 <td data-category="6" data-rating="2">Has a few moments worth revisiting or sharing.</td>
                 <td data-category="6" data-rating="3">Highly shareable; the content encourages conversation or repeat views.</td>
@@ -473,7 +495,7 @@
               </tr>
               <!-- 8. Credibility & Believability -->
               <tr>
-                <td class="category-header" data-category="7" title="Authenticity builds trust.">Credibility &amp; Believability</td>
+                <td class="category-header" data-category="7" title="Authenticity builds trust.">🤝 Credibility &amp; Believability</td>
                 <td data-category="7" data-rating="1">Feels forced or overly staged; viewer trust may be low.</td>
                 <td data-category="7" data-rating="2">Some genuine elements, but parts still come off as artificial or scripted.</td>
                 <td data-category="7" data-rating="3">The content feels sincere and honest; overall sense of integrity.</td>
@@ -481,7 +503,7 @@
               </tr>
               <!-- 9. Production & Editing Quality -->
               <tr>
-                <td class="category-header" data-category="8" title="Quality enhances the viewing experience.">Production &amp; Editing Quality</td>
+                <td class="category-header" data-category="8" title="Quality enhances the viewing experience.">🎬 Production &amp; Editing Quality</td>
                 <td data-category="8" data-rating="1">Technical flaws distract (poor audio, inconsistent lighting, messy cuts).</td>
                 <td data-category="8" data-rating="2">Generally serviceable production with occasional rough spots.</td>
                 <td data-category="8" data-rating="3">Clean, creative editing and good production values that enhance the content.</td>
@@ -489,7 +511,7 @@
               </tr>
               <!-- 10. Pacing & Rhythm -->
               <tr>
-                <td class="category-header" data-category="9" title="Smooth pacing holds viewer attention.">Pacing &amp; Rhythm</td>
+                <td class="category-header" data-category="9" title="Smooth pacing holds viewer attention.">⏩ Pacing &amp; Rhythm</td>
                 <td data-category="9" data-rating="1">Uneven pacing; segments linger too long or abruptly cut.</td>
                 <td data-category="9" data-rating="2">Mostly smooth transitions but with occasional slow or rushed sections.</td>
                 <td data-category="9" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
@@ -544,7 +566,6 @@
             </li>
           </ul>
         </div>
-        <!-- End Self-Assessment Checklist Section -->
       </div>
     </main>
 
@@ -586,7 +607,7 @@
           updateProgressBar(total);
           return;
         }
-        // Use thresholds based on a maximum of 40:
+        // Thresholds based on a maximum score of 40:
         if (total < 21) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
