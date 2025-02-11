@@ -14,11 +14,13 @@
       referrerpolicy="no-referrer"
     />
 
-    <!-- Roboto Font (for body) -->
+    <!-- Google Fonts: Roboto for body and Cinzel for a cinematic title -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Cinzel for a cinematic title -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- html2canvas for PNG Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -72,6 +74,21 @@
         transition: var(--transition);
       }
 
+      /* Skip to Content Link for Accessibility */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--accent-light);
+        color: #fff;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s ease;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+
       button:focus,
       [tabindex]:focus {
         outline: 2px solid var(--accent-light);
@@ -88,7 +105,7 @@
         margin-bottom: var(--spacing);
       }
 
-      /* HEADER with a cinematic background */
+      /* HEADER (using a dark gradient instead of an image) */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -98,9 +115,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.imgur.com/2Rj5h9A.jpg');
-        background-size: cover;
-        background-position: center;
+        background: linear-gradient(to right, #444, #222);
         color: #fff;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
       }
@@ -206,7 +221,7 @@
       }
 
       /* Dark Mode Slider */
-      .dark-mode { }
+      .dark-mode {}
       .toggle-label.dark-mode-label {
         cursor: pointer;
         display: inline-flex;
@@ -300,11 +315,11 @@
         background: var(--gradient-light);
         color: #fff;
       }
-      /* Change table headers to new ratings */
-      .modern-table thead th:nth-child(2) { background: #f87171; }
-      .modern-table thead th:nth-child(3) { background: #fb923c; }
-      .modern-table thead th:nth-child(4) { background: #facc15; }
-      .modern-table thead th:nth-child(5) { background: #4ade80; }
+      /* Table headers for rating columns */
+      .modern-table thead th:nth-child(2) { background: #f87171; } /* Good */
+      .modern-table thead th:nth-child(3) { background: #fb923c; } /* Great */
+      .modern-table thead th:nth-child(4) { background: #facc15; } /* Excellent */
+      .modern-table thead th:nth-child(5) { background: #4ade80; } /* Outstanding */
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -329,7 +344,36 @@
         font-weight: bold;
       }
 
-      /* Feedback Panel */
+      /* Tooltip styling */
+      .tooltip {
+        position: relative;
+        cursor: help;
+        color: var(--accent-light);
+        margin-left: 5px;
+      }
+      .tooltip::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        padding: 0.5rem;
+        border-radius: 4px;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        font-size: 0.8rem;
+      }
+      .tooltip:hover::after {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Feedback Panel (AI Feedback removed) */
       .feedback-panel h3 { margin-top: 0; }
       .feedback-panel .feedback-entry { margin-bottom: var(--spacing); }
       .feedback-panel label {
@@ -501,6 +545,9 @@
     </style>
   </head>
   <body>
+    <!-- Skip to Content Link for Accessibility -->
+    <a href="#mainContent" class="skip-link">Skip to Content</a>
+
     <!-- HEADER -->
     <header class="analyzer-header glass-panel">
       <div class="header-left">
@@ -547,7 +594,7 @@
       <!-- A random inspirational replay mod quote will appear here -->
     </div>
 
-    <main>
+    <main id="mainContent">
       <div class="analyzer-container">
         <!-- REPLAY SHOT RUBRIC SECTION -->
         <section class="rubric-table glass-panel" aria-labelledby="replayRubricHeading">
@@ -565,7 +612,10 @@
             <tbody>
               <!-- 0. Composition & Framing -->
               <tr>
-                <td class="category-header" data-category="0"><strong>🖼️ Composition & Framing</strong></td>
+                <td class="category-header" data-category="0">
+                  <strong>🖼️ Composition & Framing</strong>
+                  <span class="tooltip" data-tooltip="Arrange visual elements harmoniously using rules (e.g. rule of thirds).">?</span>
+                </td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">
                   Poorly arranged elements with no clear focus.
                 </td>
@@ -581,7 +631,10 @@
               </tr>
               <!-- 1. Camera Movement & Stability -->
               <tr>
-                <td class="category-header" data-category="1"><strong>🎥 Camera Movement & Stability</strong></td>
+                <td class="category-header" data-category="1">
+                  <strong>🎥 Camera Movement & Stability</strong>
+                  <span class="tooltip" data-tooltip="Smooth, deliberate motion is key. Avoid erratic movement.">?</span>
+                </td>
                 <td data-category="1" data-rating="1" role="button" tabindex="0">
                   Erratic or unstable movement detracting from the shot.
                 </td>
@@ -597,7 +650,10 @@
               </tr>
               <!-- 2. Shot Timing & Pacing -->
               <tr>
-                <td class="category-header" data-category="2"><strong>⏱️ Shot Timing & Pacing</strong></td>
+                <td class="category-header" data-category="2">
+                  <strong>⏱️ Shot Timing & Pacing</strong>
+                  <span class="tooltip" data-tooltip="Consider the duration and flow of the shot. Aim for a natural rhythm.">?</span>
+                </td>
                 <td data-category="2" data-rating="1" role="button" tabindex="0">
                   The shot feels too rushed or too drawn out.
                 </td>
@@ -613,7 +669,10 @@
               </tr>
               <!-- 3. Lighting, Color & Atmosphere -->
               <tr>
-                <td class="category-header" data-category="3"><strong>🌅 Lighting, Color & Atmosphere</strong></td>
+                <td class="category-header" data-category="3">
+                  <strong>🌅 Lighting, Color & Atmosphere</strong>
+                  <span class="tooltip" data-tooltip="Good lighting and color grading set the mood.">?</span>
+                </td>
                 <td data-category="3" data-rating="1" role="button" tabindex="0">
                   Inadequate lighting and poor color balance resulting in a flat look.
                 </td>
@@ -629,7 +688,10 @@
               </tr>
               <!-- 4. Technical Quality & Clarity -->
               <tr>
-                <td class="category-header" data-category="4"><strong>🖥️ Technical Quality & Clarity</strong></td>
+                <td class="category-header" data-category="4">
+                  <strong>🖥️ Technical Quality & Clarity</strong>
+                  <span class="tooltip" data-tooltip="Check resolution, focus, and stability.">?</span>
+                </td>
                 <td data-category="4" data-rating="1" role="button" tabindex="0">
                   Visible technical issues (low resolution, glitches, or blurriness).
                 </td>
@@ -645,7 +707,10 @@
               </tr>
               <!-- 5. Creative Angles & Perspectives -->
               <tr>
-                <td class="category-header" data-category="5"><strong>🔭 Creative Angles & Perspectives</strong></td>
+                <td class="category-header" data-category="5">
+                  <strong>🔭 Creative Angles & Perspectives</strong>
+                  <span class="tooltip" data-tooltip="Experiment with unique angles to add visual interest.">?</span>
+                </td>
                 <td data-category="5" data-rating="1" role="button" tabindex="0">
                   Conventional or uninspired angles with minimal variation.
                 </td>
@@ -661,7 +726,10 @@
               </tr>
               <!-- 6. Overall Cinematic Impact -->
               <tr>
-                <td class="category-header" data-category="6"><strong>🌟 Overall Cinematic Impact</strong></td>
+                <td class="category-header" data-category="6">
+                  <strong>🌟 Overall Cinematic Impact</strong>
+                  <span class="tooltip" data-tooltip="How memorable and emotionally engaging is the shot?">?</span>
+                </td>
                 <td data-category="6" data-rating="1" role="button" tabindex="0">
                   Fails to leave a memorable impression.
                 </td>
@@ -687,16 +755,12 @@
           </div>
         </section>
 
-        <!-- FEEDBACK PANEL -->
+        <!-- FEEDBACK PANEL (AI Feedback removed) -->
         <section class="feedback-panel glass-panel" aria-labelledby="feedbackHeading">
           <h3 id="feedbackHeading">Reviewer Feedback</h3>
           <div class="feedback-entry">
             <label for="humanFeedback">Reviewer Comments</label>
             <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your reviewer feedback here..." aria-label="Reviewer Feedback"></div>
-          </div>
-          <div class="feedback-entry">
-            <label for="aiFeedback">AI Feedback</label>
-            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
           </div>
         </section>
       </div>
@@ -723,23 +787,45 @@
       </div>
     </main>
 
-    <!-- HOW-TO MODAL -->
+    <!-- HOW-TO / FAQ MODAL -->
     <dialog class="modal-bg" id="howToModal" aria-labelledby="howToHeading" aria-modal="true">
       <div class="modal-content">
-        <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To">&times;</button>
-        <h2 id="howToHeading">How to Use Replay mod</h2>
-        <ul>
-          <li>Click on each rating cell to score the replay shot.</li>
-          <li>The Overall Score (out of 28) updates live as you select ratings.</li>
-          <li>Focus on objective criteria such as composition, movement, timing, lighting, technical quality, and creativity.</li>
-          <li>Provide additional comments in the Reviewer and AI feedback boxes.</li>
-          <li>Use the Self-Assessment Checklist to reflect on your shot’s quality.</li>
-          <li>When finished, reset scores or export the review as a PNG.</li>
-        </ul>
+        <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To / FAQ">&times;</button>
+        <h2 id="howToHeading">How to Use Replay mod &amp; FAQ</h2>
+        <section>
+          <h3>How to Use</h3>
+          <ul>
+            <li>Click on each rating cell to score the replay shot.</li>
+            <li>The Overall Score (out of 28) updates live as you select ratings.</li>
+            <li>Focus on objective criteria such as composition, movement, timing, lighting, technical quality, and creativity.</li>
+            <li>Provide your comments in the Reviewer Feedback section.</li>
+            <li>Use the Self-Assessment Checklist to reflect on your shot’s quality.</li>
+            <li>Reset scores or export your review as a PNG when finished.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Tips &amp; Tricks</h3>
+          <ul>
+            <li>Ensure your shot follows classic cinematography principles (e.g. rule of thirds, balanced composition).</li>
+            <li>Smooth camera movements add a professional touch—practice panning and tracking.</li>
+            <li>Good lighting and color grading set the mood; adjust your settings accordingly.</li>
+            <li>Experiment with creative angles to add visual interest.</li>
+            <li>Check your technical quality; a clear, stable shot is key.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>FAQ</h3>
+          <ul>
+            <li><strong>Q:</strong> How do I improve my composition?<br><strong>A:</strong> Study visual balance, use guidelines like the rule of thirds, and experiment with framing.</li>
+            <li><strong>Q:</strong> What makes camera movement effective?<br><strong>A:</strong> Consistency, smoothness, and purposeful motion that supports the narrative.</li>
+            <li><strong>Q:</strong> How can I ensure proper lighting?<br><strong>A:</strong> Adjust your light sources and use color grading tools to create the desired atmosphere.</li>
+            <li><strong>Q:</strong> What technical aspects should I focus on?<br><strong>A:</strong> Resolution, focus, and stability are crucial for a clear and professional shot.</li>
+          </ul>
+        </section>
       </div>
     </dialog>
 
-    <!-- TUTORIAL MODAL -->
+    <!-- TUTORIAL MODAL (Optional additional modal for further instructions) -->
     <dialog class="modal-bg" id="tutorialModal" aria-labelledby="tutorialHeading" aria-modal="true">
       <div class="modal-content">
         <button class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">&times;</button>
@@ -765,7 +851,7 @@
         womp: document.getElementById("wompSound")
       };
 
-      // Array of inspirational replay mod quotes
+      // Extended array of inspirational replay mod quotes
       const cineQuotes = [
         "“Cinematography is the art of painting with light.” – Unknown",
         "“A great shot is like a painting in motion.” – Unknown",
@@ -774,7 +860,9 @@
         "“Capture the moment and create the magic.” – Unknown",
         "“In film, the image is everything.” – Fritz Lang",
         "“The camera is a storyteller.” – George Lucas",
-        "“A film is never really good unless the camera is an eye in the head of a poet.” – Orson Welles"
+        "“A film is never really good unless the camera is an eye in the head of a poet.” – Orson Welles",
+        "“The language of cinema is visual.” – Unknown",
+        "“A single shot can change the way you see the world.” – Unknown"
       ];
 
       // Array of fun facts and tips
@@ -786,17 +874,30 @@
         "Always check your technical quality: a stable, high‑res shot speaks volumes."
       ];
 
+      // Function to select a random index without repeating any of the last 3 used
+      function getNonRepeatingRandomIndex(max) {
+        let lastUsed = JSON.parse(localStorage.getItem("lastUsedQuotes") || "[]");
+        let newIndex;
+        let attempts = 0;
+        do {
+          newIndex = Math.floor(Math.random() * max);
+          attempts++;
+        } while (lastUsed.includes(newIndex) && attempts < 10);
+        // Update lastUsed array (keep last 3)
+        lastUsed.push(newIndex);
+        if (lastUsed.length > 3) {
+          lastUsed = lastUsed.slice(lastUsed.length - 3);
+        }
+        localStorage.setItem("lastUsedQuotes", JSON.stringify(lastUsed));
+        return newIndex;
+      }
+
       /***************************************************
        * DOMContentLoaded Setup
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        // Set a random quote
-        const lastQuote = localStorage.getItem("lastQuoteIndex");
-        let newQuoteIndex;
-        do {
-          newQuoteIndex = Math.floor(Math.random() * cineQuotes.length);
-        } while (cineQuotes.length > 1 && newQuoteIndex == lastQuote);
-        localStorage.setItem("lastQuoteIndex", newQuoteIndex);
+        // Set a random quote without immediate repetition
+        let newQuoteIndex = getNonRepeatingRandomIndex(cineQuotes.length);
         document.getElementById("quoteSection").innerText = cineQuotes[newQuoteIndex];
 
         // Set a random fun fact
