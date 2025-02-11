@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Replay Mod Cinematography Review Pro</title>
+    <title>Replay mod</title>
 
     <!-- Font Awesome for icons -->
     <link
@@ -128,7 +128,7 @@
         transition: var(--transition);
       }
       .total-score:hover::after {
-        content: "Overall: (Score Sum out of 28)";
+        content: "Overall: (Score Sum out of 24)";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -154,7 +154,7 @@
         align-items: center;
         gap: 1rem;
       }
-      /* New Reduce Motion Toggle */
+      /* Reduce Motion Toggle */
       .reduce-motion-toggle {
         display: inline-flex;
         align-items: center;
@@ -276,6 +276,11 @@
         background: var(--gradient-light);
         color: #fff;
       }
+      /* Re-apply original colors for rating columns */
+      .modern-table thead th:nth-child(2) { background: #f87171; }
+      .modern-table thead th:nth-child(3) { background: #fb923c; }
+      .modern-table thead th:nth-child(4) { background: #facc15; }
+      .modern-table thead th:nth-child(5) { background: #4ade80; }
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -404,7 +409,7 @@
         max-width: 800px;
       }
 
-      /* Easter Egg Icon */
+      /* Cinematic Magic Easter Egg Icon */
       #cinematicMagic {
         position: fixed;
         bottom: 10px;
@@ -477,10 +482,10 @@
       <div class="header-left">
         <div class="site-title">
           <i class="fas fa-camera" aria-hidden="true"></i>
-          <span>Replay Mod Cinematography Review</span>
+          <span>Replay mod</span>
         </div>
         <div class="total-score" id="scoreDisplay" tabindex="0">
-          Overall: <span id="overallTotal">0</span>/28 – <span id="scoreLabel">Needs Work</span>
+          Overall: <span id="overallTotal">0</span>/24 – <span id="scoreLabel">Needs Work</span>
         </div>
         <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
       </div>
@@ -511,15 +516,15 @@
 
     <!-- QUOTE OF WISDOM SECTION (Top) -->
     <div class="quote-section glass-panel" id="quoteSection" role="note" aria-live="polite">
-      <!-- A random inspirational cinematography quote will appear here -->
+      <!-- A random inspirational replay mod quote will appear here -->
     </div>
 
     <main>
       <div class="analyzer-container">
         <!-- REPLAY SHOT RUBRIC SECTION -->
-        <section class="rubric-table glass-panel" aria-labelledby="cinematographyRubricHeading">
-          <h2 id="cinematographyRubricHeading">Replay Shot Review Rubric</h2>
-          <table class="modern-table" id="cinematographyTable">
+        <section class="rubric-table glass-panel" aria-labelledby="replayRubricHeading">
+          <h2 id="replayRubricHeading">Replay Shot Review Rubric</h2>
+          <table class="modern-table" id="replayTable">
             <thead>
               <tr>
                 <th scope="col">Category</th>
@@ -530,109 +535,100 @@
               </tr>
             </thead>
             <tbody>
+              <!-- Most important: Composition & Framing -->
               <tr>
-                <td class="category-header" data-category="0"><strong>🎥 Composition &amp; Framing</strong></td>
+                <td class="category-header" data-category="0"><strong>Composition &amp; Framing</strong></td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">
-                  Composition is unbalanced with no clear focal point.
+                  Poorly arranged elements with no clear focus.
                 </td>
                 <td data-category="0" data-rating="2" role="button" tabindex="0">
-                  Basic framing that meets standard composition rules.
+                  Basic framing following standard rules but lacking creativity.
                 </td>
                 <td data-category="0" data-rating="3" role="button" tabindex="0">
-                  Well-composed shot using the rule of thirds and balanced framing.
+                  Well-balanced composition with clear focal points.
                 </td>
                 <td data-category="0" data-rating="4" role="button" tabindex="0">
-                  Masterful composition with artistic framing that elevates the scene.
+                  Exceptionally arranged elements with artistic framing.
                 </td>
               </tr>
+              <!-- Second priority: Camera Movement & Stability -->
               <tr>
-                <td class="category-header" data-category="1"><strong>🚀 Camera Movement &amp; Dynamics</strong></td>
+                <td class="category-header" data-category="1"><strong>Camera Movement &amp; Stability</strong></td>
                 <td data-category="1" data-rating="1" role="button" tabindex="0">
-                  Camera movement is shaky or erratic, distracting from the shot.
+                  Erratic or unstable movement detracting from the shot.
                 </td>
                 <td data-category="1" data-rating="2" role="button" tabindex="0">
-                  Movement is acceptable but lacks fluidity or purpose.
+                  Movement is present but lacks smoothness or intent.
                 </td>
                 <td data-category="1" data-rating="3" role="button" tabindex="0">
-                  Smooth, purposeful movement that enhances the shot’s energy.
+                  Smooth, deliberate motion that enhances the visual.
                 </td>
                 <td data-category="1" data-rating="4" role="button" tabindex="0">
-                  Exceptionally dynamic camera work with creative, seamless motion.
+                  Exceptionally fluid movement that adds dynamic quality.
                 </td>
               </tr>
+              <!-- Third priority: Lighting, Color & Atmosphere -->
               <tr>
-                <td class="category-header" data-category="2"><strong>🔄 Transitions &amp; Shot Flow</strong></td>
+                <td class="category-header" data-category="2"><strong>Lighting, Color &amp; Atmosphere</strong></td>
                 <td data-category="2" data-rating="1" role="button" tabindex="0">
-                  Abrupt transitions that break the visual flow.
+                  Inadequate lighting and poor color balance resulting in a flat look.
                 </td>
                 <td data-category="2" data-rating="2" role="button" tabindex="0">
-                  Transitions work but occasionally disrupt continuity.
+                  Acceptable lighting with only a basic mood established.
                 </td>
                 <td data-category="2" data-rating="3" role="button" tabindex="0">
-                  Smooth transitions that maintain a coherent shot flow.
+                  Well-lit scene with appropriate color grading enhancing the mood.
                 </td>
                 <td data-category="2" data-rating="4" role="button" tabindex="0">
-                  Innovative transitions that seamlessly blend shots, creating a mesmerizing flow.
+                  Outstanding lighting and color that create an immersive atmosphere.
                 </td>
               </tr>
+              <!-- Fourth priority: Technical Quality & Clarity -->
               <tr>
-                <td class="category-header" data-category="3"><strong>🌅 Lighting, Color &amp; Atmosphere</strong></td>
+                <td class="category-header" data-category="3"><strong>Technical Quality &amp; Clarity</strong></td>
                 <td data-category="3" data-rating="1" role="button" tabindex="0">
-                  Poor lighting and color choices resulting in a dull atmosphere.
+                  Visible technical issues (low resolution, glitches, or blurriness).
                 </td>
                 <td data-category="3" data-rating="2" role="button" tabindex="0">
-                  Adequate lighting and color, but the mood is not strongly conveyed.
+                  Adequate quality with minor flaws affecting clarity.
                 </td>
                 <td data-category="3" data-rating="3" role="button" tabindex="0">
-                  Effective lighting and color grading that set a clear mood.
+                  Clear, stable visuals with high-quality technical execution.
                 </td>
                 <td data-category="3" data-rating="4" role="button" tabindex="0">
-                  Stunning lighting and color that create an immersive, atmospheric experience.
+                  Pristine resolution and stability with flawless technical quality.
                 </td>
               </tr>
+              <!-- Fifth priority: Creative Angles & Perspectives -->
               <tr>
-                <td class="category-header" data-category="4"><strong>🔭 Cinematic Angles &amp; Perspectives</strong></td>
+                <td class="category-header" data-category="4"><strong>Creative Angles &amp; Perspectives</strong></td>
                 <td data-category="4" data-rating="1" role="button" tabindex="0">
-                  Conventional angles that fail to add depth or interest.
+                  Conventional or uninspired angles with minimal variation.
                 </td>
                 <td data-category="4" data-rating="2" role="button" tabindex="0">
-                  Standard angles that provide a basic perspective.
+                  Some creative angles attempted, though not consistently effective.
                 </td>
                 <td data-category="4" data-rating="3" role="button" tabindex="0">
-                  Thoughtful angles that add depth and offer a fresh perspective.
+                  Well-chosen angles offering fresh perspectives.
                 </td>
                 <td data-category="4" data-rating="4" role="button" tabindex="0">
-                  Bold, creative perspectives that transform the shot into cinematic art.
+                  Innovative angles that significantly enhance the shot.
                 </td>
               </tr>
+              <!-- Last: Overall Cinematic Impact -->
               <tr>
-                <td class="category-header" data-category="5"><strong>🖥️ Technical Quality &amp; Clarity</strong></td>
+                <td class="category-header" data-category="5"><strong>Overall Cinematic Impact</strong></td>
                 <td data-category="5" data-rating="1" role="button" tabindex="0">
-                  Technical issues (low resolution, glitches, or instability) are evident.
+                  Fails to leave a memorable impression.
                 </td>
                 <td data-category="5" data-rating="2" role="button" tabindex="0">
-                  Adequate technical quality with minor flaws in clarity or stability.
+                  Some impact, but overall unremarkable.
                 </td>
                 <td data-category="5" data-rating="3" role="button" tabindex="0">
-                  High-quality capture with clear and stable visuals.
+                  Engaging and leaves a positive impression.
                 </td>
                 <td data-category="5" data-rating="4" role="button" tabindex="0">
-                  Pristine technical execution with exceptional clarity and stability.
-                </td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="6"><strong>🎬 Overall Cinematic Impact</strong></td>
-                <td data-category="6" data-rating="1" role="button" tabindex="0">
-                  The shot fails to evoke emotion or leave an impression.
-                </td>
-                <td data-category="6" data-rating="2" role="button" tabindex="0">
-                  Some impact is felt, but the cinematic presence is weak.
-                </td>
-                <td data-category="6" data-rating="3" role="button" tabindex="0">
-                  Strong cinematic impact that engages and resonates.
-                </td>
-                <td data-category="6" data-rating="4" role="button" tabindex="0">
-                  An extraordinary shot that captivates and sets a new standard for cinematography.
+                  Exceptionally impressive, evoking strong emotion.
                 </td>
               </tr>
             </tbody>
@@ -640,18 +636,18 @@
           <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
           <div id="legend">
             <h4>Legend &amp; Definitions</h4>
-            <p><strong>Needs Improvement (1):</strong> The shot has significant shortcomings in this category.</p>
-            <p><strong>Good (2):</strong> Meets basic standards but leaves room for improvement.</p>
-            <p><strong>Excellent (3):</strong> High-quality execution with minor refinements possible.</p>
-            <p><strong>Outstanding (4):</strong> Exceeds industry standards with exceptional execution.</p>
+            <p><strong>Needs Improvement (1):</strong> Significant shortcomings in this category.</p>
+            <p><strong>Good (2):</strong> Meets basic standards but room for improvement.</p>
+            <p><strong>Excellent (3):</strong> High-quality execution with only minor refinements needed.</p>
+            <p><strong>Outstanding (4):</strong> Exceeds standards with exceptional execution.</p>
           </div>
         </section>
 
         <!-- FEEDBACK PANEL -->
         <section class="feedback-panel glass-panel" aria-labelledby="feedbackHeading">
-          <h3 id="feedbackHeading">Cinematography Feedback</h3>
+          <h3 id="feedbackHeading">Reviewer Feedback</h3>
           <div class="feedback-entry">
-            <label for="humanFeedback">Reviewer Feedback</label>
+            <label for="humanFeedback">Reviewer Comments</label>
             <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your reviewer feedback here..." aria-label="Reviewer Feedback"></div>
           </div>
           <div class="feedback-entry">
@@ -665,13 +661,12 @@
       <section class="self-assessment-section" aria-labelledby="selfAssessmentHeading">
         <h3 id="selfAssessmentHeading">Self-Assessment Checklist</h3>
         <ul>
-          <li><input type="checkbox" id="check1"> <label for="check1">Is the composition balanced and visually engaging?</label></li>
-          <li><input type="checkbox" id="check2"> <label for="check2">Are the camera movements smooth and purposeful?</label></li>
-          <li><input type="checkbox" id="check3"> <label for="check3">Do transitions between shots maintain a seamless flow?</label></li>
-          <li><input type="checkbox" id="check4"> <label for="check4">Is the lighting and color grading consistent with the scene’s mood?</label></li>
-          <li><input type="checkbox" id="check5"> <label for="check5">Are the camera angles creative and well-chosen?</label></li>
-          <li><input type="checkbox" id="check6"> <label for="check6">Is the technical quality (resolution, stability) up to standard?</label></li>
-          <li><input type="checkbox" id="check7"> <label for="check7">Does the shot evoke a strong cinematic impact?</label></li>
+          <li><input type="checkbox" id="check1"> <label for="check1">Is the composition well‑executed?</label></li>
+          <li><input type="checkbox" id="check2"> <label for="check2">Is the camera movement smooth and stable?</label></li>
+          <li><input type="checkbox" id="check3"> <label for="check3">Does the lighting and color set the appropriate mood?</label></li>
+          <li><input type="checkbox" id="check4"> <label for="check4">Is the technical quality (resolution, clarity) high?</label></li>
+          <li><input type="checkbox" id="check5"> <label for="check5">Are creative angles effectively used?</label></li>
+          <li><input type="checkbox" id="check6"> <label for="check6">Does the shot leave a strong overall impact?</label></li>
         </ul>
         <button class="btn" onclick="submitAssessment()">Submit Self-Assessment</button>
         <div class="assessment-result" id="assessmentResult" aria-live="polite"></div>
@@ -679,7 +674,7 @@
 
       <!-- FUN FACT SECTION (Bottom) -->
       <div class="fun-fact-section glass-panel" id="funFactSection" role="note" aria-live="polite">
-        <!-- A random fun cinematography fact or tip will appear here -->
+        <!-- A random fun replay mod fact or tip will appear here -->
       </div>
     </main>
 
@@ -687,14 +682,14 @@
     <dialog class="modal-bg" id="howToModal" aria-labelledby="howToHeading" aria-modal="true">
       <div class="modal-content">
         <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To">&times;</button>
-        <h2 id="howToHeading">How to Use Replay Mod Cinematography Review Pro</h2>
+        <h2 id="howToHeading">How to Use Replay mod</h2>
         <ul>
-          <li>Click on the rating cell for each criterion to score the replay shot.</li>
-          <li>The Overall Score (out of 28) updates live as you select ratings.</li>
-          <li>Focus on best practices in cinematography (composition, camera movement, lighting, etc.) when scoring.</li>
-          <li>Provide additional feedback in the Reviewer and AI feedback boxes.</li>
+          <li>Click on each rating cell to score the replay shot.</li>
+          <li>The Overall Score (out of 24) updates live as you select ratings.</li>
+          <li>Focus on objective criteria such as composition, movement, lighting, technical quality, and creativity.</li>
+          <li>Provide additional comments in the Reviewer and AI feedback boxes.</li>
           <li>Use the Self-Assessment Checklist to reflect on your shot’s quality.</li>
-          <li>When finished, you can reset scores or export the review as a PNG.</li>
+          <li>When finished, reset scores or export the review as a PNG.</li>
         </ul>
       </div>
     </dialog>
@@ -725,29 +720,29 @@
         womp: document.getElementById("wompSound")
       };
 
-      // Array of inspirational cinematography quotes
+      // Array of inspirational replay mod quotes
       const cineQuotes = [
         "“Cinematography is the art of painting with light.” – Unknown",
         "“A great shot is like a painting in motion.” – Unknown",
-        "“In every frame, there is a story waiting to be told.” – Unknown",
-        "“The camera is an instrument that teaches people how to see without a camera.” – Dorothea Lange",
-        "“Cinematic magic is created one frame at a time.” – Unknown"
+        "“Every frame tells a story.” – Unknown",
+        "“Magic happens when the camera starts moving.” – Unknown",
+        "“Capture the moment and create the magic.” – Unknown"
       ];
 
       // Array of fun facts and tips
       const funFacts = [
-        "Fun Fact: Some of Minecraft’s most cinematic moments have been captured using Replay Mod!",
-        "Tip: Smooth camera movements can transform a simple shot into an epic scene.",
-        "Did you know? Lighting can set the mood for your entire replay.",
-        "Experiment with angles – sometimes a slight tilt makes all the difference.",
-        "Always check your technical quality: a stable, high-res shot speaks volumes."
+        "Fun Fact: Some of Minecraft’s most epic moments are captured with Replay mod!",
+        "Tip: Smooth camera movement transforms a basic shot into a cinematic scene.",
+        "Did you know? Lighting is key to setting the perfect mood in your replay.",
+        "Experiment with angles – sometimes a slight change makes a big difference.",
+        "Always check your technical quality: a stable, high‑res shot speaks volumes."
       ];
 
       /***************************************************
        * DOMContentLoaded Setup
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        // Set a random cinematography quote
+        // Set a random quote
         const lastQuote = localStorage.getItem("lastQuoteIndex");
         let newQuoteIndex;
         do {
@@ -759,8 +754,8 @@
         // Set a random fun fact
         document.getElementById("funFactSection").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
 
-        // Event delegation for Cinematography Rubric table
-        document.getElementById("cinematographyTable").addEventListener("click", function(e) {
+        // Event delegation for the Replay rubric table
+        document.getElementById("replayTable").addEventListener("click", function(e) {
           const cell = e.target.closest('td[data-rating]');
           if (cell) selectRating(cell);
         });
@@ -789,8 +784,8 @@
         document.getElementById('overallTotal').textContent = overallTotal;
         let scoreLabel = document.getElementById('scoreLabel');
         let ranking = document.getElementById('ranking');
-        // Ensure all 7 categories are rated
-        if (Object.keys(shotScores).length < 7) {
+        // Ensure all 6 categories are rated
+        if (Object.keys(shotScores).length < 6) {
           ranking.textContent = "Incomplete";
           ranking.style.color = "#64748b";
         } else if (overallTotal < 10) {
@@ -798,11 +793,11 @@
           ranking.textContent = "Needs Work 🔴";
           ranking.style.color = "#ef4444";
           progressAudio.womp.play && progressAudio.womp.play();
-        } else if (overallTotal < 18) {
+        } else if (overallTotal < 16) {
           scoreLabel.textContent = "Good";
           ranking.textContent = "Good 👍";
           ranking.style.color = "#22c55e";
-        } else if (overallTotal < 24) {
+        } else if (overallTotal < 22) {
           scoreLabel.textContent = "Excellent";
           ranking.textContent = "Excellent 🟡";
           ranking.style.color = "#eab308";
@@ -823,7 +818,7 @@
        ***************************************************/
       function resetScores() {
         shotScores = {};
-        document.querySelectorAll('#cinematographyTable td[data-rating]').forEach(cell => cell.classList.remove('selected'));
+        document.querySelectorAll('#replayTable td[data-rating]').forEach(cell => cell.classList.remove('selected'));
         document.getElementById('overallTotal').textContent = '0';
         document.getElementById('scoreLabel').textContent = 'Needs Work';
         document.getElementById('ranking').textContent = 'Incomplete';
@@ -840,7 +835,7 @@
         const canvas = await html2canvas(document.body, { scale: 2, useCORS: true });
         const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
-        link.download = 'replay-cinematography-review.png';
+        link.download = 'replay-mod-review.png';
         link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
@@ -882,11 +877,11 @@
         const tutorialContent = document.getElementById('tutorialContent');
         let content = "";
         if (topic === 'composition') {
-          content = "<h2>Enhancing Composition</h2><p>Use the rule of thirds and balance your frame to create a visually appealing shot.</p>";
+          content = "<h2>Enhancing Composition</h2><p>Arrange elements purposefully using rules like the rule of thirds to create a balanced frame.</p>";
         } else if (topic === 'movement') {
-          content = "<h2>Smooth Camera Movement</h2><p>Ensure your camera moves purposefully. Experiment with panning, tracking, and dynamic angles.</p>";
+          content = "<h2>Smooth Camera Movement</h2><p>Ensure your camera movements are stable and intentional to enhance the shot’s visual flow.</p>";
         } else if (topic === 'lighting') {
-          content = "<h2>Effective Lighting</h2><p>Good lighting and color grading set the mood. Experiment with different settings to create the right atmosphere.</p>";
+          content = "<h2>Effective Lighting</h2><p>Proper lighting and color grading set the mood and clarity of the shot.</p>";
         } else {
           content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
         }
@@ -922,7 +917,7 @@
         const totalItems = checklist.length;
         let resultText = `You checked ${checkedCount} out of ${totalItems} items. `;
         if (checkedCount === totalItems) {
-          resultText += "🎉 Master Cinematographer Badge: You nailed every aspect!";
+          resultText += "🎉 Master Replay Mod Reviewer: Excellent work!";
           confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
         } else if (checkedCount >= totalItems * 0.75) {
           resultText += "Great job! You're nearly there.";
@@ -939,9 +934,9 @@
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         const cinematicQuotes = [
           "“Every frame is a canvas.” – Unknown",
-          "“Magic happens when the camera starts moving.” – Unknown",
+          "“Magic happens when the camera moves.” – Unknown",
           "“Let your shot tell the story.” – Unknown",
-          "“In cinema, even a pause can speak volumes.” – Unknown",
+          "“A pause can speak louder than motion.” – Unknown",
           "“Capture the moment, create the magic.” – Unknown"
         ];
         const randomIndex = Math.floor(Math.random() * cinematicQuotes.length);
