@@ -6,9 +6,9 @@
     <title>StoryCraft Analyzer Pro+ Enhanced</title>
 
     <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
@@ -57,13 +57,11 @@
         margin: 0;
         padding: 0;
         font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
-          var(--bg-light);
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
         background-size: 30px 30px;
         color: var(--text-light);
         transition: var(--transition);
       }
-      /* Make the page slightly thinner */
       .analyzer-container {
         width: 95%;
         max-width: 900px;
@@ -101,11 +99,29 @@
         gap: 0.4rem;
         text-align: center;
       }
-      /* Simple header title */
-      .header-left h1 {
-        font-size: 2rem;
-        margin: 0;
-        font-weight: bold;
+      .total-score {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: var(--gradient-light);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: #eee;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+      }
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--gradient-light);
+        transition: width 0.3s ease;
+      }
+      .status-indicator {
+        font-weight: 600;
       }
       .header-right {
         display: flex;
@@ -113,7 +129,6 @@
         flex-wrap: wrap;
         align-items: center;
       }
-
       /* --------------------------------------------------------------
          Button Styling
          -------------------------------------------------------------- */
@@ -135,7 +150,7 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
-      /* Rainbow Button (emoji only) */
+      /* Rainbow Button as a Rainbow Emoji */
       button.rainbow-btn {
         background: none;
         border: none;
@@ -146,11 +161,18 @@
       button.rainbow-btn:hover {
         transform: scale(1.2);
       }
-      /* Dark Mode Toggle */
+      /* --------------------------------------------------------------
+         Dark Mode Toggle Styles
+         -------------------------------------------------------------- */
       .dark-mode {
         display: inline-flex;
         align-items: center;
         cursor: pointer;
+      }
+      .toggle-label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
       }
       .dark-mode-slider {
         position: relative;
@@ -187,7 +209,6 @@
       input#darkModeToggle:checked + .dark-mode-slider {
         background-color: var(--primary-light);
       }
-
       /* --------------------------------------------------------------
          Glass Panels for Sections
          -------------------------------------------------------------- */
@@ -203,8 +224,8 @@
       }
       .glass-panel h2 {
         margin-top: 0;
+        text-align: center;
       }
-
       /* --------------------------------------------------------------
          Input Areas & Textarea Styling
          -------------------------------------------------------------- */
@@ -281,6 +302,59 @@
         transform: scale(1.02);
       }
       /* --------------------------------------------------------------
+         Rubric Table Styling
+         -------------------------------------------------------------- */
+      .rubric-table {
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 800px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+      }
+      .modern-table th {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+        background: var(--gradient-light);
+        color: #fff;
+      }
+      .modern-table th:nth-child(2) { background: #f87171; color: #fff; }
+      .modern-table th:nth-child(3) { background: #fb923c; color: #fff; }
+      .modern-table th:nth-child(4) { background: #facc15; color: #000; }
+      .modern-table th:nth-child(5) { background: #4ade80; color: #fff; }
+      .modern-table td {
+        padding: 0.75rem 1.5rem;
+        background: var(--table-cell-bg-light);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        transition: var(--transition);
+        vertical-align: top;
+      }
+      .modern-table td:hover:not(.category-header) {
+        background: rgba(224, 231, 255, 0.3);
+      }
+      .modern-table td.selected {
+        background: rgba(224, 231, 255, 0.5) !important;
+        border-left: 4px solid var(--primary-light);
+      }
+      .category-header {
+        font-weight: 600;
+        background: rgba(79, 172, 254, 0.03);
+        position: sticky;
+        left: 0;
+        min-width: 180px;
+      }
+      /* --------------------------------------------------------------
          Self-Assessment Checklist Styling
          -------------------------------------------------------------- */
       #selfAssessmentSection ul {
@@ -313,11 +387,20 @@
     <!-- HEADER / Sticky Banner -->
     <header class="analyzer-header">
       <div class="header-left">
-        <h1>StoryCraft Analyzer</h1>
+        <div class="total-score">
+          Score: <span id="total">0</span>/40 <span id="scoreLabel">Incomplete</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
         <button class="btn" id="resetBtn">🔄 Reset</button>
         <button class="btn" id="exportBtn">🖼️ Export PNG</button>
+        <button class="btn" id="exportPDFBtn">📥 Export PDF</button>
+        <button class="btn" id="checkGrammarBtn">✍️ Check Grammar</button>
+        <button class="btn" id="togglePreviewBtn">👁️ Toggle Preview</button>
         <button class="btn" id="rainbowBtn">🌈</button>
         <div class="dark-mode">
           <label class="toggle-label" for="darkModeToggle">
@@ -334,87 +417,165 @@
 
     <!-- MAIN CONTENT -->
     <main>
-      <div class="analyzer-container">
-        <!-- Quick Summary Section -->
-        <div class="glass-panel input-section" id="quickSummarySection">
-          <h2>📝 Quick Summary</h2>
-          <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
-        </div>
+      <!-- Quick Summary Section -->
+      <div class="glass-panel input-section" id="quickSummarySection">
+        <h2>📝 Quick Summary</h2>
+        <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
+      </div>
 
-        <!-- Similar Videos Section -->
-        <div class="glass-panel input-section" id="similarVideosSection">
-          <h2>📺 Similar Videos</h2>
-          <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
-          <button class="btn" id="addVideoBtn">Add Video</button>
-          <div id="similarVideosList" class="similar-videos-list"></div>
-        </div>
+      <!-- Similar Videos Section -->
+      <div class="glass-panel input-section" id="similarVideosSection">
+        <h2>📺 Similar Videos</h2>
+        <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
+        <button class="btn" id="addVideoBtn">Add Video</button>
+        <div id="similarVideosList" class="similar-videos-list"></div>
+      </div>
 
-        <!-- AI Review Section -->
-        <div class="glass-panel input-section" id="aiReviewSection">
-          <h2>🤖 AI Review</h2>
-          <button class="btn" id="runAIReviewBtn">Run AI Review</button>
-          <div id="aiReviewResult" style="margin-top: 1rem;"></div>
-        </div>
+      <!-- AI Review Section -->
+      <div class="glass-panel input-section" id="aiReviewSection">
+        <h2>🤖 AI Review</h2>
+        <button class="btn" id="runAIReviewBtn">Run AI Review</button>
+        <div id="aiReviewResult" style="margin-top: 1rem;"></div>
+      </div>
 
-        <!-- Human Feedback Section -->
-        <div class="glass-panel input-section" id="humanFeedbackSection">
-          <h2>👥 Human Feedback</h2>
-          <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
-        </div>
+      <!-- Rubric Table Section -->
+      <div class="glass-panel rubric-table" id="rubricSection">
+        <h2>📊 Rubric Table</h2>
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Good (1)</th>
+              <th>Great (2)</th>
+              <th>Excellent (3)</th>
+              <th>Outstanding (4)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
+              <td data-category="0" data-rating="1">Slow start; no hook</td>
+              <td data-category="0" data-rating="2">Basic hook</td>
+              <td data-category="0" data-rating="3">Intriguing hook</td>
+              <td data-category="0" data-rating="4">Unignorable opener</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
+              <td data-category="1" data-rating="1">No clear purpose</td>
+              <td data-category="1" data-rating="2">Goal exists but gets lost</td>
+              <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
+              <td data-category="1" data-rating="4">Crystal‑clear premise</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
+              <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
+              <td data-category="2" data-rating="2">A few engaging moments</td>
+              <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
+              <td data-category="2" data-rating="4">Masterful tension arcs</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
+              <td data-category="3" data-rating="1">Feels forced; no connection</td>
+              <td data-category="3" data-rating="2">Some genuine moments</td>
+              <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
+              <td data-category="3" data-rating="4">Deeply authentic</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
+              <td data-category="4" data-rating="1">Flat; no highs/lows</td>
+              <td data-category="4" data-rating="2">Moments of excitement</td>
+              <td data-category="4" data-rating="3">Clear emotional journey</td>
+              <td data-category="4" data-rating="4">Masterpiece arcs</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
+              <td data-category="5" data-rating="1">Low urgency</td>
+              <td data-category="5" data-rating="2">Basic stakes</td>
+              <td data-category="5" data-rating="3">High stakes/punishments</td>
+              <td data-category="5" data-rating="4">Unavoidable drama</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
+              <td data-category="6" data-rating="1">No or weak CTA</td>
+              <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
+              <td data-category="6" data-rating="3">Clear creative CTA</td>
+              <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend‑Jacking</td>
+              <td data-category="7" data-rating="1">Cliché concept</td>
+              <td data-category="7" data-rating="2">Minor twist on trends</td>
+              <td data-category="7" data-rating="3">Fresh angle</td>
+              <td data-category="7" data-rating="4">Boundary‑pushing</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
+              <td data-category="8" data-rating="1">Forgettable</td>
+              <td data-category="8" data-rating="2">Some memeable moments</td>
+              <td data-category="8" data-rating="3">Highly shareable</td>
+              <td data-category="8" data-rating="4">Clip‑worthy highlights</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
+              <td data-category="9" data-rating="1">No branding</td>
+              <td data-category="9" data-rating="2">Basic branding</td>
+              <td data-category="9" data-rating="3">Consistent style</td>
+              <td data-category="9" data-rating="4">Iconic brand identity</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="10" title="Well‑developed characters add depth.">Character Development</td>
+              <td data-category="10" data-rating="1">Flat, one‑dimensional characters</td>
+              <td data-category="10" data-rating="2">Some traits are evident</td>
+              <td data-category="10" data-rating="3">Well‑developed with clear motivations</td>
+              <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
+              <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
+              <td data-category="11" data-rating="2">Some lines feel genuine</td>
+              <td data-category="11" data-rating="3">Dialogue flows naturally</td>
+              <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World‑Building</td>
+              <td data-category="12" data-rating="1">Vague setting with little detail</td>
+              <td data-category="12" data-rating="2">Some descriptive elements</td>
+              <td data-category="12" data-rating="3">Engaging and immersive world‑building</td>
+              <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
+            </tr>
+            <tr>
+              <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
+              <td data-category="13" data-rating="1">Story drags; uneven pace</td>
+              <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
+              <td data-category="13" data-rating="3">Generally well‑paced</td>
+              <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <!-- Self-Assessment Checklist Section -->
-        <div class="glass-panel input-section" id="selfAssessmentSection">
-          <h2>✅ Self-Assessment Checklist</h2>
-          <ul>
-            <li>
-              <input type="checkbox" id="check1" />
-              <label for="check1"><strong>Hook:</strong> Does the opening grab attention in the first few seconds?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check2" />
-              <label for="check2"><strong>Goal:</strong> Is the main objective/challenge clearly defined?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check3" />
-              <label for="check3"><strong>Conflict &amp; Stakes:</strong> Are obstacles and stakes high enough to keep viewers invested?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check4" />
-              <label for="check4"><strong>Structure:</strong> Does the story flow logically from setup to escalation to resolution?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check5" />
-              <label for="check5"><strong>Audience Retention Hooks:</strong> Have you planned moments or reveals that keep viewers from clicking away?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check6" />
-              <label for="check6"><strong>Credibility &amp; Believability:</strong> Do plot points and scenarios feel authentic, not forced?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check7" />
-              <label for="check7"><strong>CTA or Interaction Point:</strong> Is there a clear moment where you invite audience participation (like, comment, etc.)?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check8" />
-              <label for="check8"><strong>Uniqueness:</strong> Do you offer something fresh or tap into current trends in a new way?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check9" />
-              <label for="check9"><strong>Pacing:</strong> Does each scene/segment have a strong reason to exist without dragging?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check10" />
-              <label for="check10"><strong>Shareability:</strong> Is there a “wow” factor or memorable highlight that encourages sharing?</label>
-            </li>
-          </ul>
-        </div>
+      <!-- Human Feedback Section -->
+      <div class="glass-panel input-section" id="humanFeedbackSection">
+        <h2>👥 Human Feedback</h2>
+        <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
+      </div>
+
+      <!-- Peer Reviews Section -->
+      <div class="glass-panel input-section" id="peerReviewSection">
+        <h2>💬 Peer Reviews</h2>
+        <input type="text" id="peerReviewUsername" placeholder="Enter your username..." />
+        <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
+        <button class="btn" id="submitPeerReviewBtn">Submit Peer Review</button>
+        <ul id="peerReviewList" class="peer-review-list"></ul>
       </div>
     </main>
 
     <!-- JavaScript -->
     <script>
-      // Remove rubric and peer review related code since those sections are gone.
-      // Attach event listeners after DOM loads
+      // Global variables
+      let scores = {};
+      let peerReviews = [];
+
       window.addEventListener('DOMContentLoaded', () => {
         // Dark mode toggle
         document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
@@ -422,10 +583,12 @@
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
         // Rainbow quote button
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
-        // AI Review button (if needed)
-        document.getElementById('runAIReviewBtn').addEventListener('click', runAIReview);
-        // Add YouTube video button
-        document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
+        // Peer review submit button
+        document.getElementById('submitPeerReviewBtn').addEventListener('click', submitPeerReview);
+        // Rubric cell click events
+        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+          cell.addEventListener('click', () => selectRating(cell));
+        });
         // Auto-resize textareas
         document.querySelectorAll('.story-input').forEach(textarea => {
           textarea.addEventListener('input', autoResize);
@@ -482,67 +645,117 @@
           "Step outline: to work on a movie, spend two thirds of your time working out a step outline: the story told in steps. Steps describe what happens in each scene. For example: 'He enters expecting to find her home, but discovers a note saying she's gone for good.' Assign scenes to each step, like 'inciting incident', 'first act climax', 'mid act climax', etc. Do this for central plot and subplots",
           "Treatment: is heavily expanded from the step outline. No need for dialogue; instead, add subtext and what characters want to get out of the scene. 'He's surprised by his outburst, but glad that he can still feel emotion.'",
           "Screenplay: writing a screenplay from a thorough treatment is a joy, you can maybe write several pages a day. We convert treatment description to screen description, and add dialogue. Our characters can finally talk, after being silent for so long! You may have to rework screenplay and alter direction here",
-          "Realize 90 percent of what you write is nonsense or mediocre. So you need to create far more material than you need, then destroy it. There's no limit to what you can create, so trash what's less than best",
-          "Master your craft. Don't just take your talent for a walk",
-          "When the audience no longer has to figure out the story, it ceases being an audience, and the story stops",
-          "90% of writers fail at the premise. If the premise is weak, there is nothing you can do to save the story",
-          "Show your hero's flaw early, and let their journey be about confronting and overcoming it",
-          "Every scene should either challenge your character or change them – preferably both",
-          "Introduce the stakes as early as possible, so the audience knows what could be lost and roots for the hero",
-          "Create a 'Save the Cat' moment where the protagonist does something likable or relatable, forging a bond with the audience",
-          "Let your antagonist be a mirror to your protagonist’s flaw, thereby intensifying their journey towards growth",
-          "Incorporate a theme stated moment early on, where the story's deeper message is subtly revealed",
-          "Ensure every character has a distinct voice and purpose, contributing uniquely to the story’s progression",
-          "Use the midpoint to shift gears: deepen the conflict, raise stakes, or twist the story in an unexpected direction",
-          "Balance external action with internal growth; the plot should drive the character's emotional journey and vice versa",
-          "Your ending should pay off not just the plot but the emotional and thematic journey of your protagonist",
-          "Rewrite with purpose: every draft should sharpen your protagonist's arc and clarify the story's central theme",
-          "Keep the audience in mind – craft moments of empathy, suspense, and surprise to engage them emotionally",
-          "Don’t just resolve the plot; ensure your character’s transformation is complete and satisfying by the story’s end",
-          "Foreshadowing is key: plant early seeds that make the climax feel inevitable yet surprising",
-          "Balance the familiar with the fresh – use genre conventions creatively to meet audience expectations while delivering originality",
-          "Story is the chronological sequence of events; plot is how you arrange the sequence. Sometimes you start at the end, then the beginning, then the middle, etc",
-          "The Audience Will Forget Your Plot But Not Your Characters",
-          "Your character will lead you to your story and your plot",
-          "Voice creates character, character creates plot",
-          "Characters make things happen; things don't happen to them",
-          "You admire a character for trying more than for their successes",
-          "You gotta keep in mind what’s interesting to you as an audience, not what’s fun to do as a writer. They can be very different",
-          "Trying for theme is important, but you won’t see what the story is actually about till you’re at the end of it. Now rewrite",
+          "Realize 90 percent of what you write is nonsense or mediocre. So you need to create far more material than you need, then destroy it. There's no limit to what you can create, so trash what's less than best.",
+          "Master your craft. Don't just take your talent for a walk.",
+          "When the audience no longer has to figure out the story, it ceases being an audience, and the story stops.",
+          "90% of writers fail at the premise. If the premise is weak, there is nothing you can do to save the story.",
+          "Show your hero's flaw early, and let their journey be about confronting and overcoming it.",
+          "Every scene should either challenge your character or change them – preferably both.",
+          "Introduce the stakes as early as possible, so the audience knows what could be lost and roots for the hero.",
+          "Create a 'Save the Cat' moment where the protagonist does something likable or relatable, forging a bond with the audience.",
+          "Let your antagonist be a mirror to your protagonist’s flaw, thereby intensifying their journey towards growth.",
+          "Incorporate a theme stated moment early on, where the story's deeper message is subtly revealed.",
+          "Ensure every character has a distinct voice and purpose, contributing uniquely to the story’s progression.",
+          "Use the midpoint to shift gears: deepen the conflict, raise stakes, or twist the story in an unexpected direction.",
+          "Balance external action with internal growth; the plot should drive the character's emotional journey and vice versa.",
+          "Your ending should pay off not just the plot but the emotional and thematic journey of your protagonist.",
+          "Rewrite with purpose: every draft should sharpen your protagonist's arc and clarify the story's central theme.",
+          "Keep the audience in mind – craft moments of empathy, suspense, and surprise to engage them emotionally.",
+          "Don’t just resolve the plot; ensure your character’s transformation is complete and satisfying by the story’s end.",
+          "Foreshadowing is key: plant early seeds that make the climax feel inevitable yet surprising.",
+          "Balance the familiar with the fresh – use genre conventions creatively to meet audience expectations while delivering originality.",
+          "Story is the chronological sequence of events; plot is how you arrange the sequence. Sometimes you start at the end, then the beginning, then the middle, etc.",
+          "The Audience Will Forget Your Plot But Not Your Characters.",
+          "Your character will lead you to your story and your plot.",
+          "Voice creates character, character creates plot.",
+          "Characters make things happen; things don't happen to them.",
+          "You admire a character for trying more than for their successes.",
+          "You gotta keep in mind what’s interesting to you as an audience, not what’s fun to do as a writer. They can be very different.",
+          "Trying for theme is important, but you won’t see what the story is actually about till you’re at the end of it. Now rewrite.",
           "Once upon a time there was ___. Every day, ___. One day ___. Because of that, ___. Because of that, ___. Until finally ___.",
-          "Simplify. Focus. Combine characters. Hop over detours. You’ll feel like you’re losing valuable stuff but it sets you free",
+          "Simplify. Focus. Combine characters. Hop over detours. You’ll feel like you’re losing valuable stuff but it sets you free.",
           "What is your character good at, comfortable with? Throw the polar opposite at them. Challenge them. How do they deal?",
-          "Come up with your ending before you figure out your middle. Seriously. Endings are hard, get yours working up front",
-          "Finish your story, let go even if it’s not perfect. In an ideal world you have both, but move on. Do better next time",
-          "When you’re stuck, make a list of what WOULDN’T happen next. Lots of times the material to get you unstuck will show up",
-          "Pull apart the stories you like. What you like in them is a part of you; you’ve got to recognize it before you can use it",
-          "Putting it on paper lets you start fixing it. If it stays in your head—a perfect idea—you’ll never share it with anyone",
-          "Discount the 1st thing that comes to mind. And the 2nd, 3rd, 4th, 5th—get the obvious out of the way. Surprise yourself",
-          "Give your characters opinions. Passive/malleable might seem likable as you write, but it’s poison to the audience",
-          "Why must you tell THIS story? What’s the belief burning within you that your story feeds off of? That’s the heart of it",
-          "If you were your character in this situation, how would you feel? Honesty lends credibility to unbelievable situations",
-          "What are the stakes? Give us a reason to root for the character. What happens if they don’t succeed? Stack the odds against them",
-          "No work is ever wasted. If it’s not working, let go and move on—it’ll come back around to be useful later",
-          "You have to know yourself: the difference between doing your best & fussing. Story is testing, not refining",
-          "Coincidences to get characters into trouble are great; coincidences to get them out of it are cheating",
+          "Come up with your ending before you figure out your middle. Seriously. Endings are hard, get yours working up front.",
+          "Finish your story, let go even if it’s not perfect. In an ideal world you have both, but move on. Do better next time.",
+          "When you’re stuck, make a list of what WOULDN’T happen next. Lots of times the material to get you unstuck will show up.",
+          "Pull apart the stories you like. What you like in them is a part of you; you’ve got to recognize it before you can use it.",
+          "Putting it on paper lets you start fixing it. If it stays in your head—a perfect idea—you’ll never share it with anyone.",
+          "Discount the 1st thing that comes to mind. And the 2nd, 3rd, 4th, 5th—get the obvious out of the way. Surprise yourself.",
+          "Give your characters opinions. Passive/malleable might seem likable as you write, but it’s poison to the audience.",
+          "Why must you tell THIS story? What’s the belief burning within you that your story feeds off of? That’s the heart of it.",
+          "If you were your character in this situation, how would you feel? Honesty lends credibility to unbelievable situations.",
+          "What are the stakes? Give us a reason to root for the character. What happens if they don’t succeed? Stack the odds against them.",
+          "No work is ever wasted. If it’s not working, let go and move on—it’ll come back around to be useful later.",
+          "You have to know yourself: the difference between doing your best & fussing. Story is testing, not refining.",
+          "Coincidences to get characters into trouble are great; coincidences to get them out of it are cheating.",
           "Exercise: take the building blocks of a movie you dislike. How do you rearrange them into what you DO like?",
           "You gotta identify with your situation/characters; you can’t just write ‘cool’. What would make YOU act that way?",
-          "What’s the essence of your story? The most economical telling of it? If you know that, you can build out from there"
+          "What’s the essence of your story? The most economical telling of it? If you know that, you can build out from there."
         ];
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        alert(quotes[randomIndex]);
+        const randomIndex = Math.floor(Math.random() * storyQuotes.length);
+        alert(storyQuotes[randomIndex]);
       }
 
-      // Export PNG function
+      // Rubric cell click function
+      function selectRating(cell) {
+        const categoryIndex = Number(cell.getAttribute('data-category'));
+        const rating = parseInt(cell.getAttribute('data-rating'));
+        const row = cell.parentElement;
+        row.querySelectorAll('td').forEach(td => {
+          if (td !== row.firstElementChild) td.classList.remove('selected');
+        });
+        cell.classList.add('selected');
+        scores[categoryIndex] = rating;
+        updateTotal();
+      }
+
+      function updateTotal() {
+        const total = Object.values(scores).reduce((a, b) => a + b, 0);
+        document.getElementById('total').textContent = total;
+        const ranking = document.getElementById('ranking');
+        if (Object.keys(scores).length < 14) {
+          ranking.textContent = 'Incomplete';
+          ranking.style.color = '#64748b';
+          updateProgressBar(total);
+          return;
+        }
+        if (total < 29) {
+          ranking.textContent = 'Needs Work 🔴';
+          ranking.style.color = 'red';
+        } else if (total < 42) {
+          ranking.textContent = 'Good Start 🟡';
+          ranking.style.color = 'orange';
+        } else if (total < 56) {
+          ranking.textContent = 'Great! 🟢';
+          ranking.style.color = 'green';
+        } else {
+          ranking.textContent = 'Perfect! 🔵';
+          ranking.style.color = 'blue';
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+          }
+        }
+        updateProgressBar(total);
+      }
+
+      function updateProgressBar(total) {
+        const percentage = (total / 56) * 100;
+        document.getElementById("progressBar").style.width = percentage + "%";
+      }
+
+      function autoResize(e) {
+        const textarea = e.target;
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+      }
+
       async function exportPNG() {
-        // Create a temporary container off-screen
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.top = '-9999px';
         tempContainer.style.left = '-9999px';
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
-        // Clone header and main content (clone the entire <main>)
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
         const mainClone = document.querySelector('main').cloneNode(true);
         tempContainer.appendChild(headerClone);
@@ -564,15 +777,20 @@
         document.body.removeChild(tempContainer);
       }
 
-      // Reset function clears textareas and similar video list
       function resetScores() {
-        // Clear textareas and similar videos
+        scores = {};
+        document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
         document.getElementById('quickSummary').value = '';
         document.getElementById('humanFeedback').value = '';
+        document.getElementById('ranking').textContent = 'Incomplete';
+        document.getElementById('ranking').style.color = '#64748b';
+        document.getElementById('peerReviewList').innerHTML = '';
         document.getElementById('similarVideosList').innerHTML = '';
+        peerReviews = [];
+        document.getElementById('total').textContent = 0;
+        document.getElementById('progressBar').style.width = '0%';
       }
 
-      // Toggle Dark Mode function
       function toggleTheme(e) {
         if (e.target.checked) {
           document.documentElement.setAttribute("data-theme", "dark");
@@ -581,7 +799,27 @@
         }
       }
 
-      // (Optional) AI Review function (kept from original)
+      function submitPeerReview() {
+        const username = document.getElementById('peerReviewUsername').value.trim();
+        const reviewInput = document.getElementById('peerReviewInput');
+        const reviewText = reviewInput.value.trim();
+        if (!username) {
+          alert("Please enter your username for the peer review.");
+          return;
+        }
+        if (!reviewText) return;
+        peerReviews.push({ username: username, text: reviewText });
+        updatePeerReviews();
+        reviewInput.value = '';
+      }
+
+      function updatePeerReviews() {
+        const peerReviewList = document.getElementById('peerReviewList');
+        peerReviewList.innerHTML = peerReviews.map(rev =>
+          `<li>${rev.username}: ${rev.text}</li>`
+        ).join('');
+      }
+
       function runAIReview() {
         const summary = document.getElementById('quickSummary').value.trim();
         const resultDiv = document.getElementById('aiReviewResult');
@@ -643,50 +881,6 @@
         });
         reviewHTML += "</ol>";
         resultDiv.innerHTML = reviewHTML;
-      }
-
-      // (Optional) YouTube video addition function
-      function addYouTubeVideo() {
-        const urlInput = document.getElementById('youtubeLinkInput');
-        const videoList = document.getElementById('similarVideosList');
-        const url = urlInput.value.trim();
-        if (!url) return;
-        const videoId = (function(url) {
-          const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-          const match = url.match(regExp);
-          return (match && match[2].length === 11) ? match[2] : null;
-        })(url);
-        if (!videoId) {
-          alert('Invalid YouTube URL. Please enter a valid URL.');
-          return;
-        }
-        const title = prompt("Enter the video title:");
-        const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
-        const videoLink = document.createElement('a');
-        videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
-        videoLink.target = '_blank';
-        const img = document.createElement('img');
-        img.src = thumbnailUrl;
-        img.alt = title || 'YouTube Video Thumbnail';
-        videoLink.appendChild(img);
-        const thumbContainer = document.createElement('div');
-        thumbContainer.classList.add('video-thumbnail');
-        thumbContainer.appendChild(videoLink);
-        const titleDiv = document.createElement('div');
-        titleDiv.classList.add('video-title');
-        titleDiv.textContent = title || 'Untitled Video';
-        thumbContainer.appendChild(titleDiv);
-        const removeBtn = document.createElement('button');
-        removeBtn.classList.add('remove-btn');
-        removeBtn.innerHTML = "&times;";
-        removeBtn.title = "Remove this video";
-        removeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          thumbContainer.remove();
-        });
-        thumbContainer.appendChild(removeBtn);
-        videoList.appendChild(thumbContainer);
-        urlInput.value = '';
       }
     </script>
   </body>
