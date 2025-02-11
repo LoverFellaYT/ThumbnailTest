@@ -55,14 +55,6 @@
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
       }
 
-      /* Reduce motion class disables animations & transitions */
-      body.reduce-motion *,
-      body.reduce-motion *::before,
-      body.reduce-motion *::after {
-        animation: none !important;
-        transition: none !important;
-      }
-
       /* Base styles */
       body {
         margin: 0;
@@ -90,7 +82,7 @@
         margin-bottom: var(--spacing);
       }
 
-      /* HEADER with Disney-inspired golden glow */
+      /* HEADER (Removed Disney-inspired golden glow) */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -100,11 +92,6 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        animation: disneyMagic 3s infinite alternate;
-      }
-      @keyframes disneyMagic {
-        from { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
-        to { box-shadow: 0 0 30px rgba(255,215,0,1); }
       }
 
       .header-left {
@@ -123,9 +110,11 @@
       .site-title i {
         color: var(--accent-light);
       }
+
+      /* Neater scoring display */
       .total-score {
-        font-size: 1.75rem;
-        font-weight: 700;
+        font-size: 1.2rem;
+        font-weight: 600;
         background: var(--gradient-light);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -134,7 +123,7 @@
         transition: var(--transition);
       }
       .total-score:hover::after {
-        content: "Combined Score: Intro (0/28) + Editing (0/40) = Overall (0/68)";
+        content: "Intro (0/28) + Editing (0/40) = Overall (0/68)";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -159,13 +148,6 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-      }
-      /* New Reduce Motion Toggle */
-      .reduce-motion-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.9rem;
       }
 
       .btn {
@@ -296,7 +278,6 @@
         cursor: pointer;
         background: var(--table-cell-bg-light);
       }
-      /* Microinteractions on Rubric Cells */
       .modern-table tbody td:hover {
         transform: scale(1.02);
         background-color: rgba(224, 231, 255, 0.3);
@@ -492,7 +473,7 @@
           <span>Editing Review Pro+</span>
         </div>
         <div class="total-score" id="scoreDisplay" tabindex="0">
-          Intro: <span id="introTotal">0</span>/28, Editing: <span id="editingTotal">0</span>/40, Overall: <span id="overallTotal">0</span>/68 – <span id="scoreLabel">Good</span>
+          Intro (<span id="introTotal">0</span>/28) | Editing (<span id="editingTotal">0</span>/40) | Overall (<span id="overallTotal">0</span>/68) – <span id="scoreLabel">Good</span>
         </div>
         <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
       </div>
@@ -501,6 +482,10 @@
           <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
           <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
           <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
+          <!-- New "Rubrics" button -->
+          <button class="btn" onclick="window.open('https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics','_blank');" aria-label="Rubrics">
+            <i class="fas fa-link"></i> Rubrics
+          </button>
         </div>
         <!-- Dark Mode Toggle -->
         <div class="dark-mode">
@@ -513,11 +498,7 @@
             </div>
           </label>
         </div>
-        <!-- Reduce Motion Toggle -->
-        <div class="reduce-motion-toggle">
-          <label for="reduceMotionToggle">Reduce Motion</label>
-          <input type="checkbox" id="reduceMotionToggle" onchange="toggleAnimations(this)" aria-label="Toggle Reduce Motion" />
-        </div>
+        <!-- Removed the Reduce Motion toggle -->
       </div>
     </header>
 
@@ -847,10 +828,7 @@
             <label for="humanFeedback">Human Feedback</label>
             <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
           </div>
-          <div class="feedback-entry">
-            <label for="aiFeedback">AI Feedback</label>
-            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
-          </div>
+          <!-- Removed the AI feedback box -->
         </section>
       </div>
 
@@ -885,8 +863,8 @@
         <ul>
           <li>Review each Intro and Editing criterion by clicking on the appropriate rating cell.</li>
           <li>The Intro and Editing scores update live and combine to give an Overall Score.</li>
-          <li>Read the daily Quote of Wisdom for inspiration and a touch of Disney magic.</li>
-          <li>Provide additional feedback in the Human and AI feedback boxes.</li>
+          <li>Read the daily Quote of Wisdom for inspiration.</li>
+          <li>Provide additional feedback in the Human feedback box.</li>
           <li>Use the Self-Assessment Checklist to evaluate your own work.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
@@ -910,22 +888,28 @@
 
     <script>
       /***************************************************
-       * Global Variables & Milestones
+       * Global Variables
        ***************************************************/
       let introScores = {};
       let editingScores = {};
       let confettiShown = false;
-      let milestoneTriggered = {}; // For overall score (max = 68)
-      const milestoneMessages = {
-        17: "Initial review complete!",
-        34: "Halfway to perfection!",
-        51: "Almost there—great editing!",
-        68: "Editing Master: Outstanding work!"
-      };
-      const progressAudio = {
-        victory: document.getElementById("victorySound"),
-        womp: document.getElementById("wompSound")
-      };
+
+      // Updated rating scale: If any rating=1 => Rejected
+      // Otherwise use thresholds for total out of 68
+      // Feel free to tweak the boundary numbers if you prefer different intervals
+      function getRatingLabel(overallTotal) {
+        if (overallTotal < 20) {
+          return { scoreLabel: "Needs Work", rankingText: "Needs Work 🔴", color: "#ef4444" };
+        } else if (overallTotal < 35) {
+          return { scoreLabel: "Good", rankingText: "Good 🟢", color: "#22c55e" };
+        } else if (overallTotal < 50) {
+          return { scoreLabel: "Great", rankingText: "Great 🟡", color: "#eab308" };
+        } else if (overallTotal < 65) {
+          return { scoreLabel: "Excellent", rankingText: "Excellent 🟣", color: "#8b5cf6" };
+        } else {
+          return { scoreLabel: "Outstanding", rankingText: "Outstanding 🔵", color: "#3b82f6" };
+        }
+      }
 
       // Array of inspirational quotes
       const editorQuotes = [
@@ -1025,31 +1009,36 @@
         document.getElementById('introTotal').textContent = introTotal;
         document.getElementById('editingTotal').textContent = editingTotal;
         document.getElementById('overallTotal').textContent = overallTotal;
+
+        // If ANY rating is 1 => "Rejected"
+        let anyOneIsChosen = Object.values(introScores).some(val => val === 1) ||
+                             Object.values(editingScores).some(val => val === 1);
+
         let scoreLabel = document.getElementById('scoreLabel');
         let ranking = document.getElementById('ranking');
-        // Ensure all Intro (7 factors) and Editing (10 factors) items are rated
-        if (Object.keys(introScores).length < 7 || Object.keys(editingScores).length < 10) {
+
+        // Check if we've rated all categories
+        const allIntroRated = Object.keys(introScores).length === 7;
+        const allEditingRated = Object.keys(editingScores).length === 10;
+
+        if (!allIntroRated || !allEditingRated) {
           ranking.textContent = "Incomplete";
           ranking.style.color = "#64748b";
-        } else if (overallTotal < 17) {
           scoreLabel.textContent = "Good";
-          ranking.textContent = "Needs Work 🔴";
+          return;
+        }
+
+        if (anyOneIsChosen) {
+          scoreLabel.textContent = "Rejected";
+          ranking.textContent = "Rejected ❌";
           ranking.style.color = "#ef4444";
-          progressAudio.womp.play && progressAudio.womp.play();
-        } else if (overallTotal < 34) {
-          scoreLabel.textContent = "Great";
-          ranking.textContent = "Great! 🟢";
-          ranking.style.color = "#22c55e";
-        } else if (overallTotal < 51) {
-          scoreLabel.textContent = "Excellent";
-          ranking.textContent = "Excellent 🟡";
-          ranking.style.color = "#eab308";
         } else {
-          scoreLabel.textContent = "Outstanding";
-          ranking.textContent = "Outstanding 🔵";
-          ranking.style.color = "#3b82f6";
-          progressAudio.victory.play && progressAudio.victory.play();
-          if (!confettiShown) {
+          const { scoreLabel: label, rankingText, color } = getRatingLabel(overallTotal);
+          scoreLabel.textContent = label;
+          ranking.textContent = rankingText;
+          ranking.style.color = color;
+          // If "Outstanding", trigger confetti once
+          if (label === "Outstanding" && !confettiShown) {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             confettiShown = true;
           }
@@ -1064,12 +1053,16 @@
         editingScores = {};
         document.querySelectorAll('#introTable td[data-rating]').forEach(cell => cell.classList.remove('selected'));
         document.querySelectorAll('#editingTable td[data-rating]').forEach(cell => cell.classList.remove('selected'));
+
         document.getElementById('introTotal').textContent = '0';
         document.getElementById('editingTotal').textContent = '0';
         document.getElementById('overallTotal').textContent = '0';
         document.getElementById('scoreLabel').textContent = 'Good';
         document.getElementById('ranking').textContent = 'Incomplete';
-        milestoneTriggered = {};
+
+        // Clear human feedback
+        document.getElementById('humanFeedback').textContent = '';
+
         confettiShown = false;
       }
 
@@ -1092,7 +1085,7 @@
       }
 
       /***************************************************
-       * Theme & Animation Toggle Functions
+       * Theme Toggle
        ***************************************************/
       function toggleTheme(input) {
         const html = document.documentElement;
@@ -1102,16 +1095,9 @@
           html.removeAttribute("data-theme");
         }
       }
-      function toggleAnimations(input) {
-        if (input.checked) {
-          document.body.classList.add("reduce-motion");
-        } else {
-          document.body.classList.remove("reduce-motion");
-        }
-      }
 
       /***************************************************
-       * Modal Functions – Using <dialog> for better semantics
+       * Modal Functions
        ***************************************************/
       function openHowTo() {
         const dialog = document.getElementById("howToModal");
