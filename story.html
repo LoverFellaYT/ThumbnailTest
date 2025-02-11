@@ -62,6 +62,7 @@
         color: var(--text-light);
         transition: var(--transition);
       }
+      /* Slightly thinner container */
       .analyzer-container {
         width: 95%;
         max-width: 900px;
@@ -99,29 +100,10 @@
         gap: 0.4rem;
         text-align: center;
       }
-      .total-score {
-        font-size: 1.75rem;
-        font-weight: 700;
-        background: var(--gradient-light);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .progress-bar-container {
-        width: 100%;
-        height: 6px;
-        background: #eee;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-bottom: 0.5rem;
-      }
-      .progress-bar {
-        height: 100%;
-        width: 0%;
-        background: var(--gradient-light);
-        transition: width 0.3s ease;
-      }
-      .status-indicator {
-        font-weight: 600;
+      .header-left h1 {
+        font-size: 2rem;
+        margin: 0;
+        font-weight: bold;
       }
       .header-right {
         display: flex;
@@ -387,20 +369,11 @@
     <!-- HEADER / Sticky Banner -->
     <header class="analyzer-header">
       <div class="header-left">
-        <div class="total-score">
-          Score: <span id="total">0</span>/40 <span id="scoreLabel">Incomplete</span>
-        </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div class="status-indicator" id="ranking">Incomplete</div>
+        <h1>StoryCraft Analyzer</h1>
       </div>
       <div class="header-right">
         <button class="btn" id="resetBtn">🔄 Reset</button>
         <button class="btn" id="exportBtn">🖼️ Export PNG</button>
-        <button class="btn" id="exportPDFBtn">📥 Export PDF</button>
-        <button class="btn" id="checkGrammarBtn">✍️ Check Grammar</button>
-        <button class="btn" id="togglePreviewBtn">👁️ Toggle Preview</button>
         <button class="btn" id="rainbowBtn">🌈</button>
         <div class="dark-mode">
           <label class="toggle-label" for="darkModeToggle">
@@ -417,156 +390,196 @@
 
     <!-- MAIN CONTENT -->
     <main>
-      <!-- Quick Summary Section -->
-      <div class="glass-panel input-section" id="quickSummarySection">
-        <h2>📝 Quick Summary</h2>
-        <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
-      </div>
+      <div class="analyzer-container">
+        <!-- Quick Summary Section -->
+        <div class="glass-panel input-section" id="quickSummarySection">
+          <h2>📝 Quick Summary</h2>
+          <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
+        </div>
 
-      <!-- Similar Videos Section -->
-      <div class="glass-panel input-section" id="similarVideosSection">
-        <h2>📺 Similar Videos</h2>
-        <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
-        <button class="btn" id="addVideoBtn">Add Video</button>
-        <div id="similarVideosList" class="similar-videos-list"></div>
-      </div>
+        <!-- Similar Videos Section -->
+        <div class="glass-panel input-section" id="similarVideosSection">
+          <h2>📺 Similar Videos</h2>
+          <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
+          <button class="btn" id="addVideoBtn">Add Video</button>
+          <div id="similarVideosList" class="similar-videos-list"></div>
+        </div>
 
-      <!-- AI Review Section -->
-      <div class="glass-panel input-section" id="aiReviewSection">
-        <h2>🤖 AI Review</h2>
-        <button class="btn" id="runAIReviewBtn">Run AI Review</button>
-        <div id="aiReviewResult" style="margin-top: 1rem;"></div>
-      </div>
+        <!-- AI Review Section -->
+        <div class="glass-panel input-section" id="aiReviewSection">
+          <h2>🤖 AI Review</h2>
+          <button class="btn" id="runAIReviewBtn">Run AI Review</button>
+          <div id="aiReviewResult" style="margin-top: 1rem;"></div>
+        </div>
 
-      <!-- Rubric Table Section -->
-      <div class="glass-panel rubric-table" id="rubricSection">
-        <h2>📊 Rubric Table</h2>
-        <table class="modern-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Good (1)</th>
-              <th>Great (2)</th>
-              <th>Excellent (3)</th>
-              <th>Outstanding (4)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
-              <td data-category="0" data-rating="1">Slow start; no hook</td>
-              <td data-category="0" data-rating="2">Basic hook</td>
-              <td data-category="0" data-rating="3">Intriguing hook</td>
-              <td data-category="0" data-rating="4">Unignorable opener</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
-              <td data-category="1" data-rating="1">No clear purpose</td>
-              <td data-category="1" data-rating="2">Goal exists but gets lost</td>
-              <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
-              <td data-category="1" data-rating="4">Crystal‑clear premise</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
-              <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
-              <td data-category="2" data-rating="2">A few engaging moments</td>
-              <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
-              <td data-category="2" data-rating="4">Masterful tension arcs</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
-              <td data-category="3" data-rating="1">Feels forced; no connection</td>
-              <td data-category="3" data-rating="2">Some genuine moments</td>
-              <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
-              <td data-category="3" data-rating="4">Deeply authentic</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
-              <td data-category="4" data-rating="1">Flat; no highs/lows</td>
-              <td data-category="4" data-rating="2">Moments of excitement</td>
-              <td data-category="4" data-rating="3">Clear emotional journey</td>
-              <td data-category="4" data-rating="4">Masterpiece arcs</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
-              <td data-category="5" data-rating="1">Low urgency</td>
-              <td data-category="5" data-rating="2">Basic stakes</td>
-              <td data-category="5" data-rating="3">High stakes/punishments</td>
-              <td data-category="5" data-rating="4">Unavoidable drama</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
-              <td data-category="6" data-rating="1">No or weak CTA</td>
-              <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
-              <td data-category="6" data-rating="3">Clear creative CTA</td>
-              <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend‑Jacking</td>
-              <td data-category="7" data-rating="1">Cliché concept</td>
-              <td data-category="7" data-rating="2">Minor twist on trends</td>
-              <td data-category="7" data-rating="3">Fresh angle</td>
-              <td data-category="7" data-rating="4">Boundary‑pushing</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
-              <td data-category="8" data-rating="1">Forgettable</td>
-              <td data-category="8" data-rating="2">Some memeable moments</td>
-              <td data-category="8" data-rating="3">Highly shareable</td>
-              <td data-category="8" data-rating="4">Clip‑worthy highlights</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
-              <td data-category="9" data-rating="1">No branding</td>
-              <td data-category="9" data-rating="2">Basic branding</td>
-              <td data-category="9" data-rating="3">Consistent style</td>
-              <td data-category="9" data-rating="4">Iconic brand identity</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="10" title="Well‑developed characters add depth.">Character Development</td>
-              <td data-category="10" data-rating="1">Flat, one‑dimensional characters</td>
-              <td data-category="10" data-rating="2">Some traits are evident</td>
-              <td data-category="10" data-rating="3">Well‑developed with clear motivations</td>
-              <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
-              <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
-              <td data-category="11" data-rating="2">Some lines feel genuine</td>
-              <td data-category="11" data-rating="3">Dialogue flows naturally</td>
-              <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World‑Building</td>
-              <td data-category="12" data-rating="1">Vague setting with little detail</td>
-              <td data-category="12" data-rating="2">Some descriptive elements</td>
-              <td data-category="12" data-rating="3">Engaging and immersive world‑building</td>
-              <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
-            </tr>
-            <tr>
-              <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
-              <td data-category="13" data-rating="1">Story drags; uneven pace</td>
-              <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
-              <td data-category="13" data-rating="3">Generally well‑paced</td>
-              <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <!-- Rubric Table Section -->
+        <div class="glass-panel rubric-table" id="rubricSection">
+          <h2>📊 Rubric Table</h2>
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Good (1)</th>
+                <th>Great (2)</th>
+                <th>Excellent (3)</th>
+                <th>Outstanding (4)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
+                <td data-category="0" data-rating="1">Slow start; no hook</td>
+                <td data-category="0" data-rating="2">Basic hook</td>
+                <td data-category="0" data-rating="3">Intriguing hook</td>
+                <td data-category="0" data-rating="4">Unignorable opener</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
+                <td data-category="1" data-rating="1">No clear purpose</td>
+                <td data-category="1" data-rating="2">Goal exists but gets lost</td>
+                <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
+                <td data-category="1" data-rating="4">Crystal‑clear premise</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
+                <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
+                <td data-category="2" data-rating="2">A few engaging moments</td>
+                <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
+                <td data-category="2" data-rating="4">Masterful tension arcs</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
+                <td data-category="3" data-rating="1">Feels forced; no connection</td>
+                <td data-category="3" data-rating="2">Some genuine moments</td>
+                <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
+                <td data-category="3" data-rating="4">Deeply authentic</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
+                <td data-category="4" data-rating="1">Flat; no highs/lows</td>
+                <td data-category="4" data-rating="2">Moments of excitement</td>
+                <td data-category="4" data-rating="3">Clear emotional journey</td>
+                <td data-category="4" data-rating="4">Masterpiece arcs</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
+                <td data-category="5" data-rating="1">Low urgency</td>
+                <td data-category="5" data-rating="2">Basic stakes</td>
+                <td data-category="5" data-rating="3">High stakes/punishments</td>
+                <td data-category="5" data-rating="4">Unavoidable drama</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
+                <td data-category="6" data-rating="1">No or weak CTA</td>
+                <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
+                <td data-category="6" data-rating="3">Clear creative CTA</td>
+                <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend‑Jacking</td>
+                <td data-category="7" data-rating="1">Cliché concept</td>
+                <td data-category="7" data-rating="2">Minor twist on trends</td>
+                <td data-category="7" data-rating="3">Fresh angle</td>
+                <td data-category="7" data-rating="4">Boundary‑pushing</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
+                <td data-category="8" data-rating="1">Forgettable</td>
+                <td data-category="8" data-rating="2">Some memeable moments</td>
+                <td data-category="8" data-rating="3">Highly shareable</td>
+                <td data-category="8" data-rating="4">Clip‑worthy highlights</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
+                <td data-category="9" data-rating="1">No branding</td>
+                <td data-category="9" data-rating="2">Basic branding</td>
+                <td data-category="9" data-rating="3">Consistent style</td>
+                <td data-category="9" data-rating="4">Iconic brand identity</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="10" title="Well‑developed characters add depth.">Character Development</td>
+                <td data-category="10" data-rating="1">Flat, one‑dimensional characters</td>
+                <td data-category="10" data-rating="2">Some traits are evident</td>
+                <td data-category="10" data-rating="3">Well‑developed with clear motivations</td>
+                <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
+                <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
+                <td data-category="11" data-rating="2">Some lines feel genuine</td>
+                <td data-category="11" data-rating="3">Dialogue flows naturally</td>
+                <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World‑Building</td>
+                <td data-category="12" data-rating="1">Vague setting with little detail</td>
+                <td data-category="12" data-rating="2">Some descriptive elements</td>
+                <td data-category="12" data-rating="3">Engaging and immersive world‑building</td>
+                <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
+              </tr>
+              <tr>
+                <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
+                <td data-category="13" data-rating="1">Story drags; uneven pace</td>
+                <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
+                <td data-category="13" data-rating="3">Generally well‑paced</td>
+                <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <!-- Human Feedback Section -->
-      <div class="glass-panel input-section" id="humanFeedbackSection">
-        <h2>👥 Human Feedback</h2>
-        <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
-      </div>
+        <!-- Human Feedback Section -->
+        <div class="glass-panel input-section" id="humanFeedbackSection">
+          <h2>👥 Human Feedback</h2>
+          <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
+        </div>
 
-      <!-- Peer Reviews Section -->
-      <div class="glass-panel input-section" id="peerReviewSection">
-        <h2>💬 Peer Reviews</h2>
-        <input type="text" id="peerReviewUsername" placeholder="Enter your username..." />
-        <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
-        <button class="btn" id="submitPeerReviewBtn">Submit Peer Review</button>
-        <ul id="peerReviewList" class="peer-review-list"></ul>
+        <!-- Self-Assessment Checklist Section -->
+        <div class="glass-panel input-section" id="selfAssessmentSection">
+          <h2>✅ Self-Assessment Checklist</h2>
+          <ul>
+            <li>
+              <input type="checkbox" id="check1" />
+              <label for="check1"><strong>Hook:</strong> Does the opening grab attention in the first few seconds?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check2" />
+              <label for="check2"><strong>Goal:</strong> Is the main objective/challenge clearly defined?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check3" />
+              <label for="check3"><strong>Conflict &amp; Stakes:</strong> Are obstacles and stakes high enough to keep viewers invested?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check4" />
+              <label for="check4"><strong>Structure:</strong> Does the story flow logically from setup to escalation to resolution?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check5" />
+              <label for="check5"><strong>Audience Retention Hooks:</strong> Have you planned moments or reveals that keep viewers from clicking away?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check6" />
+              <label for="check6"><strong>Credibility &amp; Believability:</strong> Do plot points and scenarios feel authentic, not forced?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check7" />
+              <label for="check7"><strong>CTA or Interaction Point:</strong> Is there a clear moment where you invite audience participation (like, comment, etc.)?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check8" />
+              <label for="check8"><strong>Uniqueness:</strong> Do you offer something fresh or tap into current trends in a new way?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check9" />
+              <label for="check9"><strong>Pacing:</strong> Does each scene/segment have a strong reason to exist without dragging?</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check10" />
+              <label for="check10"><strong>Shareability:</strong> Is there a “wow” factor or memorable highlight that encourages sharing?</label>
+            </li>
+          </ul>
+        </div>
       </div>
     </main>
 
@@ -574,17 +587,19 @@
     <script>
       // Global variables
       let scores = {};
-      let peerReviews = [];
+      // (Peer reviews removed)
 
       window.addEventListener('DOMContentLoaded', () => {
-        // Dark mode toggle
+        // Attach dark mode toggle event
         document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
-        // Export PNG button
+        // Export PNG button event
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
-        // Rainbow quote button
+        // Rainbow quote button event
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
-        // Peer review submit button
-        document.getElementById('submitPeerReviewBtn').addEventListener('click', submitPeerReview);
+        // AI Review button event
+        document.getElementById('runAIReviewBtn')?.addEventListener('click', runAIReview);
+        // Add YouTube video button event
+        document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
         // Rubric cell click events
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
@@ -605,7 +620,7 @@
           "The inciting incident should radically upset the balance of forces in the protagonist's life",
           "If the story you're telling is the story you're telling, you're in deep shit. (this one is soooo good, read it again)",
           "Avoid pace killers – as in, a character doing a fully expected action, such as walking into a house",
-          "Stories can fail either because there is meaningless conflict, or not enough meaningful and honestly expressed conflict.",
+          "Stories can fail either because there is meaningless conflict, or not enough meaningful and honestly expressed conflict",
           "The longer the story - more need for more turning points or acts. A two hour film needs at least three major reversals. Middle act (often act 2) should be the longest. Act 3 the shortest",
           "Two people have to disagree on something for there to be a scene (Conflict)",
           "A subplot can elevate a boring film into an interesting one",
@@ -692,8 +707,8 @@
           "You gotta identify with your situation/characters; you can’t just write ‘cool’. What would make YOU act that way?",
           "What’s the essence of your story? The most economical telling of it? If you know that, you can build out from there."
         ];
-        const randomIndex = Math.floor(Math.random() * storyQuotes.length);
-        alert(storyQuotes[randomIndex]);
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        alert(quotes[randomIndex]);
       }
 
       // Rubric cell click function
@@ -784,9 +799,8 @@
         document.getElementById('humanFeedback').value = '';
         document.getElementById('ranking').textContent = 'Incomplete';
         document.getElementById('ranking').style.color = '#64748b';
-        document.getElementById('peerReviewList').innerHTML = '';
+        // Removed peer review section (if any)
         document.getElementById('similarVideosList').innerHTML = '';
-        peerReviews = [];
         document.getElementById('total').textContent = 0;
         document.getElementById('progressBar').style.width = '0%';
       }
@@ -799,26 +813,7 @@
         }
       }
 
-      function submitPeerReview() {
-        const username = document.getElementById('peerReviewUsername').value.trim();
-        const reviewInput = document.getElementById('peerReviewInput');
-        const reviewText = reviewInput.value.trim();
-        if (!username) {
-          alert("Please enter your username for the peer review.");
-          return;
-        }
-        if (!reviewText) return;
-        peerReviews.push({ username: username, text: reviewText });
-        updatePeerReviews();
-        reviewInput.value = '';
-      }
-
-      function updatePeerReviews() {
-        const peerReviewList = document.getElementById('peerReviewList');
-        peerReviewList.innerHTML = peerReviews.map(rev =>
-          `<li>${rev.username}: ${rev.text}</li>`
-        ).join('');
-      }
+      // (Optional) Peer review functions removed
 
       function runAIReview() {
         const summary = document.getElementById('quickSummary').value.trim();
@@ -881,6 +876,49 @@
         });
         reviewHTML += "</ol>";
         resultDiv.innerHTML = reviewHTML;
+      }
+
+      function addYouTubeVideo() {
+        const urlInput = document.getElementById('youtubeLinkInput');
+        const videoList = document.getElementById('similarVideosList');
+        const url = urlInput.value.trim();
+        if (!url) return;
+        const videoId = (function(url) {
+          const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+          const match = url.match(regExp);
+          return (match && match[2].length === 11) ? match[2] : null;
+        })(url);
+        if (!videoId) {
+          alert('Invalid YouTube URL. Please enter a valid URL.');
+          return;
+        }
+        const title = prompt("Enter the video title:");
+        const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+        const videoLink = document.createElement('a');
+        videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
+        videoLink.target = '_blank';
+        const img = document.createElement('img');
+        img.src = thumbnailUrl;
+        img.alt = title || 'YouTube Video Thumbnail';
+        videoLink.appendChild(img);
+        const thumbContainer = document.createElement('div');
+        thumbContainer.classList.add('video-thumbnail');
+        thumbContainer.appendChild(videoLink);
+        const titleDiv = document.createElement('div');
+        titleDiv.classList.add('video-title');
+        titleDiv.textContent = title || 'Untitled Video';
+        thumbContainer.appendChild(titleDiv);
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('remove-btn');
+        removeBtn.innerHTML = "&times;";
+        removeBtn.title = "Remove this video";
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          thumbContainer.remove();
+        });
+        thumbContainer.appendChild(removeBtn);
+        videoList.appendChild(thumbContainer);
+        urlInput.value = '';
       }
     </script>
   </body>
