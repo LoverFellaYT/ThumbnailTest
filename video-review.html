@@ -236,7 +236,7 @@
         padding: 0 var(--spacing) 2rem;
       }
 
-      /* Single Rubric Table */
+      /* Rubric Table */
       .rubric-table {
         margin-bottom: var(--spacing);
         overflow-x: auto;
@@ -260,6 +260,7 @@
         z-index: 10;
         text-align: left;
       }
+      /* Changed from "CATEGORY" to "Category" */
       .modern-table thead th:first-child {
         background: var(--gradient-light);
         color: #fff;
@@ -325,7 +326,7 @@
         font-weight: bold;
       }
 
-      /* Section header for sub-groupings */
+      /* Section header for sub-groupings (now with dynamic section score) */
       .section-header {
         background: #cbd5e1;
         color: #000;
@@ -335,7 +336,6 @@
         border-bottom: 2px solid #888;
         cursor: pointer;
       }
-
       tr.collapsed {
         opacity: 0;
         pointer-events: none;
@@ -406,8 +406,8 @@
       }
       #legend h4 { margin-top: 0; }
 
-      /* Self-Assessment Checklist Section */
-      .self-assessment-section {
+      /* Review Checklist Section (updated from Self-Assessment Checklist) */
+      .review-checklist {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
         border-radius: var(--radius);
@@ -416,21 +416,21 @@
         margin: 1rem auto;
         max-width: 800px;
       }
-      .self-assessment-section h3 {
+      .review-checklist h3 {
         text-align: center;
         margin-top: 0;
       }
-      .self-assessment-section ul {
+      .review-checklist ul {
         list-style: none;
         padding-left: 0;
       }
-      .self-assessment-section li {
+      .review-checklist li {
         margin: 0.5rem 0;
         display: flex;
         align-items: center;
         gap: 0.5rem;
       }
-      .self-assessment-section input[type="checkbox"] {
+      .review-checklist input[type="checkbox"] {
         transform: scale(1.2);
         cursor: pointer;
       }
@@ -564,13 +564,13 @@
 
     <main>
       <div class="analyzer-container">
-        <!-- SINGLE TABLE: 'Editing Review Rubric' -->
+        <!-- Rubric Table -->
         <section class="rubric-table glass-panel" aria-labelledby="masterRubricHeading">
           <h2 id="masterRubricHeading">Editing Review Rubric</h2>
           <table class="modern-table" id="masterTable">
             <thead>
               <tr>
-                <th>CATEGORY</th>
+                <th>Category</th>
                 <th>Needs Improvement</th>
                 <th>Fair</th>
                 <th>Good</th>
@@ -579,7 +579,9 @@
             </thead>
             <tbody>
               <!-- Group 1: Hook & Opening Impact -->
-              <tr class="section-header" data-group="g1"><td colspan="5">Hook & Opening Impact</td></tr>
+              <tr class="section-header" data-group="g1">
+                <td colspan="5">Hook &amp; Opening Impact</td>
+              </tr>
               <tr data-group="g1">
                 <td data-category="0" class="category-header"><strong>Immediate Intrigue (first 5–15s)</strong></td>
                 <td data-category="0" data-rating="1">Slow or generic start; fails to grab attention</td>
@@ -603,7 +605,9 @@
               </tr>
 
               <!-- Group 2: Pacing & Momentum -->
-              <tr class="section-header" data-group="g2"><td colspan="5">Pacing & Momentum</td></tr>
+              <tr class="section-header" data-group="g2">
+                <td colspan="5">Pacing &amp; Momentum</td>
+              </tr>
               <tr data-group="g2">
                 <td data-category="3" class="category-header"><strong>Energy &amp; Speed</strong></td>
                 <td data-category="3" data-rating="1">Sluggish pacing; dull segments that make viewers tune out</td>
@@ -627,7 +631,9 @@
               </tr>
 
               <!-- Group 3: Transitions & Flow -->
-              <tr class="section-header" data-group="g3"><td colspan="5">Transitions & Flow</td></tr>
+              <tr class="section-header" data-group="g3">
+                <td colspan="5">Transitions &amp; Flow</td>
+              </tr>
               <tr data-group="g3">
                 <td data-category="6" class="category-header"><strong>Smooth Scene Changes</strong></td>
                 <td data-category="6" data-rating="1">Abrupt, jarring cuts that disrupt viewing</td>
@@ -651,7 +657,9 @@
               </tr>
 
               <!-- Group 4: Visual Engagement & Graphics -->
-              <tr class="section-header" data-group="g4"><td colspan="5">Visual Engagement & Graphics</td></tr>
+              <tr class="section-header" data-group="g4">
+                <td colspan="5">Visual Engagement &amp; Graphics</td>
+              </tr>
               <tr data-group="g4">
                 <td data-category="9" class="category-header"><strong>On‑Screen Text &amp; Graphics</strong></td>
                 <td data-category="9" data-rating="1">Little or cluttered text; hard to read</td>
@@ -675,7 +683,9 @@
               </tr>
 
               <!-- Group 5: Audio – Music & Sound Design -->
-              <tr class="section-header" data-group="g5"><td colspan="5">Audio – Music & Sound Design</td></tr>
+              <tr class="section-header" data-group="g5">
+                <td colspan="5">Audio – Music &amp; Sound Design</td>
+              </tr>
               <tr data-group="g5">
                 <td data-category="12" class="category-header"><strong>Emotional Cues (Faces &amp; Reactions)</strong></td>
                 <td data-category="12" data-rating="1">No human/emotional element</td>
@@ -699,7 +709,9 @@
               </tr>
 
               <!-- Group 6: Retention Techniques -->
-              <tr class="section-header" data-group="g6"><td colspan="5">Retention Techniques</td></tr>
+              <tr class="section-header" data-group="g6">
+                <td colspan="5">Retention Techniques</td>
+              </tr>
               <tr data-group="g6">
                 <td data-category="15" class="category-header"><strong>Audio Clarity &amp; Mixing</strong></td>
                 <td data-category="15" data-rating="1">Muffled commentary or overshadowed voice</td>
@@ -723,7 +735,9 @@
               </tr>
 
               <!-- Group 7: Overall Engagement & Polish -->
-              <tr class="section-header" data-group="g7"><td colspan="5">Overall Engagement & Polish</td></tr>
+              <tr class="section-header" data-group="g7">
+                <td colspan="5">Overall Engagement &amp; Polish</td>
+              </tr>
               <tr data-group="g7">
                 <td data-category="18" class="category-header"><strong>Surprise &amp; Unpredictability</strong></td>
                 <td data-category="18" data-rating="1">Predictable format; no unexpected edits</td>
@@ -743,7 +757,7 @@
                 <td data-category="20" data-rating="1">Doesn’t match channel vibe; feels off‑brand</td>
                 <td data-category="20" data-rating="2">Somewhat aligned but somewhat inconsistent</td>
                 <td data-category="20" data-rating="3">Feels suitable for YouTube gaming style</td>
-                <td data-category="20" data-rating="4">Perfectly nails the vibe & channel identity</td>
+                <td data-category="20" data-rating="4">Perfectly nails the vibe &amp; channel identity</td>
               </tr>
               <tr data-group="g7">
                 <td data-category="21" class="category-header"><strong>Technical Quality (Editing &amp; Polish)</strong></td>
@@ -760,13 +774,13 @@
             <h4>Legend &amp; Definitions</h4>
             <p><strong>Grouped by Section:</strong></p>
             <ul>
-              <li><strong>Hook & Opening Impact (0–2)</strong></li>
-              <li><strong>Pacing & Momentum (3–5)</strong></li>
-              <li><strong>Transitions & Flow (6–8)</strong></li>
-              <li><strong>Visual Engagement & Graphics (9–11)</strong></li>
-              <li><strong>Audio – Music & Sound Design (12–14)</strong></li>
+              <li><strong>Hook &amp; Opening Impact (0–2)</strong></li>
+              <li><strong>Pacing &amp; Momentum (3–5)</strong></li>
+              <li><strong>Transitions &amp; Flow (6–8)</strong></li>
+              <li><strong>Visual Engagement &amp; Graphics (9–11)</strong></li>
+              <li><strong>Audio – Music &amp; Sound Design (12–14)</strong></li>
               <li><strong>Retention Techniques (15–17)</strong></li>
-              <li><strong>Overall Engagement & Polish (18–21)</strong></li>
+              <li><strong>Overall Engagement &amp; Polish (18–21)</strong></li>
             </ul>
             <p>Click on a cell in each row that best describes the current level (1–4).</p>
             <h5>Rating Levels</h5>
@@ -789,20 +803,40 @@
         </section>
       </div>
 
-      <!-- SELF-ASSESSMENT CHECKLIST SECTION -->
-      <section class="self-assessment-section" aria-labelledby="selfAssessmentHeading">
-        <h3 id="selfAssessmentHeading">Self-Assessment Checklist</h3>
+      <!-- Review Checklist Section -->
+      <section class="review-checklist" aria-labelledby="reviewChecklistHeading">
+        <h3 id="reviewChecklistHeading">Review Checklist</h3>
         <ul>
-          <li><input type="checkbox" id="check1"> <label for="check1">Did you confirm that all voiceovers match on-screen graphics?</label></li>
-          <li><input type="checkbox" id="check2"> <label for="check2">Have you normalized audio so the volume is consistent?</label></li>
-          <li><input type="checkbox" id="check3"> <label for="check3">Are all transitions smooth and visually appealing?</label></li>
-          <li><input type="checkbox" id="check4"> <label for="check4">Did you verify that on-screen text and titles are clear and free of typos?</label></li>
-          <li><input type="checkbox" id="check5"> <label for="check5">Is the overall narrative clear, engaging, and well-paced?</label></li>
-          <li><input type="checkbox" id="check6"> <label for="check6">Have you double-checked technical quality (resolution, aspect ratio, frame rate)?</label></li>
-          <li><input type="checkbox" id="check7"> <label for="check7">Did you incorporate creative editing elements that enhance the story?</label></li>
-          <li><input type="checkbox" id="check8"> <label for="check8">Have you confirmed that the use of music and sound design elevates the video?</label></li>
+          <li>
+            <input type="checkbox" id="check1">
+            <label for="check1">Does the opening grab attention and set the tone effectively?</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check2">
+            <label for="check2">Is the pacing balanced with smooth transitions and clear progression?</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check3">
+            <label for="check3">Are visual elements (on-screen text, graphics, cutaways) clear and engaging?</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check4">
+            <label for="check4">Does the audio (music and sound effects) complement the visuals and narrative?</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check5">
+            <label for="check5">Is the overall narrative coherent with a strong flow?</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check6">
+            <label for="check6">Are creative techniques used effectively to enhance viewer engagement?</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check7">
+            <label for="check7">Is the technical quality (editing, resolution, color grading) top-notch?</label>
+          </li>
         </ul>
-        <button class="btn" onclick="submitAssessment()">Submit Self-Assessment</button>
+        <button class="btn" onclick="submitAssessment()">Submit Review Checklist</button>
         <div class="assessment-result" id="assessmentResult" aria-live="polite"></div>
       </section>
 
@@ -823,7 +857,7 @@
           <li>If any item is rated 1, the overall result is "Rejected."</li>
           <li>Read the daily Quote of Wisdom for inspiration.</li>
           <li>Provide any additional feedback in the Human feedback box.</li>
-          <li>Use the Self-Assessment Checklist to evaluate your own work.</li>
+          <li>Use the Review Checklist to evaluate the overall quality.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
       </div>
@@ -895,7 +929,7 @@
       }
 
       /***************************************************
-       * DOMContentLoaded: Initialization
+       * Initialization on DOMContentLoaded
        ***************************************************/
       document.addEventListener('DOMContentLoaded', function() {
         // Initialize scoreData for categories 0 to 21
@@ -911,6 +945,9 @@
         
         // Insert emojis into category header cells
         initEmojis();
+        
+        // Store original header text for each section header (for later updating with section scores)
+        initSectionHeaders();
         
         // Set a random inspirational quote
         randomQuote();
@@ -944,7 +981,7 @@
         updateScore();
       }
 
-      // Recalculate and update the overall score and rating display
+      // Recalculate and update the overall score and rating display, and update section scores
       function updateScore() {
         let overallTotal = 0;
         for (let key in scoreData) {
@@ -957,6 +994,9 @@
         const rankingElem = document.getElementById('ranking');
         rankingElem.innerText = ratingInfo.rankingText;
         rankingElem.style.color = ratingInfo.color;
+
+        // Update section scores in each section header
+        updateSectionScores();
 
         // If outstanding (score >= 80) and not already celebrated, launch confetti and play a sound
         if (overallTotal >= 80 && !confettiShown) {
@@ -1053,19 +1093,19 @@
         }
       }
 
-      // Handle self-assessment submission by checking if all items are complete
+      // Handle review checklist submission by checking if all items are complete
       function submitAssessment() {
-        const checkboxes = document.querySelectorAll('.self-assessment-section input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('.review-checklist input[type="checkbox"]');
         let allChecked = true;
         checkboxes.forEach(cb => {
           if (!cb.checked) { allChecked = false; }
         });
         const resultElem = document.getElementById('assessmentResult');
         if (allChecked) {
-          resultElem.innerText = 'Self-Assessment Complete! Great job!';
+          resultElem.innerText = 'Review Checklist Complete! Great job!';
           resultElem.style.color = 'green';
         } else {
-          resultElem.innerText = 'Please complete all items in the self-assessment checklist.';
+          resultElem.innerText = 'Please complete all items in the review checklist.';
           resultElem.style.color = 'red';
         }
       }
@@ -1079,6 +1119,36 @@
           if (!cell.innerHTML.includes(emoji)) {
             cell.innerHTML = emoji + ' ' + cell.innerHTML;
           }
+        });
+      }
+
+      // Store the original header text for each section header for later updates
+      function initSectionHeaders() {
+        const sectionHeaders = document.querySelectorAll('tr.section-header');
+        sectionHeaders.forEach(row => {
+          const cell = row.querySelector('td');
+          cell.dataset.original = cell.innerText.trim();
+        });
+      }
+
+      // Update each section header to include the section score (current/maximum)
+      function updateSectionScores() {
+        const sectionHeaders = document.querySelectorAll('tr.section-header');
+        sectionHeaders.forEach(headerRow => {
+          const group = headerRow.getAttribute('data-group');
+          // Find all rows in this group that are NOT section headers
+          const groupRows = document.querySelectorAll('tr[data-group="' + group + '"]:not(.section-header)');
+          let sectionScore = 0;
+          groupRows.forEach(row => {
+            const catCell = row.querySelector('td.category-header');
+            if (catCell) {
+              const cat = catCell.getAttribute('data-category');
+              sectionScore += parseInt(scoreData[cat]) || 0;
+            }
+          });
+          const maxForSection = groupRows.length * 4;
+          const headerCell = headerRow.querySelector('td');
+          headerCell.innerText = headerCell.dataset.original + ' (Score: ' + sectionScore + '/' + maxForSection + ')';
         });
       }
 
