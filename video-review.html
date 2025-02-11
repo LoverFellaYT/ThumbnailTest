@@ -260,7 +260,7 @@
         z-index: 10;
         text-align: left;
       }
-      /* Updated headers for each rating column */
+      /* Revert to the original table header colors */
       .modern-table thead th:first-child {
         background: var(--gradient-light);
         color: #fff;
@@ -270,18 +270,17 @@
         color: #fff;
       }
       .modern-table thead th:nth-child(3) {
-        background: #facc15;
+        background: #fb923c;
         color: #fff;
       }
       .modern-table thead th:nth-child(4) {
-        background: #8b5cf6;
+        background: #facc15;
         color: #fff;
       }
       .modern-table thead th:nth-child(5) {
-        background: #22c55e;
+        background: #4ade80;
         color: #fff;
       }
-      /* (Removed pseudo‑elements so that header text is exactly as specified) */
 
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
@@ -307,15 +306,13 @@
         font-weight: normal;
       }
 
-      /* Section header for sub-groupings (score always visible, background fades) */
+      /* Section header for groups (title in bold, score in regular).
+         Default state is white background with label "Incomplete". */
       .section-header {
-        background: #cbd5e1;
+        background: white;
         color: #000;
         text-align: center;
         font-size: 1.1rem;
-        /* Remove bold so the score text is regular */
-        font-weight: normal;
-        border-bottom: 2px solid #888;
         cursor: pointer;
         transition: background-color 0.5s ease;
       }
@@ -554,9 +551,9 @@
             <thead>
               <tr>
                 <th>Category</th>
+                <th>Needs Improvement</th>
+                <th>Fair</th>
                 <th>Good</th>
-                <th>Great</th>
-                <th>Excellent</th>
                 <th>Outstanding</th>
               </tr>
             </thead>
@@ -665,7 +662,7 @@
                 <td data-category="11" data-rating="4">Expertly timed moves that heighten drama</td>
               </tr>
 
-              <!-- Group 5: Audio – Music & Sound Design -->
+              <!-- Group 5: Audio – Music &amp; Sound Design -->
               <tr class="section-header" data-group="g5">
                 <td colspan="5">Audio – Music &amp; Sound Design</td>
               </tr>
@@ -768,9 +765,9 @@
             <p>Click on a cell in each row that best describes the current level (1–4).</p>
             <h5>Rating Levels</h5>
             <ul>
-              <li><strong>Good (1):</strong> Basic level.</li>
-              <li><strong>Great (2):</strong> Above average.</li>
-              <li><strong>Excellent (3):</strong> High quality.</li>
+              <li><strong>Needs Improvement (1):</strong> Major shortcomings.</li>
+              <li><strong>Fair (2):</strong> Basic or acceptable.</li>
+              <li><strong>Good (3):</strong> Solid quality.</li>
               <li><strong>Outstanding (4):</strong> Perfect performance.</li>
             </ul>
           </div>
@@ -896,7 +893,7 @@
         21: '💎'
       };
 
-      // Returns the label and styling based on the overall score
+      // Returns the overall rating label and color for overall score
       function getRatingLabel(overallTotal) {
         if (overallTotal < 25) {
           return { scoreLabel: "Needs Work", rankingText: "Needs Work 🔴", color: "#ef4444" };
@@ -911,16 +908,16 @@
         }
       }
 
-      // Determine section rating based on average rating of the section (ratings 1–4)
+      // Determine section rating based on average rating of the section
       function getSectionRating(average) {
         if (average < 2) {
           return { label: "Good", color: "#f87171" };
         } else if (average < 3) {
-          return { label: "Great", color: "#facc15" };
+          return { label: "Great", color: "#fb923c" };
         } else if (average < 4) {
-          return { label: "Excellent", color: "#8b5cf6" };
+          return { label: "Excellent", color: "#facc15" };
         } else {
-          return { label: "Outstanding", color: "#22c55e" };
+          return { label: "Outstanding", color: "#4ade80" };
         }
       }
 
@@ -1002,7 +999,7 @@
         // Update section scores and header backgrounds
         updateSectionScores();
 
-        // Launch confetti and play sound if overall score is high
+        // If overall score >= 80 and not already celebrated, launch confetti and play a sound
         if (overallTotal >= 80 && !confettiShown) {
           launchConfetti();
           const victorySound = document.getElementById('victorySound');
@@ -1134,12 +1131,12 @@
         });
       }
 
-      // Update each section header to include the section score and update background color
+      // Update each section header to include the section score and update background color.
+      // If no ratings are entered (score 0), the header remains white with label "Incomplete".
       function updateSectionScores() {
         const sectionHeaders = document.querySelectorAll('tr.section-header');
         sectionHeaders.forEach(headerRow => {
           const group = headerRow.getAttribute('data-group');
-          // Find all rows in this group that are not section headers
           const groupRows = document.querySelectorAll('tr[data-group="' + group + '"]:not(.section-header)');
           let sectionScore = 0;
           groupRows.forEach(row => {
@@ -1151,12 +1148,20 @@
           });
           const numberOfRows = groupRows.length;
           const maxForSection = numberOfRows * 4;
-          const average = sectionScore / numberOfRows;
-          const sectionRating = getSectionRating(average);
+          let sectionLabel;
+          if (sectionScore === 0) {
+            sectionLabel = "Incomplete";
+            headerRow.style.backgroundColor = "white";
+          } else {
+            const average = sectionScore / numberOfRows;
+            const sectionRating = getSectionRating(average);
+            sectionLabel = sectionRating.label;
+            headerRow.style.backgroundColor = hexToRGBA(sectionRating.color, 0.3);
+          }
           const headerCell = headerRow.querySelector('td');
-          headerCell.innerText = headerCell.dataset.original + ' (Score: ' + sectionScore + '/' + maxForSection + ' - ' + sectionRating.label + ')';
-          // Fade the background to a soft tinted version based on the section rating
-          headerRow.style.backgroundColor = hexToRGBA(sectionRating.color, 0.3);
+          headerCell.innerHTML =
+            '<strong>' + headerCell.dataset.original + '</strong> ' +
+            '<span style="font-weight:normal;">(Score: ' + sectionScore + '/' + maxForSection + ' - ' + sectionLabel + ')</span>';
         });
       }
 
