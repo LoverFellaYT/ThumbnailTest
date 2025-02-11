@@ -260,7 +260,7 @@
         z-index: 10;
         text-align: left;
       }
-      /* Changed from "CATEGORY" to "Category" */
+      /* Updated headers for each rating column */
       .modern-table thead th:first-child {
         background: var(--gradient-light);
         color: #fff;
@@ -270,37 +270,18 @@
         color: #fff;
       }
       .modern-table thead th:nth-child(3) {
-        background: #fb923c;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(4) {
         background: #facc15;
         color: #fff;
       }
-      .modern-table thead th:nth-child(5) {
-        background: #4ade80;
+      .modern-table thead th:nth-child(4) {
+        background: #8b5cf6;
         color: #fff;
       }
-      .modern-table thead th:nth-child(2)::after {
-        content: " (1)";
-        font-weight: 400;
-        font-size: 0.8rem;
+      .modern-table thead th:nth-child(5) {
+        background: #22c55e;
+        color: #fff;
       }
-      .modern-table thead th:nth-child(3)::after {
-        content: " (2)";
-        font-weight: 400;
-        font-size: 0.8rem;
-      }
-      .modern-table thead th:nth-child(4)::after {
-        content: " (3)";
-        font-weight: 400;
-        font-size: 0.8rem;
-      }
-      .modern-table thead th:nth-child(5)::after {
-        content: " (4)";
-        font-weight: 400;
-        font-size: 0.8rem;
-      }
+      /* (Removed pseudo‑elements so that header text is exactly as specified) */
 
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
@@ -323,18 +304,20 @@
       }
 
       .category-header {
-        font-weight: bold;
+        font-weight: normal;
       }
 
-      /* Section header for sub-groupings (now with dynamic section score) */
+      /* Section header for sub-groupings (score always visible, background fades) */
       .section-header {
         background: #cbd5e1;
         color: #000;
         text-align: center;
         font-size: 1.1rem;
-        font-weight: 700;
+        /* Remove bold so the score text is regular */
+        font-weight: normal;
         border-bottom: 2px solid #888;
         cursor: pointer;
+        transition: background-color 0.5s ease;
       }
       tr.collapsed {
         opacity: 0;
@@ -406,14 +389,14 @@
       }
       #legend h4 { margin-top: 0; }
 
-      /* Review Checklist Section (updated from Self-Assessment Checklist) */
+      /* Review Checklist Section */
       .review-checklist {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         padding: var(--spacing);
-        margin: 1rem auto;
+        margin: 2rem auto 1rem;
         max-width: 800px;
       }
       .review-checklist h3 {
@@ -425,7 +408,7 @@
         padding-left: 0;
       }
       .review-checklist li {
-        margin: 0.5rem 0;
+        margin: 0.75rem 0;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -571,9 +554,9 @@
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Needs Improvement</th>
-                <th>Fair</th>
                 <th>Good</th>
+                <th>Great</th>
+                <th>Excellent</th>
                 <th>Outstanding</th>
               </tr>
             </thead>
@@ -671,7 +654,7 @@
                 <td data-category="10" class="category-header"><strong>B‑Roll &amp; Cutaways</strong></td>
                 <td data-category="10" data-rating="1">No supplementary visuals; monotony</td>
                 <td data-category="10" data-rating="2">Limited variety; occasional cutaway</td>
-                <td data-category="10" data-rating="3">Good mix of main footage & extra visuals</td>
+                <td data-category="10" data-rating="3">Good mix of main footage &amp; extra visuals</td>
                 <td data-category="10" data-rating="4">Skillful use of cutaways for lively visuals</td>
               </tr>
               <tr data-group="g4">
@@ -785,10 +768,10 @@
             <p>Click on a cell in each row that best describes the current level (1–4).</p>
             <h5>Rating Levels</h5>
             <ul>
-              <li><strong>Needs Improvement (1):</strong> Major shortcomings, minimal engagement.</li>
-              <li><strong>Fair (2):</strong> Basic or acceptable but lacking full potential.</li>
-              <li><strong>Good (3):</strong> Solid, with only minor issues to refine.</li>
-              <li><strong>Outstanding (4):</strong> Exceptional, exceeding typical YouTube standards.</li>
+              <li><strong>Good (1):</strong> Basic level.</li>
+              <li><strong>Great (2):</strong> Above average.</li>
+              <li><strong>Excellent (3):</strong> High quality.</li>
+              <li><strong>Outstanding (4):</strong> Perfect performance.</li>
             </ul>
           </div>
         </section>
@@ -817,7 +800,7 @@
           </li>
           <li>
             <input type="checkbox" id="check3">
-            <label for="check3">Are visual elements (on-screen text, graphics, cutaways) clear and engaging?</label>
+            <label for="check3">Are visual elements (on‑screen text, graphics, cutaways) clear and engaging?</label>
           </li>
           <li>
             <input type="checkbox" id="check4">
@@ -833,7 +816,7 @@
           </li>
           <li>
             <input type="checkbox" id="check7">
-            <label for="check7">Is the technical quality (editing, resolution, color grading) top-notch?</label>
+            <label for="check7">Is the technical quality (editing, resolution, color grading) top‑notch?</label>
           </li>
         </ul>
         <button class="btn" onclick="submitAssessment()">Submit Review Checklist</button>
@@ -852,12 +835,12 @@
         <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To">&times;</button>
         <h2 id="howToHeading">How to Use Editing Review Pro+</h2>
         <ul>
-          <li>Click on the appropriate rating cell for each row in the big rubric table.</li>
-          <li>Your total score updates automatically, out of 84 maximum points.</li>
+          <li>Click on the appropriate rating cell for each row in the rubric table.</li>
+          <li>Your total score updates automatically (out of 84 maximum points).</li>
           <li>If any item is rated 1, the overall result is "Rejected."</li>
           <li>Read the daily Quote of Wisdom for inspiration.</li>
-          <li>Provide any additional feedback in the Human feedback box.</li>
-          <li>Use the Review Checklist to evaluate the overall quality.</li>
+          <li>Provide additional feedback in the Human Feedback box.</li>
+          <li>Use the Review Checklist to evaluate overall quality.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
       </div>
@@ -928,6 +911,27 @@
         }
       }
 
+      // Determine section rating based on average rating of the section (ratings 1–4)
+      function getSectionRating(average) {
+        if (average < 2) {
+          return { label: "Good", color: "#f87171" };
+        } else if (average < 3) {
+          return { label: "Great", color: "#facc15" };
+        } else if (average < 4) {
+          return { label: "Excellent", color: "#8b5cf6" };
+        } else {
+          return { label: "Outstanding", color: "#22c55e" };
+        }
+      }
+
+      // Helper: convert hex color to rgba with given alpha
+      function hexToRGBA(hex, alpha) {
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
+        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+      }
+
       /***************************************************
        * Initialization on DOMContentLoaded
        ***************************************************/
@@ -995,10 +999,10 @@
         rankingElem.innerText = ratingInfo.rankingText;
         rankingElem.style.color = ratingInfo.color;
 
-        // Update section scores in each section header
+        // Update section scores and header backgrounds
         updateSectionScores();
 
-        // If outstanding (score >= 80) and not already celebrated, launch confetti and play a sound
+        // Launch confetti and play sound if overall score is high
         if (overallTotal >= 80 && !confettiShown) {
           launchConfetti();
           const victorySound = document.getElementById('victorySound');
@@ -1020,7 +1024,6 @@
         ratingCells.forEach(cell => cell.classList.remove('selected'));
         updateScore();
 
-        // Optionally play a reset sound (e.g., wompSound)
         const wompSound = document.getElementById('wompSound');
         if (wompSound) {
           wompSound.play().catch(() => {});
@@ -1131,12 +1134,12 @@
         });
       }
 
-      // Update each section header to include the section score (current/maximum)
+      // Update each section header to include the section score and update background color
       function updateSectionScores() {
         const sectionHeaders = document.querySelectorAll('tr.section-header');
         sectionHeaders.forEach(headerRow => {
           const group = headerRow.getAttribute('data-group');
-          // Find all rows in this group that are NOT section headers
+          // Find all rows in this group that are not section headers
           const groupRows = document.querySelectorAll('tr[data-group="' + group + '"]:not(.section-header)');
           let sectionScore = 0;
           groupRows.forEach(row => {
@@ -1146,9 +1149,14 @@
               sectionScore += parseInt(scoreData[cat]) || 0;
             }
           });
-          const maxForSection = groupRows.length * 4;
+          const numberOfRows = groupRows.length;
+          const maxForSection = numberOfRows * 4;
+          const average = sectionScore / numberOfRows;
+          const sectionRating = getSectionRating(average);
           const headerCell = headerRow.querySelector('td');
-          headerCell.innerText = headerCell.dataset.original + ' (Score: ' + sectionScore + '/' + maxForSection + ')';
+          headerCell.innerText = headerCell.dataset.original + ' (Score: ' + sectionScore + '/' + maxForSection + ' - ' + sectionRating.label + ')';
+          // Fade the background to a soft tinted version based on the section rating
+          headerRow.style.backgroundColor = hexToRGBA(sectionRating.color, 0.3);
         });
       }
 
