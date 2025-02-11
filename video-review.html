@@ -306,8 +306,7 @@
         font-weight: normal;
       }
 
-      /* Section header for groups (title in bold, score in regular).
-         Default state is white background with label "Incomplete". */
+      /* Section headers for groups */
       .section-header {
         background: white;
         color: #000;
@@ -947,13 +946,14 @@
         // Insert emojis into category header cells
         initEmojis();
         
-        // Store original header text for each section header (for later updating with section scores)
+        // Store original header text for each section header for later updates
         initSectionHeaders();
         
-        // Set a random inspirational quote
-        randomQuote();
+        // Call updateScore once so that overall and section scores display immediately (even with 0s)
+        updateScore();
         
-        // Set a random fun fact
+        // Set a random inspirational quote and fun fact
+        randomQuote();
         randomFunFact();
         
         // Add a click listener to the Disney Magic icon
@@ -999,7 +999,7 @@
         // Update section scores and header backgrounds
         updateSectionScores();
 
-        // If overall score >= 80 and not already celebrated, launch confetti and play a sound
+        // Launch confetti and play sound if overall score >= 80
         if (overallTotal >= 80 && !confettiShown) {
           launchConfetti();
           const victorySound = document.getElementById('victorySound');
@@ -1132,7 +1132,7 @@
       }
 
       // Update each section header to include the section score and update background color.
-      // If no ratings are entered (score 0), the header remains white with label "Incomplete".
+      // When no ratings are entered, the header remains white with label "Incomplete".
       function updateSectionScores() {
         const sectionHeaders = document.querySelectorAll('tr.section-header');
         sectionHeaders.forEach(headerRow => {
@@ -1159,6 +1159,7 @@
             headerRow.style.backgroundColor = hexToRGBA(sectionRating.color, 0.3);
           }
           const headerCell = headerRow.querySelector('td');
+          // Always show the original title in bold and the score (in normal weight)
           headerCell.innerHTML =
             '<strong>' + headerCell.dataset.original + '</strong> ' +
             '<span style="font-weight:normal;">(Score: ' + sectionScore + '/' + maxForSection + ' - ' + sectionLabel + ')</span>';
