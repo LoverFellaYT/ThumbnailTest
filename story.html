@@ -69,6 +69,7 @@
         max-width: 1200px;
         margin: 2rem auto;
         padding: 0 var(--spacing) 2rem;
+        text-align: center;
       }
       /* --------------------------------------------------------------
          Header / Sticky Banner
@@ -97,6 +98,13 @@
         display: flex;
         flex-direction: column;
         gap: 0.4rem;
+        text-align: center;
+      }
+      /* Main heading added to header */
+      .main-heading {
+        font-size: 2rem;
+        margin: 0;
+        font-weight: bold;
       }
       .total-score {
         font-size: 1.75rem;
@@ -105,12 +113,7 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      /* Now directly include "/40" in the header text */
-      .total-score::after {
-        content: "/40";
-        margin-left: 0.25rem;
-        font-weight: normal;
-      }
+      /* The header now displays the score as "Score: 0/40 Incomplete" directly */
       .progress-bar-container {
         width: 100%;
         height: 10px;
@@ -212,8 +215,8 @@
         backdrop-filter: blur(12px);
         padding: 2rem;
         margin: 1rem 0;
+        text-align: center;
       }
-      /* Center all headings */
       .glass-panel h2 {
         margin-top: 0;
         text-align: center;
@@ -235,6 +238,7 @@
         resize: none;
         transition: var(--transition);
         margin-bottom: 0.5rem;
+        text-align: left;
       }
       .story-input:focus {
         outline: none;
@@ -246,6 +250,7 @@
         width: 70%;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
+        text-align: left;
       }
       /* --------------------------------------------------------------
          Similar Videos Section
@@ -255,6 +260,7 @@
         flex-wrap: wrap;
         gap: 1rem;
         margin-top: 1rem;
+        justify-content: center;
       }
       .video-thumbnail {
         width: 200px;
@@ -310,14 +316,13 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         transition: var(--transition);
       }
-      /* Make the table shorter by reducing padding */
       .modern-table th,
       .modern-table td {
         padding: 0.5rem 1rem;
+        text-align: center;
       }
       .modern-table th {
         font-weight: 500;
-        text-align: left;
         position: sticky;
         top: 0;
         backdrop-filter: blur(10px);
@@ -332,8 +337,7 @@
       .modern-table td {
         background: var(--table-cell-bg-light);
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        transition: var(--transition);
-        vertical-align: top;
+        vertical-align: middle;
       }
       /* Hover animations on rubric options */
       .modern-table td[data-rating]:hover:not(.selected) {
@@ -384,6 +388,8 @@
     <!-- HEADER / Sticky Banner -->
     <header class="analyzer-header">
       <div class="header-left">
+        <!-- Main Heading Added -->
+        <h1 class="main-heading">StoryCraft Analyzer</h1>
         <div class="total-score">
           Score: <span id="total">0</span>/40 <span id="scoreLabel">Incomplete</span>
         </div>
