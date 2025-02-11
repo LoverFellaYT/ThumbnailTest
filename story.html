@@ -58,7 +58,8 @@
         margin: 0;
         padding: 0;
         font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
+          var(--bg-light);
         background-size: 30px 30px;
         color: var(--text-light);
         transition: var(--transition);
@@ -99,7 +100,7 @@
         gap: 0.4rem;
         text-align: center;
       }
-      /* Main Heading Added */
+      /* Main Heading */
       .main-heading {
         font-size: 2rem;
         margin: 0;
@@ -112,7 +113,7 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      /* The header now displays the score as "Score: 0/40 Incomplete" directly */
+      /* The header displays the score as "Score: 0/40 Incomplete" directly */
       .progress-bar-container {
         width: 100%;
         height: 10px;
@@ -411,7 +412,7 @@
       <div class="header-right">
         <button class="btn" onclick="resetScores()">🔄 Reset</button>
         <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
-        <!-- Rainbow Button as a Rainbow Emoji -->
+        <!-- Rainbow Button: Displays only a rainbow emoji -->
         <button class="rainbow-btn" onclick="showRainbowQuote()">🌈</button>
         <div class="dark-mode">
           <label class="toggle-label" for="darkModeToggle">
@@ -712,6 +713,7 @@
         const categoryIndex = Number(cell.getAttribute('data-category'));
         const rating = parseInt(cell.getAttribute('data-rating'));
         const row = cell.parentElement;
+        // Remove "selected" class from all other cells in this row
         row.querySelectorAll('td').forEach(td => {
           if (td !== row.firstElementChild) td.classList.remove('selected');
         });
@@ -724,12 +726,14 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
+        // Only update ranking if all 10 categories have been rated
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
           updateProgressBar(total);
           return;
         }
+        // Thresholds based on a maximum score of 40:
         if (total < 21) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
@@ -761,11 +765,11 @@
       }
 
       async function exportPNG() {
-        // Create a temporary container to hold both header and main content
+        // Create a temporary container that holds both the header and the main container
         const tempContainer = document.createElement('div');
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
-        // Clone the header and main container
+        // Clone the header and the main container
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
         const mainClone = document.querySelector('.analyzer-container').cloneNode(true);
         tempContainer.appendChild(headerClone);
