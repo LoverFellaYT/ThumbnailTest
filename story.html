@@ -6,13 +6,10 @@
     <title>StoryCraft Analyzer Pro+ Enhanced</title>
 
     <!-- External Libraries -->
-    <!-- jspdf for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- html2canvas for PNG export -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <!-- Canvas Confetti for optional effects -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-    <!-- Font Awesome for icons (if needed) -->
+    <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -28,7 +25,7 @@
       rel="stylesheet"
     />
 
-    <!-- CSS: Re‑skinned to match the Editing Review Pro+ (Final) aesthetic -->
+    <!-- CSS Styles -->
     <style>
       /* --------------------------------------------------------------
          CSS Variables & Base Styles
@@ -48,7 +45,15 @@
         --font-base: 'Roboto', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
       }
-
+      /* Dark mode variables */
+      html[data-theme="dark"] {
+        --bg-light: #1f1f1f;
+        --text-light: #f3f3f3;
+        --panel-light: rgba(18, 18, 18, 0.98);
+        --border-light: rgba(255, 255, 255, 0.2);
+        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
+      }
       body {
         margin: 0;
         padding: 0;
@@ -59,17 +64,12 @@
         color: var(--text-light);
         transition: var(--transition);
       }
-
-      /* --------------------------------------------------------------
-         Container for Main Content (same as Editing Review Pro+)
-         -------------------------------------------------------------- */
       .analyzer-container {
         width: 95%;
         max-width: 1200px;
         margin: 2rem auto;
         padding: 0 var(--spacing) 2rem;
       }
-
       /* --------------------------------------------------------------
          Header / Sticky Banner
          -------------------------------------------------------------- */
@@ -105,6 +105,11 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
+      /* Display total score as "0/56" */
+      .total-score span#total::after {
+        content: "/56";
+        font-weight: normal;
+      }
       .progress-bar-container {
         width: 100%;
         height: 6px;
@@ -126,10 +131,10 @@
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
+        align-items: center;
       }
-
       /* --------------------------------------------------------------
-         Button Styling (Using .btn similar to Editing Review Pro+)
+         Button Styling (Using .btn)
          -------------------------------------------------------------- */
       button.btn {
         background: var(--gradient-light);
@@ -149,7 +154,52 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
-
+      /* --------------------------------------------------------------
+         Dark Mode Toggle Styles
+         -------------------------------------------------------------- */
+      .dark-mode {
+        display: inline-flex;
+        align-items: center;
+      }
+      .toggle-label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+      .dark-mode-slider {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+        transition: background-color 0.3s;
+      }
+      .dark-mode-slider .mode-label {
+        font-size: 16px;
+      }
+      .dark-mode-slider .slider-thumb {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+      }
+      input#darkModeToggle {
+        display: none;
+      }
+      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
+        transform: translateX(30px);
+      }
+      input#darkModeToggle:checked + .dark-mode-slider {
+        background-color: var(--primary-light);
+      }
       /* --------------------------------------------------------------
          Glass Panels for Sections
          -------------------------------------------------------------- */
@@ -162,17 +212,20 @@
         padding: 2rem;
         margin: 1rem 0;
       }
-
+      /* Remove extra blank space above section headings */
+      .glass-panel h2 {
+        margin-top: 0;
+      }
       /* --------------------------------------------------------------
          Input Areas & Textarea Styling
          -------------------------------------------------------------- */
       .input-section {
-        margin: 1rem 0;
+        margin: 0.5rem 0;
       }
       .story-input {
         width: 100%;
-        min-height: 120px;
-        padding: 1rem;
+        min-height: 80px;  /* Reduced height */
+        padding: 0.5rem;   /* Reduced padding */
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
         font-size: 1rem;
@@ -192,7 +245,6 @@
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
       }
-
       /* --------------------------------------------------------------
          Similar Videos Section
          -------------------------------------------------------------- */
@@ -239,7 +291,6 @@
       .video-thumbnail:hover {
         transform: scale(1.02);
       }
-
       /* --------------------------------------------------------------
          Rubric Table Styling
          -------------------------------------------------------------- */
@@ -293,22 +344,6 @@
         left: 0;
         min-width: 180px;
       }
-
-      /* --------------------------------------------------------------
-         Peer Reviews List Styling
-         -------------------------------------------------------------- */
-      .peer-review-list {
-        list-style: none;
-        padding: 0;
-      }
-      .peer-review-list li {
-        padding: 0.5rem;
-        border-bottom: 1px solid var(--border-light);
-      }
-
-      /* --------------------------------------------------------------
-         Responsive Adjustments
-         -------------------------------------------------------------- */
       @media (max-width: 768px) {
         header.analyzer-header {
           flex-direction: column;
@@ -327,7 +362,7 @@
     <header class="analyzer-header">
       <div class="header-left">
         <div class="total-score">
-          Score: <span id="total">0</span> <span id="scoreLabel">Incomplete</span>
+          Score: <span id="total">0</span>/56 <span id="scoreLabel">Incomplete</span>
         </div>
         <div class="progress-bar-container">
           <div class="progress-bar" id="progressBar"></div>
@@ -337,9 +372,16 @@
       <div class="header-right">
         <button class="btn" onclick="resetScores()">🔄 Reset</button>
         <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
-        <button class="btn" onclick="exportPDF()">📥 Export PDF</button>
-        <button class="btn" onclick="checkGrammar()">✍️ Check Grammar</button>
-        <button class="btn" onclick="togglePreview()">👁️ Toggle Preview</button>
+        <div class="dark-mode">
+          <label class="toggle-label" for="darkModeToggle">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)" aria-label="Toggle Dark Mode" />
+            <div class="dark-mode-slider">
+              <span class="mode-label">☀️</span>
+              <span class="mode-label">🌙</span>
+              <div class="slider-thumb"></div>
+            </div>
+          </label>
+        </div>
       </div>
     </header>
 
@@ -351,7 +393,6 @@
           <h2>📝 Quick Summary</h2>
           <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
         </div>
-
         <!-- Similar Videos Section -->
         <div class="glass-panel input-section" id="similarVideosSection">
           <h2>📺 Similar Videos</h2>
@@ -359,14 +400,6 @@
           <button class="btn" onclick="addYouTubeVideo()">Add Video</button>
           <div id="similarVideosList" class="similar-videos-list"></div>
         </div>
-
-        <!-- AI Review Section -->
-        <div class="glass-panel input-section" id="aiReviewSection">
-          <h2>🤖 AI Review</h2>
-          <button class="btn" onclick="runAIReview()">Run AI Review</button>
-          <div id="aiReviewResult" style="margin-top: 1rem;"></div>
-        </div>
-
         <!-- Rubric Table Section -->
         <div class="glass-panel rubric-table" id="rubricSection">
           <h2>📊 Rubric Table</h2>
@@ -381,242 +414,111 @@
               </tr>
             </thead>
             <tbody>
+              <!-- 1. Hook & Opening -->
               <tr>
                 <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
-                <td data-category="0" data-rating="1">Slow start; no hook</td>
-                <td data-category="0" data-rating="2">Basic hook</td>
-                <td data-category="0" data-rating="3">Intriguing hook</td>
-                <td data-category="0" data-rating="4">Unignorable opener</td>
+                <td data-category="0" data-rating="1">Slow start or unclear hook; doesn’t entice immediate engagement.</td>
+                <td data-category="0" data-rating="2">Basic but functional hook; viewers might stay out of mild curiosity.</td>
+                <td data-category="0" data-rating="3">Clear, intriguing opening that sparks immediate interest.</td>
+                <td data-category="0" data-rating="4">Unignorable opener; compels viewers to keep watching almost instantly.</td>
               </tr>
+              <!-- 2. Clarity of Goal -->
               <tr>
                 <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
-                <td data-category="1" data-rating="1">No clear purpose</td>
-                <td data-category="1" data-rating="2">Goal exists but gets lost</td>
-                <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
-                <td data-category="1" data-rating="4">Crystal‑clear premise</td>
+                <td data-category="1" data-rating="1">Goal is vague, hidden, or tacked on; viewers may not know why they’re watching.</td>
+                <td data-category="1" data-rating="2">A stated goal exists but can get lost or muddled mid‐video.</td>
+                <td data-category="1" data-rating="3">The central goal is well‐defined, and each segment clearly ties back to it.</td>
+                <td data-category="1" data-rating="4">Crystal‐clear premise; the entire video revolves around a high‐stakes goal that viewers can’t wait to see resolved.</td>
               </tr>
+              <!-- 3. Audience Retention -->
               <tr>
                 <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
-                <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
-                <td data-category="2" data-rating="2">A few engaging moments</td>
-                <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
-                <td data-category="2" data-rating="4">Masterful tension arcs</td>
+                <td data-category="2" data-rating="1">Loses viewer interest quickly; minimal hooks throughout.</td>
+                <td data-category="2" data-rating="2">A few engaging points or “spikes” but inconsistent pacing or lulls.</td>
+                <td data-category="2" data-rating="3">Strong pacing, timely reveals, and mini‐cliffhangers sustain attention.</td>
+                <td data-category="2" data-rating="4">Nearly no dead spots; viewers are consistently teased with reasons to stay.</td>
               </tr>
+              <!-- 4. Conflict & Stakes -->
               <tr>
-                <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
-                <td data-category="3" data-rating="1">Feels forced; no connection</td>
-                <td data-category="3" data-rating="2">Some genuine moments</td>
-                <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
-                <td data-category="3" data-rating="4">Deeply authentic</td>
+                <td class="category-header" data-category="3" title="Conflict drives engagement.">Conflict &amp; Stakes</td>
+                <td data-category="3" data-rating="1">Low urgency; conflicts feel trivial or manufactured.</td>
+                <td data-category="3" data-rating="2">Basic obstacles are present but can feel predictable.</td>
+                <td data-category="3" data-rating="3">High stakes that keep viewers invested in how events will unfold.</td>
+                <td data-category="3" data-rating="4">Unavoidable drama and ever‐escalating tension that compels viewers to see the outcome.</td>
               </tr>
+              <!-- 5. CTA & Audience Interaction -->
               <tr>
-                <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
-                <td data-category="4" data-rating="1">Flat; no highs/lows</td>
-                <td data-category="4" data-rating="2">Moments of excitement</td>
-                <td data-category="4" data-rating="3">Clear emotional journey</td>
-                <td data-category="4" data-rating="4">Masterpiece arcs</td>
+                <td class="category-header" data-category="4" title="Calls to action drive viewer participation.">CTA &amp; Audience Interaction</td>
+                <td data-category="4" data-rating="1">Weak or generic CTA (“like/subscribe”) with no real urgency.</td>
+                <td data-category="4" data-rating="2">Standard CTA that matches typical platform norms.</td>
+                <td data-category="4" data-rating="3">Creative or timely CTA that spurs actual viewer response (e.g., poll, question).</td>
+                <td data-category="4" data-rating="4">Emotionally compelling, strategic CTA that feels integrated and inspires strong audience participation.</td>
               </tr>
+              <!-- 6. Originality & Trend‐Jacking -->
               <tr>
-                <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
-                <td data-category="5" data-rating="1">Low urgency</td>
-                <td data-category="5" data-rating="2">Basic stakes</td>
-                <td data-category="5" data-rating="3">High stakes/punishments</td>
-                <td data-category="5" data-rating="4">Unavoidable drama</td>
+                <td class="category-header" data-category="5" title="Unique angles set you apart.">Originality &amp; Trend‐Jacking</td>
+                <td data-category="5" data-rating="1">Overdone or cliché concept with no unique spin.</td>
+                <td data-category="5" data-rating="2">Minor twist on popular trends but still somewhat familiar.</td>
+                <td data-category="5" data-rating="3">A distinct approach or fresh angle that helps it stand out.</td>
+                <td data-category="5" data-rating="4">Boundary‐pushing content or trend usage that feels truly innovative.</td>
               </tr>
+              <!-- 7. Replayability & Shareability -->
               <tr>
-                <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
-                <td data-category="6" data-rating="1">No or weak CTA</td>
-                <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
-                <td data-category="6" data-rating="3">Clear creative CTA</td>
-                <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
+                <td class="category-header" data-category="6" title="Encourages viewers to revisit or share.">Replayability &amp; Shareability</td>
+                <td data-category="6" data-rating="1">Forgettable; viewers likely wouldn’t watch again.</td>
+                <td data-category="6" data-rating="2">Has a few moments worth revisiting or sharing.</td>
+                <td data-category="6" data-rating="3">Highly shareable; the content encourages conversation or repeat views.</td>
+                <td data-category="6" data-rating="4">Clip‐worthy highlights that prompt viewers to share widely; huge viral potential.</td>
               </tr>
+              <!-- 8. Credibility & Believability -->
               <tr>
-                <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend‑Jacking</td>
-                <td data-category="7" data-rating="1">Cliché concept</td>
-                <td data-category="7" data-rating="2">Minor twist on trends</td>
-                <td data-category="7" data-rating="3">Fresh angle</td>
-                <td data-category="7" data-rating="4">Boundary‑pushing</td>
+                <td class="category-header" data-category="7" title="Authenticity builds trust.">Credibility &amp; Believability</td>
+                <td data-category="7" data-rating="1">Feels forced or overly staged; viewer trust may be low.</td>
+                <td data-category="7" data-rating="2">Some genuine elements, but parts still come off as artificial or scripted.</td>
+                <td data-category="7" data-rating="3">The content feels sincere and honest; overall sense of integrity.</td>
+                <td data-category="7" data-rating="4">Deeply credible; the creator’s transparency and approach leave no doubt about authenticity.</td>
               </tr>
+              <!-- 9. Production & Editing Quality -->
               <tr>
-                <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
-                <td data-category="8" data-rating="1">Forgettable</td>
-                <td data-category="8" data-rating="2">Some memeable moments</td>
-                <td data-category="8" data-rating="3">Highly shareable</td>
-                <td data-category="8" data-rating="4">Clip‑worthy highlights</td>
+                <td class="category-header" data-category="8" title="Quality enhances the viewing experience.">Production &amp; Editing Quality</td>
+                <td data-category="8" data-rating="1">Technical flaws distract (poor audio, inconsistent lighting, messy cuts).</td>
+                <td data-category="8" data-rating="2">Generally serviceable production with occasional rough spots.</td>
+                <td data-category="8" data-rating="3">Clean, creative editing and good production values that enhance the content.</td>
+                <td data-category="8" data-rating="4">Cinematic or highly stylized editing; seamless technical quality that elevates the overall experience.</td>
               </tr>
+              <!-- 10. Pacing & Rhythm -->
               <tr>
-                <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
-                <td data-category="9" data-rating="1">No branding</td>
-                <td data-category="9" data-rating="2">Basic branding</td>
-                <td data-category="9" data-rating="3">Consistent style</td>
-                <td data-category="9" data-rating="4">Iconic brand identity</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="10" title="Well‑developed characters add depth.">Character Development</td>
-                <td data-category="10" data-rating="1">Flat, one‑dimensional characters</td>
-                <td data-category="10" data-rating="2">Some traits are evident</td>
-                <td data-category="10" data-rating="3">Well‑developed with clear motivations</td>
-                <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
-                <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
-                <td data-category="11" data-rating="2">Some lines feel genuine</td>
-                <td data-category="11" data-rating="3">Dialogue flows naturally</td>
-                <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World‑Building</td>
-                <td data-category="12" data-rating="1">Vague setting with little detail</td>
-                <td data-category="12" data-rating="2">Some descriptive elements</td>
-                <td data-category="12" data-rating="3">Engaging and immersive world‑building</td>
-                <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
-                <td data-category="13" data-rating="1">Story drags; uneven pace</td>
-                <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
-                <td data-category="13" data-rating="3">Generally well‑paced</td>
-                <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
+                <td class="category-header" data-category="9" title="Smooth pacing holds viewer attention.">Pacing &amp; Rhythm</td>
+                <td data-category="9" data-rating="1">Uneven pacing; segments linger too long or abruptly cut.</td>
+                <td data-category="9" data-rating="2">Mostly smooth transitions but with occasional slow or rushed sections.</td>
+                <td data-category="9" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
+                <td data-category="9" data-rating="4">Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.</td>
               </tr>
             </tbody>
           </table>
         </div>
-
         <!-- Human Feedback Section -->
         <div class="glass-panel input-section" id="humanFeedbackSection">
           <h2>👥 Human Feedback</h2>
-          <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
-        </div>
-
-        <!-- Peer Reviews Section -->
-        <div class="glass-panel input-section" id="peerReviewSection">
-          <h2>💬 Peer Reviews</h2>
-          <input type="text" id="peerReviewUsername" placeholder="Enter your username..." />
-          <textarea id="peerReviewInput" class="story-input" placeholder="Enter your peer review comment..."></textarea>
-          <button class="btn" onclick="submitPeerReview()">Submit Peer Review</button>
-          <ul id="peerReviewList" class="peer-review-list"></ul>
+          <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 80px;"></textarea>
         </div>
       </div>
     </main>
 
-    <!-- --------------------------------------------------------------
-         JavaScript (Functionality remains the same)
-         -------------------------------------------------------------- -->
+    <!-- JavaScript -->
     <script>
-      /***************************************************
-       * Global Variables & Improvement Tips (Non‑AI)
-       ***************************************************/
-      const improvementTips = {
-        0: {
-          1: "Open with a strong statement or an immediate action scene.",
-          2: "The hook is basic; try adding an element of mystery.",
-          3: "A good opener—consider quick visuals to amplify impact.",
-          4: "Outstanding start! Maintain the tension right from the beginning."
-        },
-        1: {
-          1: "Establish a clear goal earlier in the story.",
-          2: "Tie the narrative back to the goal more frequently.",
-          3: "Good clarity—ensure minor tangents don’t distract.",
-          4: "Crystal‑clear premise—every part drives toward the goal!"
-        },
-        2: {
-          1: "Cut out slow sections or excessive filler.",
-          2: "Insert mini‑challenges to sustain engagement.",
-          3: "Strong pacing; consider segmenting the story for clarity.",
-          4: "Masterful tension and reveals keep the audience hooked."
-        },
-        3: {
-          1: "Bring more natural personality into the narrative.",
-          2: "Include behind‑the‑scenes or personal anecdotes.",
-          3: "Great authenticity—continue showcasing genuine moments.",
-          4: "Flawlessly real; the audience truly connects with the narrative."
-        },
-        4: {
-          1: "Build stronger emotional beats and turning points.",
-          2: "Include a resolution or reflective conclusion.",
-          3: "Solid emotional arc; a final lesson could enhance impact.",
-          4: "Masterful peaks and valleys—each emotion is perfectly paced."
-        },
-        5: {
-          1: "Increase tension or introduce meaningful challenges.",
-          2: "Raise the stakes with time constraints or higher risks.",
-          3: "The consequences feel real—good work!",
-          4: "Peak drama—conflict drives the narrative powerfully."
-        },
-        6: {
-          1: "Consider a direct, engaging call‑to‑action.",
-          2: "Link your CTA more closely to the story’s theme.",
-          3: "A creative CTA that spurs interaction is effective.",
-          4: "A compelling, emotionally resonant CTA stands out."
-        },
-        7: {
-          1: "Blend niche trends with your unique voice.",
-          2: "Experiment with fresh angles on popular trends.",
-          3: "Your originality is clear—keep innovating.",
-          4: "Bold and innovative; you’re setting new trends!"
-        },
-        8: {
-          1: "Add distinctive or humorous moments for replay value.",
-          2: "Introduce surprising scenes that spark shareability.",
-          3: "The content is highly shareable—well done!",
-          4: "Viral potential maximized with perfectly timed moments."
-        },
-        9: {
-          1: "Incorporate consistent on‑screen branding elements.",
-          2: "A brief brand intro or recurring motif can help.",
-          3: "Your brand is consistent and recognizable.",
-          4: "Iconic branding—immediately identifiable and memorable."
-        },
-        10: {
-          1: "Characters feel flat; consider adding backstory.",
-          2: "Some character traits show, but depth is needed.",
-          3: "Well‑developed characters with clear motivations.",
-          4: "Rich, evolving characters that deeply captivate the reader."
-        },
-        11: {
-          1: "Dialogue sounds forced; work on a more natural tone.",
-          2: "Some dialogue rings true, but consistency is key.",
-          3: "Dialogue flows naturally and feels genuine.",
-          4: "Exceptional dialogue that perfectly captures each voice."
-        },
-        12: {
-          1: "The setting is vague; add more descriptive details.",
-          2: "World‑building is present but could be more immersive.",
-          3: "Engaging descriptions that draw the reader in.",
-          4: "Exceptionally vivid world‑building with intricate detail."
-        },
-        13: {
-          1: "Story pacing feels uneven; tighten slow sections.",
-          2: "Some parts drag—review transitions and scene lengths.",
-          3: "Generally well‑paced with only minor adjustments needed.",
-          4: "Flawless pacing that maintains tension and flow."
-        }
-      };
-
-      // Store rubric scores (categories 0‑13)
+      // Store rubric scores (categories 0‑9)
       let scores = {};
 
-      // Peer reviews array
-      let peerReviews = [];
-
-      /***************************************************
-       * Event Listeners and Initialization
-       ***************************************************/
       document.addEventListener('DOMContentLoaded', () => {
-        // Rubric cell click events
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
         });
-        // Auto‑resize textareas for all .story-input elements
         document.querySelectorAll('.story-input').forEach(textarea => {
           textarea.addEventListener('input', autoResize);
         });
       });
 
-      /***************************************************
-       * Rubric Score Functions
-       ***************************************************/
       function selectRating(cell) {
         const categoryIndex = Number(cell.getAttribute('data-category'));
         const rating = parseInt(cell.getAttribute('data-rating'));
@@ -633,12 +535,11 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        if (Object.keys(scores).length < 14) {
+        if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
           return;
         }
-        // Thresholds for maximum score of 56:
         if (total < 29) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
@@ -663,225 +564,10 @@
         document.getElementById("progressBar").style.width = percentage + "%";
       }
 
-      /***************************************************
-       * Auto‑Resize Textareas
-       ***************************************************/
       function autoResize(e) {
         const textarea = e.target;
         textarea.style.height = 'auto';
         textarea.style.height = textarea.scrollHeight + 'px';
-      }
-
-      /***************************************************
-       * AI Review Function
-       ***************************************************/
-      function runAIReview() {
-        const summary = document.getElementById('quickSummary').value.trim();
-        const resultDiv = document.getElementById('aiReviewResult');
-        if (!summary) {
-          resultDiv.textContent = "Please enter a quick summary for AI review.";
-          return;
-        }
-        
-        const reviewIdeas = [
-          {
-            improvements: [
-              "Clarify the central conflict by explicitly stating the stakes involved.",
-              "Deepen your protagonist's motivation by highlighting internal dilemmas.",
-              "Refine the narrative structure to better build suspense."
-            ],
-            suggestions: [
-              "Revise the opening to immediately hook the viewer with a strong inciting incident.",
-              "Emphasize a pivotal moment that clearly transitions the story toward its climax."
-            ]
-          },
-          {
-            improvements: [
-              "Strengthen the emotional resonance by providing more backstory.",
-              "Ensure that every plot twist reinforces the overall theme.",
-              "Adjust the pacing to allow critical moments to breathe."
-            ],
-            suggestions: [
-              "Introduce a memorable tagline that encapsulates your video's core message.",
-              "Highlight a transformative moment that challenges the status quo."
-            ]
-          },
-          {
-            improvements: [
-              "Focus on the uniqueness of your concept by underlining its innovative elements.",
-              "Elaborate on the conflict to give viewers a clear sense of the story's stakes.",
-              "Polish the narrative flow to create a more immersive experience."
-            ],
-            suggestions: [
-              "Rework the summary’s introduction to better reflect your video's distinct style.",
-              "Include a succinct conclusion that leaves the audience with a lingering thought."
-            ]
-          }
-        ];
-        
-        const randomIndex = Math.floor(Math.random() * reviewIdeas.length);
-        const reviewSet = reviewIdeas[randomIndex];
-        
-        const summaryWords = summary.split(" ");
-        const summaryPreview = summaryWords.slice(0, 10).join(" ") + (summaryWords.length > 10 ? "..." : "");
-        
-        let reviewHTML = "<h3>🤖 AI Story Review</h3>";
-        reviewHTML += `<p>Based on your concept: "<em>${summaryPreview}</em>", consider the following ideas:</p>`;
-        reviewHTML += "<h4>Three Specific Improvements:</h4>";
-        reviewHTML += "<ol>";
-        reviewSet.improvements.forEach(item => {
-          reviewHTML += `<li>${item}</li>`;
-        });
-        reviewHTML += "</ol>";
-        reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
-        reviewHTML += "<ol>";
-        reviewSet.suggestions.forEach(item => {
-          reviewHTML += `<li>${item}</li>`;
-        });
-        reviewHTML += "</ol>";
-        
-        resultDiv.innerHTML = reviewHTML;
-      }
-
-      /***************************************************
-       * Peer Review Functions
-       ***************************************************/
-      function submitPeerReview() {
-        const username = document.getElementById('peerReviewUsername').value.trim();
-        const reviewInput = document.getElementById('peerReviewInput');
-        const reviewText = reviewInput.value.trim();
-        if (!username) {
-          alert("Please enter your username for the peer review.");
-          return;
-        }
-        if (!reviewText) return;
-        peerReviews.push({ username: username, text: reviewText });
-        updatePeerReviews();
-        reviewInput.value = '';
-      }
-      function updatePeerReviews() {
-        const peerReviewList = document.getElementById('peerReviewList');
-        peerReviewList.innerHTML = peerReviews.map(rev =>
-          `<li>${rev.username}: ${rev.text}</li>`
-        ).join('');
-      }
-
-      /***************************************************
-       * Similar Videos Functions
-       ***************************************************/
-      function getYouTubeVideoId(url) {
-        const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = url.match(regExp);
-        if (match && match[2].length == 11) {
-          return match[2];
-        } else {
-          return null;
-        }
-      }
-      
-      function addYouTubeVideo() {
-        const url = document.getElementById('youtubeLinkInput').value.trim();
-        if (!url) return;
-        const videoId = getYouTubeVideoId(url);
-        if (!videoId) {
-          alert('Invalid YouTube URL. Please enter a valid URL.');
-          return;
-        }
-        const title = prompt("Enter the video title:");
-        const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
-        
-        const videoLink = document.createElement('a');
-        videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
-        videoLink.target = '_blank';
-        const img = document.createElement('img');
-        img.src = thumbnailUrl;
-        img.alt = title || 'YouTube Video Thumbnail';
-        videoLink.appendChild(img);
-        
-        const thumbContainer = document.createElement('div');
-        thumbContainer.className = 'video-thumbnail';
-        thumbContainer.appendChild(videoLink);
-        
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'video-title';
-        titleDiv.textContent = title || '';
-        thumbContainer.appendChild(titleDiv);
-        
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-btn';
-        removeBtn.textContent = "❌";
-        removeBtn.title = "Remove this video";
-        removeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          thumbContainer.remove();
-        });
-        thumbContainer.appendChild(removeBtn);
-        
-        document.getElementById('similarVideosList').appendChild(thumbContainer);
-        document.getElementById('youtubeLinkInput').value = '';
-      }
-
-      /***************************************************
-       * Simulated Grammar Check (Now Checks Quick Summary)
-       ***************************************************/
-      function checkGrammar() {
-        const summaryText = document.getElementById('quickSummary').value;
-        let message = "Grammar check complete. ";
-        if (!summaryText.trim()) {
-          message += "No content to analyze.";
-        } else if (summaryText.split(' ').length < 20) {
-          message += "Content is too short for an in‑depth analysis.";
-        } else {
-          message += "Your grammar and style appear solid, but consider varying sentence lengths and checking for passive voice.";
-        }
-        document.getElementById('aiReviewResult').textContent = message;
-      }
-
-      /***************************************************
-       * Export Functions (PDF & PNG)
-       ***************************************************/
-      async function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        const elements = [ document.querySelector('header.analyzer-header') ];
-        if(document.getElementById('quickSummary').value.trim() !== "") {
-          elements.push(document.getElementById('quickSummarySection'));
-        }
-        if(document.getElementById('similarVideosList').childElementCount > 0) {
-          elements.push(document.getElementById('similarVideosSection'));
-        }
-        if(document.getElementById('aiReviewResult').innerHTML.trim() !== "") {
-          elements.push(document.getElementById('aiReviewSection'));
-        }
-        if(Object.keys(scores).length > 0) {
-          elements.push(document.getElementById('rubricSection'));
-        }
-        if(document.getElementById('humanFeedback').value.trim() !== "") {
-          elements.push(document.getElementById('humanFeedbackSection'));
-        }
-        if(document.getElementById('peerReviewList').children.length > 0) {
-          elements.push(document.getElementById('peerReviewSection'));
-        }
-        let yPos = 10;
-        try {
-          for (const element of elements) {
-            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-            const imgData = canvas.toDataURL('image/png');
-            const imgProps = doc.getImageProperties(imgData);
-            const pdfWidth = doc.internal.pageSize.getWidth() - 20;
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            if (yPos + pdfHeight > doc.internal.pageSize.getHeight()) {
-              doc.addPage();
-              yPos = 10;
-            }
-            doc.addImage(imgData, 'PNG', 10, yPos, pdfWidth, pdfHeight);
-            yPos += pdfHeight + 10;
-          }
-          doc.save('storycraft-analysis-report.pdf');
-        } catch (error) {
-          console.error('PDF generation failed:', error);
-          alert('Error generating PDF. Please try again.');
-        }
       }
 
       async function exportPNG() {
@@ -889,26 +575,20 @@
         const originalPosition = header.style.position;
         header.style.position = 'static';
         const elements = [ header ];
-        if(document.getElementById('quickSummary').value.trim() !== "") {
+        if (document.getElementById('quickSummary').value.trim() !== "") {
           elements.push(document.getElementById('quickSummarySection'));
         }
-        if(document.getElementById('similarVideosList').childElementCount > 0) {
+        if (document.getElementById('similarVideosList').childElementCount > 0) {
           elements.push(document.getElementById('similarVideosSection'));
         }
-        if(document.getElementById('aiReviewResult').innerHTML.trim() !== "") {
-          elements.push(document.getElementById('aiReviewSection'));
-        }
-        if(Object.keys(scores).length > 0) {
+        if (Object.keys(scores).length > 0) {
           elements.push(document.getElementById('rubricSection'));
         }
-        if(document.getElementById('humanFeedback').value.trim() !== "") {
+        if (document.getElementById('humanFeedback').value.trim() !== "") {
           elements.push(document.getElementById('humanFeedbackSection'));
         }
-        if(document.getElementById('peerReviewList').children.length > 0) {
-          elements.push(document.getElementById('peerReviewSection'));
-        }
         const tempContainer = document.createElement('div');
-        tempContainer.style.background = var(--bg-light);
+        tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
         elements.forEach(el => {
           const clone = el.cloneNode(true);
@@ -932,25 +612,23 @@
         header.style.position = originalPosition;
       }
 
-      /***************************************************
-       * Reset Function
-       ***************************************************/
       function resetScores() {
         scores = {};
         document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
-        ['quickSummary','humanFeedback'].forEach(id => {
+        ['quickSummary', 'humanFeedback'].forEach(id => {
           document.getElementById(id).value = '';
         });
         document.getElementById('ranking').textContent = 'Incomplete';
         document.getElementById('ranking').style.color = '#64748b';
-        document.getElementById('peerReviewList').innerHTML = '';
         document.getElementById('similarVideosList').innerHTML = '';
-        peerReviews = [];
       }
-      
-      // (Optional) If you wish to toggle preview, add your implementation here.
-      function togglePreview() {
-        alert("Toggle Preview functionality is not implemented in this demo.");
+
+      function toggleTheme(input) {
+        if (input.checked) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
       }
     </script>
   </body>
