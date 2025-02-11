@@ -82,7 +82,7 @@
 
       /* Tooltip for score */
       .total-score:hover::after {
-        content: "Your thumbnail is rated on 11 factors, each up to 4 points.\A If you're capping at 40, ignore the extra row.\A36–40: Outstanding\A30–35: Excellent\A20–29: Great\A<19: Good";
+        content: "Your thumbnail is rated on 11 factors, each up to 4 points, for a total of 44.\A40–44: Outstanding\A30–39: Excellent\A20–29: Great\A<20: Good";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -99,7 +99,7 @@
       header.analyzer-header {
         position: sticky;
         top: 0;
-        z-index: 2000; /* always on top */
+        z-index: 2000;
         padding: 1.5rem 2rem;
         margin-bottom: 1.5rem;
         display: flex;
@@ -145,7 +145,7 @@
         gap: 1rem;
       }
 
-      /* Dark Mode Slider */
+      /* Dark Mode Toggle */
       .dark-mode-label {
         cursor: pointer;
         display: inline-flex;
@@ -542,8 +542,8 @@
            class="home-btn" aria-label="Home">🏠
         </a>
         <div class="total-score" 
-             title="Your thumbnail is rated on 11 factors, each up to 4 points. 36–40: Outstanding, 30–35: Excellent, 20–29: Great, <19: Good">
-          Score: <span id="total">0</span>/40 – 
+             title="Your thumbnail is rated on 11 factors, each up to 4 points, for a total of 44. 40–44: Outstanding, 30–39: Excellent, 20–29: Great, <20: Good">
+          Score: <span id="total">0</span>/44 – 
           <span id="scoreLabel">Good</span>
         </div>
         <!-- Progress Bar -->
@@ -673,7 +673,7 @@
 
       <!-- MAIN CONTENT (Rubric & Insights) -->
       <main class="main-content">
-        <!-- 11-Row Rubric Table with data-category & data-rating -->
+        <!-- 11-Row Rubric Table with data-category & data-rating, BOLD category text -->
         <section class="rubric-table glass-panel">
           <table class="modern-table">
             <thead>
@@ -688,8 +688,8 @@
             <tbody>
               <!-- 1: Curiosity & Intrigue (cat-0) -->
               <tr>
-                <td class="category-header" data-category="0">
-                  🤔 Curiosity &amp; Intrigue
+                <td data-category="0">
+                  <strong>🤔 Curiosity &amp; Intrigue</strong>
                 </td>
                 <td data-category="0" data-rating="1" role="button" tabindex="0">
                   Offers something interesting; mild curiosity
@@ -701,22 +701,22 @@
                   Strongly compels viewers to see what happens next; hints at a bigger story
                 </td>
                 <td data-category="0" data-rating="4" role="button" tabindex="0">
-                  Creates an <em>irresistible</em> need to know; viewers feel they <strong>must</strong> click
+                  Creates an <em>irresistible</em> need to know; must click
                 </td>
               </tr>
               <!-- 2: Main Subject Clarity (cat-1) -->
               <tr>
-                <td class="category-header" data-category="1">
-                  👀 Main Subject Clarity
+                <td data-category="1">
+                  <strong>👀 Main Subject Clarity</strong>
                 </td>
                 <td data-category="1" data-rating="1" role="button" tabindex="0">
-                  Has a central image or subject, but may be slightly cluttered
+                  Has a subject, but somewhat cluttered
                 </td>
                 <td data-category="1" data-rating="2" role="button" tabindex="0">
-                  Subject is recognizable at a glance
+                  Recognizable at a glance
                 </td>
                 <td data-category="1" data-rating="3" role="button" tabindex="0">
-                  Clear focal point with minimal distractions
+                  Clear focal point; minimal distractions
                 </td>
                 <td data-category="1" data-rating="4" role="button" tabindex="0">
                   Crystal-clear subject; zero clutter
@@ -724,62 +724,62 @@
               </tr>
               <!-- 3: Human Element & Emotion (cat-2) -->
               <tr>
-                <td class="category-header" data-category="2">
-                  😀 Human Element &amp; Emotion
+                <td data-category="2">
+                  <strong>😀 Human Element &amp; Emotion</strong>
                 </td>
                 <td data-category="2" data-rating="1" role="button" tabindex="0">
-                  Shows a person/character but emotion is understated
+                  Person/character shown; emotion understated
                 </td>
                 <td data-category="2" data-rating="2" role="button" tabindex="0">
                   Noticeable expression or emotive face
                 </td>
                 <td data-category="2" data-rating="3" role="button" tabindex="0">
-                  Clear emotional reaction; helps convey excitement or tone
+                  Clear emotional reaction; conveys excitement/tone
                 </td>
                 <td data-category="2" data-rating="4" role="button" tabindex="0">
-                  Exudes a <em>magnetic</em> emotional pull; expression alone intrigues
+                  <em>Magnetic</em> emotional pull; expression intrigues viewers
                 </td>
               </tr>
               <!-- 4: Game Context Clarity (cat-3) -->
               <tr>
-                <td class="category-header" data-category="3">
-                  🎮 Game Context Clarity
+                <td data-category="3">
+                  <strong>🎮 Game Context Clarity</strong>
                 </td>
                 <td data-category="3" data-rating="1" role="button" tabindex="0">
-                  Somewhat indicates which game; not entirely obvious
+                  Some indication of the game; not obvious
                 </td>
                 <td data-category="3" data-rating="2" role="button" tabindex="0">
-                  Viewers can identify the game from key elements
+                  Game identifiable from key elements
                 </td>
                 <td data-category="3" data-rating="3" role="button" tabindex="0">
-                  Game context is immediately clear; iconic visuals or text
+                  Instantly clear which game; iconic visuals
                 </td>
                 <td data-category="3" data-rating="4" role="button" tabindex="0">
-                  Instantly unmistakable for the game; draws in fans/new viewers
+                  Unmistakable context; draws fans & new viewers
                 </td>
               </tr>
               <!-- 5: Title-Thumbnail Synergy (cat-4) -->
               <tr>
-                <td class="category-header" data-category="4">
-                  🔗 Title-Thumbnail Synergy
+                <td data-category="4">
+                  <strong>🔗 Title-Thumbnail Synergy</strong>
                 </td>
                 <td data-category="4" data-rating="1" role="button" tabindex="0">
-                  Loosely connects with the title; might repeat words
+                  Loosely connected; might repeat words
                 </td>
                 <td data-category="4" data-rating="2" role="button" tabindex="0">
-                  Reasonable “hook”; complementary to the title
+                  Reasonable hook; complements the title
                 </td>
                 <td data-category="4" data-rating="3" role="button" tabindex="0">
-                  Adds unique intrigue; forms a compelling mini-story
+                  Adds unique intrigue; compelling mini-story
                 </td>
                 <td data-category="4" data-rating="4" role="button" tabindex="0">
-                  Seamless synergy; an <em>unforgettable</em> hook demands a click
+                  <em>Unforgettable</em> synergy; demands a click
                 </td>
               </tr>
               <!-- 6: Simplicity & Focus (cat-5) -->
               <tr>
-                <td class="category-header" data-category="5">
-                  👌 Simplicity &amp; Focus
+                <td data-category="5">
+                  <strong>👌 Simplicity &amp; Focus</strong>
                 </td>
                 <td data-category="5" data-rating="1" role="button" tabindex="0">
                   Slightly busy; minor unnecessary elements
@@ -788,7 +788,7 @@
                   Fairly clean layout; main visual stands out
                 </td>
                 <td data-category="5" data-rating="3" role="button" tabindex="0">
-                  Focused design with just enough detail
+                  Focused design with enough detail
                 </td>
                 <td data-category="5" data-rating="4" role="button" tabindex="0">
                   Perfectly minimal; every element is purposeful
@@ -796,26 +796,26 @@
               </tr>
               <!-- 7: Color & Contrast (cat-6) -->
               <tr>
-                <td class="category-header" data-category="6">
-                  🌈 Color &amp; Contrast
+                <td data-category="6">
+                  <strong>🌈 Color &amp; Contrast</strong>
                 </td>
                 <td data-category="6" data-rating="1" role="button" tabindex="0">
-                  Decent colors; subject might blend into background
+                  Decent colors; subject might blend in
                 </td>
                 <td data-category="6" data-rating="2" role="button" tabindex="0">
-                  Solid contrast; draws attention to main subject
+                  Solid contrast; main subject stands out
                 </td>
                 <td data-category="6" data-rating="3" role="button" tabindex="0">
-                  Bold, vibrant palette; subject pops clearly
+                  Bold, vibrant palette; subject pops
                 </td>
                 <td data-category="6" data-rating="4" role="button" tabindex="0">
-                  Masterful color usage; <em>radiates</em> off the feed
+                  Masterful usage; <em>radiates</em> off the feed
                 </td>
               </tr>
               <!-- 8: Composition & Layout (cat-7) -->
               <tr>
-                <td class="category-header" data-category="7">
-                  📐 Composition &amp; Layout
+                <td data-category="7">
+                  <strong>📐 Composition &amp; Layout</strong>
                 </td>
                 <td data-category="7" data-rating="1" role="button" tabindex="0">
                   Somewhat even placement; minor overlaps
@@ -824,7 +824,7 @@
                   Balanced layout; no major overlaps
                 </td>
                 <td data-category="7" data-rating="3" role="button" tabindex="0">
-                  Polished composition; eye flows to main subject first
+                  Polished composition; main subject first
                 </td>
                 <td data-category="7" data-rating="4" role="button" tabindex="0">
                   Flawless design; top-tier visual hierarchy
@@ -832,44 +832,44 @@
               </tr>
               <!-- 9: Text Usage (If Any) (cat-8) -->
               <tr>
-                <td class="category-header" data-category="8">
-                  📝 Text Usage (If Any)
+                <td data-category="8">
+                  <strong>📝 Text Usage (If Any)</strong>
                 </td>
                 <td data-category="8" data-rating="1" role="button" tabindex="0">
-                  Text may be too long, too small, or repeats title
+                  May be too long, small, or repeats title
                 </td>
                 <td data-category="8" data-rating="2" role="button" tabindex="0">
-                  Short, legible text that adds mild intrigue
+                  Short, legible text; mild intrigue
                 </td>
                 <td data-category="8" data-rating="3" role="button" tabindex="0">
-                  Minimal text, bold &amp; clear; complements title
+                  Minimal, bold &amp; clear; complements title
                 </td>
                 <td data-category="8" data-rating="4" role="button" tabindex="0">
-                  A <em>powerful teaser</em>; few words in a striking font
+                  <em>Powerful teaser</em>; striking font
                 </td>
               </tr>
               <!-- 10: Authenticity & Accuracy (cat-9) -->
               <tr>
-                <td class="category-header" data-category="9">
-                  ✅ Authenticity &amp; Accuracy
+                <td data-category="9">
+                  <strong>✅ Authenticity &amp; Accuracy</strong>
                 </td>
                 <td data-category="9" data-rating="1" role="button" tabindex="0">
                   Mostly relevant; mild exaggeration
                 </td>
                 <td data-category="9" data-rating="2" role="button" tabindex="0">
-                  Accurate representation with slight hype
+                  Accurate with slight hype
                 </td>
                 <td data-category="9" data-rating="3" role="button" tabindex="0">
-                  Fully aligned; no misleading visuals
+                  Fully aligned; no misleading
                 </td>
                 <td data-category="9" data-rating="4" role="button" tabindex="0">
-                  100% honest yet highly enticing; builds trust
+                  100% honest yet enticing
                 </td>
               </tr>
               <!-- 11: Technical Quality (cat-10) -->
               <tr>
-                <td class="category-header" data-category="10">
-                  💎 Technical Quality
+                <td data-category="10">
+                  <strong>💎 Technical Quality</strong>
                 </td>
                 <td data-category="10" data-rating="1" role="button" tabindex="0">
                   Decent resolution; could be sharper
@@ -878,7 +878,7 @@
                   Clear, properly formatted; not pixelated
                 </td>
                 <td data-category="10" data-rating="3" role="button" tabindex="0">
-                  High-res, crisp visuals; excellent lighting
+                  High-res, crisp; excellent lighting
                 </td>
                 <td data-category="10" data-rating="4" role="button" tabindex="0">
                   Superbly sharp, vibrant, pro-level
@@ -910,7 +910,7 @@
               <strong>Title-Thumbnail Synergy:</strong> Complement the title’s promise; don’t just repeat it.
             </p>
             <p>
-              <strong>Simplicity &amp; Focus:</strong> Minimize clutter; highlight what matters most, even at small sizes.
+              <strong>Simplicity &amp; Focus:</strong> Minimize clutter; highlight what matters most.
             </p>
             <p>
               <strong>Color &amp; Contrast:</strong> Bold, complementary colors help thumbnails stand out.
@@ -919,21 +919,21 @@
               <strong>Composition &amp; Layout:</strong> Balanced placement draws the eye to key elements.
             </p>
             <p>
-              <strong>Text Usage (If Any):</strong> Keep text legible, minimal, and purposeful—avoid repeating the title.
+              <strong>Text Usage (If Any):</strong> Keep text legible, minimal, and purposeful.
             </p>
             <p>
-              <strong>Authenticity &amp; Accuracy:</strong> Don’t mislead viewers; trust is crucial for long-term engagement.
+              <strong>Authenticity &amp; Accuracy:</strong> Don’t mislead viewers; trust is crucial.
             </p>
             <p>
-              <strong>Technical Quality:</strong> High resolution, correct aspect ratio, crisp lighting, and no pixelation.
+              <strong>Technical Quality:</strong> High resolution, correct aspect ratio, crisp lighting, no pixelation.
             </p>
 
             <h5>Rating Levels</h5>
             <ul>
-              <li><strong>Good (1):</strong> Meets minimal requirements; weak design/impact. Improve contrast &amp; clarity.</li>
-              <li><strong>Great (2):</strong> Some effective elements, but still unrefined. Focus on brand alignment.</li>
-              <li><strong>Excellent (3):</strong> Highly effective design, clear focal point, and easy to read text.</li>
-              <li><strong>Outstanding (4):</strong> Flawless and compelling. Keep refining advanced techniques.</li>
+              <li><strong>Good (1):</strong> Meets minimal requirements; weak design/impact.</li>
+              <li><strong>Great (2):</strong> Some effective elements, still unrefined. Improve brand alignment.</li>
+              <li><strong>Excellent (3):</strong> Highly effective design, clear focal point, easy to read text.</li>
+              <li><strong>Outstanding (4):</strong> Flawless and compelling; advanced techniques used well.</li>
             </ul>
           </div>
         </section>
@@ -1009,9 +1009,8 @@
           <li>Enter your video title; previews update live.</li>
           <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
           <li>Click any preview (including the main upload image) to enlarge it.</li>
-          <li>Rate your thumbnail on each row (Good→Outstanding). Watch your score update.</li>
-          <li>Provide feedback using the Human and AI boxes if desired.</li>
-          <li>Review the Design Insights for auto‑analysis of colors, composition, etc.</li>
+          <li>Rate your thumbnail on each row (Good→Outstanding). Watch your /44 score update.</li>
+          <li>Provide feedback if desired. Check the auto insights for composition and color tips.</li>
           <li>Export a snapshot of your entire analysis as a PNG if needed.</li>
         </ul>
       </div>
@@ -1058,6 +1057,7 @@
       const SAMPLE_STEP = 16;
       let milestoneTriggered = {}; // track messages at certain scores
 
+      // Adjust these milestone messages as desired
       const milestoneMessages = {
         10: "Almost there—keep going!",
         20: "Great progress!",
@@ -1128,7 +1128,7 @@
        * Rubric: updateTotal
        ***************************************************/
       function updateTotal() {
-        // Sum all category scores
+        // Sum all category scores (up to 44)
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
 
@@ -1138,13 +1138,13 @@
           document.getElementById('scoreLabel').textContent = "REJECTED";
           document.getElementById('ranking').textContent = "Rejected";
           document.getElementById('ranking').style.color = '#ef4444';
-          updateProgressBar(total);
+          updateProgressBar(total, 44);
           return;
         }
 
         // Otherwise normal flow
         let label = "";
-        if (total >= 36) {
+        if (total >= 40) {
           label = "Outstanding";
           if (!confettiShown) {
             confetti({
@@ -1184,7 +1184,7 @@
         } else if (total <= 29) {
           ranking.textContent = 'Great! 🟢';
           ranking.style.color = '#22c55e';
-        } else if (total <= 35) {
+        } else if (total <= 39) {
           ranking.textContent = 'Excellent 🟡';
           ranking.style.color = '#eab308';
         } else {
@@ -1193,11 +1193,11 @@
           progressAudio.victory.play();
         }
 
-        updateProgressBar(total);
+        updateProgressBar(total, 44);
       }
 
-      function updateProgressBar(total) {
-        const percentage = (total / 40) * 100;
+      function updateProgressBar(total, maxPoints) {
+        const percentage = (total / maxPoints) * 100;
         const bar = document.getElementById("progressBar");
         bar.style.width = percentage + "%";
 
@@ -1635,10 +1635,10 @@
         }
       });
       function triggerEasterEgg() {
-        confetti({ 
-          particleCount: 200, 
-          spread: 100, 
-          origin: { y: 0.3 } 
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.3 }
         });
         alert("🎉 You found the secret easter egg! Keep being awesome and enjoy coding!");
       }
