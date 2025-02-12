@@ -19,17 +19,19 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 
     <style>
-      /* -- DARK THEME (DEFAULT) with Slime Vibes -- */
+      /* ---------------------------- */
+      /* THEME & GLOBAL STYLES        */
+      /* ---------------------------- */
       :root {
-        --bg-color: #121212;
-        --text-color: #e0e0e0;
-        --panel-bg: #1e1e1e;
+        --bg-color: #121212;         /* Dark background */
+        --text-color: #e0e0e0;         /* Light text */
+        --panel-bg: #1e1e1e;           /* Panels and headers */
         --border-color: #333333;
         --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         --transition: all 0.3s ease;
         --radius: 8px;
         /* Slime green accent */
-        --primary-color: #a3ff12;
+        --primary-color: #a3ff12;       /* Vibrant slime‑lime green */
         --button-bg: #a3ff12;
         --button-text: #121212;
         --table-cell-bg: #1e1e1e;
@@ -46,7 +48,6 @@
         --button-text: #121212;
         --table-cell-bg: #ffffff;
       }
-      /* GLOBAL STYLES */
       body {
         margin: 0;
         padding: 0;
@@ -56,7 +57,9 @@
         transition: var(--transition);
         line-height: 1.6;
       }
-      /* HEADER */
+      /* ---------------------------- */
+      /* HEADER & CONTROLS            */
+      /* ---------------------------- */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -86,7 +89,6 @@
       .status-indicator {
         font-weight: 600;
       }
-      /* BUTTONS with Organic Slime Drips */
       .btn {
         position: relative;
         overflow: visible;
@@ -141,7 +143,6 @@
           opacity: 0;
         }
       }
-      /* Dark Mode Toggle Switch */
       .toggle-switch {
         display: inline-flex;
         align-items: center;
@@ -177,14 +178,15 @@
       input#darkModeToggle:checked + .toggle-slider {
         background-color: var(--primary-color);
       }
-      /* MAIN CONTAINER */
+      /* ---------------------------- */
+      /* MAIN & RUBRIC TABLE          */
+      /* ---------------------------- */
       main {
         width: 95%;
         max-width: 1200px;
         margin: 2rem auto;
         padding: 0 1rem;
       }
-      /* RUBRIC TABLE */
       .modern-table {
         width: 100%;
         border-collapse: separate;
@@ -234,7 +236,9 @@
         background: rgba(163, 255, 18, 0.4) !important;
         box-shadow: inset 4px 0 0 var(--primary-color);
       }
-      /* LEGEND & FEEDBACK */
+      /* ---------------------------- */
+      /* LEGEND & FEEDBACK            */
+      /* ---------------------------- */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
@@ -283,7 +287,9 @@
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(163, 255, 18, 0.3);
       }
-      /* PROGRESS BAR */
+      /* ---------------------------- */
+      /* PROGRESS BAR               */
+      /* ---------------------------- */
       #progressBarContainer {
         position: relative;
         width: 100%;
@@ -299,7 +305,9 @@
         border-radius: 10px;
         transition: width 0.3s ease;
       }
-      /* SLIME OVERLAY for Reset Animation with Rising & Waving Effect */
+      /* ---------------------------- */
+      /* SLIME OVERLAY for Reset      */
+      /* ---------------------------- */
       #slimeOverlay {
         position: fixed;
         bottom: 0;
@@ -318,11 +326,13 @@
         50% { background-position-y: 40px; }
         100% { background-position-y: 0; }
       }
-      /* ACHIEVEMENT NOTIFICATION (Slide-in from right) */
+      /* ---------------------------- */
+      /* ACHIEVEMENT NOTIFICATION     */
+      /* ---------------------------- */
       #achievementNotification {
         position: fixed;
         top: 20px;
-        right: -350px; /* Initially off-screen */
+        right: -350px; /* Off-screen initially */
         width: 300px;
         background: var(--panel-bg);
         border: 2px solid var(--primary-color);
@@ -344,7 +354,52 @@
         font-size: 3rem;
         margin-bottom: 0.5rem;
       }
-      /* RESPONSIVE */
+      /* ---------------------------- */
+      /* IDLE SLIME BUDDY             */
+      /* ---------------------------- */
+      #idleSlime {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        display: none;
+        align-items: center;
+        cursor: pointer;
+        z-index: 3500;
+      }
+      #idleSlime.visible {
+        display: flex;
+        animation: scoot 5s ease-in-out forwards;
+      }
+      #idleSlime .blob {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+      }
+      #idleSlime .speech {
+        background: var(--panel-bg);
+        color: var(--text-color);
+        border: 2px solid var(--primary-color);
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+      }
+      @keyframes scoot {
+        0% { transform: translateX(-100px); }
+        50% { transform: translateX(50vw); }
+        100% { transform: translateX(110vw); }
+      }
+      @keyframes pet {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+      }
+      /* ---------------------------- */
+      /* RESPONSIVE                   */
+      /* ---------------------------- */
       @media (max-width: 768px) {
         header.analyzer-header,
         main {
@@ -502,6 +557,12 @@
       <p id="achievementMessage"></p>
     </div>
 
+    <!-- IDLE SLIME BUDDY (Appears after 30s idle) -->
+    <div id="idleSlime">
+      <div class="blob"></div>
+      <div class="speech">Come back!</div>
+    </div>
+
     <!-- Audio for Achievement -->
     <audio id="achievementSound" src="achievement.mp3"></audio>
 
@@ -523,6 +584,52 @@
       // Track which achievements have been unlocked
       let unlockedAchievements = {};
       const STORAGE_KEY = "merchandiseRubricScores";
+
+      /***************************************************
+       * Idle Detection Setup
+       ***************************************************/
+      let idleTimeout;
+      function resetIdleTimer() {
+        if (idleTimeout) clearTimeout(idleTimeout);
+        hideIdleSlime();
+        idleTimeout = setTimeout(() => {
+          showIdleSlime();
+        }, 30000); // 30 seconds
+      }
+      // Listen for user activity to reset idle timer
+      document.addEventListener("mousemove", resetIdleTimer);
+      document.addEventListener("keydown", resetIdleTimer);
+      document.addEventListener("click", resetIdleTimer);
+      document.addEventListener("touchstart", resetIdleTimer);
+      resetIdleTimer();
+
+      function showIdleSlime() {
+        const idleSlime = document.getElementById("idleSlime");
+        idleSlime.classList.add("visible");
+        // After the scoot animation ends (5 seconds), hide the idle slime if still idle
+        setTimeout(() => {
+          hideIdleSlime();
+        }, 5000);
+      }
+      function hideIdleSlime() {
+        const idleSlime = document.getElementById("idleSlime");
+        idleSlime.classList.remove("visible");
+      }
+
+      // When user clicks on the idle slime, pet it!
+      document.getElementById("idleSlime").addEventListener("click", function () {
+        const blob = this.querySelector(".blob");
+        blob.style.animation = "pet 0.5s ease";
+        setTimeout(() => {
+          blob.style.animation = "";
+        }, 500);
+        const speech = this.querySelector(".speech");
+        const originalText = speech.textContent;
+        speech.textContent = "Thanks for petting me!";
+        setTimeout(() => {
+          speech.textContent = originalText;
+        }, 1000);
+      });
 
       /***************************************************
        * Initialize Rubric on DOM Load & Load Saved Data
@@ -641,15 +748,12 @@
         document.getElementById("achievementTitle").textContent = achievement.title;
         document.getElementById("achievementMessage").textContent = achievement.message;
         document.getElementById("achievementBadge").textContent = "🏆";
-        // Slide the notification in by adding the "visible" class
         notification.classList.add("visible");
-        // Play the achievement sound
         const sound = document.getElementById("achievementSound");
         if (sound) {
           sound.currentTime = 0;
           sound.play();
         }
-        // After 3 seconds, slide the notification out
         setTimeout(() => {
           notification.classList.remove("visible");
         }, 3000);
@@ -664,7 +768,7 @@
       }
 
       /***************************************************
-       * Reset Scores with a Rising & Waving Slime Animation
+       * Reset Scores with Rising & Waving Slime Animation
        ***************************************************/
       function resetScores() {
         const slimeOverlay = document.getElementById("slimeOverlay");
