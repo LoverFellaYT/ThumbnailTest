@@ -310,6 +310,27 @@
         cursor: default;
       }
 
+      /* Feedback Section Styles */
+      .feedback-section label {
+        font-weight: 600;
+      }
+      .feedback-section div {
+        margin-bottom: 1rem;
+      }
+      textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        background: var(--table-cell-bg-light);
+        font-family: var(--font-base);
+        font-size: 1rem;
+        color: var(--text-light);
+        resize: vertical;
+      }
+
       /* Fun Fact Section (Bottom) */
       .fun-fact-section {
         text-align: center;
@@ -494,6 +515,19 @@
               </tr>
             </tbody>
           </table>
+        </section>
+
+        <!-- FEEDBACK SECTION -->
+        <section class="glass-panel feedback-section" aria-labelledby="feedbackSectionHeading">
+          <h2 id="feedbackSectionHeading">Feedback</h2>
+          <div>
+            <label for="humanFeedback">Human Feedback:</label>
+            <textarea id="humanFeedback" placeholder="Enter your human feedback here..."></textarea>
+          </div>
+          <div>
+            <label for="aiFeedback">AI Feedback:</label>
+            <textarea id="aiFeedback" placeholder="Paste AI feedback here..."></textarea>
+          </div>
         </section>
 
         <!-- TITLE REVIEW RUBRIC -->
