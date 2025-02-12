@@ -318,34 +318,31 @@
         50% { background-position-y: 40px; }
         100% { background-position-y: 0; }
       }
-      /* ACHIEVEMENT MODAL */
-      #achievementModal {
+      /* ACHIEVEMENT NOTIFICATION (Slide-in from right) */
+      #achievementNotification {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 4000;
-      }
-      .achievement-content {
+        top: 20px;
+        right: -350px; /* Initially off-screen */
+        width: 300px;
         background: var(--panel-bg);
         border: 2px solid var(--primary-color);
         border-radius: var(--radius);
-        padding: 2rem;
-        text-align: center;
-        animation: popIn 0.6s ease-out;
+        padding: 1rem;
+        z-index: 4000;
+        opacity: 0;
+        transition: right 0.5s ease, opacity 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--text-color);
       }
-      @keyframes popIn {
-        0% { transform: scale(0.5); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
+      #achievementNotification.visible {
+        right: 20px;
+        opacity: 1;
       }
       .achievement-badge {
-        font-size: 4rem;
-        margin-bottom: 1rem;
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
       }
       /* RESPONSIVE */
       @media (max-width: 768px) {
@@ -359,6 +356,13 @@
         .modern-table thead th,
         .modern-table tbody td {
           padding: 0.5rem 1rem;
+        }
+        #achievementNotification {
+          width: 90%;
+          right: -100%;
+        }
+        #achievementNotification.visible {
+          right: 5%;
         }
       }
     </style>
@@ -491,13 +495,11 @@
     <!-- SLIME OVERLAY for Reset Animation (Rising & Waving Effect) -->
     <div id="slimeOverlay"></div>
 
-    <!-- ACHIEVEMENT MODAL -->
-    <div id="achievementModal">
-      <div class="achievement-content">
-        <div class="achievement-badge" id="achievementBadge">🏆</div>
-        <h2 id="achievementTitle"></h2>
-        <p id="achievementMessage"></p>
-      </div>
+    <!-- ACHIEVEMENT NOTIFICATION (Slide-In from Right) -->
+    <div id="achievementNotification">
+      <div class="achievement-badge" id="achievementBadge">🏆</div>
+      <h2 id="achievementTitle"></h2>
+      <p id="achievementMessage"></p>
     </div>
 
     <!-- Audio for Achievement -->
@@ -632,24 +634,24 @@
       }
 
       /***************************************************
-       * Show Achievement Modal with Animation & Sound
+       * Show Achievement Notification (Slide-In from Right)
        ***************************************************/
       function showAchievement(achievement) {
-        const modal = document.getElementById("achievementModal");
+        const notification = document.getElementById("achievementNotification");
         document.getElementById("achievementTitle").textContent = achievement.title;
         document.getElementById("achievementMessage").textContent = achievement.message;
-        // Optionally, change the badge (here we simply use a trophy emoji)
         document.getElementById("achievementBadge").textContent = "🏆";
-        modal.style.display = "flex";
-        // Play sound (make sure "achievement.mp3" is available in your project)
+        // Slide the notification in by adding the "visible" class
+        notification.classList.add("visible");
+        // Play the achievement sound
         const sound = document.getElementById("achievementSound");
         if (sound) {
           sound.currentTime = 0;
           sound.play();
         }
-        // Hide modal after 3 seconds
+        // After 3 seconds, slide the notification out
         setTimeout(() => {
-          modal.style.display = "none";
+          notification.classList.remove("visible");
         }, 3000);
       }
 
