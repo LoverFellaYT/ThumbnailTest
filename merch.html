@@ -88,7 +88,7 @@
       .total-score {
         font-size: 1.75rem;
         font-weight: 700;
-        /* Use flat primary color instead of a gradient */
+        /* Use flat primary color */
         color: var(--primary-color);
       }
       .status-indicator {
@@ -112,7 +112,7 @@
       .btn:hover {
         transform: translateY(-2px);
       }
-      /* Create two drip pseudo-elements with irregular blob shapes */
+      /* Organic drip pseudo-elements with irregular blob shapes */
       .btn::before,
       .btn::after {
         content: "";
@@ -215,12 +215,12 @@
         top: 0;
         z-index: 10;
       }
-      /* Category header (first column) remains neutral */
+      /* Category header remains neutral */
       .modern-table thead th:first-child {
         background: var(--panel-bg);
         color: var(--text-color);
       }
-      /* Rating headers get graduated slime-green shades */
+      /* Graduated shades for rating headers */
       .modern-table thead th:nth-child(2) {
         background: rgba(163, 255, 18, 0.5);
       }
@@ -318,18 +318,25 @@
         transition: width 0.3s ease;
       }
 
-      /* Slime overlay for reset animation */
+      /* SLIME OVERLAY for Reset Animation with Rising/Wave Effect */
       #slimeOverlay {
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
         width: 100%;
-        height: 100%;
-        background: var(--primary-color);
-        opacity: 0;
+        height: 0;
+        background: var(--primary-color) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.2" d="M0,224L48,197.3C96,171,192,117,288,117.3C384,117,480,171,576,186.7C672,203,768,181,864,149.3C960,117,1056,75,1152,69.3C1248,64,1344,96,1392,112L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat top;
+        background-size: 100% auto;
         z-index: 3000;
         pointer-events: none;
-        transition: opacity 0.8s ease-in-out;
+        transition: height 1.2s ease-in-out;
+        animation: waveFlow 2s linear infinite;
+      }
+
+      @keyframes waveFlow {
+        0% { background-position-y: 0; }
+        50% { background-position-y: 20px; }
+        100% { background-position-y: 0; }
       }
 
       /* RESPONSIVE */
@@ -476,7 +483,7 @@
       </section>
     </main>
 
-    <!-- SLIME OVERLAY for Reset Animation -->
+    <!-- SLIME OVERLAY for Reset Animation (Rising & Ebbing with Waves) -->
     <div id="slimeOverlay"></div>
 
     <!-- JAVASCRIPT -->
@@ -556,7 +563,7 @@
         if (total >= 25) {
           label = "Outstanding";
           if (!confettiShown) {
-            // Slime-splatter confetti: more particles, lower gravity and slower decay for a gooey effect
+            // Slime-splatter confetti: more particles, lower gravity, slower decay for a gooey effect
             confetti({
               particleCount: 150,
               startVelocity: 10,
@@ -619,13 +626,13 @@
       }
 
       /***************************************************
-       * Reset Scores with Slime Drowning Animation
+       * Reset Scores with a Rising & Waving Slime Animation
        ***************************************************/
       function resetScores() {
         const slimeOverlay = document.getElementById("slimeOverlay");
-        // Bring the slime overlay fully in view
-        slimeOverlay.style.opacity = "1";
-        // After 800ms (or adjust timing as desired), clear the state and then fade out the overlay
+        // Animate the overlay: set its height to 100% to simulate a rising slime level
+        slimeOverlay.style.height = "100%";
+        // After a delay, clear the state and then lower the slime level to 0 (simulating receding water)
         setTimeout(() => {
           scores = {};
           localStorage.removeItem(STORAGE_KEY);
@@ -637,9 +644,9 @@
           document.getElementById("progressBar").style.width = "0%";
           confettiShown = false;
           milestoneTriggered = {};
-          // Fade out the slime overlay
-          slimeOverlay.style.opacity = "0";
-        }, 800);
+          // Lower the slime level to 0 to complete the reset effect
+          slimeOverlay.style.height = "0";
+        }, 1800); // Adjust delay as desired
       }
 
       /***************************************************
