@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,29 +19,40 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 
     <style>
+      /* -- DARK THEME with Slime Vibes -- */
       :root {
-        --primary-color: #4facfe;
-        --accent-color: #00f2fe;
-        --bg-color: #f9fafb;
-        --text-color: #1e293b;
-        --panel-bg: rgba(255, 255, 255, 0.96);
-        --border-color: rgba(255, 255, 255, 0.2);
-        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        --bg-color: #121212;         /* Dark background */
+        --text-color: #e0e0e0;         /* Light text */
+        --panel-bg: #1e1e1e;           /* Panels and headers */
+        --border-color: #333333;
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         --transition: all 0.3s ease;
-        --radius: 14px;
-        --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-        --table-cell-bg: rgba(255, 255, 255, 0.85);
+        --radius: 8px;
+
+        /* Slime green accent */
+        --primary-color: #a3ff12;
+        --button-bg: #a3ff12;
+        --button-text: #121212;
+        --table-cell-bg: #1e1e1e;
       }
 
-      /* Dark mode variables */
-      [data-theme="dark"] {
-        --bg-color: #1f1f1f;
-        --text-color: #e2e8f0;
-        --panel-bg: rgba(30, 30, 30, 0.98);
-        --border-color: rgba(255, 255, 255, 0.2);
-        --table-cell-bg: rgba(30, 30, 30, 0.85);
+      /* Optional Light Mode Overrides */
+      [data-theme="light"] {
+        --bg-color: #f9f9f9;
+        --text-color: #333333;
+        --panel-bg: #ffffff;
+        --border-color: #cccccc;
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --radius: 8px;
+
+        /* Keep the same accent for consistency */
+        --primary-color: #a3ff12;
+        --button-bg: #a3ff12;
+        --button-text: #121212;
+        --table-cell-bg: #ffffff;
       }
 
+      /* GLOBAL STYLES */
       body {
         margin: 0;
         padding: 0;
@@ -52,7 +63,7 @@
         line-height: 1.6;
       }
 
-      /* Header styling */
+      /* HEADER */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -77,16 +88,15 @@
       .total-score {
         font-size: 1.75rem;
         font-weight: 700;
-        background: var(--gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        /* Use flat primary color instead of a gradient */
+        color: var(--primary-color);
       }
       .status-indicator {
         font-weight: 600;
       }
       .btn {
-        background: var(--gradient);
-        color: #fff;
+        background: var(--button-bg);
+        color: var(--button-text);
         border: none;
         padding: 0.6rem 1.2rem;
         border-radius: var(--radius);
@@ -98,7 +108,7 @@
       .btn:hover {
         transform: translateY(-2px);
       }
-      /* Dark mode toggle switch */
+      /* Dark Mode Toggle Switch */
       .toggle-switch {
         display: inline-flex;
         align-items: center;
@@ -106,8 +116,6 @@
       }
       .toggle-label {
         cursor: pointer;
-        display: inline-flex;
-        align-items: center;
       }
       .toggle-slider {
         position: relative;
@@ -137,7 +145,7 @@
         background-color: var(--primary-color);
       }
 
-      /* Main container styling */
+      /* MAIN CONTAINER */
       main {
         width: 95%;
         max-width: 1200px;
@@ -145,14 +153,14 @@
         padding: 0 1rem;
       }
 
-      /* Rubric Table styling */
+      /* RUBRIC TABLE */
       .modern-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
         font-family: 'Roboto', sans-serif;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        border-radius: var(--radius);
         overflow: hidden;
       }
       .modern-table thead th {
@@ -160,31 +168,31 @@
         font-weight: 600;
         position: sticky;
         top: 0;
-        backdrop-filter: blur(10px);
+        background: var(--primary-color);
+        color: var(--button-text);
         z-index: 10;
-        background: var(--gradient);
-        color: #fff;
       }
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid var(--border-color);
         background: var(--table-cell-bg);
         cursor: pointer;
         transition: var(--transition);
       }
       .modern-table tbody tr:hover td {
-        background: rgba(0, 0, 0, 0.03);
+        background: rgba(163, 255, 18, 0.2);
       }
       .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5) !important;
+        background: rgba(163, 255, 18, 0.4) !important;
         box-shadow: inset 4px 0 0 var(--primary-color);
       }
-      /* Legend and Feedback */
+
+      /* Legend & Feedback */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
-        background: var(--gradient);
-        color: #fff;
+        background: var(--primary-color);
+        color: var(--button-text);
         border: none;
         border-radius: var(--radius);
         cursor: pointer;
@@ -217,7 +225,7 @@
         max-width: 600px;
         min-height: 80px;
         padding: 0.8rem;
-        border: 2px solid #e2e8f0;
+        border: 2px solid var(--border-color);
         border-radius: var(--radius);
         font-size: 1rem;
         font-family: 'Roboto', sans-serif;
@@ -226,26 +234,27 @@
       .feedback-input:focus {
         outline: none;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        box-shadow: 0 0 0 3px rgba(163, 255, 18, 0.3);
       }
-      /* Progress Bar */
+
+      /* PROGRESS BAR */
       #progressBarContainer {
         position: relative;
         width: 100%;
         height: 20px;
-        background: #eee;
+        background: var(--border-color);
         border-radius: 10px;
         margin-top: 0.5rem;
       }
       #progressBar {
         height: 100%;
         width: 0%;
-        background: var(--gradient);
+        background: var(--primary-color);
         border-radius: 10px;
         transition: width 0.3s ease;
       }
 
-      /* Responsive adjustments */
+      /* RESPONSIVE */
       @media (max-width: 768px) {
         header.analyzer-header,
         main {
@@ -254,20 +263,23 @@
         .total-score {
           font-size: 1.5rem;
         }
-        .modern-table thead th, .modern-table tbody td {
+        .modern-table thead th,
+        .modern-table tbody td {
           padding: 0.5rem 1rem;
         }
       }
     </style>
   </head>
   <body>
-    <!-- HEADER with instructions and dark mode toggle -->
+    <!-- HEADER with instructions, dark mode toggle, and controls -->
     <header class="analyzer-header" role="banner">
       <div class="header-left">
         <div class="total-score" aria-live="polite">
           Score: <span id="total">0</span>/28 – <span id="scoreLabel">Good</span>
         </div>
-        <div class="instructions">Select a rating for each category. Your progress is saved automatically.</div>
+        <div class="instructions">
+          Select a rating for each category. Your progress is saved automatically.
+        </div>
         <div id="progressBarContainer">
           <div id="progressBar"></div>
         </div>
@@ -278,7 +290,8 @@
         <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
         <div class="toggle-switch">
           <label class="toggle-label" for="darkModeToggle">Dark Mode</label>
-          <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" onchange="toggleTheme(this)" />
+          <!-- Dark mode toggle is checked by default -->
+          <input type="checkbox" id="darkModeToggle" checked aria-label="Toggle Dark Mode" onchange="toggleTheme(this)" />
           <div class="toggle-slider">
             <div class="slider-thumb"></div>
           </div>
@@ -390,7 +403,7 @@
       /***************************************************
        * Global Variables & Local Storage Key
        ***************************************************/
-      let scores = {}; // Object to store ratings per category
+      let scores = {}; // Stores ratings per category
       const maxPoints = 28; // 7 categories x 4 points each
       let confettiShown = false;
       const milestoneMessages = {
@@ -403,14 +416,13 @@
       const STORAGE_KEY = "merchandiseRubricScores";
 
       /***************************************************
-       * Initialize Rubric on DOM Load
+       * Initialize Rubric on DOM Load & Load Saved Data
        ***************************************************/
       document.addEventListener("DOMContentLoaded", () => {
-        // Load saved scores from localStorage if available
+        // Load saved scores from localStorage, if any
         const savedScores = localStorage.getItem(STORAGE_KEY);
         if (savedScores) {
           scores = JSON.parse(savedScores);
-          // Update UI for each saved rating
           for (const [category, rating] of Object.entries(scores)) {
             const cell = document.querySelector(`td[data-category="${category}"][data-rating="${rating}"]`);
             if (cell) cell.classList.add("selected");
@@ -418,7 +430,7 @@
           updateTotal();
         }
 
-        // Add click and keyboard events for table cells
+        // Add click & key events for table cells
         document.querySelector(".modern-table").addEventListener("click", (e) => {
           const cell = e.target.closest("td[data-rating]");
           if (cell) selectRating(cell);
@@ -442,18 +454,18 @@
         const rating = parseInt(cell.getAttribute("data-rating"), 10);
         const row = cell.parentElement;
 
-        // Clear any previously selected cell in the same row
+        // Clear any previously selected cell in this row
         row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
         cell.classList.add("selected");
 
-        // Update scores and persist to localStorage
+        // Update scores and save to localStorage
         scores[category] = rating;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
         updateTotal();
       }
 
       /***************************************************
-       * Update Total Score & Ranking Display
+       * Update Total Score & Ranking
        ***************************************************/
       function updateTotal() {
         const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
@@ -481,19 +493,19 @@
         const ranking = document.getElementById("ranking");
         if (Object.keys(scores).length < 7) {
           ranking.textContent = "Incomplete";
-          ranking.style.color = "#64748b";
+          ranking.style.color = "#9e9e9e";
         } else if (total < 9) {
-          ranking.textContent = "Needs Work 🔴";
-          ranking.style.color = "#ef4444";
+          ranking.textContent = "Needs Work";
+          ranking.style.color = "#7f8c47";  // Dark olive green
         } else if (total < 17) {
-          ranking.textContent = "Great! 🟢";
-          ranking.style.color = "#22c55e";
+          ranking.textContent = "Great!";
+          ranking.style.color = "#8bc34a";  // Medium green
         } else if (total < 25) {
-          ranking.textContent = "Excellent 🟡";
-          ranking.style.color = "#eab308";
+          ranking.textContent = "Excellent";
+          ranking.style.color = "#aed581";  // Light green
         } else {
-          ranking.textContent = "Outstanding 🔵";
-          ranking.style.color = "#3b82f6";
+          ranking.textContent = "Outstanding";
+          ranking.style.color = "#a3ff12";  // Vibrant slime green
         }
         updateProgressBar(total);
       }
@@ -505,7 +517,6 @@
         const percentage = (total / maxPoints) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
 
-        // Show milestone messages if applicable
         const ranking = document.getElementById("ranking");
         if (milestoneMessages[total] && !milestoneTriggered[total]) {
           ranking.textContent = milestoneMessages[total];
@@ -517,7 +528,7 @@
       }
 
       /***************************************************
-       * Reset Scores and Clear Local Storage
+       * Reset Scores & Local Storage
        ***************************************************/
       function resetScores() {
         scores = {};
@@ -526,7 +537,7 @@
         document.getElementById("total").textContent = "0";
         document.getElementById("scoreLabel").textContent = "Good";
         document.getElementById("ranking").textContent = "Incomplete";
-        document.getElementById("ranking").style.color = "#64748b";
+        document.getElementById("ranking").style.color = "#9e9e9e";
         document.getElementById("progressBar").style.width = "0%";
         confettiShown = false;
         milestoneTriggered = {};
@@ -576,7 +587,7 @@
         if (input.checked) {
           htmlEl.setAttribute("data-theme", "dark");
         } else {
-          htmlEl.removeAttribute("data-theme");
+          htmlEl.setAttribute("data-theme", "light");
         }
       }
     </script>
