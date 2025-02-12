@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editing Review Pro+ (Unified Rubric: Idea &amp; Title)</title>
+    <title>Title &amp; Idea Review Pro</title>
 
     <!-- Font Awesome for editing icons -->
     <link
@@ -122,7 +122,7 @@
         transition: var(--transition);
       }
       .total-score:hover::after {
-        content: "Overall (0/84)";
+        content: "Idea Score (0/16) | Title Score (0/24)";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -254,13 +254,39 @@
       .modern-table thead th {
         padding: 0.75rem 1.5rem;
         font-weight: 600;
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+        z-index: 10;
         text-align: left;
+      }
+      /* Table header colors */
+      .modern-table thead th:first-child {
+        background: var(--gradient-light);
+        color: #fff;
+      }
+      .modern-table thead th:nth-child(2) {
+        background: #f87171;
+        color: #fff;
+      }
+      .modern-table thead th:nth-child(3) {
+        background: #fb923c;
+        color: #fff;
+      }
+      .modern-table thead th:nth-child(4) {
+        background: #facc15;
+        color: #fff;
+      }
+      .modern-table thead th:nth-child(5) {
+        background: #4ade80;
+        color: #fff;
       }
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: var(--transition);
         vertical-align: top;
+        cursor: pointer;
         background: var(--table-cell-bg-light);
       }
       .modern-table tbody td:hover {
@@ -361,10 +387,10 @@
       <div class="header-left">
         <div class="site-title">
           <i class="fas fa-film" aria-hidden="true"></i>
-          <span>Editing Review Pro+</span>
+          <span>Title &amp; Idea Review Pro</span>
         </div>
         <div class="total-score" id="scoreDisplay" tabindex="0">
-          Overall (<span id="scoreTotal">0</span>/84) – <span id="scoreLabel">Needs Work</span>
+          Idea Score: <span id="ideaScore">0</span>/16 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/40 – <span id="scoreLabel">Needs Work</span>
         </div>
         <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
       </div>
@@ -413,33 +439,33 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>Originality &amp; Creativity</strong></td>
-                <td>Idea is clichéd or unoriginal</td>
-                <td>Some original elements, but overall common</td>
-                <td>Original and shows creative thought</td>
-                <td>Highly innovative and groundbreaking</td>
+              <tr data-category="0">
+                <td class="category-header"><strong>Originality &amp; Creativity</strong></td>
+                <td data-rating="1">Idea is clichéd or unoriginal; it fails to present any novel perspective.</td>
+                <td data-rating="2">Idea shows some original elements, but overall it remains common and lacks distinctiveness.</td>
+                <td data-rating="3">Idea is original and demonstrates creative thought; it stands out with fresh insights.</td>
+                <td data-rating="4">Idea is highly innovative and groundbreaking; it offers a completely unique and captivating concept.</td>
               </tr>
-              <tr>
-                <td><strong>Concept Clarity &amp; Focus</strong></td>
-                <td>Vague or confusing concept</td>
-                <td>Concept is clear but lacks focus</td>
-                <td>Clearly defined and well-focused idea</td>
-                <td>Exceptionally clear, focused, and compelling</td>
+              <tr data-category="1">
+                <td class="category-header"><strong>Concept Clarity &amp; Focus</strong></td>
+                <td data-rating="1">Concept is vague or confusing, making it hard for viewers to grasp the main idea.</td>
+                <td data-rating="2">Concept is somewhat clear but lacks focus, leaving viewers unsure of the direction.</td>
+                <td data-rating="3">Concept is clearly defined and well-focused, giving viewers a strong understanding of the idea.</td>
+                <td data-rating="4">Concept is exceptionally clear, focused, and compelling, immediately capturing the viewer’s interest.</td>
               </tr>
-              <tr>
-                <td><strong>Audience Relevance</strong></td>
-                <td>Does not align with target audience</td>
-                <td>Somewhat relevant to the target audience</td>
-                <td>Strong alignment with audience interests</td>
-                <td>Perfectly tailored to captivate the target audience</td>
+              <tr data-category="2">
+                <td class="category-header"><strong>Audience Relevance</strong></td>
+                <td data-rating="1">Idea does not align with the target audience, missing the mark on what the audience wants.</td>
+                <td data-rating="2">Idea is somewhat relevant to the target audience, but its appeal is limited.</td>
+                <td data-rating="3">Idea strongly aligns with audience interests, offering content that resonates well with the target demographic.</td>
+                <td data-rating="4">Idea is perfectly tailored to captivate the target audience, ensuring maximum engagement and relevance.</td>
               </tr>
-              <tr>
-                <td><strong>Potential Impact</strong></td>
-                <td>Limited impact or appeal</td>
-                <td>Moderate potential impact</td>
-                <td>High potential to engage and inspire</td>
-                <td>Exceptional impact that can drive major success</td>
+              <tr data-category="3">
+                <td class="category-header"><strong>Potential Impact</strong></td>
+                <td data-rating="1">Idea has limited impact or appeal; it is unlikely to drive significant engagement.</td>
+                <td data-rating="2">Idea has moderate potential impact but may not stand out in a crowded space.</td>
+                <td data-rating="3">Idea has high potential to engage and inspire, promising substantial impact.</td>
+                <td data-rating="4">Idea is exceptionally impactful, with the power to drive major success and significantly engage viewers.</td>
               </tr>
             </tbody>
           </table>
@@ -459,47 +485,47 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>Relevance &amp; Honesty</strong></td>
-                <td>Loosely related or may mislead</td>
-                <td>Relates to content but slight exaggeration</td>
-                <td>Clearly reflects content and unique hook</td>
-                <td>Perfectly aligned with content, authentic promise</td>
+              <tr data-category="4">
+                <td class="category-header"><strong>Relevance &amp; Honesty</strong></td>
+                <td data-rating="1">Title is loosely related to the content and may even mislead the viewer.</td>
+                <td data-rating="2">Title relates to the content but uses mild exaggeration that might slightly distort expectations.</td>
+                <td data-rating="3">Title clearly reflects the video’s content and its unique hook, giving viewers a good sense of what to expect.</td>
+                <td data-rating="4">Title is perfectly aligned with the content—authentic and precisely communicates the unique selling point with no misleading promises.</td>
               </tr>
-              <tr>
-                <td><strong>Clarity &amp; Keyword Inclusion</strong></td>
-                <td>Vague, omits key terms</td>
-                <td>Includes some keywords but lacks clarity</td>
-                <td>Clear, concise with essential keywords</td>
-                <td>Crystal clear, perfectly concise with all keywords</td>
+              <tr data-category="5">
+                <td class="category-header"><strong>Clarity &amp; Keyword Inclusion</strong></td>
+                <td data-rating="1">Title is vague or confusing; may omit essential keywords (e.g., “Minecraft” or “Roblox”), making it hard for viewers to immediately understand the subject.</td>
+                <td data-rating="2">Title includes some relevant keywords but lacks optimal clarity, which might leave potential viewers a bit unsure.</td>
+                <td data-rating="3">Title is clear, concise, and includes key terms that quickly identify the game and main concept.</td>
+                <td data-rating="4">Title is crystal clear and perfectly concise, naturally incorporating all important keywords so that both viewers and the algorithm immediately understand the topic.</td>
               </tr>
-              <tr>
-                <td><strong>Curiosity &amp; Intrigue</strong></td>
-                <td>No mystery or unanswered questions</td>
-                <td>Some intrigue, but not compelling</td>
-                <td>Creates a curiosity gap effectively</td>
-                <td>Masterfully leverages curiosity gap, irresistible teaser</td>
+              <tr data-category="6">
+                <td class="category-header"><strong>Curiosity &amp; Intrigue</strong></td>
+                <td data-rating="1">Title offers little to no mystery or curiosity—it states the obvious and leaves no unanswered questions.</td>
+                <td data-rating="2">Title includes a hint of intrigue but doesn’t fully leverage a curiosity gap to drive viewers to click.</td>
+                <td data-rating="3">Title effectively creates a curiosity gap that prompts viewers to want to learn more about the outcome or unique twist.</td>
+                <td data-rating="4">Title masterfully leverages the curiosity gap, leaving an irresistible question or teaser that compels viewers to click immediately.</td>
               </tr>
-              <tr>
-                <td><strong>Emotional Impact</strong></td>
-                <td>Emotionally flat</td>
-                <td>Mild emotional reaction</td>
-                <td>Generates clear emotional response</td>
-                <td>Elicits a powerful, immediate emotional reaction</td>
+              <tr data-category="7">
+                <td class="category-header"><strong>Emotional Impact</strong></td>
+                <td data-rating="1">Title is emotionally flat and does not evoke any strong feelings such as excitement, shock, or humor.</td>
+                <td data-rating="2">Title elicits a minor emotional reaction, but the effect isn’t strong enough to drive immediate interest.</td>
+                <td data-rating="3">Title generates a clear emotional response (e.g., excitement, humor, or suspense) that aligns well with the video content.</td>
+                <td data-rating="4">Title evokes a powerful and immediate emotional reaction, ensuring viewers feel compelled to click out of genuine excitement, curiosity, or shock.</td>
               </tr>
-              <tr>
-                <td><strong>Novelty &amp; Creativity</strong></td>
-                <td>Generic, does not stand out</td>
-                <td>Some originality, still common</td>
-                <td>Creative, fresh perspective</td>
-                <td>Highly innovative, unique angle that stands out</td>
+              <tr data-category="8">
+                <td class="category-header"><strong>Novelty &amp; Creativity</strong></td>
+                <td data-rating="1">Title is generic and similar to many others in the niche; it does not stand out.</td>
+                <td data-rating="2">Title shows some originality but is still reminiscent of common formats or ideas seen frequently.</td>
+                <td data-rating="3">Title is creative and offers a fresh perspective on a familiar concept, making it more enticing than standard formats.</td>
+                <td data-rating="4">Title is highly innovative and distinctive, providing an unexpected twist or unique angle that makes it stand out in a saturated niche.</td>
               </tr>
-              <tr>
-                <td><strong>Brevity &amp; Readability</strong></td>
-                <td>Overly long or cluttered</td>
-                <td>Moderately concise, some extraneous words</td>
-                <td>Concise, easy to read</td>
-                <td>Perfectly concise, powerful message in few words</td>
+              <tr data-category="9">
+                <td class="category-header"><strong>Brevity &amp; Readability</strong></td>
+                <td data-rating="1">Title is overly long, cluttered, or may be truncated on smaller screens, which hampers its readability.</td>
+                <td data-rating="2">Title is moderately concise but still includes extraneous words that could be eliminated.</td>
+                <td data-rating="3">Title is concise, easy to read, and is unlikely to be cut off on most devices.</td>
+                <td data-rating="4">Title is perfectly concise and formatted—packing a powerful message into very few words while remaining immediately legible across all devices.</td>
               </tr>
             </tbody>
           </table>
@@ -516,13 +542,12 @@
     <dialog class="modal-bg" id="howToModal" aria-labelledby="howToHeading" aria-modal="true">
       <div class="modal-content">
         <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To">&times;</button>
-        <h2 id="howToHeading">How to Use Editing Review Pro+</h2>
+        <h2 id="howToHeading">How to Use Title &amp; Idea Review Pro</h2>
         <ul>
-          <li>Click on the appropriate rating cell for each row in the rubric tables.</li>
-          <li>Your total score updates automatically (out of 84 maximum points).</li>
+          <li>Click on the appropriate rating cell for each row in both rubric tables.</li>
+          <li>The Idea Score, Title Score, and Overall Score update automatically.</li>
           <li>If any item is rated 1, the overall result is "Rejected."</li>
-          <li>Read the daily Quote of Wisdom for inspiration.</li>
-          <li>Provide additional feedback if needed.</li>
+          <li>Read the daily inspirational quote for ideas and title wisdom.</li>
           <li>When finished, you can reset scores or export the review as a PNG.</li>
         </ul>
       </div>
@@ -548,61 +573,39 @@
       /***************************************************
        * Global Variables & Emoji Mapping
        ***************************************************/
+      // Total categories: 4 Idea + 6 Title = 10
       let scoreData = {};
       let confettiShown = false;
-      const maxCategories = 22;
-      const maxPoints = 84;
+      const maxCategories = 10;
+      const overallMax = 40; // 10 * 4
+      const ideaMax = 16;    // 4 * 4
+      const titleMax = 24;   // 6 * 4
 
       const categoryEmojis = {
-        0: '⚡',
-        1: '🔍',
-        2: '🪄',
+        0: '💡',
+        1: '🎯',
+        2: '👥',
         3: '🚀',
-        4: '✂️',
-        5: '⏭️',
-        6: '🎞️',
-        7: '🧩',
-        8: '🎶',
-        9: '📝',
-        10: '📷',
-        11: '🎥',
-        12: '💬',
-        13: '🎵',
-        14: '🔊',
-        15: '🎙️',
-        16: '📢',
-        17: '❓',
-        18: '🤯',
-        19: '🌀',
-        20: '💫',
-        21: '💎'
+        4: '⚖️',
+        5: '🔍',
+        6: '❓',
+        7: '❤️',
+        8: '🪄',
+        9: '✂️'
       };
 
-      // Returns the overall rating label and color for overall score
+      // Returns the overall rating label and color based on our new thresholds
       function getRatingLabel(overallTotal) {
-        if (overallTotal < 25) {
+        if (overallTotal < 10) {
           return { scoreLabel: "Needs Work", rankingText: "Needs Work 🔴", color: "#ef4444" };
-        } else if (overallTotal < 50) {
+        } else if (overallTotal < 20) {
           return { scoreLabel: "Good", rankingText: "Good 🟢", color: "#22c55e" };
-        } else if (overallTotal < 70) {
+        } else if (overallTotal < 30) {
           return { scoreLabel: "Great", rankingText: "Great 🟡", color: "#eab308" };
-        } else if (overallTotal < 80) {
+        } else if (overallTotal < 35) {
           return { scoreLabel: "Excellent", rankingText: "Excellent 🟣", color: "#8b5cf6" };
         } else {
           return { scoreLabel: "Outstanding", rankingText: "Outstanding 🔵", color: "#3b82f6" };
-        }
-      }
-
-      // Determine section rating based on average rating of the section
-      function getSectionRating(average) {
-        if (average < 2) {
-          return { label: "Good", color: "#f87171" };
-        } else if (average < 3) {
-          return { label: "Great", color: "#fb923c" };
-        } else if (average < 4) {
-          return { label: "Excellent", color: "#facc15" };
-        } else {
-          return { label: "Outstanding", color: "#4ade80" };
         }
       }
 
@@ -618,12 +621,12 @@
        * Initialization on DOMContentLoaded
        ***************************************************/
       document.addEventListener('DOMContentLoaded', function() {
-        // Initialize scoreData for categories 0 to 21
+        // Initialize scoreData for categories 0 to 9
         for (let i = 0; i < maxCategories; i++) {
           scoreData[i] = 0;
         }
         
-        // Add click listeners to all rating cells
+        // Add click listeners to all rating cells in both tables
         const ratingCells = document.querySelectorAll('td[data-rating]');
         ratingCells.forEach(cell => {
           cell.addEventListener('click', handleCellClick);
@@ -632,10 +635,7 @@
         // Insert emojis into category header cells
         initEmojis();
         
-        // Store original header text for each section header for later updates
-        initSectionHeaders();
-        
-        // Call updateScore once so that overall and section scores display immediately (even with 0s)
+        // Call updateScore once so that scores display immediately (even with 0s)
         updateScore();
         
         // Set a random inspirational quote and fun fact
@@ -649,14 +649,12 @@
       /***************************************************
        * Event Handlers & UI Functions
        ***************************************************/
-
-      // When a rating cell is clicked:
       function handleCellClick(event) {
         const cell = event.currentTarget;
-        const category = cell.getAttribute('data-category');
+        const category = cell.parentElement.getAttribute('data-category');
         const rating = parseInt(cell.getAttribute('data-rating'));
 
-        // Remove 'selected' from other cells in this row
+        // Remove 'selected' from all cells in this row
         const row = cell.parentElement;
         const cells = row.querySelectorAll('td[data-rating]');
         cells.forEach(c => c.classList.remove('selected'));
@@ -668,12 +666,22 @@
         updateScore();
       }
 
-      // Recalculate and update the overall score and rating display, and update section scores
       function updateScore() {
-        let overallTotal = 0;
-        for (let key in scoreData) {
-          overallTotal += parseInt(scoreData[key]) || 0;
+        // Calculate Idea Score (categories 0-3)
+        let ideaTotal = 0;
+        for (let i = 0; i < 4; i++) {
+          ideaTotal += parseInt(scoreData[i]) || 0;
         }
+        // Calculate Title Score (categories 4-9)
+        let titleTotal = 0;
+        for (let i = 4; i < maxCategories; i++) {
+          titleTotal += parseInt(scoreData[i]) || 0;
+        }
+        const overallTotal = ideaTotal + titleTotal;
+
+        // Update score displays
+        document.getElementById('ideaScore').innerText = ideaTotal;
+        document.getElementById('titleScore').innerText = titleTotal;
         document.getElementById('scoreTotal').innerText = overallTotal;
 
         const ratingInfo = getRatingLabel(overallTotal);
@@ -682,23 +690,19 @@
         rankingElem.innerText = ratingInfo.rankingText;
         rankingElem.style.color = ratingInfo.color;
 
-        // Update section scores and header backgrounds
-        updateSectionScores();
-
-        // Launch confetti and play sound if overall score >= 80
-        if (overallTotal >= 80 && !confettiShown) {
+        // Launch confetti and play sound if overall score >= 35 (Outstanding)
+        if (overallTotal >= 35 && !confettiShown) {
           launchConfetti();
           const victorySound = document.getElementById('victorySound');
           if (victorySound) {
             victorySound.play().catch(() => {});
           }
           confettiShown = true;
-        } else if (overallTotal < 80) {
+        } else if (overallTotal < 35) {
           confettiShown = false;
         }
       }
 
-      // Clear all selections and reset the score
       function resetScores() {
         for (let i = 0; i < maxCategories; i++) {
           scoreData[i] = 0;
@@ -706,14 +710,12 @@
         const ratingCells = document.querySelectorAll('td[data-rating]');
         ratingCells.forEach(cell => cell.classList.remove('selected'));
         updateScore();
-
         const wompSound = document.getElementById('wompSound');
         if (wompSound) {
           wompSound.play().catch(() => {});
         }
       }
 
-      // Export the review section as a PNG image using html2canvas
       function exportPNG() {
         const container = document.querySelector('.analyzer-container');
         if (!container) return;
@@ -727,20 +729,6 @@
         });
       }
 
-      // Toggle the display of the Legend & Definitions section (if needed)
-      function toggleLegend() {
-        const legend = document.getElementById('legend');
-        const toggleBtn = document.getElementById('toggleLegend');
-        if (legend.style.display === 'block') {
-          legend.style.display = 'none';
-          toggleBtn.innerText = 'Show Legend & Definitions';
-        } else {
-          legend.style.display = 'block';
-          toggleBtn.innerText = 'Hide Legend & Definitions';
-        }
-      }
-
-      // Toggle between dark mode and light mode
       function toggleTheme(checkbox) {
         if (checkbox.checked) {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -749,7 +737,6 @@
         }
       }
 
-      // Open the How-To modal dialog
       function openHowTo() {
         const modal = document.getElementById('howToModal');
         if (modal.showModal) {
@@ -759,7 +746,6 @@
         }
       }
 
-      // Close the How-To modal dialog
       function closeHowTo() {
         const modal = document.getElementById('howToModal');
         if (modal.close) {
@@ -769,7 +755,6 @@
         }
       }
 
-      // Close the Tutorial modal dialog
       function closeTutorial() {
         const modal = document.getElementById('tutorialModal');
         if (modal.close) {
@@ -779,11 +764,10 @@
         }
       }
 
-      // Prepend the emoji for each category header based on its data-category attribute
       function initEmojis() {
         const categoryHeaders = document.querySelectorAll('td.category-header');
         categoryHeaders.forEach(cell => {
-          const category = cell.getAttribute('data-category');
+          const category = cell.parentElement.getAttribute('data-category');
           const emoji = categoryEmojis[category] || '';
           if (!cell.innerHTML.includes(emoji)) {
             cell.innerHTML = emoji + ' ' + cell.innerHTML;
@@ -791,76 +775,33 @@
         });
       }
 
-      // Store the original header text for each section header for later updates
-      function initSectionHeaders() {
-        const sectionHeaders = document.querySelectorAll('tr.section-header');
-        sectionHeaders.forEach(row => {
-          const cell = row.querySelector('td');
-          cell.dataset.original = cell.innerText.trim();
-        });
-      }
-
-      // Update each section header to include the section score and update background color.
-      function updateSectionScores() {
-        const sectionHeaders = document.querySelectorAll('tr.section-header');
-        sectionHeaders.forEach(headerRow => {
-          const group = headerRow.getAttribute('data-group');
-          const groupRows = document.querySelectorAll('tr[data-group="' + group + '"]:not(.section-header)');
-          let sectionScore = 0;
-          groupRows.forEach(row => {
-            const catCell = row.querySelector('td.category-header');
-            if (catCell) {
-              const cat = catCell.getAttribute('data-category');
-              sectionScore += parseInt(scoreData[cat]) || 0;
-            }
-          });
-          const numberOfRows = groupRows.length;
-          const maxForSection = numberOfRows * 4;
-          let sectionLabel;
-          if (sectionScore === 0) {
-            sectionLabel = "Incomplete";
-            headerRow.style.backgroundColor = "white";
-          } else {
-            const average = sectionScore / numberOfRows;
-            const sectionRating = getSectionRating(average);
-            sectionLabel = sectionRating.label;
-            headerRow.style.backgroundColor = hexToRGBA(sectionRating.color, 0.3);
-          }
-          const headerCell = headerRow.querySelector('td');
-          headerCell.innerHTML =
-            '<strong>' + headerCell.dataset.original + '</strong> ' +
-            '<span style="font-weight:normal;">(Score: ' + sectionScore + '/' + maxForSection + ' - ' + sectionLabel + ')</span>';
-        });
-      }
-
-      // Display a random inspirational quote in the Quote section
       function randomQuote() {
         const quoteSection = document.getElementById('quoteSection');
         const randomIndex = Math.floor(Math.random() * editorQuotes.length);
         quoteSection.innerText = editorQuotes[randomIndex];
       }
 
-      // Display a random fun fact in the Fun Fact section
       function randomFunFact() {
         const funFacts = [
-          "Did you know? The first film edit was done by physically cutting and splicing film.",
-          "Fun Fact: Walter Murch, a legendary editor, also worked as a sound mixer!",
-          "Tip: Sometimes less is more—trim your edits for a tighter story.",
-          "Did you know? The famous 'montage' technique was popularized in Soviet cinema.",
-          "Editing can change the story. A single cut can evoke deep emotions."
+          "A captivating title is the gateway to a brilliant idea.",
+          "The best ideas begin with a spark—make your title that spark.",
+          "Clarity and creativity in a title can transform an idea into gold.",
+          "A well-crafted title invites curiosity and ignites innovation.",
+          "Great titles and ideas are the dynamic duo of success.",
+          "Every powerful idea deserves a title that stands out.",
+          "Innovative titles lead to innovative ideas—craft them wisely.",
+          "Let your title be the beacon that guides your creative journey."
         ];
         const funFactSection = document.getElementById('funFactSection');
         const randomIndex = Math.floor(Math.random() * funFacts.length);
         funFactSection.innerText = funFacts[randomIndex];
       }
 
-      // When the Disney Magic icon is clicked, launch confetti and show an alert
       function onClickDisneyMagic() {
         launchConfetti();
         alert("Disney Magic activated! ✨");
       }
 
-      // Launch confetti using the canvas-confetti library
       function launchConfetti() {
         if (typeof confetti === "function") {
           confetti({
@@ -871,27 +812,18 @@
         }
       }
 
-      // Editor quotes array
+      // Inspirational quotes relevant to idea and title generation
       const editorQuotes = [
-        "“In film editing, it's not about what you add, it's about what you leave out.” – Walter Murch",
-        "“Cutting is rewriting.” – Thelma Schoonmaker",
-        "“Editing is where the magic happens.” – Unknown",
-        "“Good editing is invisible; great editing is felt.” – Unknown",
-        "“In editing, less is often more.” – Unknown",
-        "“All our dreams can come true if we have the courage to pursue them.” – Walt Disney",
-        "“It's kind of fun to do the impossible.” – Walt Disney",
-        "“The past can hurt. But the way I see it, you can either run from it, or learn from it.” – Rafiki, The Lion King",
-        "“Cinema is truth at 24 frames per second.” – Jean-Luc Godard",
-        "“The secret to film editing is knowing when to cut.” – Unknown",
-        "“Every cut tells a story.” – Unknown",
-        "“Editing is the craft of transforming raw footage into art.” – Unknown",
-        "“A good cut is a silent hero.” – Unknown",
-        "“When you're editing, you're not just cutting footage; you're sculpting a story.” – Unknown",
-        "“The technique of film editing is to be invisible.” – Walter Murch",
-        "“The art of editing is the art of omission.” – Elia Kazan",
-        "“I’m convinced that nothing happens in the editing room.” – Francis Ford Coppola",
-        "“May your edits be as magical as pixie dust.” – Inspired by Disney",
-        "“If you can dream it, you can do it.” – Walt Disney"
+        "A great title sparks curiosity and fuels the imagination.",
+        "The best ideas and titles are born from a blend of creativity and clarity.",
+        "An original idea paired with a compelling title is the secret sauce of success.",
+        "Your title is the handshake that invites viewers to explore your ideas.",
+        "Great ideas deserve great titles – make each word count.",
+        "A well-crafted title can transform an average idea into a viral sensation.",
+        "Innovative ideas and captivating titles are the cornerstones of creative success.",
+        "The art of idea generation and title crafting lies in knowing your audience.",
+        "Clarity, creativity, and authenticity – the three Cs of a winning title.",
+        "A memorable title is the first step to making your idea unforgettable."
       ];
     </script>
   </body>
