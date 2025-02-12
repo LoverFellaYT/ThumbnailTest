@@ -2,13 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>StoryCraft Analyzer Pro+ Enhanced</title>
 
     <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <!-- It's fine to keep these in the head, but add "defer" if needed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js" defer></script>
+
     <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
@@ -18,8 +20,8 @@
       referrerpolicy="no-referrer"
     />
     <!-- Google Font: Roboto -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
@@ -45,6 +47,7 @@
         --font-base: 'Roboto', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
       }
+
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
         --text-light: #f3f3f3;
@@ -53,6 +56,7 @@
         --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
       }
+
       body {
         margin: 0;
         padding: 0;
@@ -295,13 +299,12 @@
          -------------------------------------------------------------- */
       .rubric-table {
         margin: 1rem 0;
-        /* Removed overflow-x to avoid scrolling */
       }
       .modern-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        min-width: 800px; /* Still helpful, but container is bigger now */
+        min-width: 800px;
         border-radius: var(--radius);
         overflow: hidden;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -592,7 +595,16 @@
       </div>
     </main>
 
-    <!-- JavaScript -->
+    <!-- Optional place to show total and ranking if desired -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <p>Total Score: <span id="total">0</span> / 56</p>
+      <p>Ranking: <span id="ranking">Incomplete</span></p>
+      <div style="width:50%;margin:0 auto;background:#ccc;height:10px;border-radius:5px;overflow:hidden;">
+        <div id="progressBar" style="height:10px;background:#4facfe;width:0%;transition:width 0.3s;"></div>
+      </div>
+    </div>
+
+    <!-- JavaScript placed at the bottom so all DOM elements exist before we attach listeners -->
     <script>
       // Global variables
       let scores = {};
@@ -605,7 +617,7 @@
         // Rainbow quote button event
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
         // AI Review button event
-        document.getElementById('runAIReviewBtn')?.addEventListener('click', runAIReview);
+        document.getElementById('runAIReviewBtn').addEventListener('click', runAIReview);
         // Add YouTube video button event
         document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
         // Rubric cell click events
@@ -738,7 +750,7 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total')?.textContent = total;
         const ranking = document.getElementById('ranking');
-        if (!ranking) return; // In case we removed the total/ranking markup
+        if (!ranking) return; // In case we removed that markup
 
         if (Object.keys(scores).length < 14) {
           ranking.textContent = 'Incomplete';
@@ -746,6 +758,7 @@
           updateProgressBar(total);
           return;
         }
+
         if (total < 29) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
@@ -779,7 +792,6 @@
       }
 
       async function exportPNG() {
-        // Clone everything into a temp container and export to PNG
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.top = '-9999px';
@@ -854,8 +866,6 @@
           resultDiv.textContent = "Please enter a quick summary for AI review.";
           return;
         }
-
-        // Simplified AI-like suggestions
         const reviewIdeas = [
           {
             improvements: [
@@ -922,7 +932,6 @@
         const url = urlInput.value.trim();
         if (!url) return;
 
-        // Extract YouTube ID
         const videoId = (function(url) {
           const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
           const match = url.match(regExp);
@@ -933,6 +942,7 @@
           alert('Invalid YouTube URL. Please enter a valid URL.');
           return;
         }
+
         const title = prompt("Enter the video title:");
         const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
 
@@ -968,14 +978,5 @@
         urlInput.value = '';
       }
     </script>
-
-    <!-- Optional place to show total and ranking if desired -->
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <p>Total Score: <span id="total">0</span> / 56</p>
-      <p>Ranking: <span id="ranking">Incomplete</span></p>
-      <div style="width:50%;margin:0 auto;background:#ccc;height:10px;border-radius:5px;overflow:hidden;">
-        <div id="progressBar" style="height:10px;background:#4facfe;width:0%;transition:width 0.3s;"></div>
-      </div>
-    </div>
   </body>
 </html>
