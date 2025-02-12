@@ -26,6 +26,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Canvas Confetti for Outstanding Score Effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <!-- RAKE-JS for Keyword Extraction (or swap with YAKE if preferred) -->
+    <script src="https://cdn.jsdelivr.net/npm/rake-js@1.0.0/dist/rake.min.js"></script>
+    <!-- VADER Sentiment Analysis -->
+    <script src="https://cdn.jsdelivr.net/npm/vader-sentiment@1.1.4/dist/index.min.js"></script>
 
     <style>
       /* CSS Variables & Base Styles */
@@ -331,6 +335,21 @@
         resize: vertical;
       }
 
+      /* Title Enhancement Tools Section */
+      #titleToolsSection label {
+        font-weight: 600;
+      }
+      #titleToolsSection input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+      }
+      #titleAnalysisResults {
+        margin-top: 1rem;
+      }
+
       /* Fun Fact Section (Bottom) */
       .fun-fact-section {
         text-align: center;
@@ -407,195 +426,209 @@
     </style>
   </head>
   <body>
-    <!-- HEADER -->
-    <header class="analyzer-header glass-panel">
-      <div class="header-left">
-        <div class="site-title">
-          <i class="fas fa-film" aria-hidden="true"></i>
-          <span>Title &amp; Idea Review Pro</span>
+    <!-- WRAPPER: Export Container (includes header and main) -->
+    <div class="export-container">
+      <!-- HEADER -->
+      <header class="analyzer-header glass-panel">
+        <div class="header-left">
+          <div class="site-title">
+            <i class="fas fa-film" aria-hidden="true"></i>
+            <span>Title &amp; Idea Review Pro</span>
+          </div>
+          <div class="total-score" id="scoreDisplay" tabindex="0">
+            Idea Score: <span id="ideaScore">0</span>/28 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/52 – <span id="scoreLabel">Needs Work</span>
+          </div>
+          <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
         </div>
-        <div class="total-score" id="scoreDisplay" tabindex="0">
-          Idea Score: <span id="ideaScore">0</span>/28 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/52 – <span id="scoreLabel">Needs Work</span>
+        <div class="header-right">
+          <div class="group">
+            <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
+            <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
+            <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
+            <!-- Home button -->
+            <button class="btn" onclick="window.open('https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics','_blank');" aria-label="Home">
+              <i class="fas fa-home"></i> Home
+            </button>
+          </div>
+          <!-- Dark Mode Toggle -->
+          <div class="dark-mode">
+            <label class="toggle-label dark-mode-label" for="darkModeToggle">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)" aria-label="Toggle Dark Mode" />
+              <div class="dark-mode-slider">
+                <span class="mode-label mode-light">☀️</span>
+                <span class="mode-label mode-dark">🌙</span>
+                <div class="slider-thumb"></div>
+              </div>
+            </label>
+          </div>
         </div>
-        <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
+      </header>
+
+      <!-- QUOTE OF WISDOM SECTION (Top) -->
+      <div class="quote-section glass-panel" id="quoteSection" role="note" aria-live="polite">
+        <!-- A random inspirational quote will appear here -->
       </div>
-      <div class="header-right">
-        <div class="group">
-          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Home button -->
-          <button class="btn" onclick="window.open('https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics','_blank');" aria-label="Home">
-            <i class="fas fa-home"></i> Home
-          </button>
-        </div>
-        <!-- Dark Mode Toggle -->
-        <div class="dark-mode">
-          <label class="toggle-label dark-mode-label" for="darkModeToggle">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)" aria-label="Toggle Dark Mode" />
-            <div class="dark-mode-slider">
-              <span class="mode-label mode-light">☀️</span>
-              <span class="mode-label mode-dark">🌙</span>
-              <div class="slider-thumb"></div>
+
+      <main>
+        <div class="analyzer-container">
+          <!-- IDEA REVIEW RUBRIC (Mandatory) -->
+          <section class="rubric-table glass-panel" aria-labelledby="ideaRubricHeading">
+            <h2 id="ideaRubricHeading">Idea Review Rubric</h2>
+            <table class="modern-table" id="ideaRubricTable">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>1 – Needs Work</th>
+                  <th>2 – Solid</th>
+                  <th>3 – Excellent</th>
+                  <th>4 – Exceptional</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-category="0">
+                  <td class="category-header"><strong>Originality &amp; Creativity</strong></td>
+                  <td data-rating="1">Clichéd; little fresh perspective; fails to stand out.</td>
+                  <td data-rating="2">Shows some unique elements but still feels common.</td>
+                  <td data-rating="3">Clearly creative approach that stands out among similar content.</td>
+                  <td data-rating="4">Highly innovative and groundbreaking; genuinely new or strikingly novel angle.</td>
+                </tr>
+                <tr data-category="1">
+                  <td class="category-header"><strong>Concept Clarity &amp; Focus</strong></td>
+                  <td data-rating="1">Vague or confusing; main idea is hard to grasp.</td>
+                  <td data-rating="2">Some clarity, but lacks tight focus; direction is somewhat unclear.</td>
+                  <td data-rating="3">Well-defined concept; easy to understand; clear sense of direction.</td>
+                  <td data-rating="4">Exceptionally clear, focused, and compelling; hooks viewers immediately.</td>
+                </tr>
+                <tr data-category="2">
+                  <td class="category-header"><strong>Audience Relevance</strong></td>
+                  <td data-rating="1">Misaligned with target audience; unlikely to hold their interest.</td>
+                  <td data-rating="2">Somewhat relevant but with limited broad appeal.</td>
+                  <td data-rating="3">Strongly aligns with core demographic; likely to connect well.</td>
+                  <td data-rating="4">Perfectly tailored to captivate the audience; high potential for engagement.</td>
+                </tr>
+                <tr data-category="3">
+                  <td class="category-header"><strong>Engagement &amp; Retention Potential</strong></td>
+                  <td data-rating="1">Unlikely to drive significant watch time or interactions.</td>
+                  <td data-rating="2">Could prompt some engagement, but lacks inherent retention features.</td>
+                  <td data-rating="3">Likely to inspire good watch time, comments, or shares.</td>
+                  <td data-rating="4">Exceptionally compelling “must-watch” content with high retention or viral potential.</td>
+                </tr>
+                <tr data-category="4">
+                  <td class="category-header"><strong>Execution Feasibility</strong></td>
+                  <td data-rating="1">Hard to produce within budget, time, or resource constraints.</td>
+                  <td data-rating="2">Achievable but requires effort or resources that may limit output.</td>
+                  <td data-rating="3">Realistically attainable given current resources or easy to acquire.</td>
+                  <td data-rating="4">Very straightforward or resource-friendly, maximizing production value and consistency.</td>
+                </tr>
+                <tr data-category="5">
+                  <td class="category-header"><strong>Potential Impact &amp; Growth</strong></td>
+                  <td data-rating="1">Low or short-lived impact; unlikely to build channel momentum.</td>
+                  <td data-rating="2">Moderate impact; might bring some new viewers but won’t stand out widely.</td>
+                  <td data-rating="3">High potential to attract new subscribers, strengthen brand, or sustain interest.</td>
+                  <td data-rating="4">Exceptionally impactful; may drive massive growth, collaborations, and elevate channel status.</td>
+                </tr>
+                <tr data-category="6">
+                  <td class="category-header"><strong>Brand/Channel Fit</strong></td>
+                  <td data-rating="1">Conflicts with or dilutes channel identity.</td>
+                  <td data-rating="2">Fits somewhat, but doesn’t distinctly strengthen brand.</td>
+                  <td data-rating="3">Aligns well with channel identity in a meaningful way.</td>
+                  <td data-rating="4">Perfectly in line with and elevates your channel’s theme or niche.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- FEEDBACK SECTION -->
+          <section class="glass-panel feedback-section" aria-labelledby="feedbackSectionHeading">
+            <h2 id="feedbackSectionHeading">Feedback</h2>
+            <div>
+              <label for="humanFeedback">Human Feedback:</label>
+              <textarea id="humanFeedback" placeholder="Enter your human feedback here..."></textarea>
             </div>
-          </label>
+            <div>
+              <label for="aiFeedback">AI Feedback:</label>
+              <textarea id="aiFeedback" placeholder="Paste AI feedback here..."></textarea>
+            </div>
+          </section>
+
+          <!-- TITLE REVIEW RUBRIC -->
+          <section class="rubric-table glass-panel" aria-labelledby="titleRubricHeading">
+            <h2 id="titleRubricHeading">Title Review Rubric</h2>
+            <table class="modern-table" id="titleRubricTable">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>1 – Needs Work</th>
+                  <th>2 – Solid</th>
+                  <th>3 – Excellent</th>
+                  <th>4 – Exceptional</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-category="7">
+                  <td class="category-header"><strong>Relevance &amp; Honesty</strong></td>
+                  <td data-rating="1">Title is loosely related to the content and may even mislead the viewer.</td>
+                  <td data-rating="2">Title relates to the content but uses mild exaggeration that might slightly distort expectations.</td>
+                  <td data-rating="3">Title clearly reflects the video’s content and its unique hook, giving viewers a good sense of what to expect.</td>
+                  <td data-rating="4">Title is perfectly aligned with the content—authentic and precisely communicates the unique selling point with no misleading promises.</td>
+                </tr>
+                <tr data-category="8">
+                  <td class="category-header"><strong>Clarity &amp; Keyword Inclusion</strong></td>
+                  <td data-rating="1">Title is vague or confusing; may omit essential keywords (e.g., “Minecraft” or “Roblox”), making it hard for viewers to immediately understand the subject.</td>
+                  <td data-rating="2">Title includes some relevant keywords but lacks optimal clarity, which might leave potential viewers a bit unsure.</td>
+                  <td data-rating="3">Title is clear, concise, and includes key terms that quickly identify the game and main concept.</td>
+                  <td data-rating="4">Title is crystal clear and perfectly concise, naturally incorporating all important keywords so that both viewers and the algorithm immediately understand the topic.</td>
+                </tr>
+                <tr data-category="9">
+                  <td class="category-header"><strong>Curiosity &amp; Intrigue</strong></td>
+                  <td data-rating="1">Title offers little to no mystery or curiosity—it states the obvious and leaves no unanswered questions.</td>
+                  <td data-rating="2">Title includes a hint of intrigue but doesn’t fully leverage a curiosity gap to drive viewers to click.</td>
+                  <td data-rating="3">Title effectively creates a curiosity gap that prompts viewers to want to learn more about the outcome or unique twist.</td>
+                  <td data-rating="4">Title masterfully leverages the curiosity gap, leaving an irresistible question or teaser that compels viewers to click immediately.</td>
+                </tr>
+                <tr data-category="10">
+                  <td class="category-header"><strong>Emotional Impact</strong></td>
+                  <td data-rating="1">Title is emotionally flat and does not evoke any strong feelings such as excitement, shock, or humor.</td>
+                  <td data-rating="2">Title elicits a minor emotional reaction, but the effect isn’t strong enough to drive immediate interest.</td>
+                  <td data-rating="3">Title generates a clear emotional response (e.g., excitement, humor, or suspense) that aligns well with the video content.</td>
+                  <td data-rating="4">Title evokes a powerful and immediate emotional reaction, ensuring viewers feel compelled to click out of genuine excitement, curiosity, or shock.</td>
+                </tr>
+                <tr data-category="11">
+                  <td class="category-header"><strong>Novelty &amp; Creativity</strong></td>
+                  <td data-rating="1">Title is generic and similar to many others in the niche; it does not stand out.</td>
+                  <td data-rating="2">Title shows some originality but is still reminiscent of common formats or ideas seen frequently.</td>
+                  <td data-rating="3">Title is creative and offers a fresh perspective on a familiar concept, making it more enticing than standard formats.</td>
+                  <td data-rating="4">Title is highly innovative and distinctive, providing an unexpected twist or unique angle that makes it stand out in a saturated niche.</td>
+                </tr>
+                <tr data-category="12">
+                  <td class="category-header"><strong>Brevity &amp; Readability</strong></td>
+                  <td data-rating="1">Title is overly long, cluttered, or may be truncated on smaller screens, which hampers its readability.</td>
+                  <td data-rating="2">Title is moderately concise but still includes extraneous words that could be eliminated.</td>
+                  <td data-rating="3">Title is concise, easy to read, and is unlikely to be cut off on most devices.</td>
+                  <td data-rating="4">Title is perfectly concise and formatted—packing a powerful message into very few words while remaining immediately legible across all devices.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- TITLE ENHANCEMENT TOOLS SECTION -->
+          <section class="glass-panel" id="titleToolsSection" aria-labelledby="titleToolsHeading">
+            <h2 id="titleToolsHeading">Title Enhancement Tools</h2>
+            <div>
+              <label for="proposedTitle">Enter Proposed Title:</label>
+              <input type="text" id="proposedTitle" placeholder="Enter your title here..." />
+            </div>
+            <button class="btn" onclick="analyzeTitle()">Analyze Title</button>
+            <div id="titleAnalysisResults"></div>
+          </section>
         </div>
-      </div>
-    </header>
 
-    <!-- QUOTE OF WISDOM SECTION (Top) -->
-    <div class="quote-section glass-panel" id="quoteSection" role="note" aria-live="polite">
-      <!-- A random inspirational quote will appear here -->
+        <!-- FUN FACT SECTION (Bottom) -->
+        <div class="fun-fact-section glass-panel" id="funFactSection" role="note" aria-live="polite">
+          <!-- A random fun fact or tip will appear here -->
+        </div>
+      </main>
     </div>
-
-    <main>
-      <div class="analyzer-container">
-        <!-- IDEA REVIEW RUBRIC (Mandatory) -->
-        <section class="rubric-table glass-panel" aria-labelledby="ideaRubricHeading">
-          <h2 id="ideaRubricHeading">Idea Review Rubric</h2>
-          <table class="modern-table" id="ideaRubricTable">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>1 – Needs Work</th>
-                <th>2 – Solid</th>
-                <th>3 – Excellent</th>
-                <th>4 – Exceptional</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr data-category="0">
-                <td class="category-header"><strong>Originality &amp; Creativity</strong></td>
-                <td data-rating="1">Clichéd; little fresh perspective; fails to stand out.</td>
-                <td data-rating="2">Shows some unique elements but still feels common.</td>
-                <td data-rating="3">Clearly creative approach that stands out among similar content.</td>
-                <td data-rating="4">Highly innovative and groundbreaking; genuinely new or strikingly novel angle.</td>
-              </tr>
-              <tr data-category="1">
-                <td class="category-header"><strong>Concept Clarity &amp; Focus</strong></td>
-                <td data-rating="1">Vague or confusing; main idea is hard to grasp.</td>
-                <td data-rating="2">Some clarity, but lacks tight focus; direction is somewhat unclear.</td>
-                <td data-rating="3">Well-defined concept; easy to understand; clear sense of direction.</td>
-                <td data-rating="4">Exceptionally clear, focused, and compelling; hooks viewers immediately.</td>
-              </tr>
-              <tr data-category="2">
-                <td class="category-header"><strong>Audience Relevance</strong></td>
-                <td data-rating="1">Misaligned with target audience; unlikely to hold their interest.</td>
-                <td data-rating="2">Somewhat relevant but with limited broad appeal.</td>
-                <td data-rating="3">Strongly aligns with core demographic; likely to connect well.</td>
-                <td data-rating="4">Perfectly tailored to captivate the audience; high potential for engagement.</td>
-              </tr>
-              <tr data-category="3">
-                <td class="category-header"><strong>Engagement &amp; Retention Potential</strong></td>
-                <td data-rating="1">Unlikely to drive significant watch time or interactions.</td>
-                <td data-rating="2">Could prompt some engagement, but lacks inherent retention features.</td>
-                <td data-rating="3">Likely to inspire good watch time, comments, or shares.</td>
-                <td data-rating="4">Exceptionally compelling “must-watch” content with high retention or viral potential.</td>
-              </tr>
-              <tr data-category="4">
-                <td class="category-header"><strong>Execution Feasibility</strong></td>
-                <td data-rating="1">Hard to produce within budget, time, or resource constraints.</td>
-                <td data-rating="2">Achievable but requires effort or resources that may limit output.</td>
-                <td data-rating="3">Realistically attainable given current resources or easy to acquire.</td>
-                <td data-rating="4">Very straightforward or resource-friendly, maximizing production value and consistency.</td>
-              </tr>
-              <tr data-category="5">
-                <td class="category-header"><strong>Potential Impact &amp; Growth</strong></td>
-                <td data-rating="1">Low or short-lived impact; unlikely to build channel momentum.</td>
-                <td data-rating="2">Moderate impact; might bring some new viewers but won’t stand out widely.</td>
-                <td data-rating="3">High potential to attract new subscribers, strengthen brand, or sustain interest.</td>
-                <td data-rating="4">Exceptionally impactful; may drive massive growth, collaborations, and elevate channel status.</td>
-              </tr>
-              <tr data-category="6">
-                <td class="category-header"><strong>Brand/Channel Fit</strong></td>
-                <td data-rating="1">Conflicts with or dilutes channel identity.</td>
-                <td data-rating="2">Fits somewhat, but doesn’t distinctly strengthen brand.</td>
-                <td data-rating="3">Aligns well with channel identity in a meaningful way.</td>
-                <td data-rating="4">Perfectly in line with and elevates your channel’s theme or niche.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <!-- FEEDBACK SECTION -->
-        <section class="glass-panel feedback-section" aria-labelledby="feedbackSectionHeading">
-          <h2 id="feedbackSectionHeading">Feedback</h2>
-          <div>
-            <label for="humanFeedback">Human Feedback:</label>
-            <textarea id="humanFeedback" placeholder="Enter your human feedback here..."></textarea>
-          </div>
-          <div>
-            <label for="aiFeedback">AI Feedback:</label>
-            <textarea id="aiFeedback" placeholder="Paste AI feedback here..."></textarea>
-          </div>
-        </section>
-
-        <!-- TITLE REVIEW RUBRIC -->
-        <section class="rubric-table glass-panel" aria-labelledby="titleRubricHeading">
-          <h2 id="titleRubricHeading">Title Review Rubric</h2>
-          <table class="modern-table" id="titleRubricTable">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>1 – Needs Work</th>
-                <th>2 – Solid</th>
-                <th>3 – Excellent</th>
-                <th>4 – Exceptional</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr data-category="7">
-                <td class="category-header"><strong>Relevance &amp; Honesty</strong></td>
-                <td data-rating="1">Title is loosely related to the content and may even mislead the viewer.</td>
-                <td data-rating="2">Title relates to the content but uses mild exaggeration that might slightly distort expectations.</td>
-                <td data-rating="3">Title clearly reflects the video’s content and its unique hook, giving viewers a good sense of what to expect.</td>
-                <td data-rating="4">Title is perfectly aligned with the content—authentic and precisely communicates the unique selling point with no misleading promises.</td>
-              </tr>
-              <tr data-category="8">
-                <td class="category-header"><strong>Clarity &amp; Keyword Inclusion</strong></td>
-                <td data-rating="1">Title is vague or confusing; may omit essential keywords (e.g., “Minecraft” or “Roblox”), making it hard for viewers to immediately understand the subject.</td>
-                <td data-rating="2">Title includes some relevant keywords but lacks optimal clarity, which might leave potential viewers a bit unsure.</td>
-                <td data-rating="3">Title is clear, concise, and includes key terms that quickly identify the game and main concept.</td>
-                <td data-rating="4">Title is crystal clear and perfectly concise, naturally incorporating all important keywords so that both viewers and the algorithm immediately understand the topic.</td>
-              </tr>
-              <tr data-category="9">
-                <td class="category-header"><strong>Curiosity &amp; Intrigue</strong></td>
-                <td data-rating="1">Title offers little to no mystery or curiosity—it states the obvious and leaves no unanswered questions.</td>
-                <td data-rating="2">Title includes a hint of intrigue but doesn’t fully leverage a curiosity gap to drive viewers to click.</td>
-                <td data-rating="3">Title effectively creates a curiosity gap that prompts viewers to want to learn more about the outcome or unique twist.</td>
-                <td data-rating="4">Title masterfully leverages the curiosity gap, leaving an irresistible question or teaser that compels viewers to click immediately.</td>
-              </tr>
-              <tr data-category="10">
-                <td class="category-header"><strong>Emotional Impact</strong></td>
-                <td data-rating="1">Title is emotionally flat and does not evoke any strong feelings such as excitement, shock, or humor.</td>
-                <td data-rating="2">Title elicits a minor emotional reaction, but the effect isn’t strong enough to drive immediate interest.</td>
-                <td data-rating="3">Title generates a clear emotional response (e.g., excitement, humor, or suspense) that aligns well with the video content.</td>
-                <td data-rating="4">Title evokes a powerful and immediate emotional reaction, ensuring viewers feel compelled to click out of genuine excitement, curiosity, or shock.</td>
-              </tr>
-              <tr data-category="11">
-                <td class="category-header"><strong>Novelty &amp; Creativity</strong></td>
-                <td data-rating="1">Title is generic and similar to many others in the niche; it does not stand out.</td>
-                <td data-rating="2">Title shows some originality but is still reminiscent of common formats or ideas seen frequently.</td>
-                <td data-rating="3">Title is creative and offers a fresh perspective on a familiar concept, making it more enticing than standard formats.</td>
-                <td data-rating="4">Title is highly innovative and distinctive, providing an unexpected twist or unique angle that makes it stand out in a saturated niche.</td>
-              </tr>
-              <tr data-category="12">
-                <td class="category-header"><strong>Brevity &amp; Readability</strong></td>
-                <td data-rating="1">Title is overly long, cluttered, or may be truncated on smaller screens, which hampers its readability.</td>
-                <td data-rating="2">Title is moderately concise but still includes extraneous words that could be eliminated.</td>
-                <td data-rating="3">Title is concise, easy to read, and is unlikely to be cut off on most devices.</td>
-                <td data-rating="4">Title is perfectly concise and formatted—packing a powerful message into very few words while remaining immediately legible across all devices.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </div>
-
-      <!-- FUN FACT SECTION (Bottom) -->
-      <div class="fun-fact-section glass-panel" id="funFactSection" role="note" aria-live="polite">
-        <!-- A random fun fact or tip will appear here -->
-      </div>
-    </main>
 
     <!-- HOW-TO MODAL -->
     <dialog class="modal-bg" id="howToModal" aria-labelledby="howToHeading" aria-modal="true">
@@ -781,8 +814,9 @@
         }
       }
 
+      // Modified exportPNG: Now captures the entire export-container (header + main)
       function exportPNG() {
-        const container = document.querySelector('.analyzer-container');
+        const container = document.querySelector('.export-container');
         if (!container) return;
         html2canvas(container).then(canvas => {
           const link = document.createElement('a');
@@ -890,6 +924,46 @@
         "Clarity, creativity, and authenticity – the three Cs of a winning title.",
         "A memorable title is the first step to making your idea unforgettable."
       ];
+
+      /***************************************************
+       * Title Enhancement Tools: Analyze Title Function
+       ***************************************************/
+      function analyzeTitle() {
+        var titleText = document.getElementById('proposedTitle').value;
+        if (!titleText.trim()) {
+          alert("Please enter a title for analysis.");
+          return;
+        }
+        
+        // RAKE Keyword Extraction (using RAKE-JS if available)
+        var keywords = [];
+        if (typeof Rake !== "undefined") {
+          // Use default stopwords if available
+          var stopWords = Rake.defaultStopwords || [];
+          var rake = new Rake(stopWords);
+          keywords = rake.run(titleText);
+        } else {
+          keywords = ["RAKE library not loaded"];
+        }
+        
+        // VADER Sentiment Analysis (if loaded)
+        var sentimentResult = {};
+        if (typeof vaderSentiment !== "undefined" && vaderSentiment.SentimentIntensityAnalyzer) {
+          sentimentResult = vaderSentiment.SentimentIntensityAnalyzer.polarity_scores(titleText);
+        } else {
+          sentimentResult = { error: "VADER not loaded" };
+        }
+        
+        // NLTK-style Tokenization (a simple split as a placeholder)
+        var tokens = titleText.split(/\s+/);
+        
+        // Display the analysis results
+        var resultsDiv = document.getElementById('titleAnalysisResults');
+        resultsDiv.innerHTML = "<h3>Analysis Results:</h3>";
+        resultsDiv.innerHTML += "<p><strong>Extracted Keywords (RAKE):</strong> " + keywords.join(", ") + "</p>";
+        resultsDiv.innerHTML += "<p><strong>Sentiment (VADER):</strong> " + JSON.stringify(sentimentResult) + "</p>";
+        resultsDiv.innerHTML += "<p><strong>Tokenization (NLTK-style):</strong> " + tokens.join(", ") + "</p>";
+      }
     </script>
   </body>
 </html>
