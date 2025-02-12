@@ -288,7 +288,7 @@
         transform: scale(1.02);
       }
 
-      /* Rubric Table (NOW 10 categories instead of 14) */
+      /* Slightly less wide category column: changed from 180px to 160px */
       .rubric-table {
         margin: 1rem 0;
       }
@@ -335,7 +335,7 @@
         background: rgba(79, 172, 254, 0.03);
         position: sticky;
         left: 0;
-        min-width: 180px;
+        min-width: 160px; /* <--- changed here */
       }
 
       #selfAssessmentSection ul {
@@ -373,7 +373,6 @@
     <header class="analyzer-header">
       <div class="header-left">
         <h1>StoryCraft Analyzer</h1>
-        <!-- Score & Ranking here -->
         <div class="score-info">
           <p>Total Score: <span id="total">0</span> / 56</p>
           <p>Ranking: <span id="ranking">Incomplete</span></p>
@@ -761,7 +760,7 @@
       }
 
       function updateProgressBar(total) {
-        const maxScore = 40; // 10 categories * 4 max each
+        const maxScore = 40; // 10 categories * 4 each
         const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
