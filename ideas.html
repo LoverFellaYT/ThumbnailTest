@@ -317,6 +317,7 @@
       .feedback-section div {
         margin-bottom: 1rem;
       }
+      /* Updated textarea styling to ensure proper wrapping on export */
       textarea {
         width: 100%;
         min-height: 100px;
@@ -331,6 +332,7 @@
         overflow: hidden;
         white-space: pre-wrap;
         resize: none;
+        overflow-wrap: break-word;
       }
 
       /* Fun Fact Section (Bottom) */
@@ -526,11 +528,11 @@
             <h2 id="feedbackSectionHeading">Feedback</h2>
             <div>
               <label for="humanFeedback">Human Feedback:</label>
-              <textarea id="humanFeedback" placeholder="Enter your human feedback here..." oninput="autoResize(this)"></textarea>
+              <textarea id="humanFeedback" wrap="soft" placeholder="Enter your human feedback here..." oninput="autoResize(this)"></textarea>
             </div>
             <div>
               <label for="aiFeedback">AI Feedback:</label>
-              <textarea id="aiFeedback" placeholder="Paste AI feedback here..." oninput="autoResize(this)"></textarea>
+              <textarea id="aiFeedback" wrap="soft" placeholder="Paste AI feedback here..." oninput="autoResize(this)"></textarea>
             </div>
           </section>
 
