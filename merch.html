@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Merchandise Rubric Analyzer Pro+ (Slime Edition)</title>
+    <title>Merchandise Rubric Analyzer Pro+</title>
 
     <!-- Roboto Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -95,7 +95,7 @@
         font-weight: 600;
       }
       
-      /* BUTTONS with Enhanced Slime Drip Effects */
+      /* BUTTONS with Enhanced Organic Slime Drip Effects */
       .btn {
         position: relative;
         overflow: visible;
@@ -112,17 +112,17 @@
       .btn:hover {
         transform: translateY(-2px);
       }
-      /* Create two drip pseudo-elements on each button with an organic blob shape */
+      /* Create two drip pseudo-elements with irregular blob shapes */
       .btn::before,
       .btn::after {
         content: "";
         position: absolute;
-        bottom: -5px; /* starting slightly below the button */
+        bottom: -5px;
         background-color: var(--primary-color);
         filter: blur(0.5px);
         width: 10px;
         height: 14px;
-        /* Use an irregular border-radius to simulate a blob */
+        /* Irregular blob shape */
         border-radius: 40% 60% 50% 70% / 60% 40% 70% 50%;
         opacity: 0;
       }
@@ -213,9 +213,28 @@
         font-weight: 600;
         position: sticky;
         top: 0;
-        background: var(--primary-color);
-        color: var(--button-text);
         z-index: 10;
+      }
+      /* Category header (first column) remains neutral */
+      .modern-table thead th:first-child {
+        background: var(--panel-bg);
+        color: var(--text-color);
+      }
+      /* Rating headers get graduated slime-green shades */
+      .modern-table thead th:nth-child(2) {
+        background: rgba(163, 255, 18, 0.5);
+      }
+      .modern-table thead th:nth-child(3) {
+        background: rgba(163, 255, 18, 0.65);
+      }
+      .modern-table thead th:nth-child(4) {
+        background: rgba(163, 255, 18, 0.8);
+      }
+      .modern-table thead th:nth-child(5) {
+        background: var(--primary-color);
+      }
+      .modern-table thead th {
+        color: var(--button-text);
       }
       .modern-table tbody td {
         padding: 0.75rem 1.5rem;
@@ -297,6 +316,20 @@
         background: var(--primary-color);
         border-radius: 10px;
         transition: width 0.3s ease;
+      }
+
+      /* Slime overlay for reset animation */
+      #slimeOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--primary-color);
+        opacity: 0;
+        z-index: 3000;
+        pointer-events: none;
+        transition: opacity 0.8s ease-in-out;
       }
 
       /* RESPONSIVE */
@@ -443,6 +476,9 @@
       </section>
     </main>
 
+    <!-- SLIME OVERLAY for Reset Animation -->
+    <div id="slimeOverlay"></div>
+
     <!-- JAVASCRIPT -->
     <script>
       /***************************************************
@@ -520,15 +556,16 @@
         if (total >= 25) {
           label = "Outstanding";
           if (!confettiShown) {
-            // Slime-splatter confetti: lower gravity and slower decay for a gooey effect
+            // Slime-splatter confetti: more particles, lower gravity and slower decay for a gooey effect
             confetti({
-              particleCount: 80,
-              startVelocity: 15,
-              spread: 80,
-              gravity: 0.3,
-              decay: 0.98,
-              scalar: 1.0,
-              colors: ['#a3ff12', '#caff3d', '#8ecf0a']
+              particleCount: 150,
+              startVelocity: 10,
+              spread: 120,
+              gravity: 0.15,
+              decay: 0.96,
+              scalar: 1.5,
+              ticks: 300,
+              colors: ['#a3ff12', '#caff3d', '#8ecf0a', '#b2ff66']
             });
             confettiShown = true;
           }
@@ -582,19 +619,27 @@
       }
 
       /***************************************************
-       * Reset Scores & Local Storage
+       * Reset Scores with Slime Drowning Animation
        ***************************************************/
       function resetScores() {
-        scores = {};
-        localStorage.removeItem(STORAGE_KEY);
-        document.querySelectorAll(".modern-table td[data-rating]").forEach(cell => cell.classList.remove("selected"));
-        document.getElementById("total").textContent = "0";
-        document.getElementById("scoreLabel").textContent = "Good";
-        document.getElementById("ranking").textContent = "Incomplete";
-        document.getElementById("ranking").style.color = "#9e9e9e";
-        document.getElementById("progressBar").style.width = "0%";
-        confettiShown = false;
-        milestoneTriggered = {};
+        const slimeOverlay = document.getElementById("slimeOverlay");
+        // Bring the slime overlay fully in view
+        slimeOverlay.style.opacity = "1";
+        // After 800ms (or adjust timing as desired), clear the state and then fade out the overlay
+        setTimeout(() => {
+          scores = {};
+          localStorage.removeItem(STORAGE_KEY);
+          document.querySelectorAll(".modern-table td[data-rating]").forEach(cell => cell.classList.remove("selected"));
+          document.getElementById("total").textContent = "0";
+          document.getElementById("scoreLabel").textContent = "Good";
+          document.getElementById("ranking").textContent = "Incomplete";
+          document.getElementById("ranking").style.color = "#9e9e9e";
+          document.getElementById("progressBar").style.width = "0%";
+          confettiShown = false;
+          milestoneTriggered = {};
+          // Fade out the slime overlay
+          slimeOverlay.style.opacity = "0";
+        }, 800);
       }
 
       /***************************************************
