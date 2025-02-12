@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Merchandise Rubric Analyzer Pro+ (Final)</title>
+    <title>Merchandise Rubric Analyzer Pro+ (Improved)</title>
 
     <!-- Roboto Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,10 +27,19 @@
         --panel-bg: rgba(255, 255, 255, 0.96);
         --border-color: rgba(255, 255, 255, 0.2);
         --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-        --transition: all 0.2s ease;
+        --transition: all 0.3s ease;
         --radius: 14px;
         --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
         --table-cell-bg: rgba(255, 255, 255, 0.85);
+      }
+
+      /* Dark mode variables */
+      [data-theme="dark"] {
+        --bg-color: #1f1f1f;
+        --text-color: #e2e8f0;
+        --panel-bg: rgba(30, 30, 30, 0.98);
+        --border-color: rgba(255, 255, 255, 0.2);
+        --table-cell-bg: rgba(30, 30, 30, 0.85);
       }
 
       body {
@@ -40,31 +49,30 @@
         background: var(--bg-color);
         color: var(--text-color);
         transition: var(--transition);
+        line-height: 1.6;
       }
 
-      .glass-panel {
-        background: var(--panel-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      /* HEADER */
+      /* Header styling */
       header.analyzer-header {
         position: sticky;
         top: 0;
         z-index: 2000;
-        padding: 1.5rem 2rem;
+        background: var(--panel-bg);
+        padding: 1.2rem 2rem;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
       }
       .header-left {
         display: flex;
         flex-direction: column;
         gap: 0.4rem;
+      }
+      .instructions {
+        font-size: 0.9rem;
+        color: var(--text-color);
       }
       .total-score {
         font-size: 1.75rem;
@@ -72,7 +80,6 @@
         background: var(--gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        position: relative;
       }
       .status-indicator {
         font-weight: 600;
@@ -91,16 +98,54 @@
       .btn:hover {
         transform: translateY(-2px);
       }
+      /* Dark mode toggle switch */
+      .toggle-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .toggle-label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+      .toggle-slider {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        transition: background-color 0.3s;
+      }
+      .toggle-slider .slider-thumb {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: #fff;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+      }
+      input#darkModeToggle {
+        display: none;
+      }
+      input#darkModeToggle:checked + .toggle-slider .slider-thumb {
+        transform: translateX(32px);
+      }
+      input#darkModeToggle:checked + .toggle-slider {
+        background-color: var(--primary-color);
+      }
 
-      /* MAIN CONTAINER */
-      .analyzer-container {
+      /* Main container styling */
+      main {
         width: 95%;
         max-width: 1200px;
         margin: 2rem auto;
         padding: 0 1rem;
       }
 
-      /* Rubric Table */
+      /* Rubric Table styling */
       .modern-table {
         width: 100%;
         border-collapse: separate;
@@ -117,8 +162,6 @@
         top: 0;
         backdrop-filter: blur(10px);
         z-index: 10;
-      }
-      .modern-table thead th:first-child {
         background: var(--gradient);
         color: #fff;
       }
@@ -136,8 +179,7 @@
         background: rgba(224, 231, 255, 0.5) !important;
         box-shadow: inset 4px 0 0 var(--primary-color);
       }
-
-      /* Legend */
+      /* Legend and Feedback */
       #toggleLegend {
         margin: 0.5rem 0;
         padding: 0.4rem 0.8rem;
@@ -156,8 +198,6 @@
         border-radius: var(--radius);
         padding: 0.75rem;
       }
-
-      /* Feedback Panel */
       .feedback-panel {
         margin-top: 1rem;
       }
@@ -181,13 +221,13 @@
         border-radius: var(--radius);
         font-size: 1rem;
         font-family: 'Roboto', sans-serif;
+        transition: var(--transition);
       }
       .feedback-input:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
       }
-
       /* Progress Bar */
       #progressBarContainer {
         position: relative;
@@ -204,104 +244,125 @@
         border-radius: 10px;
         transition: width 0.3s ease;
       }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        header.analyzer-header,
+        main {
+          padding: 1rem;
+        }
+        .total-score {
+          font-size: 1.5rem;
+        }
+        .modern-table thead th, .modern-table tbody td {
+          padding: 0.5rem 1rem;
+        }
+      }
     </style>
   </head>
   <body>
-    <!-- HEADER -->
-    <header class="analyzer-header glass-panel">
+    <!-- HEADER with instructions and dark mode toggle -->
+    <header class="analyzer-header" role="banner">
       <div class="header-left">
-        <div class="total-score">
-          Score: <span id="total">0</span>/28 – 
-          <span id="scoreLabel">Good</span>
+        <div class="total-score" aria-live="polite">
+          Score: <span id="total">0</span>/28 – <span id="scoreLabel">Good</span>
         </div>
+        <div class="instructions">Select a rating for each category. Your progress is saved automatically.</div>
         <div id="progressBarContainer">
           <div id="progressBar"></div>
         </div>
         <div class="status-indicator" id="ranking">Incomplete</div>
       </div>
       <div class="header-right">
-        <button class="btn" onclick="resetScores()">🔄 Reset</button>
-        <button class="btn" onclick="exportPNG()">🖼️ Export PNG</button>
+        <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
+        <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
+        <div class="toggle-switch">
+          <label class="toggle-label" for="darkModeToggle">Dark Mode</label>
+          <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" onchange="toggleTheme(this)" />
+          <div class="toggle-slider">
+            <div class="slider-thumb"></div>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
-    <div class="analyzer-container">
-      <!-- Rubric Table -->
-      <section class="rubric-table glass-panel">
+    <!-- MAIN CONTENT -->
+    <main role="main">
+      <!-- Rubric Table Section -->
+      <section class="rubric-table glass-panel" aria-label="Merchandise Rubric">
         <table class="modern-table">
           <thead>
             <tr>
-              <th>Category</th>
-              <th>Good (1)</th>
-              <th>Great (2)</th>
-              <th>Excellent (3)</th>
-              <th>Outstanding (4)</th>
+              <th scope="col">Category</th>
+              <th scope="col">Good (1)</th>
+              <th scope="col">Great (2)</th>
+              <th scope="col">Excellent (3)</th>
+              <th scope="col">Outstanding (4)</th>
             </tr>
           </thead>
           <tbody>
             <!-- 1: Audience Connection & Engagement -->
             <tr>
               <td data-category="0"><strong>🤝 Audience Connection &amp; Engagement</strong></td>
-              <td data-category="0" data-rating="1" tabindex="0">Basic understanding of audience; minimal insights</td>
-              <td data-category="0" data-rating="2" tabindex="0">Incorporates feedback and relatable design elements</td>
-              <td data-category="0" data-rating="3" tabindex="0">Evokes strong emotional resonance and clear audience appeal</td>
-              <td data-category="0" data-rating="4" tabindex="0">Forges deep community identity and engagement through every detail</td>
+              <td data-category="0" data-rating="1" tabindex="0" role="button" aria-label="Basic audience understanding">Basic understanding; minimal insights</td>
+              <td data-category="0" data-rating="2" tabindex="0" role="button" aria-label="Incorporates feedback">Incorporates feedback and relatable design elements</td>
+              <td data-category="0" data-rating="3" tabindex="0" role="button" aria-label="Strong emotional resonance">Evokes strong emotional resonance and clear audience appeal</td>
+              <td data-category="0" data-rating="4" tabindex="0" role="button" aria-label="Deep community engagement">Forges deep community identity and engagement through every detail</td>
             </tr>
             <!-- 2: Brand Consistency & Storytelling -->
             <tr>
               <td data-category="1"><strong>📖 Brand Consistency &amp; Storytelling</strong></td>
-              <td data-category="1" data-rating="1" tabindex="0">Uses basic brand elements with little narrative</td>
-              <td data-category="1" data-rating="2" tabindex="0">Maintains a consistent visual style that reflects the brand</td>
-              <td data-category="1" data-rating="3" tabindex="0">Integrates storytelling elements that deepen brand connection</td>
-              <td data-category="1" data-rating="4" tabindex="0">Transforms merchandise into a brand icon with a compelling narrative</td>
+              <td data-category="1" data-rating="1" tabindex="0" role="button" aria-label="Basic brand elements">Uses basic brand elements with little narrative</td>
+              <td data-category="1" data-rating="2" tabindex="0" role="button" aria-label="Consistent visual style">Maintains a consistent visual style that reflects the brand</td>
+              <td data-category="1" data-rating="3" tabindex="0" role="button" aria-label="Integrates storytelling">Integrates storytelling elements that deepen brand connection</td>
+              <td data-category="1" data-rating="4" tabindex="0" role="button" aria-label="Transforms merchandise into a brand icon">Transforms merchandise into a brand icon with a compelling narrative</td>
             </tr>
             <!-- 3: Design & Production Quality -->
             <tr>
               <td data-category="2"><strong>🎨 Design &amp; Production Quality</strong></td>
-              <td data-category="2" data-rating="1" tabindex="0">Basic design and standard materials</td>
-              <td data-category="2" data-rating="2" tabindex="0">Attractive design with reliable production quality</td>
-              <td data-category="2" data-rating="3" tabindex="0">Innovative design paired with premium production standards</td>
-              <td data-category="2" data-rating="4" tabindex="0">Sets industry trends with flawless craftsmanship and cutting-edge design</td>
+              <td data-category="2" data-rating="1" tabindex="0" role="button" aria-label="Basic design and materials">Basic design and standard materials</td>
+              <td data-category="2" data-rating="2" tabindex="0" role="button" aria-label="Attractive design">Attractive design with reliable production quality</td>
+              <td data-category="2" data-rating="3" tabindex="0" role="button" aria-label="Innovative design">Innovative design paired with premium production standards</td>
+              <td data-category="2" data-rating="4" tabindex="0" role="button" aria-label="Industry leading quality">Sets industry trends with flawless craftsmanship and cutting-edge design</td>
             </tr>
             <!-- 4: Pricing Strategy & Value Proposition -->
             <tr>
               <td data-category="3"><strong>💲 Pricing Strategy &amp; Value Proposition</strong></td>
-              <td data-category="3" data-rating="1" tabindex="0">Pricing covers basic costs without added value</td>
-              <td data-category="3" data-rating="2" tabindex="0">Balanced pricing that clearly reflects quality</td>
-              <td data-category="3" data-rating="3" tabindex="0">Strategic pricing with exclusive releases or bundles</td>
-              <td data-category="3" data-rating="4" tabindex="0">Premium pricing model that elevates perceived value and brand loyalty</td>
+              <td data-category="3" data-rating="1" tabindex="0" role="button" aria-label="Basic pricing">Pricing covers basic costs without added value</td>
+              <td data-category="3" data-rating="2" tabindex="0" role="button" aria-label="Balanced pricing">Balanced pricing that clearly reflects quality</td>
+              <td data-category="3" data-rating="3" tabindex="0" role="button" aria-label="Strategic pricing">Strategic pricing with exclusive releases or bundles</td>
+              <td data-category="3" data-rating="4" tabindex="0" role="button" aria-label="Premium pricing model">Premium pricing model that elevates perceived value and brand loyalty</td>
             </tr>
             <!-- 5: Customer Experience & Fulfillment -->
             <tr>
               <td data-category="4"><strong>🚚 Customer Experience &amp; Fulfillment</strong></td>
-              <td data-category="4" data-rating="1" tabindex="0">Basic, functional e-commerce experience</td>
-              <td data-category="4" data-rating="2" tabindex="0">Smooth shopping process with reliable shipping</td>
-              <td data-category="4" data-rating="3" tabindex="0">Seamless, user-friendly experience across devices</td>
-              <td data-category="4" data-rating="4" tabindex="0">Personalized service with proactive fulfillment that delights customers</td>
+              <td data-category="4" data-rating="1" tabindex="0" role="button" aria-label="Basic experience">Basic, functional e-commerce experience</td>
+              <td data-category="4" data-rating="2" tabindex="0" role="button" aria-label="Smooth shopping process">Smooth shopping process with reliable shipping</td>
+              <td data-category="4" data-rating="3" tabindex="0" role="button" aria-label="Seamless user experience">Seamless, user-friendly experience across devices</td>
+              <td data-category="4" data-rating="4" tabindex="0" role="button" aria-label="Personalized service">Personalized service with proactive fulfillment that delights customers</td>
             </tr>
             <!-- 6: Marketing & Promotion Effectiveness -->
             <tr>
               <td data-category="5"><strong>📣 Marketing &amp; Promotion Effectiveness</strong></td>
-              <td data-category="5" data-rating="1" tabindex="0">Basic promotional efforts with limited reach</td>
-              <td data-category="5" data-rating="2" tabindex="0">Consistent multi-platform promotion that supports sales</td>
-              <td data-category="5" data-rating="3" tabindex="0">Creative campaigns that drive measurable engagement</td>
-              <td data-category="5" data-rating="4" tabindex="0">Innovative, viral marketing strategies that turn customers into brand evangelists</td>
+              <td data-category="5" data-rating="1" tabindex="0" role="button" aria-label="Basic promotion">Basic promotional efforts with limited reach</td>
+              <td data-category="5" data-rating="2" tabindex="0" role="button" aria-label="Consistent promotion">Consistent multi-platform promotion that supports sales</td>
+              <td data-category="5" data-rating="3" tabindex="0" role="button" aria-label="Creative campaigns">Creative campaigns that drive measurable engagement</td>
+              <td data-category="5" data-rating="4" tabindex="0" role="button" aria-label="Viral marketing strategies">Innovative, viral marketing strategies that turn customers into brand evangelists</td>
             </tr>
             <!-- 7: Innovation & Adaptability -->
             <tr>
               <td data-category="6"><strong>🚀 Innovation &amp; Adaptability</strong></td>
-              <td data-category="6" data-rating="1" tabindex="0">Maintains a steady product offering without change</td>
-              <td data-category="6" data-rating="2" tabindex="0">Regularly updates designs based on feedback</td>
-              <td data-category="6" data-rating="3" tabindex="0">Proactively innovates with trend-aware strategies</td>
-              <td data-category="6" data-rating="4" tabindex="0">Sets new industry standards with groundbreaking, adaptable ideas</td>
+              <td data-category="6" data-rating="1" tabindex="0" role="button" aria-label="Steady offering">Maintains a steady product offering without change</td>
+              <td data-category="6" data-rating="2" tabindex="0" role="button" aria-label="Regular updates">Regularly updates designs based on feedback</td>
+              <td data-category="6" data-rating="3" tabindex="0" role="button" aria-label="Proactive innovation">Proactively innovates with trend-aware strategies</td>
+              <td data-category="6" data-rating="4" tabindex="0" role="button" aria-label="Groundbreaking ideas">Sets new industry standards with groundbreaking, adaptable ideas</td>
             </tr>
           </tbody>
         </table>
 
         <!-- Legend Toggle -->
         <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
-        <div id="legend">
+        <div id="legend" aria-live="polite">
           <h4>Legend &amp; Definitions</h4>
           <p><strong>Good (1):</strong> Meets only the minimal requirements.</p>
           <p><strong>Great (2):</strong> Has several effective elements but can be refined.</p>
@@ -311,7 +372,7 @@
       </section>
 
       <!-- Feedback Panel -->
-      <section class="feedback-panel glass-panel">
+      <section class="feedback-panel glass-panel" aria-label="Feedback">
         <h3>Feedback</h3>
         <div class="feedback-entry">
           <label for="humanFeedback">Human Feedback</label>
@@ -322,16 +383,16 @@
           <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter AI feedback here..." aria-label="AI Feedback"></div>
         </div>
       </section>
-    </div>
+    </main>
 
     <!-- JAVASCRIPT -->
     <script>
       /***************************************************
-       * Global Variables
+       * Global Variables & Local Storage Key
        ***************************************************/
-      let scores = {}; // Stores selected ratings for each category
+      let scores = {}; // Object to store ratings per category
+      const maxPoints = 28; // 7 categories x 4 points each
       let confettiShown = false;
-      const maxPoints = 28; // 7 categories * 4 points each
       const milestoneMessages = {
         7: "Great start!",
         14: "Halfway there!",
@@ -339,45 +400,60 @@
         28: "Merchandise Master!"
       };
       let milestoneTriggered = {};
+      const STORAGE_KEY = "merchandiseRubricScores";
 
       /***************************************************
-       * Event Listeners for Rubric Table Cells
+       * Initialize Rubric on DOM Load
        ***************************************************/
-      document.querySelector(".modern-table").addEventListener("click", (e) => {
-        const cell = e.target.closest("td[data-rating]");
-        if (cell) {
-          selectRating(cell);
-        }
-      });
-      document.querySelector(".modern-table").addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          const cell = e.target.closest("td[data-rating]");
-          if (cell) {
-            e.preventDefault();
-            selectRating(cell);
+      document.addEventListener("DOMContentLoaded", () => {
+        // Load saved scores from localStorage if available
+        const savedScores = localStorage.getItem(STORAGE_KEY);
+        if (savedScores) {
+          scores = JSON.parse(savedScores);
+          // Update UI for each saved rating
+          for (const [category, rating] of Object.entries(scores)) {
+            const cell = document.querySelector(`td[data-category="${category}"][data-rating="${rating}"]`);
+            if (cell) cell.classList.add("selected");
           }
+          updateTotal();
         }
+
+        // Add click and keyboard events for table cells
+        document.querySelector(".modern-table").addEventListener("click", (e) => {
+          const cell = e.target.closest("td[data-rating]");
+          if (cell) selectRating(cell);
+        });
+        document.querySelector(".modern-table").addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            const cell = e.target.closest("td[data-rating]");
+            if (cell) {
+              e.preventDefault();
+              selectRating(cell);
+            }
+          }
+        });
       });
 
       /***************************************************
-       * Rubric Rating Selection
+       * Rubric Rating Selection & Persistence
        ***************************************************/
       function selectRating(cell) {
-        const categoryIndex = cell.getAttribute("data-category");
-        const rating = parseInt(cell.getAttribute("data-rating"));
+        const category = cell.getAttribute("data-category");
+        const rating = parseInt(cell.getAttribute("data-rating"), 10);
         const row = cell.parentElement;
 
-        // Clear any previously selected cell in this row
+        // Clear any previously selected cell in the same row
         row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
         cell.classList.add("selected");
 
-        // Store the rating
-        scores[categoryIndex] = rating;
+        // Update scores and persist to localStorage
+        scores[category] = rating;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
         updateTotal();
       }
 
       /***************************************************
-       * Update Total Score & Ranking
+       * Update Total Score & Ranking Display
        ***************************************************/
       function updateTotal() {
         const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
@@ -423,15 +499,16 @@
       }
 
       /***************************************************
-       * Update Progress Bar
+       * Update Progress Bar Animation
        ***************************************************/
       function updateProgressBar(total) {
         const percentage = (total / maxPoints) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
 
-        const milestoneDiv = document.getElementById("ranking");
+        // Show milestone messages if applicable
+        const ranking = document.getElementById("ranking");
         if (milestoneMessages[total] && !milestoneTriggered[total]) {
-          milestoneDiv.textContent = milestoneMessages[total];
+          ranking.textContent = milestoneMessages[total];
           milestoneTriggered[total] = true;
           setTimeout(() => {
             updateTotal();
@@ -440,10 +517,11 @@
       }
 
       /***************************************************
-       * Reset Scores & Rubric
+       * Reset Scores and Clear Local Storage
        ***************************************************/
       function resetScores() {
         scores = {};
+        localStorage.removeItem(STORAGE_KEY);
         document.querySelectorAll(".modern-table td[data-rating]").forEach(cell => cell.classList.remove("selected"));
         document.getElementById("total").textContent = "0";
         document.getElementById("scoreLabel").textContent = "Good";
@@ -470,7 +548,7 @@
       }
 
       /***************************************************
-       * Export Rubric as PNG
+       * Export Rubric as PNG using html2canvas
        ***************************************************/
       async function exportPNG() {
         const header = document.querySelector("header.analyzer-header");
@@ -488,6 +566,18 @@
         link.click();
         document.body.removeChild(link);
         header.style.position = originalPos;
+      }
+
+      /***************************************************
+       * Toggle Dark/Light Theme
+       ***************************************************/
+      function toggleTheme(input) {
+        const htmlEl = document.documentElement;
+        if (input.checked) {
+          htmlEl.setAttribute("data-theme", "dark");
+        } else {
+          htmlEl.removeAttribute("data-theme");
+        }
       }
     </script>
   </body>
