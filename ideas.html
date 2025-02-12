@@ -122,7 +122,7 @@
         transition: var(--transition);
       }
       .total-score:hover::after {
-        content: "Idea Score (0/16) | Title Score (0/24)";
+        content: "Idea Score (0/32) | Title Score (0/24)";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -390,7 +390,7 @@
           <span>Title &amp; Idea Review Pro</span>
         </div>
         <div class="total-score" id="scoreDisplay" tabindex="0">
-          Idea Score: <span id="ideaScore">0</span>/16 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/40 – <span id="scoreLabel">Needs Work</span>
+          Idea Score: <span id="ideaScore">0</span>/32 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/56 – <span id="scoreLabel">Needs Work</span>
         </div>
         <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
       </div>
@@ -399,7 +399,7 @@
           <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
           <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
           <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Renamed 'Rubrics' to 'Home' -->
+          <!-- Home button -->
           <button class="btn" onclick="window.open('https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics','_blank');" aria-label="Home">
             <i class="fas fa-home"></i> Home
           </button>
@@ -425,47 +425,93 @@
 
     <main>
       <div class="analyzer-container">
-        <!-- IDEA REVIEW RUBRIC -->
+        <!-- IDEA REVIEW RUBRIC (Mandatory) -->
         <section class="rubric-table glass-panel" aria-labelledby="ideaRubricHeading">
           <h2 id="ideaRubricHeading">Idea Review Rubric</h2>
           <table class="modern-table" id="ideaRubricTable">
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Good (1)</th>
-                <th>Great (2)</th>
-                <th>Excellent (3)</th>
-                <th>Outstanding (4)</th>
+                <th>1 – Needs Work</th>
+                <th>2 – Solid</th>
+                <th>3 – Excellent</th>
+                <th>4 – Exceptional</th>
               </tr>
             </thead>
             <tbody>
               <tr data-category="0">
                 <td class="category-header"><strong>Originality &amp; Creativity</strong></td>
-                <td data-rating="1">Idea is clichéd or unoriginal; it fails to present any novel perspective.</td>
-                <td data-rating="2">Idea shows some original elements, but overall it remains common and lacks distinctiveness.</td>
-                <td data-rating="3">Idea is original and demonstrates creative thought; it stands out with fresh insights.</td>
-                <td data-rating="4">Idea is highly innovative and groundbreaking; it offers a completely unique and captivating concept.</td>
+                <td data-rating="1">Clichéd; little fresh perspective; fails to stand out.</td>
+                <td data-rating="2">Shows some unique elements but still feels common.</td>
+                <td data-rating="3">Clearly creative approach that stands out among similar content.</td>
+                <td data-rating="4">Highly innovative and groundbreaking; genuinely new or strikingly novel angle.</td>
               </tr>
               <tr data-category="1">
                 <td class="category-header"><strong>Concept Clarity &amp; Focus</strong></td>
-                <td data-rating="1">Concept is vague or confusing, making it hard for viewers to grasp the main idea.</td>
-                <td data-rating="2">Concept is somewhat clear but lacks focus, leaving viewers unsure of the direction.</td>
-                <td data-rating="3">Concept is clearly defined and well-focused, giving viewers a strong understanding of the idea.</td>
-                <td data-rating="4">Concept is exceptionally clear, focused, and compelling, immediately capturing the viewer’s interest.</td>
+                <td data-rating="1">Vague or confusing; main idea is hard to grasp.</td>
+                <td data-rating="2">Some clarity, but lacks tight focus; direction is somewhat unclear.</td>
+                <td data-rating="3">Well-defined concept; easy to understand; clear sense of direction.</td>
+                <td data-rating="4">Exceptionally clear, focused, and compelling; hooks viewers immediately.</td>
               </tr>
               <tr data-category="2">
                 <td class="category-header"><strong>Audience Relevance</strong></td>
-                <td data-rating="1">Idea does not align with the target audience, missing the mark on what the audience wants.</td>
-                <td data-rating="2">Idea is somewhat relevant to the target audience, but its appeal is limited.</td>
-                <td data-rating="3">Idea strongly aligns with audience interests, offering content that resonates well with the target demographic.</td>
-                <td data-rating="4">Idea is perfectly tailored to captivate the target audience, ensuring maximum engagement and relevance.</td>
+                <td data-rating="1">Misaligned with target audience; unlikely to hold their interest.</td>
+                <td data-rating="2">Somewhat relevant but with limited broad appeal.</td>
+                <td data-rating="3">Strongly aligns with core demographic; likely to connect well.</td>
+                <td data-rating="4">Perfectly tailored to captivate the audience; high potential for engagement.</td>
               </tr>
               <tr data-category="3">
-                <td class="category-header"><strong>Potential Impact</strong></td>
-                <td data-rating="1">Idea has limited impact or appeal; it is unlikely to drive significant engagement.</td>
-                <td data-rating="2">Idea has moderate potential impact but may not stand out in a crowded space.</td>
-                <td data-rating="3">Idea has high potential to engage and inspire, promising substantial impact.</td>
-                <td data-rating="4">Idea is exceptionally impactful, with the power to drive major success and significantly engage viewers.</td>
+                <td class="category-header"><strong>Engagement &amp; Retention Potential</strong></td>
+                <td data-rating="1">Unlikely to drive significant watch time or interactions.</td>
+                <td data-rating="2">Could prompt some engagement, but lacks inherent retention features.</td>
+                <td data-rating="3">Likely to inspire good watch time, comments, or shares.</td>
+                <td data-rating="4">Exceptionally compelling “must-watch” content with high retention or viral potential.</td>
+              </tr>
+              <tr data-category="4">
+                <td class="category-header"><strong>Execution Feasibility</strong></td>
+                <td data-rating="1">Hard to produce within budget, time, or resource constraints.</td>
+                <td data-rating="2">Achievable but requires effort or resources that may limit output.</td>
+                <td data-rating="3">Realistically attainable given current resources or easy to acquire.</td>
+                <td data-rating="4">Very straightforward or resource-friendly, maximizing production value and consistency.</td>
+              </tr>
+              <tr data-category="5">
+                <td class="category-header"><strong>Potential Impact &amp; Growth</strong></td>
+                <td data-rating="1">Low or short-lived impact; unlikely to build channel momentum.</td>
+                <td data-rating="2">Moderate impact; might bring some new viewers but won’t stand out widely.</td>
+                <td data-rating="3">High potential to attract new subscribers, strengthen brand, or sustain interest.</td>
+                <td data-rating="4">Exceptionally impactful; may drive massive growth, collaborations, and elevate channel status.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- OPTIONAL IDEA CATEGORIES -->
+        <section class="rubric-table glass-panel" aria-labelledby="optionalIdeaRubricHeading">
+          <h2 id="optionalIdeaRubricHeading">Optional Idea Categories</h2>
+          <table class="modern-table" id="optionalIdeaRubricTable">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>1 – Needs Work</th>
+                <th>2 – Solid</th>
+                <th>3 – Excellent</th>
+                <th>4 – Exceptional</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-category="6">
+                <td class="category-header"><strong>Brand/Channel Fit</strong></td>
+                <td data-rating="1">Conflicts with or dilutes channel identity.</td>
+                <td data-rating="2">Fits somewhat, but doesn’t distinctly strengthen brand.</td>
+                <td data-rating="3">Aligns well with channel identity in a meaningful way.</td>
+                <td data-rating="4">Perfectly in line with and elevates your channel’s theme or niche.</td>
+              </tr>
+              <tr data-category="7">
+                <td class="category-header"><strong>Search &amp; Discoverability (SEO)</strong></td>
+                <td data-rating="1">Very difficult to rank; limited potential for organic discovery.</td>
+                <td data-rating="2">Plausible to rank with the right keywords; moderate search volume.</td>
+                <td data-rating="3">Good synergy with trending or evergreen keywords; decent chance to rank well.</td>
+                <td data-rating="4">High-demand or trending topic; strong potential for ongoing discovery and growth.</td>
               </tr>
             </tbody>
           </table>
@@ -478,49 +524,49 @@
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Good (1)</th>
-                <th>Great (2)</th>
-                <th>Excellent (3)</th>
-                <th>Outstanding (4)</th>
+                <th>1 – Needs Work</th>
+                <th>2 – Solid</th>
+                <th>3 – Excellent</th>
+                <th>4 – Exceptional</th>
               </tr>
             </thead>
             <tbody>
-              <tr data-category="4">
+              <tr data-category="8">
                 <td class="category-header"><strong>Relevance &amp; Honesty</strong></td>
                 <td data-rating="1">Title is loosely related to the content and may even mislead the viewer.</td>
                 <td data-rating="2">Title relates to the content but uses mild exaggeration that might slightly distort expectations.</td>
                 <td data-rating="3">Title clearly reflects the video’s content and its unique hook, giving viewers a good sense of what to expect.</td>
                 <td data-rating="4">Title is perfectly aligned with the content—authentic and precisely communicates the unique selling point with no misleading promises.</td>
               </tr>
-              <tr data-category="5">
+              <tr data-category="9">
                 <td class="category-header"><strong>Clarity &amp; Keyword Inclusion</strong></td>
                 <td data-rating="1">Title is vague or confusing; may omit essential keywords (e.g., “Minecraft” or “Roblox”), making it hard for viewers to immediately understand the subject.</td>
                 <td data-rating="2">Title includes some relevant keywords but lacks optimal clarity, which might leave potential viewers a bit unsure.</td>
                 <td data-rating="3">Title is clear, concise, and includes key terms that quickly identify the game and main concept.</td>
                 <td data-rating="4">Title is crystal clear and perfectly concise, naturally incorporating all important keywords so that both viewers and the algorithm immediately understand the topic.</td>
               </tr>
-              <tr data-category="6">
+              <tr data-category="10">
                 <td class="category-header"><strong>Curiosity &amp; Intrigue</strong></td>
                 <td data-rating="1">Title offers little to no mystery or curiosity—it states the obvious and leaves no unanswered questions.</td>
                 <td data-rating="2">Title includes a hint of intrigue but doesn’t fully leverage a curiosity gap to drive viewers to click.</td>
                 <td data-rating="3">Title effectively creates a curiosity gap that prompts viewers to want to learn more about the outcome or unique twist.</td>
                 <td data-rating="4">Title masterfully leverages the curiosity gap, leaving an irresistible question or teaser that compels viewers to click immediately.</td>
               </tr>
-              <tr data-category="7">
+              <tr data-category="11">
                 <td class="category-header"><strong>Emotional Impact</strong></td>
                 <td data-rating="1">Title is emotionally flat and does not evoke any strong feelings such as excitement, shock, or humor.</td>
                 <td data-rating="2">Title elicits a minor emotional reaction, but the effect isn’t strong enough to drive immediate interest.</td>
                 <td data-rating="3">Title generates a clear emotional response (e.g., excitement, humor, or suspense) that aligns well with the video content.</td>
                 <td data-rating="4">Title evokes a powerful and immediate emotional reaction, ensuring viewers feel compelled to click out of genuine excitement, curiosity, or shock.</td>
               </tr>
-              <tr data-category="8">
+              <tr data-category="12">
                 <td class="category-header"><strong>Novelty &amp; Creativity</strong></td>
                 <td data-rating="1">Title is generic and similar to many others in the niche; it does not stand out.</td>
                 <td data-rating="2">Title shows some originality but is still reminiscent of common formats or ideas seen frequently.</td>
                 <td data-rating="3">Title is creative and offers a fresh perspective on a familiar concept, making it more enticing than standard formats.</td>
                 <td data-rating="4">Title is highly innovative and distinctive, providing an unexpected twist or unique angle that makes it stand out in a saturated niche.</td>
               </tr>
-              <tr data-category="9">
+              <tr data-category="13">
                 <td class="category-header"><strong>Brevity &amp; Readability</strong></td>
                 <td data-rating="1">Title is overly long, cluttered, or may be truncated on smaller screens, which hampers its readability.</td>
                 <td data-rating="2">Title is moderately concise but still includes extraneous words that could be eliminated.</td>
@@ -573,25 +619,29 @@
       /***************************************************
        * Global Variables & Emoji Mapping
        ***************************************************/
-      // Total categories: 4 Idea + 6 Title = 10
+      // Total categories: 8 Idea (0–7) + 6 Title (8–13) = 14 categories.
       let scoreData = {};
       let confettiShown = false;
-      const maxCategories = 10;
-      const overallMax = 40; // 10 * 4
-      const ideaMax = 16;    // 4 * 4
-      const titleMax = 24;   // 6 * 4
+      const maxCategories = 14;
+      const ideaMax = 8 * 4;    // 32 points maximum for idea rubric
+      const titleMax = 6 * 4;   // 24 points maximum for title rubric
+      const overallMax = ideaMax + titleMax; // 56
 
       const categoryEmojis = {
         0: '💡',
         1: '🎯',
         2: '👥',
-        3: '🚀',
-        4: '⚖️',
-        5: '🔍',
-        6: '❓',
-        7: '❤️',
-        8: '🪄',
-        9: '✂️'
+        3: '📈',
+        4: '⚙️',
+        5: '🚀',
+        6: '💬',
+        7: '🔍',
+        8: '⚖️',
+        9: '🔍',
+        10: '❓',
+        11: '❤️',
+        12: '🪄',
+        13: '✂️'
       };
 
       // Returns the overall rating label and color based on our new thresholds
@@ -621,7 +671,7 @@
        * Initialization on DOMContentLoaded
        ***************************************************/
       document.addEventListener('DOMContentLoaded', function() {
-        // Initialize scoreData for categories 0 to 9
+        // Initialize scoreData for categories 0 to 13
         for (let i = 0; i < maxCategories; i++) {
           scoreData[i] = 0;
         }
@@ -635,7 +685,7 @@
         // Insert emojis into category header cells
         initEmojis();
         
-        // Call updateScore once so that scores display immediately (even with 0s)
+        // Update scores display on load
         updateScore();
         
         // Set a random inspirational quote and fun fact
@@ -651,6 +701,7 @@
        ***************************************************/
       function handleCellClick(event) {
         const cell = event.currentTarget;
+        // Each cell's parent row should have a data-category attribute
         const category = cell.parentElement.getAttribute('data-category');
         const rating = parseInt(cell.getAttribute('data-rating'));
 
@@ -667,14 +718,14 @@
       }
 
       function updateScore() {
-        // Calculate Idea Score (categories 0-3)
+        // Calculate Idea Score from categories 0–7
         let ideaTotal = 0;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 8; i++) {
           ideaTotal += parseInt(scoreData[i]) || 0;
         }
-        // Calculate Title Score (categories 4-9)
+        // Calculate Title Score from categories 8–13
         let titleTotal = 0;
-        for (let i = 4; i < maxCategories; i++) {
+        for (let i = 8; i < maxCategories; i++) {
           titleTotal += parseInt(scoreData[i]) || 0;
         }
         const overallTotal = ideaTotal + titleTotal;
