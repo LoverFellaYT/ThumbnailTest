@@ -62,10 +62,11 @@
         color: var(--text-light);
         transition: var(--transition);
       }
-      /* Slightly thinner container */
+
+      /* Make sections slightly wider */
       .analyzer-container {
-        width: 95%;
-        max-width: 900px;
+        width: 98%; /* Slightly wider than before */
+        max-width: 1100px; /* Increased max-width to accommodate the table */
         margin: 2rem auto;
         padding: 0 var(--spacing) 2rem;
         text-align: center;
@@ -111,6 +112,7 @@
         flex-wrap: wrap;
         align-items: center;
       }
+
       /* --------------------------------------------------------------
          Button Styling
          -------------------------------------------------------------- */
@@ -143,6 +145,7 @@
       button.rainbow-btn:hover {
         transform: scale(1.2);
       }
+
       /* --------------------------------------------------------------
          Dark Mode Toggle Styles
          -------------------------------------------------------------- */
@@ -191,6 +194,7 @@
       input#darkModeToggle:checked + .dark-mode-slider {
         background-color: var(--primary-light);
       }
+
       /* --------------------------------------------------------------
          Glass Panels for Sections
          -------------------------------------------------------------- */
@@ -208,6 +212,7 @@
         margin-top: 0;
         text-align: center;
       }
+
       /* --------------------------------------------------------------
          Input Areas & Textarea Styling
          -------------------------------------------------------------- */
@@ -237,6 +242,7 @@
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
       }
+
       /* --------------------------------------------------------------
          Similar Videos Section
          -------------------------------------------------------------- */
@@ -283,18 +289,19 @@
       .video-thumbnail:hover {
         transform: scale(1.02);
       }
+
       /* --------------------------------------------------------------
          Rubric Table Styling
          -------------------------------------------------------------- */
       .rubric-table {
-        overflow-x: auto;
         margin: 1rem 0;
+        /* Removed overflow-x to avoid scrolling */
       }
       .modern-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        min-width: 800px;
+        min-width: 800px; /* Still helpful, but container is bigger now */
         border-radius: var(--radius);
         overflow: hidden;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -336,6 +343,7 @@
         left: 0;
         min-width: 180px;
       }
+
       /* --------------------------------------------------------------
          Self-Assessment Checklist Styling
          -------------------------------------------------------------- */
@@ -352,6 +360,7 @@
       #selfAssessmentSection li label {
         cursor: pointer;
       }
+
       @media (max-width: 768px) {
         header.analyzer-header {
           flex-direction: column;
@@ -587,7 +596,6 @@
     <script>
       // Global variables
       let scores = {};
-      // (Peer reviews removed)
 
       window.addEventListener('DOMContentLoaded', () => {
         // Attach dark mode toggle event
@@ -608,6 +616,8 @@
         document.querySelectorAll('.story-input').forEach(textarea => {
           textarea.addEventListener('input', autoResize);
         });
+        // Reset button event
+        document.getElementById('resetBtn').addEventListener('click', resetScores);
       });
 
       function showRainbowQuote() {
@@ -726,8 +736,10 @@
 
       function updateTotal() {
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
-        document.getElementById('total').textContent = total;
+        document.getElementById('total')?.textContent = total;
         const ranking = document.getElementById('ranking');
+        if (!ranking) return; // In case we removed the total/ranking markup
+
         if (Object.keys(scores).length < 14) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -754,8 +766,10 @@
       }
 
       function updateProgressBar(total) {
+        const progressBar = document.getElementById("progressBar");
+        if (!progressBar) return;
         const percentage = (total / 56) * 100;
-        document.getElementById("progressBar").style.width = percentage + "%";
+        progressBar.style.width = percentage + "%";
       }
 
       function autoResize(e) {
@@ -765,17 +779,21 @@
       }
 
       async function exportPNG() {
+        // Clone everything into a temp container and export to PNG
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.top = '-9999px';
         tempContainer.style.left = '-9999px';
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
+
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
         const mainClone = document.querySelector('main').cloneNode(true);
+
         tempContainer.appendChild(headerClone);
         tempContainer.appendChild(mainClone);
         document.body.appendChild(tempContainer);
+
         try {
           const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true });
           const dataUrl = canvas.toDataURL('image/png');
@@ -793,16 +811,32 @@
       }
 
       function resetScores() {
+        // Clear the scores
         scores = {};
+        // Unselect rubric cells
         document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+        // Clear textareas
         document.getElementById('quickSummary').value = '';
         document.getElementById('humanFeedback').value = '';
-        document.getElementById('ranking').textContent = 'Incomplete';
-        document.getElementById('ranking').style.color = '#64748b';
-        // Removed peer review section (if any)
+        // Clear AI Review
+        const aiReviewResult = document.getElementById('aiReviewResult');
+        if (aiReviewResult) aiReviewResult.innerHTML = '';
+        // Clear ranking if present
+        const ranking = document.getElementById('ranking');
+        if (ranking) {
+          ranking.textContent = 'Incomplete';
+          ranking.style.color = '#64748b';
+        }
+        // Clear total if present
+        const totalEl = document.getElementById('total');
+        if (totalEl) totalEl.textContent = 0;
+        // Reset progress bar if present
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) progressBar.style.width = '0%';
+        // Clear added videos
         document.getElementById('similarVideosList').innerHTML = '';
-        document.getElementById('total').textContent = 0;
-        document.getElementById('progressBar').style.width = '0%';
+        // Uncheck all self-assessment checkboxes
+        document.querySelectorAll('#selfAssessmentSection input[type="checkbox"]').forEach(cb => cb.checked = false);
       }
 
       function toggleTheme(e) {
@@ -813,8 +847,6 @@
         }
       }
 
-      // (Optional) Peer review functions removed
-
       function runAIReview() {
         const summary = document.getElementById('quickSummary').value.trim();
         const resultDiv = document.getElementById('aiReviewResult');
@@ -822,6 +854,8 @@
           resultDiv.textContent = "Please enter a quick summary for AI review.";
           return;
         }
+
+        // Simplified AI-like suggestions
         const reviewIdeas = [
           {
             improvements: [
@@ -861,20 +895,24 @@
         const reviewSet = reviewIdeas[randomIndex];
         const summaryWords = summary.split(" ");
         const summaryPreview = summaryWords.slice(0, 10).join(" ") + (summaryWords.length > 10 ? "..." : "");
+
         let reviewHTML = "<h3>🤖 AI Story Review</h3>";
         reviewHTML += `<p>Based on your concept: "<em>${summaryPreview}</em>", consider the following ideas:</p>`;
+
         reviewHTML += "<h4>Three Specific Improvements:</h4>";
         reviewHTML += "<ol>";
         reviewSet.improvements.forEach(item => {
           reviewHTML += `<li>${item}</li>`;
         });
         reviewHTML += "</ol>";
+
         reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
         reviewHTML += "<ol>";
         reviewSet.suggestions.forEach(item => {
           reviewHTML += `<li>${item}</li>`;
         });
         reviewHTML += "</ol>";
+
         resultDiv.innerHTML = reviewHTML;
       }
 
@@ -883,31 +921,39 @@
         const videoList = document.getElementById('similarVideosList');
         const url = urlInput.value.trim();
         if (!url) return;
+
+        // Extract YouTube ID
         const videoId = (function(url) {
           const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
           const match = url.match(regExp);
           return (match && match[2].length === 11) ? match[2] : null;
         })(url);
+
         if (!videoId) {
           alert('Invalid YouTube URL. Please enter a valid URL.');
           return;
         }
         const title = prompt("Enter the video title:");
         const thumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+
         const videoLink = document.createElement('a');
         videoLink.href = 'https://www.youtube.com/watch?v=' + videoId;
         videoLink.target = '_blank';
+
         const img = document.createElement('img');
         img.src = thumbnailUrl;
         img.alt = title || 'YouTube Video Thumbnail';
         videoLink.appendChild(img);
+
         const thumbContainer = document.createElement('div');
         thumbContainer.classList.add('video-thumbnail');
         thumbContainer.appendChild(videoLink);
+
         const titleDiv = document.createElement('div');
         titleDiv.classList.add('video-title');
         titleDiv.textContent = title || 'Untitled Video';
         thumbContainer.appendChild(titleDiv);
+
         const removeBtn = document.createElement('button');
         removeBtn.classList.add('remove-btn');
         removeBtn.innerHTML = "&times;";
@@ -917,9 +963,19 @@
           thumbContainer.remove();
         });
         thumbContainer.appendChild(removeBtn);
+
         videoList.appendChild(thumbContainer);
         urlInput.value = '';
       }
     </script>
+
+    <!-- Optional place to show total and ranking if desired -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <p>Total Score: <span id="total">0</span> / 56</p>
+      <p>Ranking: <span id="ranking">Incomplete</span></p>
+      <div style="width:50%;margin:0 auto;background:#ccc;height:10px;border-radius:5px;overflow:hidden;">
+        <div id="progressBar" style="height:10px;background:#4facfe;width:0%;transition:width 0.3s;"></div>
+      </div>
+    </div>
   </body>
 </html>
