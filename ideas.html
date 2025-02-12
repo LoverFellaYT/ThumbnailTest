@@ -26,10 +26,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Canvas Confetti for Outstanding Score Effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-    <!-- RAKE-JS for Keyword Extraction (or swap with YAKE if preferred) -->
-    <script src="https://cdn.jsdelivr.net/npm/rake-js@1.0.0/dist/rake.min.js"></script>
-    <!-- VADER Sentiment Analysis -->
-    <script src="https://cdn.jsdelivr.net/npm/vader-sentiment@1.1.4/dist/index.min.js"></script>
 
     <style>
       /* CSS Variables & Base Styles */
@@ -332,22 +328,9 @@
         font-family: var(--font-base);
         font-size: 1rem;
         color: var(--text-light);
-        resize: vertical;
-      }
-
-      /* Title Enhancement Tools Section */
-      #titleToolsSection label {
-        font-weight: 600;
-      }
-      #titleToolsSection input[type="text"] {
-        width: 100%;
-        padding: 0.5rem;
-        margin-top: 0.5rem;
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-      }
-      #titleAnalysisResults {
-        margin-top: 1rem;
+        overflow: hidden;
+        white-space: pre-wrap;
+        resize: none;
       }
 
       /* Fun Fact Section (Bottom) */
@@ -543,11 +526,11 @@
             <h2 id="feedbackSectionHeading">Feedback</h2>
             <div>
               <label for="humanFeedback">Human Feedback:</label>
-              <textarea id="humanFeedback" placeholder="Enter your human feedback here..."></textarea>
+              <textarea id="humanFeedback" placeholder="Enter your human feedback here..." oninput="autoResize(this)"></textarea>
             </div>
             <div>
               <label for="aiFeedback">AI Feedback:</label>
-              <textarea id="aiFeedback" placeholder="Paste AI feedback here..."></textarea>
+              <textarea id="aiFeedback" placeholder="Paste AI feedback here..." oninput="autoResize(this)"></textarea>
             </div>
           </section>
 
@@ -609,17 +592,6 @@
                 </tr>
               </tbody>
             </table>
-          </section>
-
-          <!-- TITLE ENHANCEMENT TOOLS SECTION -->
-          <section class="glass-panel" id="titleToolsSection" aria-labelledby="titleToolsHeading">
-            <h2 id="titleToolsHeading">Title Enhancement Tools</h2>
-            <div>
-              <label for="proposedTitle">Enter Proposed Title:</label>
-              <input type="text" id="proposedTitle" placeholder="Enter your title here..." />
-            </div>
-            <button class="btn" onclick="analyzeTitle()">Analyze Title</button>
-            <div id="titleAnalysisResults"></div>
           </section>
         </div>
 
@@ -687,7 +659,7 @@
         8: '🔍',
         9: '❓',
         10: '❤️',
-        11: '🪄',
+        11: '🤩',  // Changed from 🪄 to 🤩
         12: '✂️'
       };
 
@@ -911,58 +883,10 @@
         }
       }
 
-      // Inspirational quotes relevant to idea and title generation
-      const editorQuotes = [
-        "A great title sparks curiosity and fuels the imagination.",
-        "The best ideas and titles are born from a blend of creativity and clarity.",
-        "An original idea paired with a compelling title is the secret sauce of success.",
-        "Your title is the handshake that invites viewers to explore your ideas.",
-        "Great ideas deserve great titles – make each word count.",
-        "A well-crafted title can transform an average idea into a viral sensation.",
-        "Innovative ideas and captivating titles are the cornerstones of creative success.",
-        "The art of idea generation and title crafting lies in knowing your audience.",
-        "Clarity, creativity, and authenticity – the three Cs of a winning title.",
-        "A memorable title is the first step to making your idea unforgettable."
-      ];
-
-      /***************************************************
-       * Title Enhancement Tools: Analyze Title Function
-       ***************************************************/
-      function analyzeTitle() {
-        var titleText = document.getElementById('proposedTitle').value;
-        if (!titleText.trim()) {
-          alert("Please enter a title for analysis.");
-          return;
-        }
-        
-        // RAKE Keyword Extraction (using RAKE-JS if available)
-        var keywords = [];
-        if (typeof Rake !== "undefined") {
-          // Use default stopwords if available
-          var stopWords = Rake.defaultStopwords || [];
-          var rake = new Rake(stopWords);
-          keywords = rake.run(titleText);
-        } else {
-          keywords = ["RAKE library not loaded"];
-        }
-        
-        // VADER Sentiment Analysis (if loaded)
-        var sentimentResult = {};
-        if (typeof vaderSentiment !== "undefined" && vaderSentiment.SentimentIntensityAnalyzer) {
-          sentimentResult = vaderSentiment.SentimentIntensityAnalyzer.polarity_scores(titleText);
-        } else {
-          sentimentResult = { error: "VADER not loaded" };
-        }
-        
-        // NLTK-style Tokenization (a simple split as a placeholder)
-        var tokens = titleText.split(/\s+/);
-        
-        // Display the analysis results
-        var resultsDiv = document.getElementById('titleAnalysisResults');
-        resultsDiv.innerHTML = "<h3>Analysis Results:</h3>";
-        resultsDiv.innerHTML += "<p><strong>Extracted Keywords (RAKE):</strong> " + keywords.join(", ") + "</p>";
-        resultsDiv.innerHTML += "<p><strong>Sentiment (VADER):</strong> " + JSON.stringify(sentimentResult) + "</p>";
-        resultsDiv.innerHTML += "<p><strong>Tokenization (NLTK-style):</strong> " + tokens.join(", ") + "</p>";
+      // Auto-resize function for textareas
+      function autoResize(textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
       }
     </script>
   </body>
