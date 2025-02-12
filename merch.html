@@ -332,7 +332,7 @@
       #achievementNotification {
         position: fixed;
         top: 20px;
-        right: -350px; /* Off-screen initially */
+        right: -350px;
         width: 300px;
         background: var(--panel-bg);
         border: 2px solid var(--primary-color);
@@ -360,25 +360,57 @@
       #idleSlime {
         position: fixed;
         bottom: 20px;
-        left: 0;
+        left: 50%;
+        transform: translateX(-50%);
         display: none;
+        flex-direction: row;
         align-items: center;
         cursor: pointer;
         z-index: 3500;
       }
       #idleSlime.visible {
         display: flex;
-        animation: scoot 5s ease-in-out forwards;
+        animation: idleWiggle 8s infinite;
       }
+      /* The cute slime blob with a face */
       #idleSlime .blob {
-        width: 50px;
-        height: 50px;
+        position: relative;
+        width: 60px;
+        height: 60px;
         background: var(--primary-color);
         border-radius: 50%;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-right: 10px;
-        transition: transform 0.3s ease;
       }
+      /* Create a cute face using inner divs */
+      #idleSlime .blob .eye {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: var(--button-text);
+        border-radius: 50%;
+        top: 20px;
+      }
+      #idleSlime .blob .eye.left {
+        left: 15px;
+      }
+      #idleSlime .blob .eye.right {
+        right: 15px;
+      }
+      #idleSlime .blob .mouth {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 4px;
+        background: var(--button-text);
+        border-radius: 2px;
+      }
+      /* The speech bubble */
       #idleSlime .speech {
         background: var(--panel-bg);
         color: var(--text-color);
@@ -387,10 +419,10 @@
         padding: 5px 10px;
         font-size: 0.9rem;
       }
-      @keyframes scoot {
-        0% { transform: translateX(-100px); }
-        50% { transform: translateX(50vw); }
-        100% { transform: translateX(110vw); }
+      @keyframes idleWiggle {
+        0% { transform: translate(-50%, 0); }
+        50% { transform: translate(-50%, -5px); }
+        100% { transform: translate(-50%, 0); }
       }
       @keyframes pet {
         0% { transform: scale(1); }
@@ -418,6 +450,9 @@
         }
         #achievementNotification.visible {
           right: 5%;
+        }
+        #idleSlime {
+          bottom: 10px;
         }
       }
     </style>
@@ -557,9 +592,13 @@
       <p id="achievementMessage"></p>
     </div>
 
-    <!-- IDLE SLIME BUDDY (Appears after 30s idle) -->
+    <!-- IDLE SLIME BUDDY (Cute Little Slime) -->
     <div id="idleSlime">
-      <div class="blob"></div>
+      <div class="blob">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
       <div class="speech">Come back!</div>
     </div>
 
@@ -594,9 +633,8 @@
         hideIdleSlime();
         idleTimeout = setTimeout(() => {
           showIdleSlime();
-        }, 30000); // 30 seconds
+        }, 30000); // 30 seconds idle
       }
-      // Listen for user activity to reset idle timer
       document.addEventListener("mousemove", resetIdleTimer);
       document.addEventListener("keydown", resetIdleTimer);
       document.addEventListener("click", resetIdleTimer);
@@ -606,17 +644,13 @@
       function showIdleSlime() {
         const idleSlime = document.getElementById("idleSlime");
         idleSlime.classList.add("visible");
-        // After the scoot animation ends (5 seconds), hide the idle slime if still idle
-        setTimeout(() => {
-          hideIdleSlime();
-        }, 5000);
       }
       function hideIdleSlime() {
         const idleSlime = document.getElementById("idleSlime");
         idleSlime.classList.remove("visible");
       }
 
-      // When user clicks on the idle slime, pet it!
+      // Pet the slime buddy when clicked
       document.getElementById("idleSlime").addEventListener("click", function () {
         const blob = this.querySelector(".blob");
         blob.style.animation = "pet 0.5s ease";
@@ -626,8 +660,9 @@
         const speech = this.querySelector(".speech");
         const originalText = speech.textContent;
         speech.textContent = "Thanks for petting me!";
+        // Hide after a short delay
         setTimeout(() => {
-          speech.textContent = originalText;
+          hideIdleSlime();
         }, 1000);
       });
 
@@ -768,7 +803,7 @@
       }
 
       /***************************************************
-       * Reset Scores with Rising & Waving Slime Animation
+       * Reset Scores with a Rising & Waving Slime Animation
        ***************************************************/
       function resetScores() {
         const slimeOverlay = document.getElementById("slimeOverlay");
