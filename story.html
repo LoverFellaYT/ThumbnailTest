@@ -27,9 +27,6 @@
 
     <!-- CSS Styles -->
     <style>
-      /* --------------------------------------------------------------
-         CSS Variables & Base Styles
-         -------------------------------------------------------------- */
       :root {
         --primary-light: #4facfe;
         --accent-light: #00f2fe;
@@ -63,7 +60,6 @@
         transition: var(--transition);
       }
 
-      /* Container for entire page content */
       .analyzer-container {
         width: 98%;
         max-width: 1100px;
@@ -72,9 +68,6 @@
         text-align: center;
       }
 
-      /* --------------------------------------------------------------
-         Header / Sticky Banner
-         -------------------------------------------------------------- */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -105,8 +98,6 @@
         margin: 0;
         font-weight: bold;
       }
-
-      /* Score & Progress Bar inside the header */
       .score-info {
         margin-top: 0.5rem;
       }
@@ -136,9 +127,6 @@
         align-items: center;
       }
 
-      /* --------------------------------------------------------------
-         Button Styling
-         -------------------------------------------------------------- */
       button.btn {
         background: var(--gradient-light);
         color: #fff;
@@ -157,7 +145,6 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
-      /* Rainbow Button as a Rainbow Emoji */
       button.rainbow-btn {
         background: none;
         border: none;
@@ -169,9 +156,6 @@
         transform: scale(1.2);
       }
 
-      /* --------------------------------------------------------------
-         Dark Mode Toggle Styles
-         -------------------------------------------------------------- */
       .dark-mode {
         display: inline-flex;
         align-items: center;
@@ -218,9 +202,6 @@
         background-color: var(--primary-light);
       }
 
-      /* --------------------------------------------------------------
-         Glass Panels for Sections
-         -------------------------------------------------------------- */
       .glass-panel {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
@@ -236,9 +217,6 @@
         text-align: center;
       }
 
-      /* --------------------------------------------------------------
-         Input Areas & Textarea Styling
-         -------------------------------------------------------------- */
       .input-section {
         margin: 1rem 0;
       }
@@ -266,9 +244,6 @@
         border-radius: var(--radius);
       }
 
-      /* --------------------------------------------------------------
-         Similar Videos Section
-         -------------------------------------------------------------- */
       .similar-videos-list {
         display: flex;
         flex-wrap: wrap;
@@ -313,9 +288,7 @@
         transform: scale(1.02);
       }
 
-      /* --------------------------------------------------------------
-         Rubric Table Styling
-         -------------------------------------------------------------- */
+      /* Rubric Table (NOW 10 categories instead of 14) */
       .rubric-table {
         margin: 1rem 0;
       }
@@ -365,9 +338,6 @@
         min-width: 180px;
       }
 
-      /* --------------------------------------------------------------
-         Self-Assessment Checklist Styling
-         -------------------------------------------------------------- */
       #selfAssessmentSection ul {
         list-style-type: none;
         padding: 0;
@@ -380,40 +350,6 @@
       }
       #selfAssessmentSection li label {
         cursor: pointer;
-      }
-
-      /* Rain animation overlay (NEW) */
-      .rain-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
-        overflow: hidden;
-        z-index: 9999; /* Appear above everything else */
-      }
-      .raindrop {
-        position: absolute;
-        top: -10px;
-        width: 2px;
-        height: 14px;
-        background: #4499ff;
-        border-radius: 1px;
-        opacity: 0.8;
-        animation-name: raindrop;
-        animation-timing-function: linear;
-        animation-iteration-count: 1;
-      }
-      @keyframes raindrop {
-        0% {
-          transform: translateY(0px) scaleY(1);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(120vh) scaleY(0.2);
-          opacity: 0;
-        }
       }
 
       @media (max-width: 768px) {
@@ -437,19 +373,15 @@
     <header class="analyzer-header">
       <div class="header-left">
         <h1>StoryCraft Analyzer</h1>
+        <!-- Score & Ranking here -->
         <div class="score-info">
-          <p>
-            Total Score: <span id="total">0</span> / 56
-          </p>
-          <p>
-            Ranking: <span id="ranking">Incomplete</span>
-          </p>
+          <p>Total Score: <span id="total">0</span> / 56</p>
+          <p>Ranking: <span id="ranking">Incomplete</span></p>
           <div class="progress-container">
             <div id="progressBar"></div>
           </div>
         </div>
       </div>
-
       <div class="header-right">
         <button class="btn" id="resetBtn">🔄 Reset</button>
         <button class="btn" id="exportBtn">🖼️ Export PNG</button>
@@ -505,104 +437,196 @@
               </tr>
             </thead>
             <tbody>
+              <!-- 1. Hook & Opening -->
               <tr>
-                <td class="category-header" data-category="0" title="The opener should immediately grab attention.">Hook &amp; Opening</td>
-                <td data-category="0" data-rating="1">Slow start; no hook</td>
-                <td data-category="0" data-rating="2">Basic hook</td>
-                <td data-category="0" data-rating="3">Intriguing hook</td>
-                <td data-category="0" data-rating="4">Unignorable opener</td>
+                <td class="category-header" data-category="0">
+                  🎣 Hook &amp; Opening
+                </td>
+                <td data-category="0" data-rating="1">
+                  Slow start or unclear hook; doesn’t entice immediate engagement.
+                </td>
+                <td data-category="0" data-rating="2">
+                  Basic but functional hook; viewers might stay out of mild curiosity.
+                </td>
+                <td data-category="0" data-rating="3">
+                  Clear, intriguing opening that sparks immediate interest.
+                </td>
+                <td data-category="0" data-rating="4">
+                  Unignorable opener; compels viewers to keep watching almost instantly.
+                </td>
               </tr>
+
+              <!-- 2. Clarity of Goal -->
               <tr>
-                <td class="category-header" data-category="1" title="A clear goal keeps the narrative focused.">Clarity of Goal</td>
-                <td data-category="1" data-rating="1">No clear purpose</td>
-                <td data-category="1" data-rating="2">Goal exists but gets lost</td>
-                <td data-category="1" data-rating="3">Clear goal w/ minor tangents</td>
-                <td data-category="1" data-rating="4">Crystal‑clear premise</td>
+                <td class="category-header" data-category="1">
+                  🎯 Clarity of Goal
+                </td>
+                <td data-category="1" data-rating="1">
+                  Goal is vague, hidden, or tacked on; viewers may not know why they’re watching.
+                </td>
+                <td data-category="1" data-rating="2">
+                  A stated goal exists but can get lost or muddled mid‐video.
+                </td>
+                <td data-category="1" data-rating="3">
+                  The central goal is well‐defined, and each segment clearly ties back to it.
+                </td>
+                <td data-category="1" data-rating="4">
+                  Crystal‐clear premise; the entire video revolves around a high‐stakes goal that viewers can’t wait to see resolved.
+                </td>
               </tr>
+
+              <!-- 3. Audience Retention -->
               <tr>
-                <td class="category-header" data-category="2" title="Maintaining audience engagement is key.">Audience Retention</td>
-                <td data-category="2" data-rating="1">Drags/loses viewers quickly</td>
-                <td data-category="2" data-rating="2">A few engaging moments</td>
-                <td data-category="2" data-rating="3">Strong pacing &amp; reveals</td>
-                <td data-category="2" data-rating="4">Masterful tension arcs</td>
+                <td class="category-header" data-category="2">
+                  👀 Audience Retention
+                </td>
+                <td data-category="2" data-rating="1">
+                  Loses viewer interest quickly; minimal hooks throughout.
+                </td>
+                <td data-category="2" data-rating="2">
+                  A few engaging points or “spikes” but inconsistent pacing or lulls.
+                </td>
+                <td data-category="2" data-rating="3">
+                  Strong pacing, timely reveals, and mini‐cliffhangers sustain attention.
+                </td>
+                <td data-category="2" data-rating="4">
+                  Nearly no dead spots; viewers are consistently teased with reasons to stay.
+                </td>
               </tr>
+
+              <!-- 4. Conflict & Stakes -->
               <tr>
-                <td class="category-header" data-category="3" title="The story should feel genuine and relatable.">Authenticity &amp; Relatability</td>
-                <td data-category="3" data-rating="1">Feels forced; no connection</td>
-                <td data-category="3" data-rating="2">Some genuine moments</td>
-                <td data-category="3" data-rating="3">Relatable &amp; sincere</td>
-                <td data-category="3" data-rating="4">Deeply authentic</td>
+                <td class="category-header" data-category="3">
+                  ⚔️ Conflict &amp; Stakes
+                </td>
+                <td data-category="3" data-rating="1">
+                  Low urgency; conflicts feel trivial or manufactured.
+                </td>
+                <td data-category="3" data-rating="2">
+                  Basic obstacles are present but feel predictable.
+                </td>
+                <td data-category="3" data-rating="3">
+                  High stakes that keep viewers invested in how events will unfold.
+                </td>
+                <td data-category="3" data-rating="4">
+                  Unavoidable drama and ever‐escalating tension that compels viewers to see the outcome.
+                </td>
               </tr>
+
+              <!-- 5. CTA & Audience Interaction -->
               <tr>
-                <td class="category-header" data-category="4" title="A strong emotional arc leaves a lasting impact.">Emotional Arc &amp; Payoff</td>
-                <td data-category="4" data-rating="1">Flat; no highs/lows</td>
-                <td data-category="4" data-rating="2">Moments of excitement</td>
-                <td data-category="4" data-rating="3">Clear emotional journey</td>
-                <td data-category="4" data-rating="4">Masterpiece arcs</td>
+                <td class="category-header" data-category="4">
+                  🗣️ CTA &amp; Audience Interaction
+                </td>
+                <td data-category="4" data-rating="1">
+                  Weak or generic CTA (“like/subscribe”) with no real urgency.
+                </td>
+                <td data-category="4" data-rating="2">
+                  Standard CTA that matches typical platform norms.
+                </td>
+                <td data-category="4" data-rating="3">
+                  Creative or timely CTA that spurs actual viewer response (e.g., poll, question).
+                </td>
+                <td data-category="4" data-rating="4">
+                  Emotionally compelling, strategic CTA that feels integrated and inspires strong audience participation.
+                </td>
               </tr>
+
+              <!-- 6. Originality & Trend‐Jacking -->
               <tr>
-                <td class="category-header" data-category="5" title="Conflict should raise the stakes.">Conflict &amp; Stakes</td>
-                <td data-category="5" data-rating="1">Low urgency</td>
-                <td data-category="5" data-rating="2">Basic stakes</td>
-                <td data-category="5" data-rating="3">High stakes/punishments</td>
-                <td data-category="5" data-rating="4">Unavoidable drama</td>
+                <td class="category-header" data-category="5">
+                  🚀 Originality &amp; Trend‐Jacking
+                </td>
+                <td data-category="5" data-rating="1">
+                  Overdone or cliché concept with no unique spin.
+                </td>
+                <td data-category="5" data-rating="2">
+                  Minor twist on popular trends but still somewhat familiar.
+                </td>
+                <td data-category="5" data-rating="3">
+                  A distinct approach or fresh angle that helps it stand out.
+                </td>
+                <td data-category="5" data-rating="4">
+                  Boundary‐pushing content or trend usage that feels truly innovative.
+                </td>
               </tr>
+
+              <!-- 7. Replayability & Shareability -->
               <tr>
-                <td class="category-header" data-category="6" title="Calls to action guide the audience.">CTA &amp; Audience Interaction</td>
-                <td data-category="6" data-rating="1">No or weak CTA</td>
-                <td data-category="6" data-rating="2">Generic "like/subscribe"</td>
-                <td data-category="6" data-rating="3">Clear creative CTA</td>
-                <td data-category="6" data-rating="4">Actionable &amp; emotional CTA</td>
+                <td class="category-header" data-category="6">
+                  🔁 Replayability &amp; Shareability
+                </td>
+                <td data-category="6" data-rating="1">
+                  Forgettable; viewers likely wouldn’t watch again.
+                </td>
+                <td data-category="6" data-rating="2">
+                  Has a few moments worth revisiting or sharing.
+                </td>
+                <td data-category="6" data-rating="3">
+                  Highly shareable; the content encourages conversation or repeat views.
+                </td>
+                <td data-category="6" data-rating="4">
+                  Clip‐worthy highlights that prompt viewers to share widely; huge viral potential.
+                </td>
               </tr>
+
+              <!-- 8. Credibility & Believability -->
               <tr>
-                <td class="category-header" data-category="7" title="A fresh angle differentiates your story.">Originality &amp; Trend‑Jacking</td>
-                <td data-category="7" data-rating="1">Cliché concept</td>
-                <td data-category="7" data-rating="2">Minor twist on trends</td>
-                <td data-category="7" data-rating="3">Fresh angle</td>
-                <td data-category="7" data-rating="4">Boundary‑pushing</td>
+                <td class="category-header" data-category="7">
+                  🤝 Credibility &amp; Believability
+                </td>
+                <td data-category="7" data-rating="1">
+                  Feels forced or overly staged; viewer trust may be low.
+                </td>
+                <td data-category="7" data-rating="2">
+                  Some genuine elements, but parts still come off as artificial or scripted.
+                </td>
+                <td data-category="7" data-rating="3">
+                  The content feels sincere and honest; overall sense of integrity.
+                </td>
+                <td data-category="7" data-rating="4">
+                  Deeply credible; the creator’s transparency and approach leave no doubt about authenticity.
+                </td>
               </tr>
+
+              <!-- 9. Planning & Outline -->
               <tr>
-                <td class="category-header" data-category="8" title="Memorable content is highly shareable.">Replayability &amp; Shareability</td>
-                <td data-category="8" data-rating="1">Forgettable</td>
-                <td data-category="8" data-rating="2">Some memeable moments</td>
-                <td data-category="8" data-rating="3">Highly shareable</td>
-                <td data-category="8" data-rating="4">Clip‑worthy highlights</td>
+                <td class="category-header" data-category="8">
+                  📝 Planning &amp; Outline
+                </td>
+                <td data-category="8" data-rating="1">
+                  Concept is loosely formed; unclear breakdown of key elements (hook, conflict, CTA, etc.).
+                </td>
+                <td data-category="8" data-rating="2">
+                  Basic structure or progression is outlined but lacks detail in some areas.
+                </td>
+                <td data-category="8" data-rating="3">
+                  Well‐conceived plan with a thorough script or breakdown ensuring each segment ties into the main goal.
+                </td>
+                <td data-category="8" data-rating="4">
+                  Comprehensive pre‐production that accounts for hooking device, escalations, pacing, and seamless goal integration.
+                </td>
               </tr>
+
+              <!-- 10. Pacing & Rhythm -->
               <tr>
-                <td class="category-header" data-category="9" title="Brand consistency reinforces identity.">Branding Consistency</td>
-                <td data-category="9" data-rating="1">No branding</td>
-                <td data-category="9" data-rating="2">Basic branding</td>
-                <td data-category="9" data-rating="3">Consistent style</td>
-                <td data-category="9" data-rating="4">Iconic brand identity</td>
+                <td class="category-header" data-category="9">
+                  ⏱️ Pacing &amp; Rhythm
+                </td>
+                <td data-category="9" data-rating="1">
+                  Uneven pacing; segments linger too long or abruptly cut.
+                </td>
+                <td data-category="9" data-rating="2">
+                  Mostly smooth transitions but with occasional slow or rushed sections.
+                </td>
+                <td data-category="9" data-rating="3">
+                  Generally well‐paced with clear transitions and strong narrative rhythm.
+                </td>
+                <td data-category="9" data-rating="4">
+                  Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.
+                </td>
               </tr>
-              <tr>
-                <td class="category-header" data-category="10" title="Well‑developed characters add depth.">Character Development</td>
-                <td data-category="10" data-rating="1">Flat, one‑dimensional characters</td>
-                <td data-category="10" data-rating="2">Some traits are evident</td>
-                <td data-category="10" data-rating="3">Well‑developed with clear motivations</td>
-                <td data-category="10" data-rating="4">Rich, evolving characters that captivate</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="11" title="Authentic dialogue enhances realism.">Dialogue Authenticity</td>
-                <td data-category="11" data-rating="1">Unnatural, stilted dialogue</td>
-                <td data-category="11" data-rating="2">Some lines feel genuine</td>
-                <td data-category="11" data-rating="3">Dialogue flows naturally</td>
-                <td data-category="11" data-rating="4">Exceptional dialogue with distinct voice</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="12" title="A vivid setting brings the world to life.">World‑Building</td>
-                <td data-category="12" data-rating="1">Vague setting with little detail</td>
-                <td data-category="12" data-rating="2">Some descriptive elements</td>
-                <td data-category="12" data-rating="3">Engaging and immersive world‑building</td>
-                <td data-category="12" data-rating="4">Exceptionally vivid, intricate details</td>
-              </tr>
-              <tr>
-                <td class="category-header" data-category="13" title="Balanced pacing keeps the reader hooked.">Pacing &amp; Rhythm</td>
-                <td data-category="13" data-rating="1">Story drags; uneven pace</td>
-                <td data-category="13" data-rating="2">Some parts drag—review transitions</td>
-                <td data-category="13" data-rating="3">Generally well‑paced</td>
-                <td data-category="13" data-rating="4">Flawless pacing that maintains tension</td>
-              </tr>
+
             </tbody>
           </table>
         </div>
@@ -668,60 +692,26 @@
       let scores = {};
 
       window.addEventListener('DOMContentLoaded', () => {
-        // Dark mode toggle
         document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
-        // Export PNG button
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
-        // Rainbow quote button
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
-        // AI Review button
         document.getElementById('runAIReviewBtn')?.addEventListener('click', runAIReview);
-        // Add YouTube video button
         document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
-        // Rubric cell click
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
         });
-        // Auto-resize textareas
         document.querySelectorAll('.story-input').forEach(textarea => {
           textarea.addEventListener('input', autoResize);
         });
-        // Reset button
         document.getElementById('resetBtn').addEventListener('click', resetScores);
       });
-
-      /* RAIN ANIMATION - Called when reset is clicked */
-      function runRainAnimation() {
-        // Create container for raindrops
-        const rainContainer = document.createElement('div');
-        rainContainer.classList.add('rain-container');
-        document.body.appendChild(rainContainer);
-
-        // Generate raindrops
-        const dropCount = 50; // number of raindrops
-        for (let i = 0; i < dropCount; i++) {
-          const drop = document.createElement('div');
-          drop.classList.add('raindrop');
-          // random horizontal position
-          drop.style.left = Math.random() * 100 + 'vw';
-          // random animation duration & delay
-          drop.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
-          drop.style.animationDelay = Math.random() * 1 + 's';
-          rainContainer.appendChild(drop);
-        }
-
-        // Remove rain overlay after 3 seconds
-        setTimeout(() => {
-          rainContainer.remove();
-        }, 3000);
-      }
 
       function showRainbowQuote() {
         const quotes = [
           "The test of good writing and good story is: does it not only reward the first viewing, but also the second viewing?",
           "Movies are all about the last ten minutes\nTools, not rules",
           "When the climax is established, work backwards and ask \"if this scene was removed, would the climax still work? If it would still work, remove that scene\"",
-          // ... More quotes from your list ...
+          // ... more quotes ...
           "You gotta identify with your situation/characters; you can’t just write ‘cool’. What would make YOU act that way?",
           "What’s the essence of your story? The most economical telling of it? If you know that, you can build out from there."
         ];
@@ -745,19 +735,19 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        if (Object.keys(scores).length < 14) {
+        if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
           updateProgressBar(total);
           return;
         }
-        if (total < 29) {
+        if (total < 21) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
-        } else if (total < 42) {
+        } else if (total < 32) {
           ranking.textContent = 'Good Start 🟡';
           ranking.style.color = 'orange';
-        } else if (total < 56) {
+        } else if (total < 40) {
           ranking.textContent = 'Great! 🟢';
           ranking.style.color = 'green';
         } else {
@@ -771,7 +761,8 @@
       }
 
       function updateProgressBar(total) {
-        const percentage = (total / 56) * 100;
+        const maxScore = 40; // 10 categories * 4 max each
+        const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
 
@@ -821,9 +812,6 @@
         document.getElementById('similarVideosList').innerHTML = '';
         document.getElementById('total').textContent = 0;
         document.getElementById('progressBar').style.width = '0%';
-
-        // *** Trigger the new rain animation here ***
-        runRainAnimation();
       }
 
       function toggleTheme(e) {
