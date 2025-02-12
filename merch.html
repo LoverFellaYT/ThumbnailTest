@@ -30,7 +30,7 @@
         --radius: 8px;
 
         /* Slime green accent */
-        --primary-color: #a3ff12;
+        --primary-color: #a3ff12;       /* Vibrant slime-lime green */
         --button-bg: #a3ff12;
         --button-text: #121212;
         --table-cell-bg: #1e1e1e;
@@ -94,7 +94,11 @@
       .status-indicator {
         font-weight: 600;
       }
+      
+      /* BUTTONS with Slime Drip Effects */
       .btn {
+        position: relative;
+        overflow: visible;
         background: var(--button-bg);
         color: var(--button-text);
         border: none;
@@ -108,6 +112,43 @@
       .btn:hover {
         transform: translateY(-2px);
       }
+      /* Create two drip pseudo-elements on each button */
+      .btn::before,
+      .btn::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        opacity: 0.8;
+      }
+      .btn::before {
+        left: 30%;
+        width: 6px;
+        height: 6px;
+        animation: dripAnimation 2s infinite ease-in-out 0.5s;
+      }
+      .btn::after {
+        left: 70%;
+        width: 8px;
+        height: 8px;
+        animation: dripAnimation 2s infinite ease-in-out 0s;
+      }
+      @keyframes dripAnimation {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: translateY(10px) scale(1.2);
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(20px) scale(0.8);
+          opacity: 0;
+        }
+      }
+
       /* Dark Mode Toggle Switch */
       .toggle-switch {
         display: inline-flex;
@@ -454,7 +495,7 @@
         const rating = parseInt(cell.getAttribute("data-rating"), 10);
         const row = cell.parentElement;
 
-        // Clear any previously selected cell in this row
+        // Clear any previously selected cell in the same row
         row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
         cell.classList.add("selected");
 
