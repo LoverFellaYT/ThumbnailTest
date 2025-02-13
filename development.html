@@ -4,35 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Development Rubric Analyzer Pro+</title>
-
-    <!-- Retro Monospaced Font (Courier Prime) -->
+    <!-- Retro Monospaced Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- html2canvas for PNG export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+    
     <style>
-      /* ---------------------------- */
-      /* Retro Theme Variables        */
-      /* ---------------------------- */
+      /* ---------- Retro Theme Variables ---------- */
       :root {
         --bg-color: #000000;
-        --text-color: #888888;        /* Uniform gray */
+        --text-color: #888888;        /* Default gray text */
         --panel-bg: #111111;
         --border-color: #888888;
-        --primary-color: #33FF33;      /* Neon green when selected */
+        --primary-color: #33FF33;      /* Neon green when active */
         --highlight-color: #00CC00;
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+        --shadow: 0 4px 12px rgba(0,0,0,0.7);
         --transition: all 0.3s ease;
         --radius: 4px;
         --font-family: 'Courier Prime', monospace;
       }
-
-      /* ---------------------------- */
-      /* Global Styles                */
-      /* ---------------------------- */
+      
+      /* ---------- Global Styles ---------- */
       body {
         margin: 0;
         padding: 0;
@@ -61,7 +56,6 @@
       .header-left h1 {
         margin: 0;
         font-size: 2rem;
-        /* Title now neon green */
         color: var(--primary-color);
       }
       
@@ -71,8 +65,7 @@
         color: var(--text-color);
       }
       
-      .status-panel {
-        margin-top: 0.5rem;
+      .status-panel, #developerBadge {
         font-size: 1.2rem;
         color: var(--text-color);
       }
@@ -82,11 +75,9 @@
         gap: 0.5rem;
       }
       
-      /* ---------------------------- */
-      /* Buttons (Default Gray, Hover Green) */
-      /* ---------------------------- */
+      /* ---------- Buttons (Default Gray) ---------- */
       .btn {
-        background: #444444;  /* Dark gray */
+        background: #444444;
         color: var(--text-color);
         border: 1px solid var(--border-color);
         padding: 0.5rem 1rem;
@@ -95,7 +86,6 @@
         font-weight: bold;
         transition: var(--transition);
       }
-      
       .btn:hover {
         background: var(--primary-color);
         color: var(--bg-color);
@@ -112,16 +102,13 @@
         font-weight: bold;
         transition: var(--transition);
       }
-      
       #exportBtn:hover {
         background: var(--primary-color);
         color: var(--bg-color);
         border-color: var(--primary-color);
       }
       
-      /* ---------------------------- */
-      /* Progress & Status            */
-      /* ---------------------------- */
+      /* ---------- Progress & Status ---------- */
       #progressBarContainer {
         width: 100%;
         height: 20px;
@@ -129,7 +116,6 @@
         border-radius: 4px;
         margin-top: 0.5rem;
       }
-      
       #progressBar {
         height: 100%;
         width: 0%;
@@ -138,46 +124,50 @@
         transition: width 0.3s ease;
       }
       
-      /* ---------------------------- */
-      /* Rubric Table                 */
-      /* ---------------------------- */
+      /* ---------- Rubric Table ---------- */
       .rubric-table {
         width: 100%;
         margin: 2rem auto;
         border-collapse: collapse;
         box-shadow: var(--shadow);
       }
-      
-      .rubric-table th,
-      .rubric-table td {
+      .rubric-table th, .rubric-table td {
         padding: 0.75rem 1rem;
         border: 1px solid var(--border-color);
         text-align: left;
       }
-      
       .rubric-table th {
         background: var(--panel-bg);
         color: var(--text-color);
+        position: relative;
       }
-      
+      .rubric-table th:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: -1.5rem;
+        left: 0;
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        padding: 2px 5px;
+        border-radius: var(--radius);
+        font-size: 0.75rem;
+        white-space: nowrap;
+        color: var(--text-color);
+      }
       .rubric-table td {
         background: var(--bg-color);
         color: var(--text-color); /* Default gray text */
       }
-      
       .rubric-table td:hover {
         background: var(--highlight-color);
         cursor: pointer;
       }
-      
       .rubric-table td.selected {
         background: var(--highlight-color);
-        color: var(--primary-color); /* Turns neon green when selected */
+        color: var(--primary-color);
       }
       
-      /* ---------------------------- */
-      /* Legend & Feedback Panels     */
-      /* ---------------------------- */
+      /* ---------- Legend & Feedback Panels ---------- */
       .panel {
         background: var(--panel-bg);
         border: 1px solid var(--border-color);
@@ -185,54 +175,68 @@
         padding: 1rem;
         margin: 1rem 0;
       }
-      
       .panel h3 {
         margin-top: 0;
-        /* Titles now neon green */
         color: var(--primary-color);
       }
       
-      /* ---------------------------- */
-      /* Reset Overlay (Retro Reboot) */
-      /* ---------------------------- */
+      /* ---------- Terminal Log (Interactive Terminal) ---------- */
+      #terminalLog {
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem;
+        margin: 1rem 0;
+        font-size: 0.85rem;
+        height: 100px;
+        overflow-y: auto;
+      }
+      
+      /* ---------- Reset Overlay (Glitchy DOS Reset) ---------- */
       #resetOverlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 0;
-        background: rgba(68, 68, 68, 0.8); /* Semi-transparent gray */
+        background: rgba(68, 68, 68, 0.8);
         z-index: 3000;
         pointer-events: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.5s ease, height 0.5s ease;
+        transition: opacity 0.3s ease, height 0.3s ease;
         opacity: 0;
       }
-      
       #resetOverlay.visible {
         height: 100%;
         opacity: 1;
       }
-      
       #resetOverlay::before {
         content: "RESETTING...";
         font-family: var(--font-family);
         color: var(--primary-color);
         font-size: 2rem;
-        animation: glitchText 0.5s steps(2, end) infinite;
+        animation: glitchText 0.4s steps(2, end) infinite;
       }
-      
       @keyframes glitchText {
         0% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
         50% { opacity: 0.5; transform: translate(2px, -2px) skew(10deg, -10deg); }
         100% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
       }
       
-      /* ---------------------------- */
-      /* Mouse Confetti for "Excellent" Celebration */
-      /* ---------------------------- */
+      /* ---------- Mini Retro Game Overlay ---------- */
+      #gameOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-color);
+        z-index: 3500;
+        display: none;
+      }
+      
+      /* ---------- Mouse Confetti (Full-Page Falling) ---------- */
       .mouse-particle {
         position: fixed;
         font-size: 24px;
@@ -241,21 +245,17 @@
         animation: mouseFall 3s forwards;
         filter: grayscale(1);
       }
-      
       @keyframes mouseFall {
-        0% {
-          transform: translateY(-50px) rotate(0deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(100vh) rotate(360deg);
-          opacity: 0;
-        }
+        0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
       }
       
-      /* ---------------------------- */
-      /* Responsive Adjustments       */
-      /* ---------------------------- */
+      /* ---------- Developer Badge (Subtle Level-Up) ---------- */
+      #developerBadge {
+        margin-top: 0.5rem;
+      }
+      
+      /* ---------- Responsive Adjustments ---------- */
       @media (max-width: 768px) {
         header {
           flex-direction: column;
@@ -279,6 +279,7 @@
         <div id="progressBarContainer">
           <div id="progressBar"></div>
         </div>
+        <div id="developerBadge">Level: 1 – Novice Developer</div>
       </div>
       <div class="header-right">
         <button class="btn" onclick="resetScores()" aria-label="Reset Scores">Reset</button>
@@ -288,17 +289,17 @@
 
     <!-- MAIN CONTENT -->
     <main>
-      <!-- Rubric Table -->
+      <!-- Rubric Table Panel -->
       <section class="panel" aria-label="Development Rubric">
         <h3>Development Rubric</h3>
         <table class="rubric-table">
           <thead>
             <tr>
-              <th>Category</th>
-              <th>Good (1)</th>
-              <th>Great (2)</th>
-              <th>Excellent (3)</th>
-              <th>Outstanding (4)</th>
+              <th data-tooltip="Category: What aspect is being evaluated.">Category</th>
+              <th data-tooltip="Score 1: Needs improvement.">Good (1)</th>
+              <th data-tooltip="Score 2: Adequate, but could be better.">Great (2)</th>
+              <th data-tooltip="Score 3: Meets expectations.">Excellent (3)</th>
+              <th data-tooltip="Score 4: Outstanding execution.">Outstanding (4)</th>
             </tr>
           </thead>
           <tbody>
@@ -355,6 +356,12 @@
         </table>
       </section>
 
+      <!-- Terminal Log Panel -->
+      <section class="panel" aria-label="Terminal Log">
+        <h3>Terminal Log</h3>
+        <div id="terminalLog"></div>
+      </section>
+
       <!-- Feedback Panel -->
       <section class="panel" aria-label="Feedback">
         <h3>Feedback</h3>
@@ -369,10 +376,15 @@
       </section>
     </main>
 
-    <!-- Reset Overlay for Retro Reboot Animation -->
+    <!-- Reset Overlay (Retro Reboot Effect) -->
     <div id="resetOverlay"></div>
 
-    <!-- Mouse Confetti Container for "Excellent" Celebration (Full-Page Falling) -->
+    <!-- Game Overlay for Idle Mini Game (Snake/Tetris) -->
+    <div id="gameOverlay" style="display:none;">
+      <canvas id="gameCanvas" width="640" height="480" style="display:block; margin: 0 auto; background: var(--panel-bg);"></canvas>
+    </div>
+
+    <!-- Mouse Confetti Container for "Excellent" Celebration -->
     <div id="mouseConfettiContainer"></div>
 
     <script>
@@ -380,110 +392,218 @@
        * Global Variables & Local Storage Key
        ***************************************************/
       let scores = {};
-      const maxPoints = 28; // 7 categories x 4 points each
+      const maxPoints = 28;
       let confettiShown = false;
       const STORAGE_KEY = "developmentRubricScores";
-      
-      // Track if the "Excellent" celebration has been triggered
       let excellentCelebrated = false;
+      let idleTimeout;
+      let gameInterval;
+      let gameMode; // "snake" or "tetris"
 
       /***************************************************
-       * Initialize Rubric on DOM Load & Load Saved Data
+       * Terminal Log Functionality
        ***************************************************/
-      document.addEventListener("DOMContentLoaded", () => {
-        const savedScores = localStorage.getItem(STORAGE_KEY);
-        if (savedScores) {
-          scores = JSON.parse(savedScores);
-          for (const [category, rating] of Object.entries(scores)) {
-            const cell = document.querySelector(`td[data-category="${category}"][data-rating="${rating}"]`);
-            if (cell) cell.classList.add("selected");
-          }
-          updateTotal();
+      function logToTerminal(message) {
+        const logDiv = document.getElementById("terminalLog");
+        const timeStamp = new Date().toLocaleTimeString();
+        logDiv.innerHTML += `&gt;&gt; [${timeStamp}] ${message}<br>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+
+      /***************************************************
+       * Developer Badge (Level-Up) Functionality
+       ***************************************************/
+      function updateDeveloperBadge(total) {
+        const badge = document.getElementById("developerBadge");
+        let level = 1, title = "Novice Developer";
+        if (total < 9) {
+          level = 1; title = "Novice Developer";
+        } else if (total < 17) {
+          level = 2; title = "Code Wrangler";
+        } else if (total < 25) {
+          level = 3; title = "Debugging Guru";
+        } else {
+          level = 4; title = "Development Master";
         }
-        document.querySelector(".rubric-table").addEventListener("click", (e) => {
-          const cell = e.target.closest("td[data-rating]");
-          if (cell) selectRating(cell);
-        });
-        document.querySelector(".rubric-table").addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            const cell = e.target.closest("td[data-rating]");
-            if (cell) {
-              e.preventDefault();
-              selectRating(cell);
-            }
-          }
+        badge.textContent = `Level: ${level} – ${title}`;
+      }
+
+      /***************************************************
+       * Easter Egg Tooltips on Column Headers
+       ***************************************************/
+      document.querySelectorAll(".rubric-table th").forEach(th => {
+        // Each th already has a data-tooltip attribute from HTML
+        th.addEventListener("mouseenter", () => {
+          logToTerminal(`Command: ${th.textContent.trim().toUpperCase()} accessed.`);
         });
       });
 
       /***************************************************
-       * Rubric Rating Selection & Persistence
+       * Idle Mini Game Integration (Snake/Tetris)
        ***************************************************/
-      function selectRating(cell) {
-        const category = cell.getAttribute("data-category");
-        const rating = parseInt(cell.getAttribute("data-rating"), 10);
-        const row = cell.parentElement;
-        row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
-        cell.classList.add("selected");
-        scores[category] = rating;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
-        updateTotal();
+      function resetIdleTimer() {
+        clearTimeout(idleTimeout);
+        // Hide game overlay if visible
+        hideGameOverlay();
+        idleTimeout = setTimeout(() => {
+          // Randomly choose a game mode
+          gameMode = Math.random() < 0.5 ? "snake" : "tetris";
+          startGameMode(gameMode);
+        }, 30000); // 30 seconds idle
       }
+      document.addEventListener("mousemove", resetIdleTimer);
+      document.addEventListener("keydown", resetIdleTimer);
+      document.addEventListener("click", resetIdleTimer);
+      document.addEventListener("touchstart", resetIdleTimer);
+      resetIdleTimer();
 
-      /***************************************************
-       * Update Total Score & Check for Celebrations
-       ***************************************************/
-      function updateTotal() {
-        const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
-        document.getElementById("total").textContent = total;
-        let label = "";
-        if (total >= 25) {
-          label = "Outstanding";
-          confettiShown = true;
-        } else if (total >= 17) {
-          label = "Excellent";
-          confettiShown = false;
-          if (!excellentCelebrated) {
-            launchMouseConfetti();
-            excellentCelebrated = true;
-          }
-        } else if (total >= 9) {
-          label = "Great";
-          confettiShown = false;
+      function startGameMode(mode) {
+        document.getElementById("gameOverlay").style.display = "block";
+        if (mode === "snake") {
+          startSnakeGame();
+          logToTerminal("Entering Snake mode. Use arrow keys to control the snake.");
         } else {
-          label = "Good";
-          confettiShown = false;
+          startTetrisGame();
+          logToTerminal("Entering Tetris mode. Use arrow keys to move and rotate the pieces.");
         }
-        document.getElementById("scoreLabel").textContent = label;
-        updateProgressBar(total);
+      }
+      
+      function hideGameOverlay() {
+        clearInterval(gameInterval);
+        document.getElementById("gameOverlay").style.display = "none";
+        // Clear canvas (if any)
+        const canvas = document.getElementById("gameCanvas");
+        if (canvas) {
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
 
       /***************************************************
-       * Update Progress Bar Animation
+       * Minimal Snake Game Implementation
        ***************************************************/
-      function updateProgressBar(total) {
-        const percentage = (total / maxPoints) * 100;
-        document.getElementById("progressBar").style.width = percentage + "%";
+      function startSnakeGame() {
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const gridSize = 20;
+        const tileCountX = canvas.width / gridSize;
+        const tileCountY = canvas.height / gridSize;
+        let snake = [{ x: Math.floor(tileCountX/2), y: Math.floor(tileCountY/2) }];
+        let direction = { x: 0, y: 0 };
+        let food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
+
+        document.addEventListener("keydown", snakeKeyDown);
+        function snakeKeyDown(e) {
+          switch(e.key) {
+            case "ArrowUp": if (direction.y !== 1) { direction = { x: 0, y: -1 }; } break;
+            case "ArrowDown": if (direction.y !== -1) { direction = { x: 0, y: 1 }; } break;
+            case "ArrowLeft": if (direction.x !== 1) { direction = { x: -1, y: 0 }; } break;
+            case "ArrowRight": if (direction.x !== -1) { direction = { x: 1, y: 0 }; } break;
+          }
+        }
+
+        function updateSnake() {
+          const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+          // Wrap around edges
+          head.x = (head.x + tileCountX) % tileCountX;
+          head.y = (head.y + tileCountY) % tileCountY;
+          snake.unshift(head);
+          // Check if food eaten
+          if (head.x === food.x && head.y === food.y) {
+            food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
+            logToTerminal("Snake ate food. Generating new food...");
+          } else {
+            snake.pop();
+          }
+          drawSnake();
+        }
+        
+        function drawSnake() {
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = varPrimary();
+          for (let cell of snake) {
+            ctx.fillRect(cell.x * gridSize, cell.y * gridSize, gridSize-2, gridSize-2);
+          }
+          // Draw food
+          ctx.fillStyle = "#FF3333";
+          ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize-2, gridSize-2);
+        }
+        
+        function varPrimary() {
+          return getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+        }
+        
+        gameInterval = setInterval(updateSnake, 150);
       }
 
       /***************************************************
-       * Launch Mouse Confetti Celebration for "Excellent"
+       * Minimal Tetris Game Implementation (Very Basic)
        ***************************************************/
-      function launchMouseConfetti() {
-        const container = document.getElementById("mouseConfettiContainer");
-        const particleCount = 30;
-        for (let i = 0; i < particleCount; i++) {
-          const particle = document.createElement("span");
-          particle.className = "mouse-particle";
-          particle.textContent = "🖱";
-          particle.style.left = Math.random() * 100 + "vw";
-          // Start near the top
-          particle.style.top = "-50px";
-          particle.style.animationDelay = Math.random() * 0.5 + "s";
-          container.appendChild(particle);
-          setTimeout(() => {
-            particle.remove();
-          }, 3000);
+      function startTetrisGame() {
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const gridSize = 30;
+        const cols = 10, rows = 20;
+        let arena = createMatrix(cols, rows);
+        let player = { pos: {x: Math.floor(cols/2)-1, y: 0}, matrix: createPiece() };
+
+        document.addEventListener("keydown", tetrisKeyDown);
+        function tetrisKeyDown(e) {
+          if (e.key === "ArrowLeft") { player.pos.x--; }
+          else if (e.key === "ArrowRight") { player.pos.x++; }
+          else if (e.key === "ArrowDown") { player.pos.y++; }
+          else if (e.key === "ArrowUp") { player.matrix = rotate(player.matrix, 1); }
         }
+
+        function createMatrix(w, h) {
+          const matrix = [];
+          while(h--) { matrix.push(new Array(w).fill(0)); }
+          return matrix;
+        }
+        
+        function createPiece() {
+          // Only one simple piece for demo (a 2x2 square)
+          return [
+            [1,1],
+            [1,1]
+          ];
+        }
+        
+        function rotate(matrix, dir) {
+          for (let y = 0; y < matrix.length; ++y) {
+            for (let x = 0; x < y; ++x) {
+              [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+            }
+          }
+          if (dir > 0) { matrix.forEach(row => row.reverse()); }
+          else { matrix.reverse(); }
+          return matrix;
+        }
+        
+        function drawTetris() {
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          drawMatrix(player.matrix, player.pos);
+        }
+        
+        function drawMatrix(matrix, offset) {
+          matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+              if (value !== 0) {
+                ctx.fillStyle = "#FF9933";
+                ctx.fillRect((x + offset.x) * gridSize, (y + offset.y) * gridSize, gridSize-2, gridSize-2);
+              }
+            });
+          });
+        }
+        
+        function updateTetris() {
+          player.pos.y++;
+          drawTetris();
+        }
+        
+        gameInterval = setInterval(updateTetris, 500);
       }
 
       /***************************************************
@@ -492,6 +612,7 @@
       function resetScores() {
         const resetOverlay = document.getElementById("resetOverlay");
         resetOverlay.classList.add("visible");
+        logToTerminal("System reboot initiated...");
         setTimeout(() => {
           scores = {};
           localStorage.removeItem(STORAGE_KEY);
@@ -501,8 +622,10 @@
           document.getElementById("progressBar").style.width = "0%";
           confettiShown = false;
           excellentCelebrated = false;
+          updateDeveloperBadge(0);
           resetOverlay.classList.remove("visible");
-        }, 800); // Faster reset duration
+          logToTerminal("System reboot complete.");
+        }, 800);
       }
 
       /***************************************************
@@ -528,11 +651,35 @@
        ***************************************************/
       function toggleTheme(input) {
         const htmlEl = document.documentElement;
-        if (input.checked) {
-          htmlEl.setAttribute("data-theme", "retro");
-        } else {
-          htmlEl.setAttribute("data-theme", "light");
-        }
+        if (input.checked) { htmlEl.setAttribute("data-theme", "retro"); }
+        else { htmlEl.setAttribute("data-theme", "light"); }
+      }
+
+      /***************************************************
+       * Update Developer Badge based on Score
+       ***************************************************/
+      function updateDeveloperBadge(total) {
+        let level = 1, title = "Novice Developer";
+        if (total < 9) { level = 1; title = "Novice Developer"; }
+        else if (total < 17) { level = 2; title = "Code Wrangler"; }
+        else if (total < 25) { level = 3; title = "Debugging Guru"; }
+        else { level = 4; title = "Development Master"; }
+        document.getElementById("developerBadge").textContent = `Level: ${level} – ${title}`;
+      }
+      
+      /* Update developer badge whenever total is updated */
+      function updateTotal() {
+        const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
+        document.getElementById("total").textContent = total;
+        let label = "";
+        if (total >= 25) { label = "Outstanding"; confettiShown = true; }
+        else if (total >= 17) { label = "Excellent"; confettiShown = false; if (!excellentCelebrated) { launchMouseConfetti(); excellentCelebrated = true; } }
+        else if (total >= 9) { label = "Great"; confettiShown = false; }
+        else { label = "Good"; confettiShown = false; }
+        document.getElementById("scoreLabel").textContent = label;
+        updateProgressBar(total);
+        updateDeveloperBadge(total);
+        logToTerminal(`Score updated to ${total} (${label}).`);
       }
     </script>
   </body>
