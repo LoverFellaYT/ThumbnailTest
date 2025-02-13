@@ -691,20 +691,19 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        // Use a fixed cell size to ensure a single rectangle
-        // e.g., 40 px per cell => bigger blocks
-        const CELL_SIZE = 40;
+        // We'll use a 20 px cell, 10 columns, 20 rows => 200 x 400
+        const CELL_SIZE = 20;
         const COLS = 10;
         const ROWS = 20;
 
-        // Board dimensions in px
-        const boardWidth = CELL_SIZE * COLS; // 400 px
-        const boardHeight = CELL_SIZE * ROWS; // 800 px
+        // Board dimension in px
+        const boardWidth = CELL_SIZE * COLS; // 200
+        const boardHeight = CELL_SIZE * ROWS; // 400
 
-        // Center the board
+        // Center horizontally, push it further down
         const offset = {
-          x: Math.floor((canvas.width - boardWidth) / 2),
-          y: Math.floor((canvas.height - boardHeight) / 2),
+          x: Math.floor((canvas.width - boardWidth) / 2), 
+          y: 80, // Moved down so it doesn't overlap text
         };
 
         // Colors for pieces (index 1-7)
@@ -716,7 +715,7 @@
           "#FFFF33", // J
           "#FF9933", // I
           "#FF3333", // S
-          "#9933FF", // Z
+          "#9933FF"  // Z
         ];
 
         function createMatrix(w, h) {
@@ -864,12 +863,13 @@
           ctx.lineWidth = 2;
           ctx.strokeRect(offset.x, offset.y, boardWidth, boardHeight);
 
-          // Score & attempt info
+          // Score & attempt info near top-left
           ctx.font = "18px Courier Prime";
           ctx.fillStyle = "#33FF33";
+          // We'll place text near top-left, above the board
           ctx.fillText("Score: " + player.score, 20, 30);
-          ctx.fillText("Attempt: " + tetrisAttempt, 20, 60);
-          ctx.fillText("Press ESC or SPACE to exit", 20, 90);
+          ctx.fillText("Attempt: " + tetrisAttempt, 20, 50);
+          ctx.fillText("Press ESC or SPACE to exit", 20, 70);
         }
 
         let dropCounter = 0;
