@@ -22,7 +22,7 @@
         --text-color: #33FF33;
         --panel-bg: #111111;
         --border-color: #33FF33;
-        --primary-color: #33FF33;
+        --primary-color: #33FF33; /* Neon green */
         --highlight-color: #00CC00;
         --shadow: 0 4px 12px rgba(0,0,0,0.7);
         --transition: all 0.3s ease;
@@ -30,9 +30,7 @@
         --font-family: 'Courier Prime', monospace;
       }
 
-      /* ---------------------------- */
-      /* Global Styles                */
-      /* ---------------------------- */
+      /* Global Styles */
       body {
         margin: 0;
         padding: 0;
@@ -67,7 +65,13 @@
       .header-left p {
         margin: 0;
         font-size: 0.9rem;
-        color: var(--text-color);
+        color: #AAAAAA;  /* Grayscale text for instructions */
+      }
+      
+      .status-panel {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+        color: #AAAAAA;  /* Grayscale by default */
       }
       
       .header-right {
@@ -90,11 +94,6 @@
         background: var(--highlight-color);
       }
       
-      .status-panel {
-        margin-top: 0.5rem;
-        font-size: 1.2rem;
-      }
-      
       #progressBarContainer {
         width: 100%;
         height: 20px;
@@ -111,9 +110,7 @@
         transition: width 0.3s ease;
       }
       
-      /* ---------------------------- */
-      /* Rubric Table                 */
-      /* ---------------------------- */
+      /* Rubric Table */
       .rubric-table {
         width: 100%;
         margin: 2rem auto;
@@ -135,7 +132,8 @@
       
       .rubric-table td {
         background: var(--bg-color);
-        color: var(--text-color);
+        /* Default grayscale text for rubric cells */
+        color: #888888;
       }
       
       .rubric-table td:hover {
@@ -145,12 +143,10 @@
       
       .rubric-table td.selected {
         background: var(--highlight-color);
-        color: var(--bg-color);
+        color: var(--primary-color);
       }
       
-      /* ---------------------------- */
-      /* Legend & Feedback Panels     */
-      /* ---------------------------- */
+      /* Legend & Feedback Panels */
       .panel {
         background: var(--panel-bg);
         border: 1px solid var(--border-color);
@@ -164,16 +160,25 @@
         color: var(--primary-color);
       }
       
-      /* ---------------------------- */
-      /* Reset Overlay (Development Reset) */
-      /* ---------------------------- */
+      /* Retro Export Button */
+      #exportBtn {
+        background: var(--primary-color);
+        color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: bold;
+      }
+      
+      /* Reset Overlay for Development Reset Animation */
       #resetOverlay {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
         height: 0;
-        background: #444444; /* grey tone for development */
+        background: #444444; /* Grey tone */
         z-index: 3000;
         pointer-events: none;
         transition: height 1.2s ease-in-out;
@@ -186,17 +191,51 @@
         100% { background-position-y: 0; }
       }
       
-      /* ---------------------------- */
-      /* Legend & Feedback Panels     */
-      /* ---------------------------- */
-      #exportBtn {
-        background: var(--primary-color);
-        color: var(--bg-color);
-        border: 1px solid var(--border-color);
-        padding: 0.5rem 1rem;
+      /* Achievement Notification (Optional, can be removed if not needed) */
+      #achievementNotification {
+        position: fixed;
+        top: 10px;
+        right: -350px;
+        width: 300px;
+        background: var(--panel-bg);
+        border: 2px solid var(--primary-color);
         border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: bold;
+        padding: 1rem;
+        z-index: 4000;
+        opacity: 0;
+        transition: right 0.5s ease, opacity 0.5s ease;
+      }
+      
+      #achievementNotification.visible {
+        right: 20px;
+        opacity: 1;
+      }
+      
+      .achievement-badge {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      /* ---------------------------- */
+      /* Mouse Confetti for "Excellent" Score */
+      /* ---------------------------- */
+      .mouse-particle {
+        position: fixed;
+        font-size: 24px;
+        opacity: 1;
+        pointer-events: none;
+        animation: mouseFall 3s forwards;
+      }
+      
+      @keyframes mouseFall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
       }
       
       /* Responsive Adjustments */
@@ -207,6 +246,13 @@
         }
         .rubric-table, .panel {
           width: 100%;
+        }
+        #achievementNotification {
+          width: 90%;
+          right: -100%;
+        }
+        #achievementNotification.visible {
+          right: 5%;
         }
       }
     </style>
@@ -316,6 +362,9 @@
     <!-- Reset Overlay for Development Reset Animation -->
     <div id="resetOverlay"></div>
 
+    <!-- Mouse Confetti Container (will be generated dynamically) -->
+    <div id="mouseConfettiContainer"></div>
+
     <script>
       /***************************************************
        * Global Variables & Local Storage Key
@@ -324,6 +373,9 @@
       const maxPoints = 28; // 7 categories x 4 points each
       let confettiShown = false;
       const STORAGE_KEY = "developmentRubricScores";
+
+      // Track if the mouse confetti for "Excellent" has been triggered
+      let excellentCelebrated = false;
 
       /***************************************************
        * Initialize Rubric on DOM Load & Load Saved Data
@@ -368,7 +420,7 @@
       }
 
       /***************************************************
-       * Update Total Score & Check
+       * Update Total Score & Check for Celebrations
        ***************************************************/
       function updateTotal() {
         const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
@@ -376,23 +428,15 @@
         let label = "";
         if (total >= 25) {
           label = "Outstanding";
-          if (!confettiShown) {
-            // Confetti effect (kept for fun, feel free to adjust or remove)
-            confetti({
-              particleCount: 150,
-              startVelocity: 10,
-              spread: 120,
-              gravity: 0.15,
-              decay: 0.96,
-              scalar: 1.5,
-              ticks: 300,
-              colors: ['#33FF33', '#00CC00', '#22DD22']
-            });
-            confettiShown = true;
-          }
+          confettiShown = true;
         } else if (total >= 17) {
           label = "Excellent";
           confettiShown = false;
+          // Trigger mouse confetti if not already done
+          if (!excellentCelebrated) {
+            launchMouseConfetti();
+            excellentCelebrated = true;
+          }
         } else if (total >= 9) {
           label = "Great";
           confettiShown = false;
@@ -413,11 +457,32 @@
       }
 
       /***************************************************
-       * Reset Scores with Development Reset Animation
+       * Launch Mouse Confetti Celebration for "Excellent" Score
+       ***************************************************/
+      function launchMouseConfetti() {
+        const container = document.getElementById("mouseConfettiContainer");
+        const particleCount = 30;
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("span");
+          particle.className = "mouse-particle";
+          particle.textContent = "🖱"; // Old-school computer mouse emoji
+          // Random horizontal starting position
+          particle.style.left = Math.random() * 100 + "vw";
+          // Random delay for animation
+          particle.style.animationDelay = Math.random() * 0.5 + "s";
+          container.appendChild(particle);
+          // Remove particle after animation completes (3 seconds)
+          setTimeout(() => {
+            particle.remove();
+          }, 3000);
+        }
+      }
+
+      /***************************************************
+       * Reset Scores with a Retro Reset Animation
        ***************************************************/
       function resetScores() {
         const resetOverlay = document.getElementById("resetOverlay");
-        // Increase overlay height to simulate a "system reset" (grey overlay rising up)
         resetOverlay.style.height = "100%";
         setTimeout(() => {
           scores = {};
@@ -427,7 +492,7 @@
           document.getElementById("scoreLabel").textContent = "Good";
           document.getElementById("progressBar").style.width = "0%";
           confettiShown = false;
-          // Lower the overlay to simulate a reboot finish
+          excellentCelebrated = false;
           resetOverlay.style.height = "0";
         }, 1800);
       }
@@ -439,10 +504,7 @@
         const header = document.querySelector("header");
         const originalPos = header.style.position;
         header.style.position = "static";
-        const canvas = await html2canvas(document.body, {
-          scale: 2,
-          useCORS: true
-        });
+        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true });
         const dataUrl = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.download = "development-analysis.png";
