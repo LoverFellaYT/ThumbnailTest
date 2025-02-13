@@ -557,136 +557,146 @@
         }
       }
 
-      /* ---------- Snake Game Implementation (Box & Moved Down) ---------- */
-      function startSnakeGame() {
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
+      /* ---------- Snake Game Implementation ---------- */
+  function startSnakeGame() {
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
 
-        // We'll define a bounding box for Snake
-        const SNAKE_COLS = 20;
-        const SNAKE_ROWS = 18;
-        const CELL_SIZE = 20;
-        const boxWidth = SNAKE_COLS * CELL_SIZE;   // 400
-        const boxHeight = SNAKE_ROWS * CELL_SIZE;  // 360
+  // We'll define a bounding box for Snake
+  const SNAKE_COLS = 20;
+  const SNAKE_ROWS = 18;
+  const CELL_SIZE = 20;
+  const boxWidth = SNAKE_COLS * CELL_SIZE;   // 400
+  const boxHeight = SNAKE_ROWS * CELL_SIZE;  // 360
 
-        // Move down to y=100 so there's space above
-        const offset = {
-          x: Math.floor((canvas.width - boxWidth) / 2), 
-          y: 100
-        };
+  // Move down so there's space above
+  const offset = {
+    x: Math.floor((canvas.width - boxWidth) / 2),
+    y: 100
+  };
 
-        // Draw bounding box
-        function drawBoundingBox() {
-          ctx.strokeStyle = "#ffffff";
-          ctx.lineWidth = 2;
-          ctx.strokeRect(offset.x, offset.y, boxWidth, boxHeight);
-        }
+  // Draw bounding box
+  function drawBoundingBox() {
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(offset.x, offset.y, boxWidth, boxHeight);
+  }
 
-        let snake = [
-          {
-            x: Math.floor(SNAKE_COLS / 2),
-            y: Math.floor(SNAKE_ROWS / 2),
-          },
-        ];
-        let direction = { x: 0, y: 0 };
-        let food = {
-          x: Math.floor(Math.random() * SNAKE_COLS),
-          y: Math.floor(Math.random() * SNAKE_ROWS),
-        };
+  // Snake array, each element is { x, y } in grid coords
+  let snake = [
+    {
+      x: Math.floor(SNAKE_COLS / 2),
+      y: Math.floor(SNAKE_ROWS / 2),
+    },
+  ];
+  let direction = { x: 0, y: 0 };
+  let food = {
+    x: Math.floor(Math.random() * SNAKE_COLS),
+    y: Math.floor(Math.random() * SNAKE_ROWS),
+  };
 
-        // Wrap around edges
-        function wrapCoordinates(pos) {
-          pos.x = (pos.x + SNAKE_COLS) % SNAKE_COLS;
-          pos.y = (pos.y + SNAKE_ROWS) % SNAKE_ROWS;
-          return pos;
-        }
+  function draw() {
+    // Clear the entire canvas
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        function draw() {
-          // Clear entire canvas
-          ctx.fillStyle = "#000000";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Draw bounding box
+    drawBoundingBox();
 
-          // Draw bounding box
-          drawBoundingBox();
+    // Draw snake
+    ctx.fillStyle = getComputedStyle(document.documentElement)
+      .getPropertyValue("--primary-color")
+      .trim();
+    snake.forEach((cell) => {
+      const drawX = offset.x + cell.x * CELL_SIZE;
+      const drawY = offset.y + cell.y * CELL_SIZE;
+      ctx.fillRect(drawX, drawY, CELL_SIZE - 2, CELL_SIZE - 2);
+    });
 
-          // Draw snake
-          ctx.fillStyle = getComputedStyle(document.documentElement)
-            .getPropertyValue("--primary-color")
-            .trim();
-          snake.forEach((cell) => {
-            const drawX = offset.x + cell.x * CELL_SIZE;
-            const drawY = offset.y + cell.y * CELL_SIZE;
-            ctx.fillRect(drawX, drawY, CELL_SIZE - 2, CELL_SIZE - 2);
-          });
+    // Draw food
+    ctx.fillStyle = "#FF3333";
+    const foodX = offset.x + food.x * CELL_SIZE;
+    const foodY = offset.y + food.y * CELL_SIZE;
+    ctx.fillRect(foodX, foodY, CELL_SIZE - 2, CELL_SIZE - 2);
 
-          // Draw food
-          ctx.fillStyle = "#FF3333";
-          const foodX = offset.x + food.x * CELL_SIZE;
-          const foodY = offset.y + food.y * CELL_SIZE;
-          ctx.fillRect(foodX, foodY, CELL_SIZE - 2, CELL_SIZE - 2);
+    // Display snake length & instructions
+    ctx.fillStyle = "#fff";
+    ctx.font = "18px Courier Prime";
+    ctx.fillText("Length: " + snake.length, 20, 30);
+    ctx.fillText("Press ESC or SPACE to exit", 20, 50);
+  }
 
-          // Display snake length & instructions
-          ctx.fillStyle = "#fff";
-          ctx.font = "18px Courier Prime";
-          ctx.fillText("Length: " + snake.length, 20, 30);
-          ctx.fillText("Press ESC or SPACE to exit", 20, 50);
-        }
+  function update() {
+    // Calculate new head
+    const head = {
+      x: snake[0].x + direction.x,
+      y: snake[0].y + direction.y
+    };
 
-        function update() {
-          const head = { 
-            x: snake[0].x + direction.x, 
-            y: snake[0].y + direction.y 
-          };
-          wrapCoordinates(head);
-          snake.unshift(head);
+    // Check if the head hits the border => game over
+    if (
+      head.x < 0 || head.x >= SNAKE_COLS ||
+      head.y < 0 || head.y >= SNAKE_ROWS
+    ) {
+      logToTerminal("Snake: Hit the border. Game over.");
+      hideGameOverlay();
+      return;
+    }
 
-          // If we eat food
-          if (head.x === food.x && head.y === food.y) {
-            food = {
-              x: Math.floor(Math.random() * SNAKE_COLS),
-              y: Math.floor(Math.random() * SNAKE_ROWS),
-            };
-            logToTerminal("Snake: Food consumed. New food generated.");
-          } else {
-            snake.pop(); // remove tail
-          }
+    // Insert new head at the front
+    snake.unshift(head);
 
-          // Collision with self
-          for (let i = 1; i < snake.length; i++) {
-            if (snake[i].x === head.x && snake[i].y === head.y) {
-              logToTerminal("Snake: Collision with self. Game over.");
-              hideGameOverlay();
-              return;
-            }
-          }
+    // Check if we ate the food
+    if (head.x === food.x && head.y === food.y) {
+      food = {
+        x: Math.floor(Math.random() * SNAKE_COLS),
+        y: Math.floor(Math.random() * SNAKE_ROWS),
+      };
+      logToTerminal("Snake: Food consumed. New food generated.");
+    } else {
+      // Remove tail if not eating
+      snake.pop();
+    }
 
-          draw();
-        }
-
-        function snakeKeyDown(e) {
-          switch (e.key) {
-            case "ArrowUp":
-              if (direction.y !== 1) direction = { x: 0, y: -1 };
-              break;
-            case "ArrowDown":
-              if (direction.y !== -1) direction = { x: 0, y: 1 };
-              break;
-            case "ArrowLeft":
-              if (direction.x !== 1) direction = { x: -1, y: 0 };
-              break;
-            case "ArrowRight":
-              if (direction.x !== -1) direction = { x: 1, y: 0 };
-              break;
-            case "Escape":
-            case " ":
-              hideGameOverlay();
-              break;
-          }
-        }
-
-        document.addEventListener("keydown", snakeKeyDown);
-        gameInterval = setInterval(update, 150);
+    // Check collision with self
+    for (let i = 1; i < snake.length; i++) {
+      if (snake[i].x === head.x && snake[i].y === head.y) {
+        logToTerminal("Snake: Collision with self. Game over.");
+        hideGameOverlay();
+        return;
       }
+    }
+
+    draw();
+  }
+
+  function snakeKeyDown(e) {
+    switch (e.key) {
+      case "ArrowUp":
+        if (direction.y !== 1) direction = { x: 0, y: -1 };
+        break;
+      case "ArrowDown":
+        if (direction.y !== -1) direction = { x: 0, y: 1 };
+        break;
+      case "ArrowLeft":
+        if (direction.x !== 1) direction = { x: -1, y: 0 };
+        break;
+      case "ArrowRight":
+        if (direction.x !== -1) direction = { x: 1, y: 0 };
+        break;
+      case "Escape":
+      case " ":
+        hideGameOverlay();
+        break;
+    }
+  }
+
+  // Listen for arrow keys
+  document.addEventListener("keydown", snakeKeyDown);
+
+  // Update the game every 150 ms
+  gameInterval = setInterval(update, 150);
+}
 
       /* ---------- Tetris Game Implementation (offset.y=70) ---------- */
       function startTetrisGame() {
