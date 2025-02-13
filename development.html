@@ -214,7 +214,7 @@
         left: 0;
         width: 100%;
         height: 0;
-        background: rgba(68, 68, 68, 0.8); /* Semi-transparent gray */
+        background: rgba(68, 68, 68, 0.8);
         z-index: 3000;
         pointer-events: none;
         display: flex;
@@ -472,6 +472,9 @@
       let gameInterval;
       let currentGame; // "snake" or "tetris"
 
+      // We'll track how many times Tetris is started:
+      let tetrisAttempt = 0;
+
       /* ---------- Terminal Log Functionality ---------- */
       function logToTerminal(message) {
         const logDiv = document.getElementById("terminalLog");
@@ -548,14 +551,17 @@
       function startGameMode(mode) {
         const overlay = document.getElementById("gameOverlay");
         overlay.style.display = "block";
+
         if (mode === "snake") {
           logToTerminal(
             "Idle detected: Starting Snake game. Use arrow keys to control."
           );
           startSnakeGame();
         } else {
+          // Increase Tetris attempt count
+          tetrisAttempt++;
           logToTerminal(
-            "Idle detected: Starting Tetris game. Use arrow keys to move/rotate."
+            `Idle detected: Starting Tetris game (Attempt #${tetrisAttempt}). Use arrow keys to move/rotate.`
           );
           startTetrisGame();
         }
@@ -594,9 +600,11 @@
         function draw() {
           ctx.fillStyle = "#000000";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = getComputedStyle(
-            document.documentElement
-          ).getPropertyValue("--primary-color").trim();
+
+          // Snake color
+          ctx.fillStyle = getComputedStyle(document.documentElement)
+            .getPropertyValue("--primary-color")
+            .trim();
           snake.forEach((cell) => {
             ctx.fillRect(
               cell.x * gridSize,
@@ -605,6 +613,8 @@
               gridSize - 2
             );
           });
+
+          // Food color
           ctx.fillStyle = "#FF3333";
           ctx.fillRect(
             food.x * gridSize,
@@ -612,6 +622,11 @@
             gridSize - 2,
             gridSize - 2
           );
+
+          // Display instructions
+          ctx.fillStyle = "#fff";
+          ctx.font = "18px Courier Prime";
+          ctx.fillText("Press ESC or SPACE to exit", 20, 50);
         }
 
         function update() {
@@ -671,20 +686,28 @@
         gameInterval = setInterval(update, 150);
       }
 
-      // Tetris Game Implementation (Refined)
+      /* ---------- Tetris Game Implementation (Refined) ---------- */
       function startTetrisGame() {
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
 
-        // Tetris board dimensions
+        // Make blocks half as large as before by scaling factor
+        // We'll do a smaller grid so it definitely fits
         const COLS = 10;
         const ROWS = 20;
-        // Calculate grid size so the board is centered
-        const grid = Math.floor(canvas.width / COLS);
+
+        // We'll define a scaleFactor to reduce block size
+        const scaleFactor = 2; // blocks are half the size
+        const cellW = Math.floor(canvas.width / (COLS * scaleFactor));
+        const cellH = Math.floor(canvas.height / (ROWS * scaleFactor));
+        const grid = Math.min(cellW, cellH);
+
+        // Recompute canvas if needed
+        // but we'll just draw within a portion, plus a border
         const boardWidth = grid * COLS;
         const boardHeight = grid * ROWS;
+
+        // Center the board
         const offset = {
           x: Math.floor((canvas.width - boardWidth) / 2),
           y: Math.floor((canvas.height - boardHeight) / 2),
@@ -702,7 +725,6 @@
           "#9933FF", // Z
         ];
 
-        // Create a matrix for the arena (board)
         function createMatrix(w, h) {
           const matrix = [];
           for (let i = 0; i < h; i++) {
@@ -711,7 +733,6 @@
           return matrix;
         }
 
-        // Create a Tetris piece from type letter
         function createPiece(type) {
           if (type === "T") {
             return [
@@ -758,7 +779,6 @@
           }
         }
 
-        // Rotate a matrix (clockwise if dir > 0, counterclockwise if dir < 0)
         function rotate(matrix, dir) {
           for (let y = 0; y < matrix.length; ++y) {
             for (let x = 0; x < y; ++x) {
@@ -773,7 +793,6 @@
           return matrix;
         }
 
-        // Merge player's piece into the arena
         function merge(arena, player) {
           player.matrix.forEach((row, y) => {
             row.forEach((value, x) => {
@@ -784,7 +803,6 @@
           });
         }
 
-        // Collision detection
         function collide(arena, player) {
           const m = player.matrix;
           const o = player.pos;
@@ -801,7 +819,6 @@
           return false;
         }
 
-        // Clear completed rows, update score
         function arenaSweep() {
           let rowCount = 1;
           outer: for (let y = arena.length - 1; y >= 0; y--) {
@@ -818,7 +835,6 @@
           }
         }
 
-        // Draw a matrix on the canvas with an offset
         function drawMatrix(matrix, offsetPos) {
           matrix.forEach((row, y) => {
             row.forEach((value, x) => {
@@ -835,24 +851,32 @@
           });
         }
 
-        // Draw the arena, current piece, and GUI (score)
         function draw() {
           ctx.fillStyle = "#000000";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
+
           // Draw arena (board)
           drawMatrix(arena, offset);
+
           // Draw current piece
           drawMatrix(player.matrix, {
             x: offset.x + player.pos.x * grid,
             y: offset.y + player.pos.y * grid,
           });
-          // Draw score in upper-left corner
-          ctx.font = "20px Courier Prime";
+
+          // Draw white border around Tetris board
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(offset.x, offset.y, boardWidth, boardHeight);
+
+          // Draw score & attempt in upper-left
+          ctx.font = "18px Courier Prime";
           ctx.fillStyle = "#33FF33";
           ctx.fillText("Score: " + player.score, 20, 30);
+          ctx.fillText("Attempt: " + tetrisAttempt, 20, 60);
+          ctx.fillText("Press ESC or SPACE to exit", 20, 90);
         }
 
-        // Timing variables for automatic dropping
         let dropCounter = 0;
         let dropInterval = 1000;
         let lastTime = 0;
@@ -867,7 +891,6 @@
           requestAnimationFrame(update);
         }
 
-        // Drop the current piece; if collision, merge and reset piece
         function playerDrop() {
           player.pos.y++;
           if (collide(arena, player)) {
@@ -879,7 +902,6 @@
           dropCounter = 0;
         }
 
-        // Move piece horizontally
         function playerMove(dir) {
           player.pos.x += dir;
           if (collide(arena, player)) {
@@ -887,7 +909,6 @@
           }
         }
 
-        // Reset the player's piece; if collision on reset => game over
         function playerReset() {
           const pieces = "TJLOSZI";
           player.matrix = createPiece(
@@ -904,7 +925,6 @@
           }
         }
 
-        // Create arena and initialize player
         const arena = createMatrix(COLS, ROWS);
         const player = {
           pos: { x: 0, y: 0 },
@@ -914,9 +934,7 @@
         playerReset();
         update();
 
-        // Global key handling for Tetris gameplay
         function tetrisKeyDown(event) {
-          // Only process keys if game overlay is active
           if (document.getElementById("gameOverlay").style.display === "block") {
             if (event.key === "ArrowLeft") {
               playerMove(-1);
@@ -930,12 +948,10 @@
                 player.matrix = rotate(player.matrix, -1);
               }
             } else if (event.key === "Escape" || event.key === " ") {
-              // Exit Tetris idle game
               hideGameOverlay();
             }
           }
         }
-
         document.addEventListener("keydown", tetrisKeyDown);
       }
 
