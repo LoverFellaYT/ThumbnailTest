@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="retro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Development Rubric Analyzer Pro+</title>
+
+    <!-- Retro Monospaced Font (Courier Prime) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- html2canvas for PNG export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+      /* ---------------------------- */
+      /* Retro Theme Variables        */
+      /* ---------------------------- */
+      :root {
+        --bg-color: #000000;
+        --text-color: #33FF33;
+        --panel-bg: #111111;
+        --border-color: #33FF33;
+        --primary-color: #33FF33;
+        --highlight-color: #00CC00;
+        --shadow: 0 4px 12px rgba(0,0,0,0.7);
+        --transition: all 0.3s ease;
+        --radius: 4px;
+        --font-family: 'Courier Prime', monospace;
+      }
+
+      /* ---------------------------- */
+      /* Global Styles                */
+      /* ---------------------------- */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: var(--font-family);
+        background: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+      
+      header {
+        background: var(--panel-bg);
+        padding: 1rem 2rem;
+        border-bottom: 2px solid var(--border-color);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      
+      .header-left h1 {
+        margin: 0;
+        font-size: 2rem;
+        color: var(--primary-color);
+      }
+      
+      .header-left p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-color);
+      }
+      
+      .header-right {
+        display: flex;
+        gap: 0.5rem;
+      }
+      
+      .btn {
+        background: var(--primary-color);
+        color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: bold;
+        transition: var(--transition);
+      }
+      
+      .btn:hover {
+        background: var(--highlight-color);
+      }
+      
+      .status-panel {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+      }
+      
+      #progressBarContainer {
+        width: 100%;
+        height: 20px;
+        background: var(--border-color);
+        border-radius: 4px;
+        margin-top: 0.5rem;
+      }
+      
+      #progressBar {
+        height: 100%;
+        width: 0%;
+        background: var(--primary-color);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+      
+      /* ---------------------------- */
+      /* Rubric Table                 */
+      /* ---------------------------- */
+      .rubric-table {
+        width: 100%;
+        margin: 2rem auto;
+        border-collapse: collapse;
+        box-shadow: var(--shadow);
+      }
+      
+      .rubric-table th,
+      .rubric-table td {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        text-align: left;
+      }
+      
+      .rubric-table th {
+        background: var(--panel-bg);
+        color: var(--primary-color);
+      }
+      
+      .rubric-table td {
+        background: var(--bg-color);
+        color: var(--text-color);
+      }
+      
+      .rubric-table td:hover {
+        background: var(--highlight-color);
+        cursor: pointer;
+      }
+      
+      .rubric-table td.selected {
+        background: var(--highlight-color);
+        color: var(--bg-color);
+      }
+      
+      /* ---------------------------- */
+      /* Legend & Feedback Panels     */
+      /* ---------------------------- */
+      .panel {
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      
+      .panel h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+      }
+      
+      /* ---------------------------- */
+      /* Reset Overlay (Development Reset) */
+      /* ---------------------------- */
+      #resetOverlay {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 0;
+        background: #444444; /* grey tone for development */
+        z-index: 3000;
+        pointer-events: none;
+        transition: height 1.2s ease-in-out;
+        animation: glitchFlow 2s linear infinite;
+      }
+      
+      @keyframes glitchFlow {
+        0% { background-position-y: 0; }
+        50% { background-position-y: 20px; }
+        100% { background-position-y: 0; }
+      }
+      
+      /* ---------------------------- */
+      /* Legend & Feedback Panels     */
+      /* ---------------------------- */
+      #exportBtn {
+        background: var(--primary-color);
+        color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: bold;
+      }
+      
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .rubric-table, .panel {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <div class="header-left">
+        <h1>Development Rubric Analyzer</h1>
+        <p>Retro Edition for Minecraft Development Projects</p>
+        <div class="status-panel">
+          Score: <span id="total">0</span>/28 – <span id="scoreLabel">Good</span>
+        </div>
+        <div id="progressBarContainer">
+          <div id="progressBar"></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn" onclick="resetScores()" aria-label="Reset Scores">Reset</button>
+        <button class="btn" onclick="exportPNG()" id="exportBtn" aria-label="Export as PNG">Export PNG</button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <!-- Rubric Table -->
+      <section class="panel" aria-label="Development Rubric">
+        <h3>Development Rubric</h3>
+        <table class="rubric-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Good (1)</th>
+              <th>Great (2)</th>
+              <th>Excellent (3)</th>
+              <th>Outstanding (4)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Code Stability & Testing</strong></td>
+              <td data-category="0" data-rating="1" tabindex="0">Minimal testing; frequent crashes</td>
+              <td data-category="0" data-rating="2" tabindex="0">Some tests done; occasional issues</td>
+              <td data-category="0" data-rating="3" tabindex="0">Well-tested; minor bugs</td>
+              <td data-category="0" data-rating="4" tabindex="0">Thoroughly tested; robust and error‑free</td>
+            </tr>
+            <tr>
+              <td><strong>Clarity & Conciseness</strong></td>
+              <td data-category="1" data-rating="1" tabindex="0">Overly verbose; unclear instructions</td>
+              <td data-category="1" data-rating="2" tabindex="0">Some clarity issues; too much extraneous detail</td>
+              <td data-category="1" data-rating="3" tabindex="0">Clear instructions; concise documentation</td>
+              <td data-category="1" data-rating="4" tabindex="0">Exceptionally clear; precise and streamlined</td>
+            </tr>
+            <tr>
+              <td><strong>Visual Presentation</strong></td>
+              <td data-category="2" data-rating="1" tabindex="0">Unappealing UI; inconsistent styles</td>
+              <td data-category="2" data-rating="2" tabindex="0">Basic formatting; lacks polish</td>
+              <td data-category="2" data-rating="3" tabindex="0">Well‑designed; appealing color/text choices</td>
+              <td data-category="2" data-rating="4" tabindex="0">Visually outstanding; professional and engaging</td>
+            </tr>
+            <tr>
+              <td><strong>Efficiency & Timeliness</strong></td>
+              <td data-category="3" data-rating="1" tabindex="0">Over‑engineered; delays common</td>
+              <td data-category="3" data-rating="2" tabindex="0">Sometimes off‑schedule; minor delays</td>
+              <td data-category="3" data-rating="3" tabindex="0">Timely delivery; meets deadlines consistently</td>
+              <td data-category="3" data-rating="4" tabindex="0">Efficient and punctual; exceeds expectations</td>
+            </tr>
+            <tr>
+              <td><strong>Production Requirements</strong></td>
+              <td data-category="4" data-rating="1" tabindex="0">Key elements missing; not production‑ready</td>
+              <td data-category="4" data-rating="2" tabindex="0">Mostly complete; some gaps in requirements</td>
+              <td data-category="4" data-rating="3" tabindex="0">Meets requirements; minor adjustments needed</td>
+              <td data-category="4" data-rating="4" tabindex="0">Fully compliant; optimally prepared for production</td>
+            </tr>
+            <tr>
+              <td><strong>Creativity & Problem Solving</strong></td>
+              <td data-category="5" data-rating="1" tabindex="0">Conventional; lacks innovative solutions</td>
+              <td data-category="5" data-rating="2" tabindex="0">Some creative elements; standard approaches</td>
+              <td data-category="5" data-rating="3" tabindex="0">Creative and effective problem‑solving</td>
+              <td data-category="5" data-rating="4" tabindex="0">Exceptionally innovative; smart, elegant solutions</td>
+            </tr>
+            <tr>
+              <td><strong>Documentation & Backups</strong></td>
+              <td data-category="6" data-rating="1" tabindex="0">Poor or missing documentation/backups</td>
+              <td data-category="6" data-rating="2" tabindex="0">Basic documentation; backups not fully reliable</td>
+              <td data-category="6" data-rating="3" tabindex="0">Clear documentation; adequate backups</td>
+              <td data-category="6" data-rating="4" tabindex="0">Comprehensive documentation; robust backup procedures</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Feedback Panel -->
+      <section class="panel" aria-label="Feedback">
+        <h3>Feedback</h3>
+        <div class="feedback-entry">
+          <label for="humanFeedback">Human Feedback</label>
+          <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your feedback here..."></div>
+        </div>
+        <div class="feedback-entry">
+          <label for="aiFeedback">AI Feedback</label>
+          <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter AI feedback here..."></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Reset Overlay for Development Reset Animation -->
+    <div id="resetOverlay"></div>
+
+    <script>
+      /***************************************************
+       * Global Variables & Local Storage Key
+       ***************************************************/
+      let scores = {};
+      const maxPoints = 28; // 7 categories x 4 points each
+      let confettiShown = false;
+      const STORAGE_KEY = "developmentRubricScores";
+
+      /***************************************************
+       * Initialize Rubric on DOM Load & Load Saved Data
+       ***************************************************/
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedScores = localStorage.getItem(STORAGE_KEY);
+        if (savedScores) {
+          scores = JSON.parse(savedScores);
+          for (const [category, rating] of Object.entries(scores)) {
+            const cell = document.querySelector(`td[data-category="${category}"][data-rating="${rating}"]`);
+            if (cell) cell.classList.add("selected");
+          }
+          updateTotal();
+        }
+        document.querySelector(".rubric-table").addEventListener("click", (e) => {
+          const cell = e.target.closest("td[data-rating]");
+          if (cell) selectRating(cell);
+        });
+        document.querySelector(".rubric-table").addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            const cell = e.target.closest("td[data-rating]");
+            if (cell) {
+              e.preventDefault();
+              selectRating(cell);
+            }
+          }
+        });
+      });
+
+      /***************************************************
+       * Rubric Rating Selection & Persistence
+       ***************************************************/
+      function selectRating(cell) {
+        const category = cell.getAttribute("data-category");
+        const rating = parseInt(cell.getAttribute("data-rating"), 10);
+        const row = cell.parentElement;
+        row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
+        cell.classList.add("selected");
+        scores[category] = rating;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+        updateTotal();
+      }
+
+      /***************************************************
+       * Update Total Score & Check
+       ***************************************************/
+      function updateTotal() {
+        const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
+        document.getElementById("total").textContent = total;
+        let label = "";
+        if (total >= 25) {
+          label = "Outstanding";
+          if (!confettiShown) {
+            // Confetti effect (kept for fun, feel free to adjust or remove)
+            confetti({
+              particleCount: 150,
+              startVelocity: 10,
+              spread: 120,
+              gravity: 0.15,
+              decay: 0.96,
+              scalar: 1.5,
+              ticks: 300,
+              colors: ['#33FF33', '#00CC00', '#22DD22']
+            });
+            confettiShown = true;
+          }
+        } else if (total >= 17) {
+          label = "Excellent";
+          confettiShown = false;
+        } else if (total >= 9) {
+          label = "Great";
+          confettiShown = false;
+        } else {
+          label = "Good";
+          confettiShown = false;
+        }
+        document.getElementById("scoreLabel").textContent = label;
+        updateProgressBar(total);
+      }
+
+      /***************************************************
+       * Update Progress Bar Animation
+       ***************************************************/
+      function updateProgressBar(total) {
+        const percentage = (total / maxPoints) * 100;
+        document.getElementById("progressBar").style.width = percentage + "%";
+      }
+
+      /***************************************************
+       * Reset Scores with Development Reset Animation
+       ***************************************************/
+      function resetScores() {
+        const resetOverlay = document.getElementById("resetOverlay");
+        // Increase overlay height to simulate a "system reset" (grey overlay rising up)
+        resetOverlay.style.height = "100%";
+        setTimeout(() => {
+          scores = {};
+          localStorage.removeItem(STORAGE_KEY);
+          document.querySelectorAll(".rubric-table td[data-rating]").forEach(cell => cell.classList.remove("selected"));
+          document.getElementById("total").textContent = "0";
+          document.getElementById("scoreLabel").textContent = "Good";
+          document.getElementById("progressBar").style.width = "0%";
+          confettiShown = false;
+          // Lower the overlay to simulate a reboot finish
+          resetOverlay.style.height = "0";
+        }, 1800);
+      }
+
+      /***************************************************
+       * Export Rubric as PNG using html2canvas
+       ***************************************************/
+      async function exportPNG() {
+        const header = document.querySelector("header");
+        const originalPos = header.style.position;
+        header.style.position = "static";
+        const canvas = await html2canvas(document.body, {
+          scale: 2,
+          useCORS: true
+        });
+        const dataUrl = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = "development-analysis.png";
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        header.style.position = originalPos;
+      }
+
+      /***************************************************
+       * Toggle Dark/Light Theme
+       ***************************************************/
+      function toggleTheme(input) {
+        const htmlEl = document.documentElement;
+        if (input.checked) {
+          htmlEl.setAttribute("data-theme", "retro");
+        } else {
+          htmlEl.setAttribute("data-theme", "light");
+        }
+      }
+    </script>
+  </body>
+</html>
