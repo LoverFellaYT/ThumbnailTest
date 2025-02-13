@@ -19,10 +19,10 @@
       /* ---------------------------- */
       :root {
         --bg-color: #000000;
-        --text-color: #33FF33;
+        --text-color: #888888;        /* Default text in grey */
         --panel-bg: #111111;
-        --border-color: #33FF33;
-        --primary-color: #33FF33; /* Neon green */
+        --border-color: #888888;
+        --primary-color: #33FF33;      /* Neon green when selected */
         --highlight-color: #00CC00;
         --shadow: 0 4px 12px rgba(0,0,0,0.7);
         --transition: all 0.3s ease;
@@ -30,7 +30,9 @@
         --font-family: 'Courier Prime', monospace;
       }
 
-      /* Global Styles */
+      /* ---------------------------- */
+      /* Global Styles                */
+      /* ---------------------------- */
       body {
         margin: 0;
         padding: 0;
@@ -59,19 +61,19 @@
       .header-left h1 {
         margin: 0;
         font-size: 2rem;
-        color: var(--primary-color);
+        color: var(--text-color);
       }
       
       .header-left p {
         margin: 0;
         font-size: 0.9rem;
-        color: #AAAAAA;  /* Grayscale text for instructions */
+        color: var(--text-color);
       }
       
       .status-panel {
         margin-top: 0.5rem;
         font-size: 1.2rem;
-        color: #AAAAAA;  /* Grayscale by default */
+        color: var(--text-color);
       }
       
       .header-right {
@@ -79,9 +81,12 @@
         gap: 0.5rem;
       }
       
+      /* ---------------------------- */
+      /* Buttons (Default Gray)       */
+      /* ---------------------------- */
       .btn {
-        background: var(--primary-color);
-        color: var(--bg-color);
+        background: #444444;  /* Dark gray */
+        color: var(--text-color);
         border: 1px solid var(--border-color);
         padding: 0.5rem 1rem;
         border-radius: var(--radius);
@@ -91,9 +96,24 @@
       }
       
       .btn:hover {
-        background: var(--highlight-color);
+        background: var(--primary-color);
+        color: var(--bg-color);
+        border-color: var(--primary-color);
       }
       
+      #exportBtn {
+        background: #444444;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: bold;
+      }
+      
+      /* ---------------------------- */
+      /* Progress & Status            */
+      /* ---------------------------- */
       #progressBarContainer {
         width: 100%;
         height: 20px;
@@ -110,7 +130,9 @@
         transition: width 0.3s ease;
       }
       
-      /* Rubric Table */
+      /* ---------------------------- */
+      /* Rubric Table                 */
+      /* ---------------------------- */
       .rubric-table {
         width: 100%;
         margin: 2rem auto;
@@ -127,13 +149,12 @@
       
       .rubric-table th {
         background: var(--panel-bg);
-        color: var(--primary-color);
+        color: var(--text-color);
       }
       
       .rubric-table td {
         background: var(--bg-color);
-        /* Default grayscale text for rubric cells */
-        color: #888888;
+        color: var(--text-color); /* Default gray text */
       }
       
       .rubric-table td:hover {
@@ -143,10 +164,12 @@
       
       .rubric-table td.selected {
         background: var(--highlight-color);
-        color: var(--primary-color);
+        color: var(--primary-color); /* Turns neon green when selected */
       }
       
-      /* Legend & Feedback Panels */
+      /* ---------------------------- */
+      /* Legend & Feedback Panels     */
+      /* ---------------------------- */
       .panel {
         background: var(--panel-bg);
         border: 1px solid var(--border-color);
@@ -157,21 +180,12 @@
       
       .panel h3 {
         margin-top: 0;
-        color: var(--primary-color);
+        color: var(--text-color);
       }
       
-      /* Retro Export Button */
-      #exportBtn {
-        background: var(--primary-color);
-        color: var(--bg-color);
-        border: 1px solid var(--border-color);
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: bold;
-      }
-      
-      /* Reset Overlay for Development Reset Animation */
+      /* ---------------------------- */
+      /* Reset Overlay (Retro Reset)  */
+      /* ---------------------------- */
       #resetOverlay {
         position: fixed;
         bottom: 0;
@@ -181,8 +195,21 @@
         background: #444444; /* Grey tone */
         z-index: 3000;
         pointer-events: none;
-        transition: height 1.2s ease-in-out;
-        animation: glitchFlow 2s linear infinite;
+        transition: height 0.8s ease-in-out;
+        animation: glitchFlow 1s linear infinite;
+      }
+      
+      /* Glitch text effect for reset overlay */
+      #resetOverlay::after {
+        content: "RESETTING...";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: var(--font-family);
+        color: var(--primary-color);
+        opacity: 1;
+        animation: glitchText 0.8s steps(2, end) infinite;
       }
       
       @keyframes glitchFlow {
@@ -191,7 +218,16 @@
         100% { background-position-y: 0; }
       }
       
-      /* Achievement Notification (Optional, can be removed if not needed) */
+      @keyframes glitchText {
+        0% { opacity: 1; transform: translate(-50%, -50%) skew(0deg, 0deg); }
+        50% { opacity: 0.5; transform: translate(-50%, -50%) skew(10deg, -10deg); }
+        100% { opacity: 1; transform: translate(-50%, -50%) skew(0deg, 0deg); }
+      }
+      
+      /* ---------------------------- */
+      /* Achievement Notification     */
+      /* (Optional – can remove if not needed) */
+      /* ---------------------------- */
       #achievementNotification {
         position: fixed;
         top: 10px;
@@ -204,6 +240,10 @@
         z-index: 4000;
         opacity: 0;
         transition: right 0.5s ease, opacity 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--text-color);
       }
       
       #achievementNotification.visible {
@@ -217,7 +257,7 @@
       }
       
       /* ---------------------------- */
-      /* Mouse Confetti for "Excellent" Score */
+      /* Mouse Confetti for "Excellent" */
       /* ---------------------------- */
       .mouse-particle {
         position: fixed;
@@ -225,6 +265,7 @@
         opacity: 1;
         pointer-events: none;
         animation: mouseFall 3s forwards;
+        filter: grayscale(1);
       }
       
       @keyframes mouseFall {
@@ -238,7 +279,9 @@
         }
       }
       
-      /* Responsive Adjustments */
+      /* ---------------------------- */
+      /* Responsive Adjustments       */
+      /* ---------------------------- */
       @media (max-width: 768px) {
         header {
           flex-direction: column;
@@ -359,10 +402,10 @@
       </section>
     </main>
 
-    <!-- Reset Overlay for Development Reset Animation -->
+    <!-- Reset Overlay for Retro Reset Animation -->
     <div id="resetOverlay"></div>
 
-    <!-- Mouse Confetti Container (will be generated dynamically) -->
+    <!-- Mouse Confetti Container (for Excellent celebration) -->
     <div id="mouseConfettiContainer"></div>
 
     <script>
@@ -432,7 +475,6 @@
         } else if (total >= 17) {
           label = "Excellent";
           confettiShown = false;
-          // Trigger mouse confetti if not already done
           if (!excellentCelebrated) {
             launchMouseConfetti();
             excellentCelebrated = true;
@@ -457,7 +499,7 @@
       }
 
       /***************************************************
-       * Launch Mouse Confetti Celebration for "Excellent" Score
+       * Launch Mouse Confetti Celebration for "Excellent"
        ***************************************************/
       function launchMouseConfetti() {
         const container = document.getElementById("mouseConfettiContainer");
@@ -465,13 +507,10 @@
         for (let i = 0; i < particleCount; i++) {
           const particle = document.createElement("span");
           particle.className = "mouse-particle";
-          particle.textContent = "🖱"; // Old-school computer mouse emoji
-          // Random horizontal starting position
+          particle.textContent = "🖱";
           particle.style.left = Math.random() * 100 + "vw";
-          // Random delay for animation
           particle.style.animationDelay = Math.random() * 0.5 + "s";
           container.appendChild(particle);
-          // Remove particle after animation completes (3 seconds)
           setTimeout(() => {
             particle.remove();
           }, 3000);
@@ -479,7 +518,7 @@
       }
 
       /***************************************************
-       * Reset Scores with a Retro Reset Animation
+       * Reset Scores with Retro Reset Animation
        ***************************************************/
       function resetScores() {
         const resetOverlay = document.getElementById("resetOverlay");
@@ -494,7 +533,7 @@
           confettiShown = false;
           excellentCelebrated = false;
           resetOverlay.style.height = "0";
-        }, 1800);
+        }, 1200); // Faster reset duration
       }
 
       /***************************************************
