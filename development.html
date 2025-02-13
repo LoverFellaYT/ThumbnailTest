@@ -19,12 +19,12 @@
       /* ---------------------------- */
       :root {
         --bg-color: #000000;
-        --text-color: #888888;        /* Default text in grey */
+        --text-color: #888888;        /* Uniform gray */
         --panel-bg: #111111;
         --border-color: #888888;
         --primary-color: #33FF33;      /* Neon green when selected */
         --highlight-color: #00CC00;
-        --shadow: 0 4px 12px rgba(0,0,0,0.7);
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
         --transition: all 0.3s ease;
         --radius: 4px;
         --font-family: 'Courier Prime', monospace;
@@ -61,7 +61,8 @@
       .header-left h1 {
         margin: 0;
         font-size: 2rem;
-        color: var(--text-color);
+        /* Title now neon green */
+        color: var(--primary-color);
       }
       
       .header-left p {
@@ -82,7 +83,7 @@
       }
       
       /* ---------------------------- */
-      /* Buttons (Default Gray)       */
+      /* Buttons (Default Gray, Hover Green) */
       /* ---------------------------- */
       .btn {
         background: #444444;  /* Dark gray */
@@ -109,6 +110,13 @@
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: bold;
+        transition: var(--transition);
+      }
+      
+      #exportBtn:hover {
+        background: var(--primary-color);
+        color: var(--bg-color);
+        border-color: var(--primary-color);
       }
       
       /* ---------------------------- */
@@ -180,84 +188,50 @@
       
       .panel h3 {
         margin-top: 0;
-        color: var(--text-color);
+        /* Titles now neon green */
+        color: var(--primary-color);
       }
       
       /* ---------------------------- */
-      /* Reset Overlay (Retro Reset)  */
+      /* Reset Overlay (Retro Reboot) */
       /* ---------------------------- */
       #resetOverlay {
         position: fixed;
-        bottom: 0;
+        top: 0;
         left: 0;
         width: 100%;
         height: 0;
-        background: #444444; /* Grey tone */
+        background: rgba(68, 68, 68, 0.8); /* Semi-transparent gray */
         z-index: 3000;
         pointer-events: none;
-        transition: height 0.8s ease-in-out;
-        animation: glitchFlow 1s linear infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease, height 0.5s ease;
+        opacity: 0;
       }
       
-      /* Glitch text effect for reset overlay */
-      #resetOverlay::after {
+      #resetOverlay.visible {
+        height: 100%;
+        opacity: 1;
+      }
+      
+      #resetOverlay::before {
         content: "RESETTING...";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         font-family: var(--font-family);
         color: var(--primary-color);
-        opacity: 1;
-        animation: glitchText 0.8s steps(2, end) infinite;
-      }
-      
-      @keyframes glitchFlow {
-        0% { background-position-y: 0; }
-        50% { background-position-y: 20px; }
-        100% { background-position-y: 0; }
+        font-size: 2rem;
+        animation: glitchText 0.5s steps(2, end) infinite;
       }
       
       @keyframes glitchText {
-        0% { opacity: 1; transform: translate(-50%, -50%) skew(0deg, 0deg); }
-        50% { opacity: 0.5; transform: translate(-50%, -50%) skew(10deg, -10deg); }
-        100% { opacity: 1; transform: translate(-50%, -50%) skew(0deg, 0deg); }
+        0% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
+        50% { opacity: 0.5; transform: translate(2px, -2px) skew(10deg, -10deg); }
+        100% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
       }
       
       /* ---------------------------- */
-      /* Achievement Notification     */
-      /* (Optional – can remove if not needed) */
-      /* ---------------------------- */
-      #achievementNotification {
-        position: fixed;
-        top: 10px;
-        right: -350px;
-        width: 300px;
-        background: var(--panel-bg);
-        border: 2px solid var(--primary-color);
-        border-radius: var(--radius);
-        padding: 1rem;
-        z-index: 4000;
-        opacity: 0;
-        transition: right 0.5s ease, opacity 0.5s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: var(--text-color);
-      }
-      
-      #achievementNotification.visible {
-        right: 20px;
-        opacity: 1;
-      }
-      
-      .achievement-badge {
-        font-size: 3rem;
-        margin-bottom: 0.5rem;
-      }
-      
-      /* ---------------------------- */
-      /* Mouse Confetti for "Excellent" */
+      /* Mouse Confetti for "Excellent" Celebration */
       /* ---------------------------- */
       .mouse-particle {
         position: fixed;
@@ -270,7 +244,7 @@
       
       @keyframes mouseFall {
         0% {
-          transform: translateY(0) rotate(0deg);
+          transform: translateY(-50px) rotate(0deg);
           opacity: 1;
         }
         100% {
@@ -289,13 +263,6 @@
         }
         .rubric-table, .panel {
           width: 100%;
-        }
-        #achievementNotification {
-          width: 90%;
-          right: -100%;
-        }
-        #achievementNotification.visible {
-          right: 5%;
         }
       }
     </style>
@@ -402,10 +369,10 @@
       </section>
     </main>
 
-    <!-- Reset Overlay for Retro Reset Animation -->
+    <!-- Reset Overlay for Retro Reboot Animation -->
     <div id="resetOverlay"></div>
 
-    <!-- Mouse Confetti Container (for Excellent celebration) -->
+    <!-- Mouse Confetti Container for "Excellent" Celebration (Full-Page Falling) -->
     <div id="mouseConfettiContainer"></div>
 
     <script>
@@ -416,8 +383,8 @@
       const maxPoints = 28; // 7 categories x 4 points each
       let confettiShown = false;
       const STORAGE_KEY = "developmentRubricScores";
-
-      // Track if the mouse confetti for "Excellent" has been triggered
+      
+      // Track if the "Excellent" celebration has been triggered
       let excellentCelebrated = false;
 
       /***************************************************
@@ -509,6 +476,8 @@
           particle.className = "mouse-particle";
           particle.textContent = "🖱";
           particle.style.left = Math.random() * 100 + "vw";
+          // Start near the top
+          particle.style.top = "-50px";
           particle.style.animationDelay = Math.random() * 0.5 + "s";
           container.appendChild(particle);
           setTimeout(() => {
@@ -518,11 +487,11 @@
       }
 
       /***************************************************
-       * Reset Scores with Retro Reset Animation
+       * Reset Scores with Retro Reboot Animation
        ***************************************************/
       function resetScores() {
         const resetOverlay = document.getElementById("resetOverlay");
-        resetOverlay.style.height = "100%";
+        resetOverlay.classList.add("visible");
         setTimeout(() => {
           scores = {};
           localStorage.removeItem(STORAGE_KEY);
@@ -532,8 +501,8 @@
           document.getElementById("progressBar").style.width = "0%";
           confettiShown = false;
           excellentCelebrated = false;
-          resetOverlay.style.height = "0";
-        }, 1200); // Faster reset duration
+          resetOverlay.classList.remove("visible");
+        }, 800); // Faster reset duration
       }
 
       /***************************************************
