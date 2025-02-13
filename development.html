@@ -148,7 +148,7 @@
         position: relative;
       }
       
-      /* Tooltip on headers, positioned above to avoid overlapping cells */
+      /* Tooltip on headers (non-interfering) */
       .rubric-table th:hover::after {
         content: attr(data-tooltip);
         position: absolute;
@@ -295,8 +295,8 @@
         <div id="developerBadge">Level: 1 – Novice Developer</div>
       </div>
       <div class="header-right">
-        <button class="btn" onclick="resetScores()" aria-label="Reset Scores">Reset</button>
-        <button class="btn" onclick="exportPNG()" id="exportBtn" aria-label="Export as PNG">Export PNG</button>
+        <button class="btn" id="resetBtn" onclick="resetScores()" aria-label="Reset Scores">Reset</button>
+        <button class="btn" id="exportBtn" onclick="exportPNG()" aria-label="Export as PNG">Export PNG</button>
       </div>
     </header>
     
@@ -434,6 +434,33 @@
         else if (total < 25) { level = 3; title = "Debugging Guru"; }
         else { level = 4; title = "Development Master"; }
         badge.textContent = `Level: ${level} – ${title}`;
+      }
+      
+      /* ----------------------------
+         Attach Click Event Listeners to Rubric Cells 
+      ---------------------------- */
+      function attachRubricListeners() {
+        const cells = document.querySelectorAll(".rubric-table td[data-rating]");
+        cells.forEach(cell => {
+          cell.addEventListener("click", function() {
+            selectRating(this);
+          });
+        });
+      }
+      
+      /* ----------------------------
+         Rubric Rating Selection & Persistence
+      ---------------------------- */
+      function selectRating(cell) {
+        const category = cell.getAttribute("data-category");
+        const rating = parseInt(cell.getAttribute("data-rating"), 10);
+        const row = cell.parentElement;
+        // Remove "selected" from all cells in the row
+        row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
+        cell.classList.add("selected");
+        scores[category] = rating;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+        updateTotal();
       }
       
       /* ----------------------------
@@ -753,6 +780,24 @@
           setTimeout(() => { particle.remove(); }, 3000);
         }
       }
+      
+      /* ----------------------------
+         Attach rubric cell listeners after DOM load
+      ---------------------------- */
+      document.addEventListener("DOMContentLoaded", () => {
+        // Attach click listeners to all cells with data-rating attribute
+        attachRubricListeners();
+        // Load any saved scores
+        const savedScores = localStorage.getItem(STORAGE_KEY);
+        if (savedScores) {
+          scores = JSON.parse(savedScores);
+          for (const [category, rating] of Object.entries(scores)) {
+            const cell = document.querySelector(`td[data-category="${category}"][data-rating="${rating}"]`);
+            if (cell) cell.classList.add("selected");
+          }
+          updateTotal();
+        }
+      });
     </script>
   </body>
 </html>
