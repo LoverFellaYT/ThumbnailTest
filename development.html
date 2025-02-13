@@ -472,9 +472,6 @@
       let gameInterval;
       let currentGame; // "snake" or "tetris"
 
-      // We'll track how many times Tetris is started in the same session:
-      let tetrisAttempt = 0;
-
       /* ---------- Terminal Log Functionality ---------- */
       function logToTerminal(message) {
         const logDiv = document.getElementById("terminalLog");
@@ -558,10 +555,8 @@
           );
           startSnakeGame();
         } else {
-          // Increase Tetris attempt count
-          tetrisAttempt++;
           logToTerminal(
-            `Idle detected: Starting Tetris game (Attempt #${tetrisAttempt}). Use arrow keys to move/rotate.`
+            "Idle detected: Starting Tetris game. Use arrow keys to move/rotate."
           );
           startTetrisGame();
         }
@@ -702,8 +697,8 @@
 
         // Center horizontally, push it further down
         const offset = {
-          x: Math.floor((canvas.width - boardWidth) / 2), 
-          y: 80, // Moved down so it doesn't overlap text
+          x: Math.floor((canvas.width - boardWidth) / 2),
+          y: 120, // push further down for more spacing
         };
 
         // Colors for pieces (index 1-7)
@@ -863,13 +858,11 @@
           ctx.lineWidth = 2;
           ctx.strokeRect(offset.x, offset.y, boardWidth, boardHeight);
 
-          // Score & attempt info near top-left
+          // Score text near top-left
           ctx.font = "18px Courier Prime";
           ctx.fillStyle = "#33FF33";
-          // We'll place text near top-left, above the board
           ctx.fillText("Score: " + player.score, 20, 30);
-          ctx.fillText("Attempt: " + tetrisAttempt, 20, 50);
-          ctx.fillText("Press ESC or SPACE to exit", 20, 70);
+          ctx.fillText("Press ESC or SPACE to exit", 20, 50);
         }
 
         let dropCounter = 0;
