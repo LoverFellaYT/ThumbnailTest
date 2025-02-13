@@ -89,13 +89,11 @@
         font-weight: bold;
         transition: var(--transition);
       }
-
       .btn:hover {
         background: var(--primary-color);
         color: var(--bg-color);
         border-color: var(--primary-color);
       }
-
       #exportBtn {
         background: #444444;
         color: var(--text-color);
@@ -106,7 +104,6 @@
         font-weight: bold;
         transition: var(--transition);
       }
-
       #exportBtn:hover {
         background: var(--primary-color);
         color: var(--bg-color);
@@ -121,7 +118,6 @@
         border-radius: 4px;
         margin-top: 0.5rem;
       }
-
       #progressBar {
         height: 100%;
         width: 0%;
@@ -137,20 +133,17 @@
         border-collapse: collapse;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
       }
-
       .rubric-table th,
       .rubric-table td {
         padding: 0.75rem 1rem;
         border: 1px solid var(--border-color);
         text-align: left;
       }
-
       .rubric-table th {
         background: var(--panel-bg);
         color: var(--text-color);
         position: relative;
       }
-
       /* Header tooltips positioned above without blocking clicks */
       .rubric-table th:hover::after {
         content: attr(data-tooltip);
@@ -166,17 +159,14 @@
         color: var(--text-color);
         pointer-events: none;
       }
-
       .rubric-table td {
         background: var(--bg-color);
         color: var(--text-color); /* Default gray text */
         cursor: pointer;
       }
-
       .rubric-table td:hover {
         background: var(--highlight-color);
       }
-
       .rubric-table td.selected {
         background: var(--highlight-color);
         color: var(--primary-color); /* Selected turns neon green */
@@ -190,7 +180,6 @@
         padding: 1rem;
         margin: 1rem 0;
       }
-
       .panel h3 {
         margin-top: 0;
         color: var(--primary-color);
@@ -335,7 +324,7 @@
               <th data-tooltip="Score 1: Needs improvement.">Good (1)</th>
               <th data-tooltip="Score 2: Adequate, but could be better.">Great (2)</th>
               <th data-tooltip="Score 3: Meets expectations.">Excellent (3)</th>
-              <th data-tooltip="Score 4: Outstanding execution.">Outstanding (4)</th>
+              <th data-tooltip="Score 4: Outstanding (4).">Outstanding</th>
             </tr>
           </thead>
           <tbody>
@@ -516,9 +505,7 @@
         const category = cell.getAttribute("data-category");
         const rating = cell.getAttribute("data-rating");
         const row = cell.parentElement;
-        row
-          .querySelectorAll("td[data-rating]")
-          .forEach((c) => c.classList.remove("selected"));
+        row.querySelectorAll("td[data-rating]").forEach((c) => c.classList.remove("selected"));
         cell.classList.add("selected");
         scores[category] = rating;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
@@ -534,6 +521,7 @@
         }
         clearTimeout(idleTimeout);
         hideGameOverlay();
+        // 30-second idle
         idleTimeout = setTimeout(() => {
           currentGame = Math.random() < 0.5 ? "snake" : "tetris";
           startGameMode(currentGame);
@@ -550,14 +538,10 @@
         overlay.style.display = "block";
 
         if (mode === "snake") {
-          logToTerminal(
-            "Idle detected: Starting Snake game. Use arrow keys to control."
-          );
+          logToTerminal("Idle detected: Starting Snake game. Use arrow keys to control.");
           startSnakeGame();
         } else {
-          logToTerminal(
-            "Idle detected: Starting Tetris game. Use arrow keys to move/rotate."
-          );
+          logToTerminal("Idle detected: Starting Tetris game. Use arrow keys to move/rotate.");
           startTetrisGame();
         }
       }
@@ -573,32 +557,31 @@
         }
       }
 
-      /* ---------- Snake Game Implementation with Box & Length ---------- */
+      /* ---------- Snake Game Implementation (Box & Moved Down) ---------- */
       function startSnakeGame() {
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        // We'll define a bounding box for snake, similar to Tetris
+        // We'll define a bounding box for Snake
         const SNAKE_COLS = 20;
-        const SNAKE_ROWS = 18; 
+        const SNAKE_ROWS = 18;
         const CELL_SIZE = 20;
-        const boxWidth = SNAKE_COLS * CELL_SIZE;  // 400
-        const boxHeight = SNAKE_ROWS * CELL_SIZE; // 360
+        const boxWidth = SNAKE_COLS * CELL_SIZE;   // 400
+        const boxHeight = SNAKE_ROWS * CELL_SIZE;  // 360
 
-        // Offset so it’s horizontally centered, and further down
+        // Move down to y=100 so there's space above
         const offset = {
-          x: Math.floor((canvas.width - boxWidth) / 2), // center horizontally
-          y: 70, // push it down
+          x: Math.floor((canvas.width - boxWidth) / 2), 
+          y: 100
         };
 
-        // White outline around the snake’s playable field
+        // Draw bounding box
         function drawBoundingBox() {
           ctx.strokeStyle = "#ffffff";
           ctx.lineWidth = 2;
           ctx.strokeRect(offset.x, offset.y, boxWidth, boxHeight);
         }
 
-        // For random positions, we do 0..SNAKE_COLS-1, 0..SNAKE_ROWS-1
         let snake = [
           {
             x: Math.floor(SNAKE_COLS / 2),
@@ -611,8 +594,7 @@
           y: Math.floor(Math.random() * SNAKE_ROWS),
         };
 
-        // Wrap around edges or kill the snake? 
-        // We'll keep the wrap-around logic from before:
+        // Wrap around edges
         function wrapCoordinates(pos) {
           pos.x = (pos.x + SNAKE_COLS) % SNAKE_COLS;
           pos.y = (pos.y + SNAKE_ROWS) % SNAKE_ROWS;
@@ -643,7 +625,7 @@
           const foodY = offset.y + food.y * CELL_SIZE;
           ctx.fillRect(foodX, foodY, CELL_SIZE - 2, CELL_SIZE - 2);
 
-          // Display length & instructions
+          // Display snake length & instructions
           ctx.fillStyle = "#fff";
           ctx.font = "18px Courier Prime";
           ctx.fillText("Length: " + snake.length, 20, 30);
@@ -655,27 +637,21 @@
             x: snake[0].x + direction.x, 
             y: snake[0].y + direction.y 
           };
-
-          // Wrap around edges
           wrapCoordinates(head);
-
-          // Insert new head
           snake.unshift(head);
 
           // If we eat food
           if (head.x === food.x && head.y === food.y) {
-            // Move food
             food = {
               x: Math.floor(Math.random() * SNAKE_COLS),
               y: Math.floor(Math.random() * SNAKE_ROWS),
             };
             logToTerminal("Snake: Food consumed. New food generated.");
           } else {
-            // Remove tail
-            snake.pop();
+            snake.pop(); // remove tail
           }
 
-          // Check collision with self
+          // Collision with self
           for (let i = 1; i < snake.length; i++) {
             if (snake[i].x === head.x && snake[i].y === head.y) {
               logToTerminal("Snake: Collision with self. Game over.");
@@ -712,12 +688,262 @@
         gameInterval = setInterval(update, 150);
       }
 
-      /* ---------- Tetris Game Implementation (unchanged) ---------- */
+      /* ---------- Tetris Game Implementation (offset.y=70) ---------- */
       function startTetrisGame() {
-        // (Same Tetris code as before; omitted here for brevity 
-        // but in your final code, keep your working Tetris function.)
-        // ...
-        logToTerminal("Starting Tetris (unchanged)...");
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // 20 px cell, 10 columns, 20 rows => 200 x 400
+        const CELL_SIZE = 20;
+        const COLS = 10;
+        const ROWS = 20;
+        const boardWidth = CELL_SIZE * COLS;   // 200
+        const boardHeight = CELL_SIZE * ROWS;  // 400
+
+        // Move Tetris board down to 70
+        const offset = {
+          x: Math.floor((canvas.width - boardWidth) / 2),
+          y: 70
+        };
+
+        const colors = [
+          null,
+          "#33FF33", // T
+          "#FF33FF", // O
+          "#33FFFF", // L
+          "#FFFF33", // J
+          "#FF9933", // I
+          "#FF3333", // S
+          "#9933FF"  // Z
+        ];
+
+        function createMatrix(w, h) {
+          const matrix = [];
+          for (let i = 0; i < h; i++) {
+            matrix.push(new Array(w).fill(0));
+          }
+          return matrix;
+        }
+
+        function createPiece(type) {
+          if (type === "T") {
+            return [
+              [0, 1, 0],
+              [1, 1, 1],
+              [0, 0, 0],
+            ];
+          } else if (type === "O") {
+            return [
+              [2, 2],
+              [2, 2],
+            ];
+          } else if (type === "L") {
+            return [
+              [0, 3, 0],
+              [0, 3, 0],
+              [0, 3, 3],
+            ];
+          } else if (type === "J") {
+            return [
+              [0, 4, 0],
+              [0, 4, 0],
+              [4, 4, 0],
+            ];
+          } else if (type === "I") {
+            return [
+              [0, 5, 0, 0],
+              [0, 5, 0, 0],
+              [0, 5, 0, 0],
+              [0, 5, 0, 0],
+            ];
+          } else if (type === "S") {
+            return [
+              [0, 6, 6],
+              [6, 6, 0],
+              [0, 0, 0],
+            ];
+          } else if (type === "Z") {
+            return [
+              [7, 7, 0],
+              [0, 7, 7],
+              [0, 0, 0],
+            ];
+          }
+        }
+
+        function rotate(matrix, dir) {
+          for (let y = 0; y < matrix.length; ++y) {
+            for (let x = 0; x < y; ++x) {
+              [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+            }
+          }
+          if (dir > 0) {
+            matrix.forEach((row) => row.reverse());
+          } else {
+            matrix.reverse();
+          }
+          return matrix;
+        }
+
+        function merge(arena, player) {
+          player.matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+              if (value !== 0) {
+                arena[y + player.pos.y][x + player.pos.x] = value;
+              }
+            });
+          });
+        }
+
+        function collide(arena, player) {
+          const m = player.matrix;
+          const o = player.pos;
+          for (let y = 0; y < m.length; ++y) {
+            for (let x = 0; x < m[y].length; ++x) {
+              if (
+                m[y][x] !== 0 &&
+                (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0
+              ) {
+                return true;
+              }
+            }
+          }
+          return false;
+        }
+
+        function arenaSweep() {
+          let rowCount = 1;
+          outer: for (let y = arena.length - 1; y >= 0; y--) {
+            for (let x = 0; x < arena[y].length; x++) {
+              if (arena[y][x] === 0) {
+                continue outer;
+              }
+            }
+            const row = arena.splice(y, 1)[0].fill(0);
+            arena.unshift(row);
+            y++;
+            player.score += rowCount * 10;
+            rowCount *= 2;
+          }
+        }
+
+        function drawMatrix(matrix, offsetPos) {
+          matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+              if (value !== 0) {
+                ctx.fillStyle = colors[value];
+                ctx.fillRect(
+                  offsetPos.x + x * CELL_SIZE,
+                  offsetPos.y + y * CELL_SIZE,
+                  CELL_SIZE - 1,
+                  CELL_SIZE - 1
+                );
+              }
+            });
+          });
+        }
+
+        function draw() {
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Draw arena (board)
+          drawMatrix(arena, offset);
+
+          // Draw current piece
+          drawMatrix(player.matrix, {
+            x: offset.x + player.pos.x * CELL_SIZE,
+            y: offset.y + player.pos.y * CELL_SIZE,
+          });
+
+          // White border around Tetris board
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(offset.x, offset.y, boardWidth, boardHeight);
+
+          // Score text near top-left
+          ctx.font = "18px Courier Prime";
+          ctx.fillStyle = "#33FF33";
+          ctx.fillText("Score: " + player.score, 20, 30);
+          ctx.fillText("Press ESC or SPACE to exit", 20, 50);
+        }
+
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let lastTime = 0;
+        function update(time = 0) {
+          const deltaTime = time - lastTime;
+          lastTime = time;
+          dropCounter += deltaTime;
+          if (dropCounter > dropInterval) {
+            playerDrop();
+          }
+          draw();
+          requestAnimationFrame(update);
+        }
+
+        function playerDrop() {
+          player.pos.y++;
+          if (collide(arena, player)) {
+            player.pos.y--;
+            merge(arena, player);
+            playerReset();
+            arenaSweep();
+          }
+          dropCounter = 0;
+        }
+
+        function playerMove(dir) {
+          player.pos.x += dir;
+          if (collide(arena, player)) {
+            player.pos.x -= dir;
+          }
+        }
+
+        function playerReset() {
+          const pieces = "TJLOSZI";
+          player.matrix = createPiece(
+            pieces[Math.floor(Math.random() * pieces.length)]
+          );
+          player.pos.y = 0;
+          player.pos.x =
+            Math.floor(arena[0].length / 2) -
+            Math.floor(player.matrix[0].length / 2);
+          if (collide(arena, player)) {
+            // Game over: clear arena and reset score
+            arena.forEach((row) => row.fill(0));
+            player.score = 0;
+          }
+        }
+
+        const arena = createMatrix(COLS, ROWS);
+        const player = {
+          pos: { x: 0, y: 0 },
+          matrix: null,
+          score: 0,
+        };
+        playerReset();
+        update();
+
+        function tetrisKeyDown(event) {
+          if (document.getElementById("gameOverlay").style.display === "block") {
+            if (event.key === "ArrowLeft") {
+              playerMove(-1);
+            } else if (event.key === "ArrowRight") {
+              playerMove(1);
+            } else if (event.key === "ArrowDown") {
+              playerDrop();
+            } else if (event.key === "ArrowUp") {
+              player.matrix = rotate(player.matrix, 1);
+              if (collide(arena, player)) {
+                player.matrix = rotate(player.matrix, -1);
+              }
+            } else if (event.key === "Escape" || event.key === " ") {
+              hideGameOverlay();
+            }
+          }
+        }
+        document.addEventListener("keydown", tetrisKeyDown);
       }
 
       /* ---------- Reset Scores with Retro Reset Animation ---------- */
