@@ -7,24 +7,27 @@
     <!-- Retro Monospaced Font (Courier Prime) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- html2canvas for PNG export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+
     <style>
       /* ---------- Retro Theme Variables ---------- */
       :root {
         --bg-color: #000000;
-        --text-color: #888888;        /* Default gray */
+        --text-color: #888888; /* Default gray */
         --panel-bg: #111111;
         --border-color: #888888;
-        --primary-color: #33FF33;      /* Neon green when active */
+        --primary-color: #33FF33; /* Neon green when active */
         --highlight-color: #00CC00;
         --transition: all 0.3s ease;
         --radius: 4px;
         --font-family: 'Courier Prime', monospace;
       }
-      
+
       /* ---------- Global Styles ---------- */
       body {
         margin: 0;
@@ -34,7 +37,7 @@
         color: var(--text-color);
         line-height: 1.6;
       }
-      
+
       header {
         background: var(--panel-bg);
         padding: 1rem 2rem;
@@ -44,36 +47,37 @@
         justify-content: space-between;
         align-items: center;
       }
-      
+
       .header-left {
         display: flex;
         flex-direction: column;
         gap: 0.3rem;
       }
-      
+
       .header-left h1 {
         margin: 0;
         font-size: 2rem;
         color: var(--primary-color);
       }
-      
+
       .header-left p {
         margin: 0;
         font-size: 0.9rem;
         color: var(--text-color);
       }
-      
-      .status-panel, #developerBadge {
+
+      .status-panel,
+      #developerBadge {
         margin-top: 0.5rem;
         font-size: 1.2rem;
         color: var(--text-color);
       }
-      
+
       .header-right {
         display: flex;
         gap: 0.5rem;
       }
-      
+
       /* ---------- Buttons (Default Gray) ---------- */
       .btn {
         background: #444444;
@@ -85,13 +89,13 @@
         font-weight: bold;
         transition: var(--transition);
       }
-      
+
       .btn:hover {
         background: var(--primary-color);
         color: var(--bg-color);
         border-color: var(--primary-color);
       }
-      
+
       #exportBtn {
         background: #444444;
         color: var(--text-color);
@@ -102,13 +106,13 @@
         font-weight: bold;
         transition: var(--transition);
       }
-      
+
       #exportBtn:hover {
         background: var(--primary-color);
         color: var(--bg-color);
         border-color: var(--primary-color);
       }
-      
+
       /* ---------- Progress & Status ---------- */
       #progressBarContainer {
         width: 100%;
@@ -117,7 +121,7 @@
         border-radius: 4px;
         margin-top: 0.5rem;
       }
-      
+
       #progressBar {
         height: 100%;
         width: 0%;
@@ -125,28 +129,28 @@
         border-radius: 4px;
         transition: width 0.3s ease;
       }
-      
+
       /* ---------- Rubric Table ---------- */
       .rubric-table {
         width: 100%;
         margin: 2rem auto;
         border-collapse: collapse;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
       }
-      
+
       .rubric-table th,
       .rubric-table td {
         padding: 0.75rem 1rem;
         border: 1px solid var(--border-color);
         text-align: left;
       }
-      
+
       .rubric-table th {
         background: var(--panel-bg);
         color: var(--text-color);
         position: relative;
       }
-      
+
       /* Header tooltips positioned above without blocking clicks */
       .rubric-table th:hover::after {
         content: attr(data-tooltip);
@@ -162,22 +166,22 @@
         color: var(--text-color);
         pointer-events: none;
       }
-      
+
       .rubric-table td {
         background: var(--bg-color);
         color: var(--text-color); /* Default gray text */
         cursor: pointer;
       }
-      
+
       .rubric-table td:hover {
         background: var(--highlight-color);
       }
-      
+
       .rubric-table td.selected {
         background: var(--highlight-color);
         color: var(--primary-color); /* Selected turns neon green */
       }
-      
+
       /* ---------- Legend & Feedback Panels ---------- */
       .panel {
         background: var(--panel-bg);
@@ -186,12 +190,12 @@
         padding: 1rem;
         margin: 1rem 0;
       }
-      
+
       .panel h3 {
         margin-top: 0;
         color: var(--primary-color);
       }
-      
+
       /* ---------- Terminal Log ---------- */
       #terminalLog {
         background: var(--panel-bg);
@@ -202,7 +206,7 @@
         height: 100px;
         overflow-y: auto;
       }
-      
+
       /* ---------- Reset Overlay (Retro DOS Reboot Effect) ---------- */
       #resetOverlay {
         position: fixed;
@@ -231,11 +235,20 @@
         animation: glitchText 0.4s steps(2, end) infinite;
       }
       @keyframes glitchText {
-        0% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
-        50% { opacity: 0.5; transform: translate(2px, -2px) skew(10deg, -10deg); }
-        100% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) skew(0deg, 0deg);
+        }
+        50% {
+          opacity: 0.5;
+          transform: translate(2px, -2px) skew(10deg, -10deg);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(0, 0) skew(0deg, 0deg);
+        }
       }
-      
+
       /* ---------- Mouse Confetti (Full-Page Falling from Top) ---------- */
       .mouse-particle {
         position: fixed;
@@ -246,10 +259,16 @@
         filter: grayscale(1);
       }
       @keyframes mouseFall {
-        0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        0% {
+          transform: translateY(-50px) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
       }
-      
+
       /* ---------- Game Overlay for Idle Mini-Game ---------- */
       #gameOverlay {
         position: fixed;
@@ -266,14 +285,15 @@
         margin: 0 auto;
         background: var(--panel-bg);
       }
-      
+
       /* ---------- Responsive ---------- */
       @media (max-width: 768px) {
         header {
           flex-direction: column;
           align-items: flex-start;
         }
-        .rubric-table, .panel {
+        .rubric-table,
+        .panel {
           width: 100%;
         }
       }
@@ -294,11 +314,15 @@
         <div id="developerBadge">Level: 1 – Novice Developer</div>
       </div>
       <div class="header-right">
-        <button class="btn" id="resetBtn" onclick="resetScores()" aria-label="Reset Scores">Reset</button>
-        <button class="btn" id="exportBtn" onclick="exportPNG()" aria-label="Export as PNG">Export PNG</button>
+        <button class="btn" id="resetBtn" onclick="resetScores()" aria-label="Reset Scores">
+          Reset
+        </button>
+        <button class="btn" id="exportBtn" onclick="exportPNG()" aria-label="Export as PNG">
+          Export PNG
+        </button>
       </div>
     </header>
-    
+
     <!-- MAIN CONTENT -->
     <main>
       <!-- Rubric Table Panel -->
@@ -317,88 +341,126 @@
           <tbody>
             <tr>
               <td><strong>Code Stability & Testing</strong></td>
-              <td data-category="0" data-rating="1" tabindex="0">Minimal testing; frequent crashes</td>
-              <td data-category="0" data-rating="2" tabindex="0">Some tests done; occasional issues</td>
-              <td data-category="0" data-rating="3" tabindex="0">Well-tested; minor bugs</td>
-              <td data-category="0" data-rating="4" tabindex="0">Thoroughly tested; robust and error‑free</td>
+              <td data-category="0" data-rating="1" tabindex="0"
+                >Minimal testing; frequent crashes</td>
+              <td data-category="0" data-rating="2" tabindex="0"
+                >Some tests done; occasional issues</td>
+              <td data-category="0" data-rating="3" tabindex="0"
+                >Well-tested; minor bugs</td>
+              <td data-category="0" data-rating="4" tabindex="0"
+                >Thoroughly tested; robust and error‑free</td>
             </tr>
             <tr>
               <td><strong>Clarity & Conciseness</strong></td>
-              <td data-category="1" data-rating="1" tabindex="0">Overly verbose; unclear instructions</td>
-              <td data-category="1" data-rating="2" tabindex="0">Some clarity issues; too much extraneous detail</td>
-              <td data-category="1" data-rating="3" tabindex="0">Clear instructions; concise documentation</td>
-              <td data-category="1" data-rating="4" tabindex="0">Exceptionally clear; precise and streamlined</td>
+              <td data-category="1" data-rating="1" tabindex="0"
+                >Overly verbose; unclear instructions</td>
+              <td data-category="1" data-rating="2" tabindex="0"
+                >Some clarity issues; too much extraneous detail</td>
+              <td data-category="1" data-rating="3" tabindex="0"
+                >Clear instructions; concise documentation</td>
+              <td data-category="1" data-rating="4" tabindex="0"
+                >Exceptionally clear; precise and streamlined</td>
             </tr>
             <tr>
               <td><strong>Visual Presentation</strong></td>
-              <td data-category="2" data-rating="1" tabindex="0">Unappealing UI; inconsistent styles</td>
-              <td data-category="2" data-rating="2" tabindex="0">Basic formatting; lacks polish</td>
-              <td data-category="2" data-rating="3" tabindex="0">Well‑designed; appealing color/text choices</td>
-              <td data-category="2" data-rating="4" tabindex="0">Visually outstanding; professional and engaging</td>
+              <td data-category="2" data-rating="1" tabindex="0"
+                >Unappealing UI; inconsistent styles</td>
+              <td data-category="2" data-rating="2" tabindex="0"
+                >Basic formatting; lacks polish</td>
+              <td data-category="2" data-rating="3" tabindex="0"
+                >Well‑designed; appealing color/text choices</td>
+              <td data-category="2" data-rating="4" tabindex="0"
+                >Visually outstanding; professional and engaging</td>
             </tr>
             <tr>
               <td><strong>Efficiency & Timeliness</strong></td>
-              <td data-category="3" data-rating="1" tabindex="0">Over‑engineered; delays common</td>
-              <td data-category="3" data-rating="2" tabindex="0">Sometimes off‑schedule; minor delays</td>
-              <td data-category="3" data-rating="3" tabindex="0">Timely delivery; meets deadlines consistently</td>
-              <td data-category="3" data-rating="4" tabindex="0">Efficient and punctual; exceeds expectations</td>
+              <td data-category="3" data-rating="1" tabindex="0"
+                >Over‑engineered; delays common</td>
+              <td data-category="3" data-rating="2" tabindex="0"
+                >Sometimes off‑schedule; minor delays</td>
+              <td data-category="3" data-rating="3" tabindex="0"
+                >Timely delivery; meets deadlines consistently</td>
+              <td data-category="3" data-rating="4" tabindex="0"
+                >Efficient and punctual; exceeds expectations</td>
             </tr>
             <tr>
               <td><strong>Production Requirements</strong></td>
-              <td data-category="4" data-rating="1" tabindex="0">Key elements missing; not production‑ready</td>
-              <td data-category="4" data-rating="2" tabindex="0">Mostly complete; some gaps in requirements</td>
-              <td data-category="4" data-rating="3" tabindex="0">Meets requirements; minor adjustments needed</td>
-              <td data-category="4" data-rating="4" tabindex="0">Fully compliant; optimally prepared for production</td>
+              <td data-category="4" data-rating="1" tabindex="0"
+                >Key elements missing; not production‑ready</td>
+              <td data-category="4" data-rating="2" tabindex="0"
+                >Mostly complete; some gaps in requirements</td>
+              <td data-category="4" data-rating="3" tabindex="0"
+                >Meets requirements; minor adjustments needed</td>
+              <td data-category="4" data-rating="4" tabindex="0"
+                >Fully compliant; optimally prepared for production</td>
             </tr>
             <tr>
               <td><strong>Creativity & Problem Solving</strong></td>
-              <td data-category="5" data-rating="1" tabindex="0">Conventional; lacks innovative solutions</td>
-              <td data-category="5" data-rating="2" tabindex="0">Some creative elements; standard approaches</td>
-              <td data-category="5" data-rating="3" tabindex="0">Creative and effective problem‑solving</td>
-              <td data-category="5" data-rating="4" tabindex="0">Exceptionally innovative; smart, elegant solutions</td>
+              <td data-category="5" data-rating="1" tabindex="0"
+                >Conventional; lacks innovative solutions</td>
+              <td data-category="5" data-rating="2" tabindex="0"
+                >Some creative elements; standard approaches</td>
+              <td data-category="5" data-rating="3" tabindex="0"
+                >Creative and effective problem‑solving</td>
+              <td data-category="5" data-rating="4" tabindex="0"
+                >Exceptionally innovative; smart, elegant solutions</td>
             </tr>
             <tr>
               <td><strong>Documentation & Backups</strong></td>
-              <td data-category="6" data-rating="1" tabindex="0">Poor or missing documentation/backups</td>
-              <td data-category="6" data-rating="2" tabindex="0">Basic documentation; backups not fully reliable</td>
-              <td data-category="6" data-rating="3" tabindex="0">Clear documentation; adequate backups</td>
-              <td data-category="6" data-rating="4" tabindex="0">Comprehensive documentation; robust backup procedures</td>
+              <td data-category="6" data-rating="1" tabindex="0"
+                >Poor or missing documentation/backups</td>
+              <td data-category="6" data-rating="2" tabindex="0"
+                >Basic documentation; backups not fully reliable</td>
+              <td data-category="6" data-rating="3" tabindex="0"
+                >Clear documentation; adequate backups</td>
+              <td data-category="6" data-rating="4" tabindex="0"
+                >Comprehensive documentation; robust backup procedures</td>
             </tr>
           </tbody>
         </table>
       </section>
-      
+
       <!-- Terminal Log Panel -->
       <section class="panel" aria-label="Terminal Log">
         <h3>Terminal Log</h3>
         <div id="terminalLog"></div>
       </section>
-      
+
       <!-- Feedback Panel -->
       <section class="panel" aria-label="Feedback">
         <h3>Feedback</h3>
         <div class="feedback-entry">
           <label for="humanFeedback">Human Feedback</label>
-          <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your feedback here..."></div>
+          <div
+            id="humanFeedback"
+            class="feedback-input"
+            contenteditable="true"
+            data-placeholder="Enter your feedback here..."
+          ></div>
         </div>
         <div class="feedback-entry">
           <label for="aiFeedback">AI Feedback</label>
-          <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter AI feedback here..."></div>
+          <div
+            id="aiFeedback"
+            class="feedback-input"
+            contenteditable="true"
+            data-placeholder="Enter AI feedback here..."
+          ></div>
         </div>
       </section>
     </main>
-    
+
     <!-- Reset Overlay for Retro Reboot Animation -->
     <div id="resetOverlay"></div>
-    
+
     <!-- Game Overlay for Idle Mini-Game -->
     <div id="gameOverlay">
       <canvas id="gameCanvas" width="640" height="480"></canvas>
     </div>
-    
+
     <!-- Mouse Confetti Container for "Excellent" Celebration -->
     <div id="mouseConfettiContainer"></div>
-    
+
     <script>
       /* ---------- Global Variables & Idle/Game Setup ---------- */
       let scores = {};
@@ -409,7 +471,7 @@
       let idleTimeout;
       let gameInterval;
       let currentGame; // "snake" or "tetris"
-      
+
       /* ---------- Terminal Log Functionality ---------- */
       function logToTerminal(message) {
         const logDiv = document.getElementById("terminalLog");
@@ -417,40 +479,52 @@
         logDiv.innerHTML += `&gt;&gt; [${timeStamp}] ${message}<br>`;
         logDiv.scrollTop = logDiv.scrollHeight;
       }
-      
+
       /* ---------- Developer Badge Level-Up ---------- */
       function updateDeveloperBadge(total) {
         const badge = document.getElementById("developerBadge");
-        let level = 1, title = "Novice Developer";
-        if (total < 9) { level = 1; title = "Novice Developer"; }
-        else if (total < 17) { level = 2; title = "Code Wrangler"; }
-        else if (total < 25) { level = 3; title = "Debugging Guru"; }
-        else { level = 4; title = "Development Master"; }
+        let level = 1,
+          title = "Novice Developer";
+        if (total < 9) {
+          level = 1;
+          title = "Novice Developer";
+        } else if (total < 17) {
+          level = 2;
+          title = "Code Wrangler";
+        } else if (total < 25) {
+          level = 3;
+          title = "Debugging Guru";
+        } else {
+          level = 4;
+          title = "Development Master";
+        }
         badge.textContent = `Level: ${level} – ${title}`;
       }
-      
+
       /* ---------- Attach Event Listeners to Rubric Cells ---------- */
       function attachRubricListeners() {
         const cells = document.querySelectorAll(".rubric-table td[data-rating]");
-        cells.forEach(cell => {
+        cells.forEach((cell) => {
           cell.addEventListener("click", () => {
             selectRating(cell);
           });
         });
       }
-      
+
       /* ---------- Rubric Rating Selection & Persistence ---------- */
       function selectRating(cell) {
         const category = cell.getAttribute("data-category");
         const rating = cell.getAttribute("data-rating");
         const row = cell.parentElement;
-        row.querySelectorAll("td[data-rating]").forEach(c => c.classList.remove("selected"));
+        row
+          .querySelectorAll("td[data-rating]")
+          .forEach((c) => c.classList.remove("selected"));
         cell.classList.add("selected");
         scores[category] = rating;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
         updateTotal();
       }
-      
+
       /* ---------- Idle Detection & Game Overlay ---------- */
       function resetIdleTimer() {
         // If game overlay is active, do not reset
@@ -470,19 +544,23 @@
       document.addEventListener("click", resetIdleTimer);
       document.addEventListener("touchstart", resetIdleTimer);
       resetIdleTimer();
-      
+
       function startGameMode(mode) {
         const overlay = document.getElementById("gameOverlay");
         overlay.style.display = "block";
         if (mode === "snake") {
-          logToTerminal("Idle detected: Starting Snake game. Use arrow keys to control.");
+          logToTerminal(
+            "Idle detected: Starting Snake game. Use arrow keys to control."
+          );
           startSnakeGame();
         } else {
-          logToTerminal("Idle detected: Starting Tetris game. Use arrow keys to move/rotate.");
+          logToTerminal(
+            "Idle detected: Starting Tetris game. Use arrow keys to move/rotate."
+          );
           startTetrisGame();
         }
       }
-      
+
       function hideGameOverlay() {
         clearInterval(gameInterval);
         const overlay = document.getElementById("gameOverlay");
@@ -493,7 +571,7 @@
           ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
       }
-      
+
       /* ---------- Snake Game Implementation ---------- */
       function startSnakeGame() {
         const canvas = document.getElementById("gameCanvas");
@@ -501,32 +579,63 @@
         const gridSize = 20;
         const tileCountX = canvas.width / gridSize;
         const tileCountY = canvas.height / gridSize;
-        let snake = [{ x: Math.floor(tileCountX/2), y: Math.floor(tileCountY/2) }];
+        let snake = [
+          {
+            x: Math.floor(tileCountX / 2),
+            y: Math.floor(tileCountY / 2),
+          },
+        ];
         let direction = { x: 0, y: 0 };
-        let food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
-        
+        let food = {
+          x: Math.floor(Math.random() * tileCountX),
+          y: Math.floor(Math.random() * tileCountY),
+        };
+
         function draw() {
           ctx.fillStyle = "#000000";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-          snake.forEach(cell => {
-            ctx.fillRect(cell.x * gridSize, cell.y * gridSize, gridSize-2, gridSize-2);
+          ctx.fillStyle = getComputedStyle(
+            document.documentElement
+          ).getPropertyValue("--primary-color").trim();
+          snake.forEach((cell) => {
+            ctx.fillRect(
+              cell.x * gridSize,
+              cell.y * gridSize,
+              gridSize - 2,
+              gridSize - 2
+            );
           });
           ctx.fillStyle = "#FF3333";
-          ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize-2, gridSize-2);
+          ctx.fillRect(
+            food.x * gridSize,
+            food.y * gridSize,
+            gridSize - 2,
+            gridSize - 2
+          );
         }
-        
+
         function update() {
-          const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+          const head = {
+            x: snake[0].x + direction.x,
+            y: snake[0].y + direction.y,
+          };
+          // Wrap around edges
           head.x = (head.x + tileCountX) % tileCountX;
           head.y = (head.y + tileCountY) % tileCountY;
           snake.unshift(head);
+
+          // If we eat food
           if (head.x === food.x && head.y === food.y) {
-            food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
+            food = {
+              x: Math.floor(Math.random() * tileCountX),
+              y: Math.floor(Math.random() * tileCountY),
+            };
             logToTerminal("Snake: Food consumed. New food generated.");
           } else {
             snake.pop();
           }
+
+          // Collision with self
           for (let i = 1; i < snake.length; i++) {
             if (snake[i].x === head.x && snake[i].y === head.y) {
               logToTerminal("Snake: Collision detected. Game over.");
@@ -536,41 +645,64 @@
           }
           draw();
         }
-        
+
         function snakeKeyDown(e) {
-          switch(e.key) {
-            case "ArrowUp": if (direction.y !== 1) direction = { x: 0, y: -1 }; break;
-            case "ArrowDown": if (direction.y !== -1) direction = { x: 0, y: 1 }; break;
-            case "ArrowLeft": if (direction.x !== 1) direction = { x: -1, y: 0 }; break;
-            case "ArrowRight": if (direction.x !== -1) direction = { x: 1, y: 0 }; break;
-            case "Escape": hideGameOverlay(); break;
+          switch (e.key) {
+            case "ArrowUp":
+              if (direction.y !== 1) direction = { x: 0, y: -1 };
+              break;
+            case "ArrowDown":
+              if (direction.y !== -1) direction = { x: 0, y: 1 };
+              break;
+            case "ArrowLeft":
+              if (direction.x !== 1) direction = { x: -1, y: 0 };
+              break;
+            case "ArrowRight":
+              if (direction.x !== -1) direction = { x: 1, y: 0 };
+              break;
+            case "Escape":
+            case " ":
+              hideGameOverlay();
+              break;
           }
         }
-        
-        // Attach keydown listener only for the snake game so it doesn't trigger global idle reset
+
         document.addEventListener("keydown", snakeKeyDown);
         gameInterval = setInterval(update, 150);
       }
-      
-      /* ---------- Tetris Game Implementation (Simplified) ---------- */
+
+      // Tetris Game Implementation (Refined)
       function startTetrisGame() {
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        const gridSize = 30;
-        const cols = 10, rows = 20;
-        let arena = createMatrix(cols, rows);
-        let player = { pos: { x: Math.floor(cols/2)-1, y: 0 }, matrix: createPiece() };
-        
-        function tetrisKeyDown(e) {
-          if (e.key === "ArrowLeft") { player.pos.x--; }
-          else if (e.key === "ArrowRight") { player.pos.x++; }
-          else if (e.key === "ArrowDown") { player.pos.y++; }
-          else if (e.key === "ArrowUp") { player.matrix = rotate(player.matrix, 1); }
-          else if (e.key === "Escape") { hideGameOverlay(); }
-        }
-        
-        document.addEventListener("keydown", tetrisKeyDown);
-        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Tetris board dimensions
+        const COLS = 10;
+        const ROWS = 20;
+        // Calculate grid size so the board is centered
+        const grid = Math.floor(canvas.width / COLS);
+        const boardWidth = grid * COLS;
+        const boardHeight = grid * ROWS;
+        const offset = {
+          x: Math.floor((canvas.width - boardWidth) / 2),
+          y: Math.floor((canvas.height - boardHeight) / 2),
+        };
+
+        // Colors for pieces (index 1-7)
+        const colors = [
+          null,
+          "#33FF33", // T
+          "#FF33FF", // O
+          "#33FFFF", // L
+          "#FFFF33", // J
+          "#FF9933", // I
+          "#FF3333", // S
+          "#9933FF", // Z
+        ];
+
+        // Create a matrix for the arena (board)
         function createMatrix(w, h) {
           const matrix = [];
           for (let i = 0; i < h; i++) {
@@ -578,44 +710,70 @@
           }
           return matrix;
         }
-        
-        function createPiece() {
-          const pieces = [
-            [[1,1],[1,1]], // O-piece
-            [[0,1,0],[1,1,1]], // T-piece
-            [[1,1,0],[0,1,1]]  // S-piece
-          ];
-          return pieces[Math.floor(Math.random() * pieces.length)];
+
+        // Create a Tetris piece from type letter
+        function createPiece(type) {
+          if (type === "T") {
+            return [
+              [0, 1, 0],
+              [1, 1, 1],
+              [0, 0, 0],
+            ];
+          } else if (type === "O") {
+            return [
+              [2, 2],
+              [2, 2],
+            ];
+          } else if (type === "L") {
+            return [
+              [0, 3, 0],
+              [0, 3, 0],
+              [0, 3, 3],
+            ];
+          } else if (type === "J") {
+            return [
+              [0, 4, 0],
+              [0, 4, 0],
+              [4, 4, 0],
+            ];
+          } else if (type === "I") {
+            return [
+              [0, 5, 0, 0],
+              [0, 5, 0, 0],
+              [0, 5, 0, 0],
+              [0, 5, 0, 0],
+            ];
+          } else if (type === "S") {
+            return [
+              [0, 6, 6],
+              [6, 6, 0],
+              [0, 0, 0],
+            ];
+          } else if (type === "Z") {
+            return [
+              [7, 7, 0],
+              [0, 7, 7],
+              [0, 0, 0],
+            ];
+          }
         }
-        
+
+        // Rotate a matrix (clockwise if dir > 0, counterclockwise if dir < 0)
         function rotate(matrix, dir) {
           for (let y = 0; y < matrix.length; ++y) {
             for (let x = 0; x < y; ++x) {
               [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
             }
           }
-          if (dir > 0) { matrix.forEach(row => row.reverse()); }
-          else { matrix.reverse(); }
+          if (dir > 0) {
+            matrix.forEach((row) => row.reverse());
+          } else {
+            matrix.reverse();
+          }
           return matrix;
         }
-        
-        function draw() {
-          ctx.fillStyle = "#000000";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          drawMatrix(player.matrix, player.pos);
-        }
-        
-        function drawMatrix(matrix, offset) {
-          matrix.forEach((row, y) => {
-            row.forEach((value, x) => {
-              if (value !== 0) {
-                ctx.fillStyle = "#FF9933";
-                ctx.fillRect((x + offset.x) * gridSize, (y + offset.y) * gridSize, gridSize-2, gridSize-2);
-              }
-            });
-          });
-        }
-        
+
+        // Merge player's piece into the arena
         function merge(arena, player) {
           player.matrix.forEach((row, y) => {
             row.forEach((value, x) => {
@@ -625,44 +783,162 @@
             });
           });
         }
-        
+
+        // Collision detection
         function collide(arena, player) {
           const m = player.matrix;
           const o = player.pos;
           for (let y = 0; y < m.length; ++y) {
             for (let x = 0; x < m[y].length; ++x) {
-              if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
+              if (
+                m[y][x] !== 0 &&
+                (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0
+              ) {
                 return true;
               }
             }
           }
           return false;
         }
-        
-        function playerReset() {
-          player.matrix = createPiece();
-          player.pos.y = 0;
-          player.pos.x = Math.floor(cols/2) - 1;
-          if (collide(arena, player)) {
-            logToTerminal("Tetris: Game over.");
-            hideGameOverlay();
+
+        // Clear completed rows, update score
+        function arenaSweep() {
+          let rowCount = 1;
+          outer: for (let y = arena.length - 1; y >= 0; y--) {
+            for (let x = 0; x < arena[y].length; x++) {
+              if (arena[y][x] === 0) {
+                continue outer;
+              }
+            }
+            const row = arena.splice(y, 1)[0].fill(0);
+            arena.unshift(row);
+            y++;
+            player.score += rowCount * 10;
+            rowCount *= 2;
           }
         }
-        
-        function updateTetris() {
+
+        // Draw a matrix on the canvas with an offset
+        function drawMatrix(matrix, offsetPos) {
+          matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+              if (value !== 0) {
+                ctx.fillStyle = colors[value];
+                ctx.fillRect(
+                  offsetPos.x + x * grid,
+                  offsetPos.y + y * grid,
+                  grid - 1,
+                  grid - 1
+                );
+              }
+            });
+          });
+        }
+
+        // Draw the arena, current piece, and GUI (score)
+        function draw() {
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          // Draw arena (board)
+          drawMatrix(arena, offset);
+          // Draw current piece
+          drawMatrix(player.matrix, {
+            x: offset.x + player.pos.x * grid,
+            y: offset.y + player.pos.y * grid,
+          });
+          // Draw score in upper-left corner
+          ctx.font = "20px Courier Prime";
+          ctx.fillStyle = "#33FF33";
+          ctx.fillText("Score: " + player.score, 20, 30);
+        }
+
+        // Timing variables for automatic dropping
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let lastTime = 0;
+        function update(time = 0) {
+          const deltaTime = time - lastTime;
+          lastTime = time;
+          dropCounter += deltaTime;
+          if (dropCounter > dropInterval) {
+            playerDrop();
+          }
+          draw();
+          requestAnimationFrame(update);
+        }
+
+        // Drop the current piece; if collision, merge and reset piece
+        function playerDrop() {
           player.pos.y++;
           if (collide(arena, player)) {
             player.pos.y--;
             merge(arena, player);
             playerReset();
+            arenaSweep();
           }
-          draw();
+          dropCounter = 0;
         }
-        
-        draw();
-        gameInterval = setInterval(updateTetris, 500);
+
+        // Move piece horizontally
+        function playerMove(dir) {
+          player.pos.x += dir;
+          if (collide(arena, player)) {
+            player.pos.x -= dir;
+          }
+        }
+
+        // Reset the player's piece; if collision on reset => game over
+        function playerReset() {
+          const pieces = "TJLOSZI";
+          player.matrix = createPiece(
+            pieces[Math.floor(Math.random() * pieces.length)]
+          );
+          player.pos.y = 0;
+          player.pos.x =
+            Math.floor(arena[0].length / 2) -
+            Math.floor(player.matrix[0].length / 2);
+          if (collide(arena, player)) {
+            // Game over: clear arena and reset score
+            arena.forEach((row) => row.fill(0));
+            player.score = 0;
+          }
+        }
+
+        // Create arena and initialize player
+        const arena = createMatrix(COLS, ROWS);
+        const player = {
+          pos: { x: 0, y: 0 },
+          matrix: null,
+          score: 0,
+        };
+        playerReset();
+        update();
+
+        // Global key handling for Tetris gameplay
+        function tetrisKeyDown(event) {
+          // Only process keys if game overlay is active
+          if (document.getElementById("gameOverlay").style.display === "block") {
+            if (event.key === "ArrowLeft") {
+              playerMove(-1);
+            } else if (event.key === "ArrowRight") {
+              playerMove(1);
+            } else if (event.key === "ArrowDown") {
+              playerDrop();
+            } else if (event.key === "ArrowUp") {
+              player.matrix = rotate(player.matrix, 1);
+              if (collide(arena, player)) {
+                player.matrix = rotate(player.matrix, -1);
+              }
+            } else if (event.key === "Escape" || event.key === " ") {
+              // Exit Tetris idle game
+              hideGameOverlay();
+            }
+          }
+        }
+
+        document.addEventListener("keydown", tetrisKeyDown);
       }
-      
+
       /* ---------- Reset Scores with Retro Reset Animation ---------- */
       function resetScores() {
         const resetOverlay = document.getElementById("resetOverlay");
@@ -671,7 +947,9 @@
         setTimeout(() => {
           scores = {};
           localStorage.removeItem(STORAGE_KEY);
-          document.querySelectorAll(".rubric-table td[data-rating]").forEach(cell => cell.classList.remove("selected"));
+          document
+            .querySelectorAll(".rubric-table td[data-rating]")
+            .forEach((cell) => cell.classList.remove("selected"));
           document.getElementById("total").textContent = "0";
           document.getElementById("scoreLabel").textContent = "Good";
           document.getElementById("progressBar").style.width = "0%";
@@ -682,7 +960,7 @@
           logToTerminal("System reboot complete.");
         }, 800);
       }
-      
+
       /* ---------- Export Rubric as PNG ---------- */
       async function exportPNG() {
         const header = document.querySelector("header");
@@ -698,45 +976,71 @@
         document.body.removeChild(link);
         header.style.position = originalPos;
       }
-      
+
       /* ---------- Toggle Dark/Light Theme ---------- */
       function toggleTheme(input) {
         const htmlEl = document.documentElement;
-        if (input.checked) { htmlEl.setAttribute("data-theme", "retro"); }
-        else { htmlEl.setAttribute("data-theme", "light"); }
+        if (input.checked) {
+          htmlEl.setAttribute("data-theme", "retro");
+        } else {
+          htmlEl.setAttribute("data-theme", "light");
+        }
       }
-      
+
       /* ---------- Update Developer Badge ---------- */
       function updateDeveloperBadge(total) {
-        let level = 1, title = "Novice Developer";
-        if (total < 9) { level = 1; title = "Novice Developer"; }
-        else if (total < 17) { level = 2; title = "Code Wrangler"; }
-        else if (total < 25) { level = 3; title = "Debugging Guru"; }
-        else { level = 4; title = "Development Master"; }
+        let level = 1,
+          title = "Novice Developer";
+        if (total < 9) {
+          level = 1;
+          title = "Novice Developer";
+        } else if (total < 17) {
+          level = 2;
+          title = "Code Wrangler";
+        } else if (total < 25) {
+          level = 3;
+          title = "Debugging Guru";
+        } else {
+          level = 4;
+          title = "Development Master";
+        }
         document.getElementById("developerBadge").textContent = `Level: ${level} – ${title}`;
       }
-      
+
       /* ---------- Update Total Score & Terminal Log ---------- */
       function updateTotal() {
         const total = Object.values(scores).reduce((sum, val) => sum + Number(val), 0);
         document.getElementById("total").textContent = total;
         let label = "";
-        if (total >= 25) { label = "Outstanding"; confettiShown = true; }
-        else if (total >= 17) { label = "Excellent"; confettiShown = false; if (!excellentCelebrated) { launchMouseConfetti(); excellentCelebrated = true; } }
-        else if (total >= 9) { label = "Great"; confettiShown = false; }
-        else { label = "Good"; confettiShown = false; }
+        if (total >= 25) {
+          label = "Outstanding";
+          confettiShown = true;
+        } else if (total >= 17) {
+          label = "Excellent";
+          confettiShown = false;
+          if (!excellentCelebrated) {
+            launchMouseConfetti();
+            excellentCelebrated = true;
+          }
+        } else if (total >= 9) {
+          label = "Great";
+          confettiShown = false;
+        } else {
+          label = "Good";
+          confettiShown = false;
+        }
         document.getElementById("scoreLabel").textContent = label;
         updateProgressBar(total);
         updateDeveloperBadge(total);
         logToTerminal(`Score updated to ${total} (${label}).`);
       }
-      
+
       /* ---------- Update Progress Bar ---------- */
       function updateProgressBar(total) {
         const percentage = (total / maxPoints) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
-      
+
       /* ---------- Mouse Confetti for "Excellent" Celebration ---------- */
       function launchMouseConfetti() {
         const container = document.getElementById("mouseConfettiContainer");
@@ -749,10 +1053,12 @@
           particle.style.top = "-50px";
           particle.style.animationDelay = Math.random() * 0.5 + "s";
           container.appendChild(particle);
-          setTimeout(() => { particle.remove(); }, 3000);
+          setTimeout(() => {
+            particle.remove();
+          }, 3000);
         }
       }
-      
+
       /* ---------- Attach rubric cell listeners after DOM load ---------- */
       document.addEventListener("DOMContentLoaded", () => {
         attachRubricListeners();
@@ -760,7 +1066,9 @@
         if (savedScores) {
           scores = JSON.parse(savedScores);
           for (const [category, rating] of Object.entries(scores)) {
-            const cell = document.querySelector(`td[data-category="${category}"][data-rating="${rating}"]`);
+            const cell = document.querySelector(
+              `td[data-category="${category}"][data-rating="${rating}"]`
+            );
             if (cell) cell.classList.add("selected");
           }
           updateTotal();
