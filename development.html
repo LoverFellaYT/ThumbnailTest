@@ -695,10 +695,10 @@
         const boardWidth = CELL_SIZE * COLS; // 200
         const boardHeight = CELL_SIZE * ROWS; // 400
 
-        // Center horizontally, push it further down
+        // Center horizontally, push it down so the entire board fits
         const offset = {
           x: Math.floor((canvas.width - boardWidth) / 2),
-          y: 120, // push further down for more spacing
+          y: 70, // place so that 70 + 400 = 470, fits inside 480
         };
 
         // Colors for pieces (index 1-7)
