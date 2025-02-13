@@ -686,25 +686,20 @@
         gameInterval = setInterval(update, 150);
       }
 
-      /* ---------- Tetris Game Implementation (Refined) ---------- */
+      /* ---------- Tetris Game Implementation (Fixed Block Size) ---------- */
       function startTetrisGame() {
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        // We'll define a smaller scaleFactor => bigger blocks
-        // Let's do 0.5 => 4x bigger than the previous scaleFactor=2
-        const scaleFactor = 0.5; 
+        // Use a fixed cell size to ensure a single rectangle
+        // e.g., 40 px per cell => bigger blocks
+        const CELL_SIZE = 40;
         const COLS = 10;
         const ROWS = 20;
 
-        // We'll define each cell size based on scaleFactor
-        const cellW = Math.floor(canvas.width / (COLS * scaleFactor));
-        const cellH = Math.floor(canvas.height / (ROWS * scaleFactor));
-        const grid = Math.min(cellW, cellH);
-
         // Board dimensions in px
-        const boardWidth = grid * COLS;
-        const boardHeight = grid * ROWS;
+        const boardWidth = CELL_SIZE * COLS; // 400 px
+        const boardHeight = CELL_SIZE * ROWS; // 800 px
 
         // Center the board
         const offset = {
@@ -840,10 +835,10 @@
               if (value !== 0) {
                 ctx.fillStyle = colors[value];
                 ctx.fillRect(
-                  offsetPos.x + x * grid,
-                  offsetPos.y + y * grid,
-                  grid - 1,
-                  grid - 1
+                  offsetPos.x + x * CELL_SIZE,
+                  offsetPos.y + y * CELL_SIZE,
+                  CELL_SIZE - 1,
+                  CELL_SIZE - 1
                 );
               }
             });
@@ -851,6 +846,7 @@
         }
 
         function draw() {
+          // Clear entire canvas
           ctx.fillStyle = "#000000";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -859,16 +855,16 @@
 
           // Draw current piece
           drawMatrix(player.matrix, {
-            x: offset.x + player.pos.x * grid,
-            y: offset.y + player.pos.y * grid,
+            x: offset.x + player.pos.x * CELL_SIZE,
+            y: offset.y + player.pos.y * CELL_SIZE,
           });
 
-          // Draw white border around Tetris board
+          // White border around Tetris board
           ctx.strokeStyle = "#ffffff";
           ctx.lineWidth = 2;
           ctx.strokeRect(offset.x, offset.y, boardWidth, boardHeight);
 
-          // Draw score & attempt in upper-left
+          // Score & attempt info
           ctx.font = "18px Courier Prime";
           ctx.fillStyle = "#33FF33";
           ctx.fillText("Score: " + player.score, 20, 30);
