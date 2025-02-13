@@ -3,14 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Development Rubric Analyzer Pro+</title>
+    <title>Development Rubric Analyzer Pro+ </title>
     <!-- Retro Monospaced Font (Courier Prime) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
     <!-- html2canvas for PNG export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
     <style>
       /* ---------- Retro Theme Variables ---------- */
       :root {
@@ -20,7 +19,6 @@
         --border-color: #888888;
         --primary-color: #33FF33;      /* Neon green when active */
         --highlight-color: #00CC00;
-        --shadow: 0 4px 12px rgba(0,0,0,0.7);
         --transition: all 0.3s ease;
         --radius: 4px;
         --font-family: 'Courier Prime', monospace;
@@ -132,7 +130,7 @@
         width: 100%;
         margin: 2rem auto;
         border-collapse: collapse;
-        box-shadow: var(--shadow);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
       }
       
       .rubric-table th,
@@ -148,7 +146,7 @@
         position: relative;
       }
       
-      /* Tooltip on headers (non-interfering) */
+      /* Header tooltips positioned above without blocking clicks */
       .rubric-table th:hover::after {
         content: attr(data-tooltip);
         position: absolute;
@@ -167,16 +165,16 @@
       .rubric-table td {
         background: var(--bg-color);
         color: var(--text-color); /* Default gray text */
+        cursor: pointer;
       }
       
       .rubric-table td:hover {
         background: var(--highlight-color);
-        cursor: pointer;
       }
       
       .rubric-table td.selected {
         background: var(--highlight-color);
-        color: var(--primary-color); /* Selected turns neon green */
+        color: var(--primary-color); /* Turns neon green when selected */
       }
       
       /* ---------- Legend & Feedback Panels ---------- */
@@ -220,10 +218,12 @@
         transition: opacity 0.3s ease, height 0.3s ease;
         opacity: 0;
       }
+      
       #resetOverlay.visible {
         height: 100%;
         opacity: 1;
       }
+      
       #resetOverlay::before {
         content: "RESETTING...";
         font-family: var(--font-family);
@@ -231,6 +231,7 @@
         font-size: 2rem;
         animation: glitchText 0.4s steps(2, end) infinite;
       }
+      
       @keyframes glitchText {
         0% { opacity: 1; transform: translate(0, 0) skew(0deg, 0deg); }
         50% { opacity: 0.5; transform: translate(2px, -2px) skew(10deg, -10deg); }
@@ -246,6 +247,7 @@
         animation: mouseFall 3s forwards;
         filter: grayscale(1);
       }
+      
       @keyframes mouseFall {
         0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
         100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
@@ -262,6 +264,7 @@
         z-index: 3500;
         display: none;
       }
+      
       #gameCanvas {
         display: block;
         margin: 0 auto;
@@ -401,9 +404,7 @@
     <div id="mouseConfettiContainer"></div>
     
     <script>
-      /***************************************************
-       * Global Variables & Idle/Game Setup
-       ***************************************************/
+      /* ---------- Global Variables & Idle/Game Setup ---------- */
       let scores = {};
       const maxPoints = 28;
       let confettiShown = false;
@@ -413,9 +414,7 @@
       let gameInterval;
       let currentGame; // "snake" or "tetris"
       
-      /* ----------------------------
-         Terminal Log Functionality 
-      ---------------------------- */
+      /* ---------- Terminal Log Functionality ---------- */
       function logToTerminal(message) {
         const logDiv = document.getElementById("terminalLog");
         const timeStamp = new Date().toLocaleTimeString();
@@ -423,9 +422,7 @@
         logDiv.scrollTop = logDiv.scrollHeight;
       }
       
-      /* ----------------------------
-         Developer Badge Level-Up
-      ---------------------------- */
+      /* ---------- Developer Badge Level-Up ---------- */
       function updateDeveloperBadge(total) {
         const badge = document.getElementById("developerBadge");
         let level = 1, title = "Novice Developer";
@@ -436,36 +433,30 @@
         badge.textContent = `Level: ${level} – ${title}`;
       }
       
-      /* ----------------------------
-         Attach Click Event Listeners to Rubric Cells 
-      ---------------------------- */
+      /* ---------- Attach Event Listeners to Rubric Cells ---------- */
       function attachRubricListeners() {
         const cells = document.querySelectorAll(".rubric-table td[data-rating]");
         cells.forEach(cell => {
-          cell.addEventListener("click", function() {
-            selectRating(this);
+          cell.addEventListener("click", () => {
+            selectRating(cell);
           });
         });
       }
       
-      /* ----------------------------
-         Rubric Rating Selection & Persistence
-      ---------------------------- */
+      /* ---------- Rubric Rating Selection & Persistence ---------- */
       function selectRating(cell) {
         const category = cell.getAttribute("data-category");
-        const rating = parseInt(cell.getAttribute("data-rating"), 10);
+        const rating = cell.getAttribute("data-rating");
         const row = cell.parentElement;
-        // Remove "selected" from all cells in the row
-        row.querySelectorAll("td[data-rating]").forEach(td => td.classList.remove("selected"));
+        // Remove selected class from all cells in the row
+        row.querySelectorAll("td[data-rating]").forEach(c => c.classList.remove("selected"));
         cell.classList.add("selected");
         scores[category] = rating;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
         updateTotal();
       }
       
-      /* ----------------------------
-         Idle Detection & Game Overlay 
-      ---------------------------- */
+      /* ---------- Idle Detection & Game Overlay ---------- */
       function resetIdleTimer() {
         clearTimeout(idleTimeout);
         hideGameOverlay();
@@ -503,9 +494,7 @@
         }
       }
       
-      /* ----------------------------
-         Snake Game Implementation 
-      ---------------------------- */
+      /* ---------- Snake Game Implementation ---------- */
       function startSnakeGame() {
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
@@ -562,10 +551,7 @@
         gameInterval = setInterval(update, 150);
       }
       
-      /* ----------------------------
-         Tetris Game Implementation 
-         (Simplified Version)
-      ---------------------------- */
+      /* ---------- Tetris Game Implementation (Simplified) ---------- */
       function startTetrisGame() {
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
@@ -644,7 +630,8 @@
           const o = player.pos;
           for (let y = 0; y < m.length; ++y) {
             for (let x = 0; x < m[y].length; ++x) {
-              if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
+              if (m[y][x] !== 0 &&
+                  (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
                 return true;
               }
             }
@@ -676,9 +663,7 @@
         gameInterval = setInterval(updateTetris, 500);
       }
       
-      /* ----------------------------
-         Reset Scores with Retro Reset Animation 
-      ---------------------------- */
+      /* ---------- Reset Scores with Retro Reset Animation ---------- */
       function resetScores() {
         const resetOverlay = document.getElementById("resetOverlay");
         resetOverlay.classList.add("visible");
@@ -698,9 +683,7 @@
         }, 800);
       }
       
-      /* ----------------------------
-         Export Rubric as PNG 
-      ---------------------------- */
+      /* ---------- Export Rubric as PNG ---------- */
       async function exportPNG() {
         const header = document.querySelector("header");
         const originalPos = header.style.position;
@@ -716,18 +699,14 @@
         header.style.position = originalPos;
       }
       
-      /* ----------------------------
-         Toggle Dark/Light Theme 
-      ---------------------------- */
+      /* ---------- Toggle Dark/Light Theme ---------- */
       function toggleTheme(input) {
         const htmlEl = document.documentElement;
         if (input.checked) { htmlEl.setAttribute("data-theme", "retro"); }
         else { htmlEl.setAttribute("data-theme", "light"); }
       }
       
-      /* ----------------------------
-         Update Developer Badge 
-      ---------------------------- */
+      /* ---------- Update Developer Badge ---------- */
       function updateDeveloperBadge(total) {
         let level = 1, title = "Novice Developer";
         if (total < 9) { level = 1; title = "Novice Developer"; }
@@ -737,11 +716,9 @@
         document.getElementById("developerBadge").textContent = `Level: ${level} – ${title}`;
       }
       
-      /* ----------------------------
-         Update Total Score & Terminal Log 
-      ---------------------------- */
+      /* ---------- Update Total Score & Terminal Log ---------- */
       function updateTotal() {
-        const total = Object.values(scores).reduce((sum, val) => sum + val, 0);
+        const total = Object.values(scores).reduce((sum, val) => sum + Number(val), 0);
         document.getElementById("total").textContent = total;
         let label = "";
         if (total >= 25) { label = "Outstanding"; confettiShown = true; }
@@ -754,18 +731,13 @@
         logToTerminal(`Score updated to ${total} (${label}).`);
       }
       
-      /* ----------------------------
-         Update Progress Bar 
-      ---------------------------- */
+      /* ---------- Update Progress Bar ---------- */
       function updateProgressBar(total) {
         const percentage = (total / maxPoints) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
       
-      /* ----------------------------
-         Mouse Confetti for "Excellent" Celebration 
-         (Full-Page Falling from Top)
-      ---------------------------- */
+      /* ---------- Mouse Confetti for "Excellent" Celebration ---------- */
       function launchMouseConfetti() {
         const container = document.getElementById("mouseConfettiContainer");
         const particleCount = 30;
@@ -781,13 +753,11 @@
         }
       }
       
-      /* ----------------------------
-         Attach rubric cell listeners after DOM load
-      ---------------------------- */
+      /* ---------- Attach rubric cell listeners after DOM load ---------- */
       document.addEventListener("DOMContentLoaded", () => {
-        // Attach click listeners to all cells with data-rating attribute
+        // Attach individual click listeners to rubric cells
         attachRubricListeners();
-        // Load any saved scores
+        // Load any saved scores and mark selections
         const savedScores = localStorage.getItem(STORAGE_KEY);
         if (savedScores) {
           scores = JSON.parse(savedScores);
