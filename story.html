@@ -63,25 +63,14 @@
         transition: var(--transition);
       }
 
-      /* Container is 2 columns: a left "Idea Rubric" aside and the main content */
+      /* Layout container: two columns (aside + main), back to 98% & 1100px */
       .layout-container {
         display: flex;
         align-items: flex-start;
-        width: 95%;
-        max-width: 1200px;
+        width: 98%;
+        max-width: 1100px;
         margin: 2rem auto;
         gap: 1rem;
-      }
-
-      /* Left column for Idea Rubric */
-      aside#ideaRubricSection {
-        width: 280px;
-        flex-shrink: 0;
-      }
-
-      /* Right column for main content */
-      .main-content {
-        flex: 1;
       }
 
       /* Sticky Banner */
@@ -102,6 +91,7 @@
         animation: headerGlow 3s infinite alternate;
       }
       @keyframes headerGlow {
+        /* Neon/cyan glow */
         from { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
         to   { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
       }
@@ -222,22 +212,46 @@
         background-color: var(--primary-light);
       }
 
+      /* Thicker glass panels (padding changed to 2.5rem, margin 2rem) */
       .glass-panel {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
-        padding: 2rem;
-        margin-bottom: 1rem;
+        padding: 2.5rem;
+        margin: 2rem 0;
         text-align: center;
       }
-
       .glass-panel h2 {
         margin-top: 0;
       }
 
-      /* "Quick Summary" & "Human Feedback" text boxes. Ensure color changes in dark mode. */
+      /* Left Column: "Idea Rubric" - 400px wide */
+      aside#ideaRubricSection {
+        width: 400px;
+        flex-shrink: 0;
+      }
+      #ideaRubricUpload {
+        width: 90%;
+        margin-top: 1rem;
+      }
+      #ideaRubricImageContainer {
+        margin-top: 1rem;
+        overflow-x: auto;
+      }
+      #ideaRubricImageContainer img {
+        border-radius: var(--radius);
+        display: block;
+        max-width: none; /* Show full size */
+      }
+
+      /* Right column for main content */
+      .main-content {
+        flex: 1;
+      }
+
+      /* Text boxes in quick summary & feedback. Dark mode => #fff text. */
       .story-input {
         width: 80%;
         max-width: 800px;
@@ -250,13 +264,11 @@
         background: var(--bg-light);
         resize: none;
         transition: var(--transition);
-        color: var(--text-light); /* Use theme-based text color in light mode */
+        color: var(--text-light);
       }
-      /* In dark mode, explicitly make text white (#fff). */
       html[data-theme="dark"] .story-input {
         color: #fff;
       }
-
       .story-input:focus {
         outline: none;
         border-color: var(--primary-light);
@@ -268,17 +280,6 @@
         width: 70%;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
-      }
-
-      /* Idea Rubric aside (left column) */
-      #ideaRubricUpload {
-        width: 90%;
-        margin-top: 1rem;
-      }
-      #ideaRubricImageContainer img {
-        max-width: 100%;
-        border-radius: var(--radius);
-        margin-top: 1rem;
       }
 
       .similar-videos-list {
@@ -466,13 +467,6 @@
             <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
             <button class="btn" id="addVideoBtn">Add Video</button>
             <div id="similarVideosList" class="similar-videos-list"></div>
-          </div>
-
-          <!-- AI Review Section -->
-          <div class="glass-panel input-section" id="aiReviewSection">
-            <h2>🤖 AI Review</h2>
-            <button class="btn" id="runAIReviewBtn">Run AI Review</button>
-            <div id="aiReviewResult" style="margin-top: 1rem;"></div>
           </div>
 
           <!-- Rubric Table Section -->
@@ -664,7 +658,6 @@
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
         document.getElementById('resetBtn').addEventListener('click', resetScores);
-        document.getElementById('runAIReviewBtn')?.addEventListener('click', runAIReview);
         document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
 
         // Rubric clicking
@@ -726,7 +719,7 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        // Same logic as original: need at least 10 categories for final ranking
+        // Same logic: need at least 10 categories for final ranking
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -753,7 +746,7 @@
       }
 
       function updateProgressBar(total) {
-        const maxScore = 40; 
+        const maxScore = 40;
         const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
@@ -772,13 +765,13 @@
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
 
-        // Clone the header, remove any top offset or margin so it sits at the very top
+        // Clone the header
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
         headerClone.style.position = 'static';
         headerClone.style.top = '0';
         headerClone.style.margin = '0';
 
-        // Clone main content
+        // Clone main layout
         const layoutClone = document.querySelector('.layout-container').cloneNode(true);
 
         tempContainer.appendChild(headerClone);
@@ -821,72 +814,11 @@
         }
       }
 
-      function runAIReview() {
-        const summary = document.getElementById('quickSummary').value.trim();
-        const resultDiv = document.getElementById('aiReviewResult');
-        if (!summary) {
-          resultDiv.textContent = "Please enter a quick summary for AI review.";
-          return;
-        }
-        // Dummy suggestions remain. Replace with real AI or an API call as needed
-        const reviewIdeas = [
-          {
-            improvements: [
-              "Clarify the central conflict by explicitly stating the stakes involved.",
-              "Deepen your protagonist's motivation by highlighting internal dilemmas.",
-              "Refine the narrative structure to better build suspense."
-            ],
-            suggestions: [
-              "Revise the opening to immediately hook the viewer with a strong inciting incident.",
-              "Emphasize a pivotal moment that clearly transitions the story toward its climax."
-            ]
-          },
-          {
-            improvements: [
-              "Strengthen the emotional resonance by providing more backstory.",
-              "Ensure that every plot twist reinforces the overall theme.",
-              "Adjust the pacing to allow critical moments to breathe."
-            ],
-            suggestions: [
-              "Introduce a memorable tagline that encapsulates your video's core message.",
-              "Highlight a transformative moment that challenges the status quo."
-            ]
-          },
-          {
-            improvements: [
-              "Focus on the uniqueness of your concept by underlining its innovative elements.",
-              "Elaborate on the conflict to give viewers a clear sense of the story's stakes.",
-              "Polish the narrative flow to create a more immersive experience."
-            ],
-            suggestions: [
-              "Rework the summary’s introduction to better reflect your video's distinct style.",
-              "Include a succinct conclusion that leaves the audience with a lingering thought."
-            ]
-          }
-        ];
-        const randomIndex = Math.floor(Math.random() * reviewIdeas.length);
-        const reviewSet = reviewIdeas[randomIndex];
-        const summaryWords = summary.split(" ");
-        const summaryPreview =
-          summaryWords.slice(0, 10).join(" ") + (summaryWords.length > 10 ? "..." : "");
-
-        let reviewHTML = "<h3>🤖 AI Story Review</h3>";
-        reviewHTML += `<p>Based on your concept: "<em>${summaryPreview}</em>", consider the following ideas:</p>`;
-        reviewHTML += "<h4>Three Specific Improvements:</h4>";
-        reviewHTML += "<ol>";
-        reviewSet.improvements.forEach(item => {
-          reviewHTML += `<li>${item}</li>`;
-        });
-        reviewHTML += "</ol>";
-        reviewHTML += "<h4>Two Actionable Suggestions:</h4>";
-        reviewHTML += "<ol>";
-        reviewSet.suggestions.forEach(item => {
-          reviewHTML += `<li>${item}</li>`;
-        });
-        reviewHTML += "</ol>";
-        resultDiv.innerHTML = reviewHTML;
-      }
-
+      /* 
+         Removed the AI Review code section entirely 
+         since you requested to remove it. 
+      */
+      
       function addYouTubeVideo() {
         const urlInput = document.getElementById('youtubeLinkInput');
         const url = urlInput.value.trim();
