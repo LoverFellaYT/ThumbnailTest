@@ -661,7 +661,7 @@
         8: '🔍',
         9: '❓',
         10: '❤️',
-        11: '🤩',  // Changed from 🪄 to 🤩
+        11: '🤩',
         12: '✂️'
       };
 
@@ -788,17 +788,66 @@
         }
       }
 
-      // Modified exportPNG: Now captures the entire export-container (header + main)
+      // Modified exportPNG function:
+      // 1. Temporarily forces the header to be at the top (using absolute positioning).
+      // 2. Replaces each textarea with a div containing its text (so wrapping is captured properly).
       function exportPNG() {
         const container = document.querySelector('.export-container');
         if (!container) return;
+        
+        // Save and change header style so it stays at the top.
+        const header = document.querySelector('header.analyzer-header');
+        const originalHeaderPosition = header.style.position;
+        header.style.position = 'absolute';
+        header.style.top = '0';
+
+        // Replace each textarea with a div clone that shows its content with wrapping.
+        const textareas = document.querySelectorAll('textarea');
+        const replacements = [];
+        textareas.forEach(textarea => {
+          const div = document.createElement('div');
+          // Copy key computed styles for similar appearance.
+          const computed = window.getComputedStyle(textarea);
+          div.style.width = computed.width;
+          div.style.minHeight = computed.minHeight;
+          div.style.padding = computed.padding;
+          div.style.border = computed.border;
+          div.style.borderRadius = computed.borderRadius;
+          div.style.background = computed.background;
+          div.style.fontFamily = computed.fontFamily;
+          div.style.fontSize = computed.fontSize;
+          div.style.color = computed.color;
+          div.style.whiteSpace = 'pre-wrap';
+          div.style.wordWrap = 'break-word';
+          div.style.overflow = 'visible';
+          div.innerText = textarea.value;
+          // Hide textarea and insert the div before it.
+          textarea.style.display = 'none';
+          textarea.parentNode.insertBefore(div, textarea);
+          replacements.push({ textarea: textarea, div: div });
+        });
+        
         html2canvas(container).then(canvas => {
+          // Restore textareas and remove replacement divs.
+          replacements.forEach(rep => {
+            rep.div.parentNode.removeChild(rep.div);
+            rep.textarea.style.display = '';
+          });
+          // Revert header style.
+          header.style.position = originalHeaderPosition;
+          
           const link = document.createElement('a');
           link.download = 'review.png';
           link.href = canvas.toDataURL();
           link.click();
         }).catch(err => {
           console.error('Error exporting PNG:', err);
+          // In case of error, restore the original elements.
+          replacements.forEach(rep => {
+            rep.div.parentNode.removeChild(rep.div);
+            rep.textarea.style.display = '';
+          });
+          header.style.position = originalHeaderPosition;
         });
       }
 
