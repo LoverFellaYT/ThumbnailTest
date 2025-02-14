@@ -338,11 +338,11 @@
         min-width: 160px;
       }
 
-      /* Section Header styling */
+      /* Section Header styling - now slightly lighter color */
       .section-header {
         text-align: center;
         font-weight: bold;
-        background: rgba(79, 172, 254, 0.08);
+        background: rgba(79, 172, 254, 0.2); /* Slightly lighter/more visible */
         padding: 0.75rem 0;
       }
 
@@ -578,43 +578,27 @@
           <ul>
             <li>
               <input type="checkbox" id="check1" />
-              <label for="check1"><strong>Hook:</strong> Does the opening grab attention in the first few seconds?</label>
+              <label for="check1"><strong>Pre-Writing:</strong> Is the theme, central conflict, and structure (e.g., Save the Cat, Story Circle) clearly defined?</label>
             </li>
             <li>
               <input type="checkbox" id="check2" />
-              <label for="check2"><strong>Goal:</strong> Is the main objective/challenge clearly defined?</label>
+              <label for="check2"><strong>Writing:</strong> Do beats connect logically (“And, But, Therefore”), and are resolutions character-driven rather than coincidental?</label>
             </li>
             <li>
               <input type="checkbox" id="check3" />
-              <label for="check3"><strong>Conflict &amp; Stakes:</strong> Are obstacles and stakes high enough to keep viewers invested?</label>
+              <label for="check3"><strong>World-Building &amp; Stakes:</strong> Are mechanics, rules, and stakes clear and consistent? Do conflicts escalate meaningfully?</label>
             </li>
             <li>
               <input type="checkbox" id="check4" />
-              <label for="check4"><strong>Structure:</strong> Does the story flow logically from setup to escalation to resolution?</label>
+              <label for="check4"><strong>Review:</strong> Does the story flow smoothly, with no unnecessary complexity? Do all setups and subplots tie into the resolution?</label>
             </li>
             <li>
               <input type="checkbox" id="check5" />
-              <label for="check5"><strong>Audience Retention Hooks:</strong> Have you planned moments or reveals that keep viewers from clicking away?</label>
+              <label for="check5"><strong>Polishing:</strong> Have weak beats, plot holes, and unearned resolutions (e.g., deus ex machina) been removed?</label>
             </li>
             <li>
               <input type="checkbox" id="check6" />
-              <label for="check6"><strong>Credibility &amp; Believability:</strong> Do plot points and scenarios feel authentic, not forced?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check7" />
-              <label for="check7"><strong>CTA or Interaction Point:</strong> Is there a clear moment where you invite audience participation (like, comment, etc.)?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check8" />
-              <label for="check8"><strong>Uniqueness:</strong> Do you offer something fresh or tap into current trends in a new way?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check9" />
-              <label for="check9"><strong>Pacing:</strong> Does each scene/segment have a strong reason to exist without dragging?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check10" />
-              <label for="check10"><strong>Shareability:</strong> Is there a “wow” factor or memorable highlight that encourages sharing?</label>
+              <label for="check6"><strong>Pre-Shoot:</strong> Is everything (set, props, equipment, talent, backups) fully prepared for filming?</label>
             </li>
           </ul>
         </div>
@@ -669,7 +653,7 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        // Same logic for 10 categories in the original code; left as-is to preserve functionality
+        // Same logic as original. Minimum 10 categories are needed for final ranking to appear
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -696,7 +680,6 @@
       }
 
       function updateProgressBar(total) {
-        // For simplicity, we keep maxScore = 40 (unchanged)
         const maxScore = 40;
         const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
