@@ -42,7 +42,6 @@
         --font-base: 'Roboto', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
 
-        /* New variable for section header background (light mode) */
         --section-bg: rgba(79, 172, 254, 0.2);
       }
       html[data-theme="dark"] {
@@ -53,7 +52,6 @@
         --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
 
-        /* Dark mode section header background */
         --section-bg: rgba(79, 172, 254, 0.3);
       }
       body {
@@ -66,9 +64,10 @@
         transition: var(--transition);
       }
 
+      /* Make container slightly wider with a bigger max-width */
       .analyzer-container {
-        width: 98%;
-        max-width: 1100px;
+        width: 95%;
+        max-width: 1200px;
         margin: 2rem auto;
         padding: 0 var(--spacing) 2rem;
         text-align: center;
@@ -91,8 +90,9 @@
         animation: headerGlow 3s infinite alternate;
       }
       @keyframes headerGlow {
-        from { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
-        to { box-shadow: 0 0 30px rgba(255,215,0,1); }
+        /* Neon/cyan glow */
+        from { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+        to   { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
       }
       .header-left {
         display: flex;
@@ -111,16 +111,18 @@
         margin: 0.2rem 0;
         font-size: 0.9rem;
       }
+
+      /* Thicker progress bar */
       .progress-container {
         width: 200px;
-        height: 10px;
+        height: 16px;
         background: #ccc;
         border-radius: 5px;
         overflow: hidden;
         margin-top: 0.3rem;
       }
       #progressBar {
-        height: 10px;
+        height: 16px;
         background: #4facfe;
         width: 0%;
         transition: width 0.3s;
@@ -220,14 +222,12 @@
       }
       .glass-panel h2 {
         margin-top: 0;
-        text-align: center;
       }
 
       .input-section {
         margin: 1rem 0;
       }
 
-      /* Center and limit width of text areas within their panels */
       .glass-panel .story-input {
         display: block;
         width: 80%;
@@ -300,7 +300,6 @@
         transform: scale(1.02);
       }
 
-      /* Rubric Table */
       .rubric-table {
         margin: 1rem 0;
       }
@@ -350,7 +349,6 @@
         min-width: 160px;
       }
 
-      /* Section Header styling - uses the new variable for light/dark difference */
       .section-header {
         text-align: center;
         font-weight: bold;
@@ -711,12 +709,18 @@
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
 
+        // Clone the header, remove any top offset or margin so it sits at the very top
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
+        headerClone.style.position = 'static';
+        headerClone.style.top = '0';
+        headerClone.style.margin = '0';
+
         const mainClone = document.querySelector('main').cloneNode(true);
 
         tempContainer.appendChild(headerClone);
         tempContainer.appendChild(mainClone);
         document.body.appendChild(tempContainer);
+
         try {
           const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true });
           const dataUrl = canvas.toDataURL('image/png');
