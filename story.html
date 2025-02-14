@@ -288,7 +288,7 @@
         transform: scale(1.02);
       }
 
-      /* Slightly less wide category column */
+      /* Rubric Table */
       .rubric-table {
         margin: 1rem 0;
       }
@@ -338,11 +338,12 @@
         min-width: 160px;
       }
 
-      /* Simple style for section headers */
+      /* Section Header styling */
       .section-header {
+        text-align: center;
         font-weight: bold;
-        text-align: left;
         background: rgba(79, 172, 254, 0.08);
+        padding: 0.75rem 0;
       }
 
       #selfAssessmentSection ul {
@@ -445,7 +446,7 @@
             <tbody>
               <!-- SECTION: Video Concept & Pre Planning -->
               <tr>
-                <td colspan="5" class="section-header">Video Concept &amp; Pre Planning</td>
+                <td colspan="5" class="section-header">VIDEO CONCEPT & PRE PLANNING</td>
               </tr>
               <!-- 1) Video Concept -->
               <tr>
@@ -490,7 +491,7 @@
 
               <!-- SECTION: Video Fundamentals -->
               <tr>
-                <td colspan="5" class="section-header">Video Fundamentals</td>
+                <td colspan="5" class="section-header">VIDEO FUNDAMENTALS</td>
               </tr>
               <!-- 6) Hook & Intro -->
               <tr>
@@ -535,7 +536,7 @@
 
               <!-- SECTION: Video Pacing -->
               <tr>
-                <td colspan="5" class="section-header">Video Pacing</td>
+                <td colspan="5" class="section-header">VIDEO PACING</td>
               </tr>
               <!-- 11) Pacing & Rhythm -->
               <tr>
@@ -545,7 +546,7 @@
                 <td data-category="10" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
                 <td data-category="10" data-rating="4">Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.</td>
               </tr>
-              <!-- 12) Retention-Based Structure (again, under Pacing) -->
+              <!-- 12) Retention-Based Structure (again) -->
               <tr>
                 <td class="category-header" data-category="11">📈 Retention-Based Structure</td>
                 <td data-category="11" data-rating="1">No clear plan for keeping viewers engaged.</td>
@@ -668,7 +669,7 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        // This logic remains unchanged to preserve functionality
+        // Same logic for 10 categories in the original code; left as-is to preserve functionality
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -695,7 +696,8 @@
       }
 
       function updateProgressBar(total) {
-        const maxScore = 40; // Kept the same to avoid altering functionality
+        // For simplicity, we keep maxScore = 40 (unchanged)
+        const maxScore = 40;
         const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
@@ -826,15 +828,12 @@
         const url = urlInput.value.trim();
         if (!url) return;
         
-        // Basic ID extraction or direct embed check
         let videoId = "";
         try {
           const urlObj = new URL(url);
           if (urlObj.hostname === "youtu.be") {
-            // Short link
             videoId = urlObj.pathname.slice(1);
           } else if (urlObj.searchParams.get("v")) {
-            // Full link
             videoId = urlObj.searchParams.get("v");
           }
         } catch (err) {
@@ -846,7 +845,6 @@
           return;
         }
 
-        // Create thumbnail
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
         const videoList = document.getElementById('similarVideosList');
 
