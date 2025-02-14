@@ -41,7 +41,6 @@
         --spacing: 1rem;
         --font-base: 'Roboto', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-
         --section-bg: rgba(79, 172, 254, 0.2);
       }
       html[data-theme="dark"] {
@@ -51,9 +50,9 @@
         --border-light: rgba(255, 255, 255, 0.2);
         --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
-
         --section-bg: rgba(79, 172, 254, 0.3);
       }
+
       body {
         margin: 0;
         padding: 0;
@@ -64,15 +63,28 @@
         transition: var(--transition);
       }
 
-      /* Make container slightly wider with a bigger max-width */
-      .analyzer-container {
+      /* Container is 2 columns: a left "Idea Rubric" aside and the main content */
+      .layout-container {
+        display: flex;
+        align-items: flex-start;
         width: 95%;
         max-width: 1200px;
         margin: 2rem auto;
-        padding: 0 var(--spacing) 2rem;
-        text-align: center;
+        gap: 1rem;
       }
 
+      /* Left column for Idea Rubric */
+      aside#ideaRubricSection {
+        width: 280px;
+        flex-shrink: 0;
+      }
+
+      /* Right column for main content */
+      .main-content {
+        flex: 1;
+      }
+
+      /* Sticky Banner */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -90,10 +102,10 @@
         animation: headerGlow 3s infinite alternate;
       }
       @keyframes headerGlow {
-        /* Neon/cyan glow */
         from { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
         to   { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
       }
+
       .header-left {
         display: flex;
         flex-direction: column;
@@ -217,24 +229,19 @@
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
         padding: 2rem;
-        margin: 1rem 0;
+        margin-bottom: 1rem;
         text-align: center;
       }
+
       .glass-panel h2 {
         margin-top: 0;
       }
 
-      .input-section {
-        margin: 1rem 0;
-      }
-
-      .glass-panel .story-input {
-        display: block;
+      /* "Quick Summary" & "Human Feedback" text boxes. Ensure color changes in dark mode. */
+      .story-input {
         width: 80%;
         max-width: 800px;
         margin: 0.5rem auto;
-      }
-      .story-input {
         min-height: 120px;
         padding: 1rem;
         border: 2px solid var(--border-light);
@@ -243,17 +250,35 @@
         background: var(--bg-light);
         resize: none;
         transition: var(--transition);
+        color: var(--text-light); /* Use theme-based text color in light mode */
       }
+      /* In dark mode, explicitly make text white (#fff). */
+      html[data-theme="dark"] .story-input {
+        color: #fff;
+      }
+
       .story-input:focus {
         outline: none;
         border-color: var(--primary-light);
         box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
       }
+
       input[type="text"] {
         padding: 0.5rem;
         width: 70%;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
+      }
+
+      /* Idea Rubric aside (left column) */
+      #ideaRubricUpload {
+        width: 90%;
+        margin-top: 1rem;
+      }
+      #ideaRubricImageContainer img {
+        max-width: 100%;
+        border-radius: var(--radius);
+        margin-top: 1rem;
       }
 
       .similar-videos-list {
@@ -300,6 +325,7 @@
         transform: scale(1.02);
       }
 
+      /* Rubric Table */
       .rubric-table {
         margin: 1rem 0;
       }
@@ -371,17 +397,16 @@
       }
 
       @media (max-width: 768px) {
-        header.analyzer-header {
+        .layout-container {
           flex-direction: column;
           align-items: flex-start;
         }
-        .header-right {
-          margin-top: 1rem;
+        aside#ideaRubricSection {
           width: 100%;
-          justify-content: space-around;
+          margin-bottom: 1rem;
         }
-        .score-info {
-          margin-top: 1rem;
+        .main-content {
+          width: 100%;
         }
       }
     </style>
@@ -418,201 +443,212 @@
 
     <!-- MAIN CONTENT -->
     <main>
-      <div class="analyzer-container">
-        <!-- Quick Summary Section -->
-        <div class="glass-panel input-section" id="quickSummarySection">
-          <h2>📝 Quick Summary</h2>
-          <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
-        </div>
+      <div class="layout-container">
+        <!-- Left Column: "Idea Rubric" -->
+        <aside class="glass-panel" id="ideaRubricSection">
+          <h2>Idea Rubric</h2>
+          <p>Upload a PNG below to display:</p>
+          <input type="file" id="ideaRubricUpload" accept="image/png" />
+          <div id="ideaRubricImageContainer"></div>
+        </aside>
 
-        <!-- Similar Videos Section -->
-        <div class="glass-panel input-section" id="similarVideosSection">
-          <h2>📺 Similar Videos</h2>
-          <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
-          <button class="btn" id="addVideoBtn">Add Video</button>
-          <div id="similarVideosList" class="similar-videos-list"></div>
-        </div>
+        <!-- Right Column: main content -->
+        <div class="main-content">
+          <!-- Quick Summary Section -->
+          <div class="glass-panel input-section" id="quickSummarySection">
+            <h2>📝 Quick Summary</h2>
+            <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
+          </div>
 
-        <!-- AI Review Section -->
-        <div class="glass-panel input-section" id="aiReviewSection">
-          <h2>🤖 AI Review</h2>
-          <button class="btn" id="runAIReviewBtn">Run AI Review</button>
-          <div id="aiReviewResult" style="margin-top: 1rem;"></div>
-        </div>
+          <!-- Similar Videos Section -->
+          <div class="glass-panel input-section" id="similarVideosSection">
+            <h2>📺 Similar Videos</h2>
+            <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
+            <button class="btn" id="addVideoBtn">Add Video</button>
+            <div id="similarVideosList" class="similar-videos-list"></div>
+          </div>
 
-        <!-- Rubric Table Section -->
-        <div class="glass-panel rubric-table" id="rubricSection">
-          <h2>📊 Rubric Table</h2>
-          <table class="modern-table">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Good (1)</th>
-                <th>Great (2)</th>
-                <th>Excellent (3)</th>
-                <th>Outstanding (4)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- SECTION: Video Concept & Pre Planning -->
-              <tr>
-                <td colspan="5" class="section-header">VIDEO CONCEPT & PRE PLANNING</td>
-              </tr>
-              <!-- 1) Video Concept -->
-              <tr>
-                <td class="category-header" data-category="0">🎬 Video Concept</td>
-                <td data-category="0" data-rating="1">Weak or unoriginal concept; doesn’t stand out.</td>
-                <td data-category="0" data-rating="2">Decent concept with some originality, but still feels familiar.</td>
-                <td data-category="0" data-rating="3">Strong concept with a unique twist that draws interest.</td>
-                <td data-category="0" data-rating="4">Highly compelling and innovative concept; stands out instantly.</td>
-              </tr>
-              <!-- 2) Planning & Outline -->
-              <tr>
-                <td class="category-header" data-category="1">📝 Planning &amp; Outline</td>
-                <td data-category="1" data-rating="1">Concept is loosely formed; unclear breakdown of key elements (hook, conflict, CTA, etc.).</td>
-                <td data-category="1" data-rating="2">Basic structure or progression is outlined but lacks detail in some areas.</td>
-                <td data-category="1" data-rating="3">Well‐conceived plan with a thorough script or breakdown ensuring each segment ties into the main goal.</td>
-                <td data-category="1" data-rating="4">Comprehensive pre‐production that accounts for hooking device, escalations, pacing, and seamless goal integration.</td>
-              </tr>
-              <!-- 3) Production Feasibility & Planning -->
-              <tr>
-                <td class="category-header" data-category="2">🎥 Production Feasibility &amp; Planning</td>
-                <td data-category="2" data-rating="1">Unrealistic or vague plan with potential production obstacles.</td>
-                <td data-category="2" data-rating="2">Basic plan exists but lacks thorough logistics (locations, timing, assets).</td>
-                <td data-category="2" data-rating="3">Well-thought-out plan with production logistics considered.</td>
-                <td data-category="2" data-rating="4">Comprehensive pre-production, including contingency plans and efficient scheduling.</td>
-              </tr>
-              <!-- 4) Retention-Based Structure -->
-              <tr>
-                <td class="category-header" data-category="3">📈 Retention-Based Structure</td>
-                <td data-category="3" data-rating="1">No clear plan for keeping viewers engaged.</td>
-                <td data-category="3" data-rating="2">Some engaging points, but may have weak retention structure.</td>
-                <td data-category="3" data-rating="3">Pacing and retention elements are mapped out effectively.</td>
-                <td data-category="3" data-rating="4">Highly structured for retention with peaks, suspense, and pacing mapped minute-by-minute.</td>
-              </tr>
-              <!-- 5) Originality & Trend‐Jacking -->
-              <tr>
-                <td class="category-header" data-category="4">🚀 Originality &amp; Trend‐Jacking</td>
-                <td data-category="4" data-rating="1">Overdone or cliché concept with no unique spin.</td>
-                <td data-category="4" data-rating="2">Minor twist on popular trends but still somewhat familiar.</td>
-                <td data-category="4" data-rating="3">A distinct approach or fresh angle that helps it stand out.</td>
-                <td data-category="4" data-rating="4">Boundary‐pushing content or trend usage that feels truly innovative.</td>
-              </tr>
+          <!-- AI Review Section -->
+          <div class="glass-panel input-section" id="aiReviewSection">
+            <h2>🤖 AI Review</h2>
+            <button class="btn" id="runAIReviewBtn">Run AI Review</button>
+            <div id="aiReviewResult" style="margin-top: 1rem;"></div>
+          </div>
 
-              <!-- SECTION: Video Fundamentals -->
-              <tr>
-                <td colspan="5" class="section-header">VIDEO FUNDAMENTALS</td>
-              </tr>
-              <!-- 6) Hook & Intro -->
-              <tr>
-                <td class="category-header" data-category="5">🎣 Hook &amp; Intro</td>
-                <td data-category="5" data-rating="1">Slow start or unclear hook; doesn’t entice immediate engagement.</td>
-                <td data-category="5" data-rating="2">Basic but functional hook; viewers might stay out of mild curiosity.</td>
-                <td data-category="5" data-rating="3">Clear, intriguing opening that sparks immediate interest.</td>
-                <td data-category="5" data-rating="4">Unignorable opener; compels viewers to keep watching almost instantly.</td>
-              </tr>
-              <!-- 7) Clarity of Goal -->
-              <tr>
-                <td class="category-header" data-category="6">🎯 Clarity of Goal</td>
-                <td data-category="6" data-rating="1">Goal is vague, hidden, or tacked on; viewers may not know why they’re watching.</td>
-                <td data-category="6" data-rating="2">A stated goal exists but can get lost or muddled mid‐video.</td>
-                <td data-category="6" data-rating="3">The central goal is well‐defined, and each segment clearly ties back to it.</td>
-                <td data-category="6" data-rating="4">Crystal‐clear premise; the entire video revolves around a high‐stakes goal that viewers can’t wait to see resolved.</td>
-              </tr>
-              <!-- 8) Conflict & Stakes -->
-              <tr>
-                <td class="category-header" data-category="7">⚔️ Conflict &amp; Stakes</td>
-                <td data-category="7" data-rating="1">Low urgency; conflicts feel trivial or manufactured.</td>
-                <td data-category="7" data-rating="2">Basic obstacles are present but feel predictable.</td>
-                <td data-category="7" data-rating="3">High stakes that keep viewers invested in how events will unfold.</td>
-                <td data-category="7" data-rating="4">Unavoidable drama and ever‐escalating tension that compels viewers to see the outcome.</td>
-              </tr>
-              <!-- 9) Challenges & Obstacles -->
-              <tr>
-                <td class="category-header" data-category="8">🛑 Challenges &amp; Obstacles</td>
-                <td data-category="8" data-rating="1">Challenges feel artificial, forced, or too easy.</td>
-                <td data-category="8" data-rating="2">Some obstacles exist but feel predictable.</td>
-                <td data-category="8" data-rating="3">Well-balanced challenges that create tension and excitement.</td>
-                <td data-category="8" data-rating="4">Dynamic, unpredictable challenges that elevate engagement.</td>
-              </tr>
-              <!-- 10) Credibility & Believability -->
-              <tr>
-                <td class="category-header" data-category="9">🤝 Credibility &amp; Believability</td>
-                <td data-category="9" data-rating="1">Feels forced or overly staged; viewer trust may be low.</td>
-                <td data-category="9" data-rating="2">Some genuine elements, but parts still come off as artificial or scripted.</td>
-                <td data-category="9" data-rating="3">The content feels sincere and honest; overall sense of integrity.</td>
-                <td data-category="9" data-rating="4">Deeply credible; the creator’s transparency and approach leave no doubt about authenticity.</td>
-              </tr>
+          <!-- Rubric Table Section -->
+          <div class="glass-panel rubric-table" id="rubricSection">
+            <h2>📊 Rubric Table</h2>
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Good (1)</th>
+                  <th>Great (2)</th>
+                  <th>Excellent (3)</th>
+                  <th>Outstanding (4)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- SECTION: Video Concept & Pre Planning -->
+                <tr>
+                  <td colspan="5" class="section-header">VIDEO CONCEPT & PRE PLANNING</td>
+                </tr>
+                <!-- 1) Video Concept -->
+                <tr>
+                  <td class="category-header" data-category="0">🎬 Video Concept</td>
+                  <td data-category="0" data-rating="1">Weak or unoriginal concept; doesn’t stand out.</td>
+                  <td data-category="0" data-rating="2">Decent concept with some originality, but still feels familiar.</td>
+                  <td data-category="0" data-rating="3">Strong concept with a unique twist that draws interest.</td>
+                  <td data-category="0" data-rating="4">Highly compelling and innovative concept; stands out instantly.</td>
+                </tr>
+                <!-- 2) Planning & Outline -->
+                <tr>
+                  <td class="category-header" data-category="1">📝 Planning &amp; Outline</td>
+                  <td data-category="1" data-rating="1">Concept is loosely formed; unclear breakdown of key elements (hook, conflict, CTA, etc.).</td>
+                  <td data-category="1" data-rating="2">Basic structure or progression is outlined but lacks detail in some areas.</td>
+                  <td data-category="1" data-rating="3">Well‐conceived plan with a thorough script or breakdown ensuring each segment ties into the main goal.</td>
+                  <td data-category="1" data-rating="4">Comprehensive pre‐production that accounts for hooking device, escalations, pacing, and seamless goal integration.</td>
+                </tr>
+                <!-- 3) Production Feasibility & Planning -->
+                <tr>
+                  <td class="category-header" data-category="2">🎥 Production Feasibility &amp; Planning</td>
+                  <td data-category="2" data-rating="1">Unrealistic or vague plan with potential production obstacles.</td>
+                  <td data-category="2" data-rating="2">Basic plan exists but lacks thorough logistics (locations, timing, assets).</td>
+                  <td data-category="2" data-rating="3">Well-thought-out plan with production logistics considered.</td>
+                  <td data-category="2" data-rating="4">Comprehensive pre-production, including contingency plans and efficient scheduling.</td>
+                </tr>
+                <!-- 4) Retention-Based Structure -->
+                <tr>
+                  <td class="category-header" data-category="3">📈 Retention-Based Structure</td>
+                  <td data-category="3" data-rating="1">No clear plan for keeping viewers engaged.</td>
+                  <td data-category="3" data-rating="2">Some engaging points, but may have weak retention structure.</td>
+                  <td data-category="3" data-rating="3">Pacing and retention elements are mapped out effectively.</td>
+                  <td data-category="3" data-rating="4">Highly structured for retention with peaks, suspense, and pacing mapped minute-by-minute.</td>
+                </tr>
+                <!-- 5) Originality & Trend‐Jacking -->
+                <tr>
+                  <td class="category-header" data-category="4">🚀 Originality &amp; Trend‐Jacking</td>
+                  <td data-category="4" data-rating="1">Overdone or cliché concept with no unique spin.</td>
+                  <td data-category="4" data-rating="2">Minor twist on popular trends but still somewhat familiar.</td>
+                  <td data-category="4" data-rating="3">A distinct approach or fresh angle that helps it stand out.</td>
+                  <td data-category="4" data-rating="4">Boundary‐pushing content or trend usage that feels truly innovative.</td>
+                </tr>
 
-              <!-- SECTION: Video Pacing -->
-              <tr>
-                <td colspan="5" class="section-header">VIDEO PACING</td>
-              </tr>
-              <!-- 11) Pacing & Rhythm -->
-              <tr>
-                <td class="category-header" data-category="10">⏱️ Pacing &amp; Rhythm</td>
-                <td data-category="10" data-rating="1">Uneven pacing; segments linger too long or abruptly cut.</td>
-                <td data-category="10" data-rating="2">Mostly smooth transitions but with occasional slow or rushed sections.</td>
-                <td data-category="10" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
-                <td data-category="10" data-rating="4">Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.</td>
-              </tr>
-              <!-- 12) Retention-Based Structure (again) -->
-              <tr>
-                <td class="category-header" data-category="11">📈 Retention-Based Structure</td>
-                <td data-category="11" data-rating="1">No clear plan for keeping viewers engaged.</td>
-                <td data-category="11" data-rating="2">Some engaging points, but may have weak retention structure.</td>
-                <td data-category="11" data-rating="3">Pacing and retention elements are mapped out effectively.</td>
-                <td data-category="11" data-rating="4">Highly structured for retention with peaks, suspense, and pacing mapped minute-by-minute.</td>
-              </tr>
-              <!-- 13) Storytelling & Emotional Investment -->
-              <tr>
-                <td class="category-header" data-category="12">📖 Storytelling &amp; Emotional Investment</td>
-                <td data-category="12" data-rating="1">No emotional stakes; the audience may not care about the outcome.</td>
-                <td data-category="12" data-rating="2">Basic stakes are present, but they may feel predictable or unearned.</td>
-                <td data-category="12" data-rating="3">Strong emotional connection; the audience is invested in the journey.</td>
-                <td data-category="12" data-rating="4">Deep emotional pull with well-executed character arcs or stakes.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                <!-- SECTION: Video Fundamentals -->
+                <tr>
+                  <td colspan="5" class="section-header">VIDEO FUNDAMENTALS</td>
+                </tr>
+                <!-- 6) Hook & Intro -->
+                <tr>
+                  <td class="category-header" data-category="5">🎣 Hook &amp; Intro</td>
+                  <td data-category="5" data-rating="1">Slow start or unclear hook; doesn’t entice immediate engagement.</td>
+                  <td data-category="5" data-rating="2">Basic but functional hook; viewers might stay out of mild curiosity.</td>
+                  <td data-category="5" data-rating="3">Clear, intriguing opening that sparks immediate interest.</td>
+                  <td data-category="5" data-rating="4">Unignorable opener; compels viewers to keep watching almost instantly.</td>
+                </tr>
+                <!-- 7) Clarity of Goal -->
+                <tr>
+                  <td class="category-header" data-category="6">🎯 Clarity of Goal</td>
+                  <td data-category="6" data-rating="1">Goal is vague, hidden, or tacked on; viewers may not know why they’re watching.</td>
+                  <td data-category="6" data-rating="2">A stated goal exists but can get lost or muddled mid‐video.</td>
+                  <td data-category="6" data-rating="3">The central goal is well‐defined, and each segment clearly ties back to it.</td>
+                  <td data-category="6" data-rating="4">Crystal‐clear premise; the entire video revolves around a high‐stakes goal that viewers can’t wait to see resolved.</td>
+                </tr>
+                <!-- 8) Conflict & Stakes -->
+                <tr>
+                  <td class="category-header" data-category="7">⚔️ Conflict &amp; Stakes</td>
+                  <td data-category="7" data-rating="1">Low urgency; conflicts feel trivial or manufactured.</td>
+                  <td data-category="7" data-rating="2">Basic obstacles are present but feel predictable.</td>
+                  <td data-category="7" data-rating="3">High stakes that keep viewers invested in how events will unfold.</td>
+                  <td data-category="7" data-rating="4">Unavoidable drama and ever‐escalating tension that compels viewers to see the outcome.</td>
+                </tr>
+                <!-- 9) Challenges & Obstacles -->
+                <tr>
+                  <td class="category-header" data-category="8">🛑 Challenges &amp; Obstacles</td>
+                  <td data-category="8" data-rating="1">Challenges feel artificial, forced, or too easy.</td>
+                  <td data-category="8" data-rating="2">Some obstacles exist but feel predictable.</td>
+                  <td data-category="8" data-rating="3">Well-balanced challenges that create tension and excitement.</td>
+                  <td data-category="8" data-rating="4">Dynamic, unpredictable challenges that elevate engagement.</td>
+                </tr>
+                <!-- 10) Credibility & Believability -->
+                <tr>
+                  <td class="category-header" data-category="9">🤝 Credibility &amp; Believability</td>
+                  <td data-category="9" data-rating="1">Feels forced or overly staged; viewer trust may be low.</td>
+                  <td data-category="9" data-rating="2">Some genuine elements, but parts still come off as artificial or scripted.</td>
+                  <td data-category="9" data-rating="3">The content feels sincere and honest; overall sense of integrity.</td>
+                  <td data-category="9" data-rating="4">Deeply credible; the creator’s transparency and approach leave no doubt about authenticity.</td>
+                </tr>
 
-        <!-- Human Feedback Section -->
-        <div class="glass-panel input-section" id="humanFeedbackSection">
-          <h2>👥 Human Feedback</h2>
-          <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
-        </div>
+                <!-- SECTION: Video Pacing -->
+                <tr>
+                  <td colspan="5" class="section-header">VIDEO PACING</td>
+                </tr>
+                <!-- 11) Pacing & Rhythm -->
+                <tr>
+                  <td class="category-header" data-category="10">⏱️ Pacing &amp; Rhythm</td>
+                  <td data-category="10" data-rating="1">Uneven pacing; segments linger too long or abruptly cut.</td>
+                  <td data-category="10" data-rating="2">Mostly smooth transitions but with occasional slow or rushed sections.</td>
+                  <td data-category="10" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
+                  <td data-category="10" data-rating="4">Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.</td>
+                </tr>
+                <!-- 12) Retention-Based Structure (again) -->
+                <tr>
+                  <td class="category-header" data-category="11">📈 Retention-Based Structure</td>
+                  <td data-category="11" data-rating="1">No clear plan for keeping viewers engaged.</td>
+                  <td data-category="11" data-rating="2">Some engaging points, but may have weak retention structure.</td>
+                  <td data-category="11" data-rating="3">Pacing and retention elements are mapped out effectively.</td>
+                  <td data-category="11" data-rating="4">Highly structured for retention with peaks, suspense, and pacing mapped minute-by-minute.</td>
+                </tr>
+                <!-- 13) Storytelling & Emotional Investment -->
+                <tr>
+                  <td class="category-header" data-category="12">📖 Storytelling &amp; Emotional Investment</td>
+                  <td data-category="12" data-rating="1">No emotional stakes; the audience may not care about the outcome.</td>
+                  <td data-category="12" data-rating="2">Basic stakes are present, but they may feel predictable or unearned.</td>
+                  <td data-category="12" data-rating="3">Strong emotional connection; the audience is invested in the journey.</td>
+                  <td data-category="12" data-rating="4">Deep emotional pull with well-executed character arcs or stakes.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <!-- Self-Assessment Checklist Section -->
-        <div class="glass-panel input-section" id="selfAssessmentSection">
-          <h2>✅ Self-Assessment Checklist</h2>
-          <ul>
-            <li>
-              <input type="checkbox" id="check1" />
-              <label for="check1"><strong>Pre-Writing:</strong> Is the theme, central conflict, and structure (e.g., Save the Cat, Story Circle) clearly defined?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check2" />
-              <label for="check2"><strong>Writing:</strong> Do beats connect logically (“And, But, Therefore”), and are resolutions character-driven rather than coincidental?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check3" />
-              <label for="check3"><strong>World-Building &amp; Stakes:</strong> Are mechanics, rules, and stakes clear and consistent? Do conflicts escalate meaningfully?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check4" />
-              <label for="check4"><strong>Review:</strong> Does the story flow smoothly, with no unnecessary complexity? Do all setups and subplots tie into the resolution?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check5" />
-              <label for="check5"><strong>Polishing:</strong> Have weak beats, plot holes, and unearned resolutions (e.g., deus ex machina) been removed?</label>
-            </li>
-            <li>
-              <input type="checkbox" id="check6" />
-              <label for="check6"><strong>Pre-Shoot:</strong> Is everything (set, props, equipment, talent, backups) fully prepared for filming?</label>
-            </li>
-          </ul>
-        </div>
-      </div>
+          <!-- Human Feedback Section -->
+          <div class="glass-panel input-section" id="humanFeedbackSection">
+            <h2>👥 Human Feedback</h2>
+            <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
+          </div>
+
+          <!-- Self-Assessment Checklist Section -->
+          <div class="glass-panel input-section" id="selfAssessmentSection">
+            <h2>✅ Self-Assessment Checklist</h2>
+            <ul>
+              <li>
+                <input type="checkbox" id="check1" />
+                <label for="check1"><strong>Pre-Writing:</strong> Is the theme, central conflict, and structure (e.g., Save the Cat, Story Circle) clearly defined?</label>
+              </li>
+              <li>
+                <input type="checkbox" id="check2" />
+                <label for="check2"><strong>Writing:</strong> Do beats connect logically (“And, But, Therefore”), and are resolutions character-driven rather than coincidental?</label>
+              </li>
+              <li>
+                <input type="checkbox" id="check3" />
+                <label for="check3"><strong>World-Building &amp; Stakes:</strong> Are mechanics, rules, and stakes clear and consistent? Do conflicts escalate meaningfully?</label>
+              </li>
+              <li>
+                <input type="checkbox" id="check4" />
+                <label for="check4"><strong>Review:</strong> Does the story flow smoothly, with no unnecessary complexity? Do all setups and subplots tie into the resolution?</label>
+              </li>
+              <li>
+                <input type="checkbox" id="check5" />
+                <label for="check5"><strong>Polishing:</strong> Have weak beats, plot holes, and unearned resolutions (e.g., deus ex machina) been removed?</label>
+              </li>
+              <li>
+                <input type="checkbox" id="check6" />
+                <label for="check6"><strong>Pre-Shoot:</strong> Is everything (set, props, equipment, talent, backups) fully prepared for filming?</label>
+              </li>
+            </ul>
+          </div>
+        </div> <!-- end .main-content -->
+      </div> <!-- end .layout-container -->
     </main>
 
     <!-- JavaScript -->
@@ -621,19 +657,46 @@
       let scores = {};
 
       window.addEventListener('DOMContentLoaded', () => {
+        // Dark mode toggle
         document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
+
+        // Buttons
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
+        document.getElementById('resetBtn').addEventListener('click', resetScores);
         document.getElementById('runAIReviewBtn')?.addEventListener('click', runAIReview);
         document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
+
+        // Rubric clicking
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
         });
+
+        // Auto-resize textareas
         document.querySelectorAll('.story-input').forEach(textarea => {
           textarea.addEventListener('input', autoResize);
         });
-        document.getElementById('resetBtn').addEventListener('click', resetScores);
+
+        // Idea Rubric upload
+        document.getElementById('ideaRubricUpload').addEventListener('change', handleIdeaRubricUpload);
       });
+
+      function handleIdeaRubricUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.match('image/png')) {
+          alert('Please upload a PNG file.');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const container = document.getElementById('ideaRubricImageContainer');
+          container.innerHTML = `<img src="${evt.target.result}" alt="Idea Rubric" />`;
+        };
+        reader.readAsDataURL(file);
+      }
 
       function showRainbowQuote() {
         const quotes = [
@@ -663,7 +726,7 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        // Same logic as original. Minimum 10 categories are needed for final ranking to appear
+        // Same logic as original: need at least 10 categories for final ranking
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -690,7 +753,7 @@
       }
 
       function updateProgressBar(total) {
-        const maxScore = 40;
+        const maxScore = 40; 
         const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
@@ -715,10 +778,11 @@
         headerClone.style.top = '0';
         headerClone.style.margin = '0';
 
-        const mainClone = document.querySelector('main').cloneNode(true);
+        // Clone main content
+        const layoutClone = document.querySelector('.layout-container').cloneNode(true);
 
         tempContainer.appendChild(headerClone);
-        tempContainer.appendChild(mainClone);
+        tempContainer.appendChild(layoutClone);
         document.body.appendChild(tempContainer);
 
         try {
@@ -764,6 +828,7 @@
           resultDiv.textContent = "Please enter a quick summary for AI review.";
           return;
         }
+        // Dummy suggestions remain. Replace with real AI or an API call as needed
         const reviewIdeas = [
           {
             improvements: [
@@ -826,7 +891,7 @@
         const urlInput = document.getElementById('youtubeLinkInput');
         const url = urlInput.value.trim();
         if (!url) return;
-        
+
         let videoId = "";
         try {
           const urlObj = new URL(url);
