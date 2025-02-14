@@ -41,6 +41,9 @@
         --spacing: 1rem;
         --font-base: 'Roboto', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
+
+        /* New variable for section header background (light mode) */
+        --section-bg: rgba(79, 172, 254, 0.2);
       }
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
@@ -49,6 +52,9 @@
         --border-light: rgba(255, 255, 255, 0.2);
         --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --table-cell-bg-light: rgba(30, 30, 30, 0.85);
+
+        /* Dark mode section header background */
+        --section-bg: rgba(79, 172, 254, 0.3);
       }
       body {
         margin: 0;
@@ -220,8 +226,15 @@
       .input-section {
         margin: 1rem 0;
       }
+
+      /* Center and limit width of text areas within their panels */
+      .glass-panel .story-input {
+        display: block;
+        width: 80%;
+        max-width: 800px;
+        margin: 0.5rem auto;
+      }
       .story-input {
-        width: 100%;
         min-height: 120px;
         padding: 1rem;
         border: 2px solid var(--border-light);
@@ -230,7 +243,6 @@
         background: var(--bg-light);
         resize: none;
         transition: var(--transition);
-        margin-bottom: 0.5rem;
       }
       .story-input:focus {
         outline: none;
@@ -338,11 +350,11 @@
         min-width: 160px;
       }
 
-      /* Section Header styling - now slightly lighter color */
+      /* Section Header styling - uses the new variable for light/dark difference */
       .section-header {
         text-align: center;
         font-weight: bold;
-        background: rgba(79, 172, 254, 0.2); /* Slightly lighter/more visible */
+        background: var(--section-bg);
         padding: 0.75rem 0;
       }
 
