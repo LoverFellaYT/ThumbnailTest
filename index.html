@@ -95,6 +95,26 @@
         z-index: 1000;
       }
 
+      /* Custom tooltip for rubric cells */
+      .modern-table td[data-tip] {
+        position: relative;
+      }
+      .modern-table td[data-tip]:hover::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        z-index: 1000;
+        margin-bottom: 4px;
+      }
+
       /* HEADER */
       header.analyzer-header {
         position: sticky;
@@ -448,6 +468,20 @@
         margin-top: 0;
       }
 
+      /* Mandatory Click-Demand Checkbox */
+      .click-demand {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        background: var(--panel-light);
+      }
+      .click-demand label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
       /* MODAL */
       .modal-bg {
         position: fixed;
@@ -685,19 +719,19 @@
                 <th>Outstanding (4)</th>
               </tr>
             </thead>
-                        <tbody>
+            <tbody>
               <!-- 1: Curiosity & Intrigue (cat-0) -->
               <tr>
                 <td data-category="0">
                   <strong>🤔 Curiosity &amp; Intrigue</strong>
                 </td>
-                <td data-category="0" data-rating="1" role="button" tabindex="0">
+                <td data-category="0" data-rating="1" role="button" tabindex="0" data-tip="To reach a higher level, try adding an element of surprise or contradiction.">
                   Slightly interesting; minimal curiosity. Feels generic or bland.
                 </td>
-                <td data-category="0" data-rating="2" role="button" tabindex="0">
+                <td data-category="0" data-rating="2" role="button" tabindex="0" data-tip="Enhance intrigue with a more unexpected element or twist.">
                   Moderately interesting scenario or question; hooks some viewers but not enough to stand out.
                 </td>
-                <td data-category="0" data-rating="3" role="button" tabindex="0">
+                <td data-category="0" data-rating="3" role="button" tabindex="0" data-tip="For Outstanding, incorporate dramatic elements like contradiction, impossibility, or hidden info.">
                   Clearly intriguing; offers a fresh or surprising angle that strongly compels viewers to see what happens next.
                 </td>
                 <td data-category="0" data-rating="4" role="button" tabindex="0">
@@ -714,13 +748,13 @@
                 <td data-category="1">
                   <strong>👀 Main Subject Clarity</strong>
                 </td>
-                <td data-category="1" data-rating="1" role="button" tabindex="0">
+                <td data-category="1" data-rating="1" role="button" tabindex="0" data-tip="Simplify background and remove distractions to improve clarity.">
                   Has a subject, but somewhat cluttered
                 </td>
-                <td data-category="1" data-rating="2" role="button" tabindex="0">
+                <td data-category="1" data-rating="2" role="button" tabindex="0" data-tip="Focus more on the subject and reduce any extraneous details.">
                   Recognizable at a glance
                 </td>
-                <td data-category="1" data-rating="3" role="button" tabindex="0">
+                <td data-category="1" data-rating="3" role="button" tabindex="0" data-tip="Aim for perfection by eliminating all clutter for crystal-clear subject.">
                   Clear focal point; minimal distractions
                 </td>
                 <td data-category="1" data-rating="4" role="button" tabindex="0">
@@ -732,31 +766,31 @@
                 <td data-category="2">
                   <strong>😀 Human Element &amp; Emotion</strong>
                 </td>
-                <td data-category="2" data-rating="1" role="button" tabindex="0">
+                <td data-category="2" data-rating="1" role="button" tabindex="0" data-tip="Amplify facial expression to convey stronger emotion.">
                   Person/character shown; emotion understated
                 </td>
-                <td data-category="2" data-rating="2" role="button" tabindex="0">
+                <td data-category="2" data-rating="2" role="button" tabindex="0" data-tip="Enhance the expression further for greater viewer connection.">
                   Noticeable expression or emotive face
                 </td>
-                <td data-category="2" data-rating="3" role="button" tabindex="0">
+                <td data-category="2" data-rating="3" role="button" tabindex="0" data-tip="Push for an exaggerated reaction to fully captivate viewers.">
                   Clear emotional reaction; conveys excitement/tone
                 </td>
                 <td data-category="2" data-rating="4" role="button" tabindex="0">
                   Face shows extreme emotion (shock, fear, anger, triumph) with clear eyes and exaggerated expression. No neutral faces. Strong eye contact or gaze leading to focal point.
                 </td>
               </tr>
-              <!-- 4: Must-Click Factor (new rubric in place of Game Context Clarity) -->
+              <!-- 4: Must-Click Factor (cat-3) -->
               <tr>
                 <td data-category="3">
                   <strong>⚡ Must-Click Factor</strong>
                 </td>
-                <td data-category="3" data-rating="1" role="button" tabindex="0">
+                <td data-category="3" data-rating="1" role="button" tabindex="0" data-tip="Add a visual twist or element of danger to pique curiosity.">
                   No mystery, no stakes, and no urgency. Viewers can predict the entire video just by looking.
                 </td>
-                <td data-category="3" data-rating="2" role="button" tabindex="0">
+                <td data-category="3" data-rating="2" role="button" tabindex="0" data-tip="Introduce unexpected stakes or drama to elevate click demand.">
                   Some intrigue, but lacks drama or transformation. Progression is expected (e.g., Book → Enchanted Book).
                 </td>
-                <td data-category="3" data-rating="3" role="button" tabindex="0">
+                <td data-category="3" data-rating="3" role="button" tabindex="0" data-tip="Incorporate an even bolder twist or higher stakes for maximum click appeal.">
                   Has mystery, stakes, or an unexpected visual twist. Viewer asks, "Wait… what happened here?"
                 </td>
                 <td data-category="3" data-rating="4" role="button" tabindex="0">
@@ -768,13 +802,13 @@
                 <td data-category="4">
                   <strong>🔗 Title-Thumbnail Synergy</strong>
                 </td>
-                <td data-category="4" data-rating="1" role="button" tabindex="0">
+                <td data-category="4" data-rating="1" role="button" tabindex="0" data-tip="Make the thumbnail more visually complementary to the title.">
                   Loosely connected; might repeat words
                 </td>
-                <td data-category="4" data-rating="2" role="button" tabindex="0">
+                <td data-category="4" data-rating="2" role="button" tabindex="0" data-tip="Enhance synergy by adding unique visual cues not mentioned in the title.">
                   Reasonable hook; complements the title
                 </td>
-                <td data-category="4" data-rating="3" role="button" tabindex="0">
+                <td data-category="4" data-rating="3" role="button" tabindex="0" data-tip="Ensure the thumbnail provides new insights beyond the title.">
                   Adds unique intrigue; compelling mini-story
                 </td>
                 <td data-category="4" data-rating="4" role="button" tabindex="0">
@@ -786,13 +820,13 @@
                 <td data-category="5">
                   <strong>👌 Simplicity &amp; Focus</strong>
                 </td>
-                <td data-category="5" data-rating="1" role="button" tabindex="0">
+                <td data-category="5" data-rating="1" role="button" tabindex="0" data-tip="Remove minor distractions to sharpen the focus.">
                   Slightly busy; minor unnecessary elements
                 </td>
-                <td data-category="5" data-rating="2" role="button" tabindex="0">
+                <td data-category="5" data-rating="2" role="button" tabindex="0" data-tip="Eliminate remaining clutter for a more focused design.">
                   Fairly clean layout; main visual stands out
                 </td>
-                <td data-category="5" data-rating="3" role="button" tabindex="0">
+                <td data-category="5" data-rating="3" role="button" tabindex="0" data-tip="Achieve perfection by ensuring every element has purpose and no extras.">
                   Focused design with enough detail
                 </td>
                 <td data-category="5" data-rating="4" role="button" tabindex="0">
@@ -804,13 +838,13 @@
                 <td data-category="6">
                   <strong>🌈 Color &amp; Contrast</strong>
                 </td>
-                <td data-category="6" data-rating="1" role="button" tabindex="0">
+                <td data-category="6" data-rating="1" role="button" tabindex="0" data-tip="Increase contrast and use more vibrant colors.">
                   Decent colors; subject might blend in
                 </td>
-                <td data-category="6" data-rating="2" role="button" tabindex="0">
+                <td data-category="6" data-rating="2" role="button" tabindex="0" data-tip="Enhance vibrancy and consider complementary colors for extra pop.">
                   Solid contrast; main subject stands out
                 </td>
-                <td data-category="6" data-rating="3" role="button" tabindex="0">
+                <td data-category="6" data-rating="3" role="button" tabindex="0" data-tip="Ensure optimal color balance and contrast for maximum impact.">
                   Bold, vibrant palette; subject pops
                 </td>
                 <td data-category="6" data-rating="4" role="button" tabindex="0">
@@ -822,13 +856,13 @@
                 <td data-category="7">
                   <strong>📐 Composition &amp; Layout</strong>
                 </td>
-                <td data-category="7" data-rating="1" role="button" tabindex="0">
+                <td data-category="7" data-rating="1" role="button" tabindex="0" data-tip="Refine placement to clearly define the focal point.">
                   Somewhat even placement; minor overlaps
                 </td>
-                <td data-category="7" data-rating="2" role="button" tabindex="0">
+                <td data-category="7" data-rating="2" role="button" tabindex="0" data-tip="Polish the composition by emphasizing the main subject even more.">
                   Balanced layout; no major overlaps
                 </td>
-                <td data-category="7" data-rating="3" role="button" tabindex="0">
+                <td data-category="7" data-rating="3" role="button" tabindex="0" data-tip="Adopt advanced techniques like the Golden Ratio for optimal layout.">
                   Polished composition; main subject first
                 </td>
                 <td data-category="7" data-rating="4" role="button" tabindex="0">
@@ -840,13 +874,13 @@
                 <td data-category="8">
                   <strong>📝 Text Usage (If Any)</strong>
                 </td>
-                <td data-category="8" data-rating="1" role="button" tabindex="0">
+                <td data-category="8" data-rating="1" role="button" tabindex="0" data-tip="Shorten and enlarge text for clarity and impact.">
                   May be too long, small, or repeats title
                 </td>
-                <td data-category="8" data-rating="2" role="button" tabindex="0">
+                <td data-category="8" data-rating="2" role="button" tabindex="0" data-tip="Refine text to be more striking without overpowering the image.">
                   Short, legible text; mild intrigue
                 </td>
-                <td data-category="8" data-rating="3" role="button" tabindex="0">
+                <td data-category="8" data-rating="3" role="button" tabindex="0" data-tip="Ensure text is only used to enhance the thumbnail, not distract.">
                   Minimal, bold &amp; clear; complements title
                 </td>
                 <td data-category="8" data-rating="4" role="button" tabindex="0">
@@ -858,13 +892,13 @@
                 <td data-category="9">
                   <strong>✅ Authenticity &amp; Accuracy</strong>
                 </td>
-                <td data-category="9" data-rating="1" role="button" tabindex="0">
+                <td data-category="9" data-rating="1" role="button" tabindex="0" data-tip="Tighten the focus to eliminate any misleading elements.">
                   Mostly relevant; mild exaggeration
                 </td>
-                <td data-category="9" data-rating="2" role="button" tabindex="0">
+                <td data-category="9" data-rating="2" role="button" tabindex="0" data-tip="Reduce any exaggeration to ensure full authenticity.">
                   Accurate with slight hype
                 </td>
-                <td data-category="9" data-rating="3" role="button" tabindex="0">
+                <td data-category="9" data-rating="3" role="button" tabindex="0" data-tip="Keep it real, but consider adding a bit more hook if possible.">
                   Fully aligned; no misleading
                 </td>
                 <td data-category="9" data-rating="4" role="button" tabindex="0">
@@ -876,13 +910,13 @@
                 <td data-category="10">
                   <strong>💎 Technical Quality</strong>
                 </td>
-                <td data-category="10" data-rating="1" role="button" tabindex="0">
+                <td data-category="10" data-rating="1" role="button" tabindex="0" data-tip="Improve resolution and clarity.">
                   Decent resolution; could be sharper
                 </td>
-                <td data-category="10" data-rating="2" role="button" tabindex="0">
+                <td data-category="10" data-rating="2" role="button" tabindex="0" data-tip="Enhance lighting and sharpness for a crisper image.">
                   Clear, properly formatted; not pixelated
                 </td>
-                <td data-category="10" data-rating="3" role="button" tabindex="0">
+                <td data-category="10" data-rating="3" role="button" tabindex="0" data-tip="Aim for perfection by ensuring flawless technical execution.">
                   High-res, crisp; excellent lighting
                 </td>
                 <td data-category="10" data-rating="4" role="button" tabindex="0">
@@ -890,7 +924,6 @@
                 </td>
               </tr>
             </tbody>
-
           </table>
 
           <!-- Legend Toggle Button -->
@@ -941,6 +974,18 @@
               <li><strong>Excellent (3):</strong> Highly effective design, clear focal point, easy to read text.</li>
               <li><strong>Outstanding (4):</strong> Flawless and compelling; advanced techniques used well.</li>
             </ul>
+          </div>
+
+          <!-- Mandatory "Does This Demand a Click?" Checkbox -->
+          <div class="click-demand">
+            <label for="clickDemandCheckbox">
+              🔲 Does this thumbnail make you feel like you must click?
+            </label>
+            <input type="checkbox" id="clickDemandCheckbox" required aria-required="true" style="margin-top: 0.5rem;">
+            <p style="margin-top: 0.5rem;">
+              ✅ YES → It’s good to go!<br>
+              ❌ NO → We need to rethink the concept.
+            </p>
           </div>
         </section>
 
