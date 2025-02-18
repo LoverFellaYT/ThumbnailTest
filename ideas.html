@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Title &amp; Idea Review Pro</title>
 
     <!-- Font Awesome for editing icons -->
@@ -122,7 +122,7 @@
         transition: var(--transition);
       }
       .total-score:hover::after {
-        content: "Idea Score (0/28) | Title Score (0/24)";
+        content: "Idea Score (0/40) | Title Score (0/24) | Overall (0/64)";
         position: absolute;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
@@ -421,7 +421,7 @@
             <span>Title &amp; Idea Review Pro</span>
           </div>
           <div class="total-score" id="scoreDisplay" tabindex="0">
-            Idea Score: <span id="ideaScore">0</span>/28 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/52 – <span id="scoreLabel">Needs Work</span>
+            Idea Score: <span id="ideaScore">0</span>/40 | Title Score: <span id="titleScore">0</span>/24 | Overall: <span id="scoreTotal">0</span>/64 – <span id="scoreLabel">Needs Work</span>
           </div>
           <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
         </div>
@@ -470,6 +470,7 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- Existing Idea Categories 0–6 -->
                 <tr data-category="0">
                   <td class="category-header"><strong>Originality &amp; Creativity</strong></td>
                   <td data-rating="1">Clichéd; little fresh perspective; fails to stand out.</td>
@@ -519,6 +520,29 @@
                   <td data-rating="3">Aligns well with channel identity in a meaningful way.</td>
                   <td data-rating="4">Perfectly in line with and elevates your channel’s theme or niche.</td>
                 </tr>
+
+                <!-- New Idea Categories 7–9 -->
+                <tr data-category="7">
+                  <td class="category-header"><strong>Total Addressable Market (TAM)</strong></td>
+                  <td data-rating="1">Highly niche topic with a small, hard-to-find audience. Few channels or successful videos in this space.</td>
+                  <td data-rating="2">Niche is somewhat limited, but there’s a moderate audience. A few channels have decent reach or traction.</td>
+                  <td data-rating="3">Noticeable audience size; multiple channels consistently hit solid view counts. Opportunity to reach broader viewers if packaged well.</td>
+                  <td data-rating="4">Large or rapidly growing audience; proven success with multiple high-traffic channels. Clear path to scale viewership beyond the initial niche.</td>
+                </tr>
+                <tr data-category="8">
+                  <td class="category-header"><strong>CCN Fit (Core, Casual, New)</strong></td>
+                  <td data-rating="1">Content heavily depends on prior knowledge or fandom. Unlikely to engage casual or new viewers.</td>
+                  <td data-rating="2">Niche fans will enjoy it; casuals might be intrigued but not guaranteed. Hard to break in brand-new viewers.</td>
+                  <td data-rating="3">Clearly appeals to fans, has a moderate hook for a broader audience. Also a strong angle to capture brand-new viewers if done well.</td>
+                  <td data-rating="4">Immediately accessible and interesting to all three groups. Strong universal hook that stands on its own with no prior familiarity.</td>
+                </tr>
+                <tr data-category="9">
+                  <td class="category-header"><strong>Personal Excitement</strong></td>
+                  <td data-rating="1">You’re not personally interested; would only do it out of obligation.</td>
+                  <td data-rating="2">You see some value but aren’t super motivated. You might procrastinate or give it minimal effort.</td>
+                  <td data-rating="3">You feel positive about the concept and are likely to give it solid effort.</td>
+                  <td data-rating="4">Extremely motivated; you can’t wait to create this video. You’ll likely overdeliver.</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -550,42 +574,43 @@
                 </tr>
               </thead>
               <tbody>
-                <tr data-category="7">
+                <!-- Adjusted Title Categories 10–15 -->
+                <tr data-category="10">
                   <td class="category-header"><strong>Relevance &amp; Honesty</strong></td>
                   <td data-rating="1">Title is loosely related to the content and may even mislead the viewer.</td>
                   <td data-rating="2">Title relates to the content but uses mild exaggeration that might slightly distort expectations.</td>
                   <td data-rating="3">Title clearly reflects the video’s content and its unique hook, giving viewers a good sense of what to expect.</td>
                   <td data-rating="4">Title is perfectly aligned with the content—authentic and precisely communicates the unique selling point with no misleading promises.</td>
                 </tr>
-                <tr data-category="8">
+                <tr data-category="11">
                   <td class="category-header"><strong>Clarity &amp; Keyword Inclusion</strong></td>
                   <td data-rating="1">Title is vague or confusing; may omit essential keywords (e.g., “Minecraft” or “Roblox”), making it hard for viewers to immediately understand the subject.</td>
                   <td data-rating="2">Title includes some relevant keywords but lacks optimal clarity, which might leave potential viewers a bit unsure.</td>
                   <td data-rating="3">Title is clear, concise, and includes key terms that quickly identify the game and main concept.</td>
                   <td data-rating="4">Title is crystal clear and perfectly concise, naturally incorporating all important keywords so that both viewers and the algorithm immediately understand the topic.</td>
                 </tr>
-                <tr data-category="9">
+                <tr data-category="12">
                   <td class="category-header"><strong>Curiosity &amp; Intrigue</strong></td>
                   <td data-rating="1">Title offers little to no mystery or curiosity—it states the obvious and leaves no unanswered questions.</td>
                   <td data-rating="2">Title includes a hint of intrigue but doesn’t fully leverage a curiosity gap to drive viewers to click.</td>
                   <td data-rating="3">Title effectively creates a curiosity gap that prompts viewers to want to learn more about the outcome or unique twist.</td>
                   <td data-rating="4">Title masterfully leverages the curiosity gap, leaving an irresistible question or teaser that compels viewers to click immediately.</td>
                 </tr>
-                <tr data-category="10">
+                <tr data-category="13">
                   <td class="category-header"><strong>Emotional Impact</strong></td>
                   <td data-rating="1">Title is emotionally flat and does not evoke any strong feelings such as excitement, shock, or humor.</td>
                   <td data-rating="2">Title elicits a minor emotional reaction, but the effect isn’t strong enough to drive immediate interest.</td>
                   <td data-rating="3">Title generates a clear emotional response (e.g., excitement, humor, or suspense) that aligns well with the video content.</td>
                   <td data-rating="4">Title evokes a powerful and immediate emotional reaction, ensuring viewers feel compelled to click out of genuine excitement, curiosity, or shock.</td>
                 </tr>
-                <tr data-category="11">
+                <tr data-category="14">
                   <td class="category-header"><strong>Novelty &amp; Creativity</strong></td>
                   <td data-rating="1">Title is generic and similar to many others in the niche; it does not stand out.</td>
                   <td data-rating="2">Title shows some originality but is still reminiscent of common formats or ideas seen frequently.</td>
                   <td data-rating="3">Title is creative and offers a fresh perspective on a familiar concept, making it more enticing than standard formats.</td>
                   <td data-rating="4">Title is highly innovative and distinctive, providing an unexpected twist or unique angle that makes it stand out in a saturated niche.</td>
                 </tr>
-                <tr data-category="12">
+                <tr data-category="15">
                   <td class="category-header"><strong>Brevity &amp; Readability</strong></td>
                   <td data-rating="1">Title is overly long, cluttered, or may be truncated on smaller screens, which hampers its readability.</td>
                   <td data-rating="2">Title is moderately concise but still includes extraneous words that could be eliminated.</td>
@@ -639,16 +664,16 @@
       /***************************************************
        * Global Variables & Emoji Mapping
        ***************************************************/
-      // Total categories: 7 Idea (indices 0–6) + 6 Title (indices 7–12) = 13 categories.
+      // Total categories: 10 Idea (indices 0–9) + 6 Title (indices 10–15) = 16 categories.
       let scoreData = {};
       let confettiShown = false;
-      const maxCategories = 13;
-      const ideaMax = 7 * 4;    // 28 points maximum for idea rubric
-      const titleMax = 6 * 4;   // 24 points maximum for title rubric
-      const overallMax = ideaMax + titleMax; // 52
+      const maxCategories = 16;
+      const ideaMax = 10 * 4; // 40 points maximum for idea rubric
+      const titleMax = 6 * 4; // 24 points maximum for title rubric
+      const overallMax = ideaMax + titleMax; // 64
 
       const categoryEmojis = {
-        // Idea rubric (indices 0–6)
+        // Idea rubric (indices 0..9)
         0: '💡',
         1: '🎯',
         2: '👥',
@@ -656,16 +681,20 @@
         4: '⚙️',
         5: '🚀',
         6: '🔍',
-        // Title rubric (indices 7–12)
-        7: '⚖️',
-        8: '🔍',
-        9: '❓',
-        10: '❤️',
-        11: '🤩',
-        12: '✂️'
+        7: '📊',  // TAM
+        8: '🌐',  // CCN Fit
+        9: '🔥',  // Personal Excitement
+
+        // Title rubric (indices 10..15)
+        10: '⚖️',
+        11: '🔍',
+        12: '❓',
+        13: '❤️',
+        14: '🤩',
+        15: '✂️'
       };
 
-      // Returns the overall rating label and color based on our new thresholds
+      // Returns the overall rating label and color based on our existing thresholds
       function getRatingLabel(overallTotal) {
         if (overallTotal < 10) {
           return { scoreLabel: "Needs Work", rankingText: "Needs Work 🔴", color: "#ef4444" };
@@ -692,7 +721,7 @@
        * Initialization on DOMContentLoaded
        ***************************************************/
       document.addEventListener('DOMContentLoaded', function() {
-        // Initialize scoreData for categories 0 to 12
+        // Initialize scoreData for categories 0 to 15
         for (let i = 0; i < maxCategories; i++) {
           scoreData[i] = 0;
         }
@@ -739,14 +768,14 @@
       }
 
       function updateScore() {
-        // Calculate Idea Score from categories 0–6
+        // Calculate Idea Score from categories 0–9
         let ideaTotal = 0;
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 10; i++) {
           ideaTotal += parseInt(scoreData[i]) || 0;
         }
-        // Calculate Title Score from categories 7–12
+        // Calculate Title Score from categories 10–15
         let titleTotal = 0;
-        for (let i = 7; i < maxCategories; i++) {
+        for (let i = 10; i < 16; i++) {
           titleTotal += parseInt(scoreData[i]) || 0;
         }
         const overallTotal = ideaTotal + titleTotal;
@@ -788,9 +817,7 @@
         }
       }
 
-      // Modified exportPNG function:
-      // 1. Temporarily forces the header to be at the top (using absolute positioning).
-      // 2. Replaces each textarea with a div containing its text (so wrapping is captured properly).
+      // Export as PNG
       function exportPNG() {
         const container = document.querySelector('.export-container');
         if (!container) return;
@@ -896,6 +923,15 @@
           }
         });
       }
+
+      // Sample quotes for demonstration
+      const editorQuotes = [
+        "A great title can be the key to an unforgettable video.",
+        "Your idea's impact grows when it aligns with a captivating title.",
+        "Think big, then think bigger—your potential is limitless.",
+        "The best videos start with a spark of creativity and a clear focus.",
+        "Engage, excite, and elevate: three pillars of a strong video concept."
+      ];
 
       function randomQuote() {
         const quoteSection = document.getElementById('quoteSection');
