@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StoryCraft Analyzer - Craft Viral Hits!</title>
-    <meta name="description" content="Analyze and score your viral YouTube and Roblox story ideas with StoryCraft Analyzer!">
-    <meta name="keywords" content="StoryCraft, YouTube, Roblox, viral content, story analyzer">
-    <meta name="author" content="loverfellayt">
-    <!-- Placeholder favicon - replace with your own -->
-    <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon">
+    <meta name="description" content="Analyze and score your viral YouTube and Roblox story ideas with StoryCraft Analyzer!" />
+    <meta name="keywords" content="StoryCraft, YouTube, Roblox, viral content, story analyzer" />
+    <meta name="author" content="loverfellayt" />
+    <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon" />
 
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -58,14 +57,12 @@
         line-height: 1.6;
       }
 
-      /* Centered Container */
       .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--spacing);
+        padding: 2rem;
       }
 
-      /* Hero Section */
       .hero {
         text-align: center;
         padding: 4rem 2rem;
@@ -76,13 +73,13 @@
         margin-bottom: var(--spacing);
       }
       .hero h1 {
-        font-size: 2.8rem;
+        font-size: clamp(2rem, 5vw, 2.8rem);
         margin: 0;
         font-weight: 700;
         animation: fadeIn 1s ease-in;
       }
       .hero p {
-        font-size: 1.3rem;
+        font-size: clamp(1rem, 3vw, 1.3rem);
         margin: 0.5rem 0 2rem;
       }
       .hero .btn {
@@ -93,7 +90,6 @@
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
 
-      /* How It Works */
       .how-it-works {
         display: flex;
         justify-content: space-between;
@@ -116,7 +112,6 @@
         font-size: 1.4rem;
       }
 
-      /* Header */
       header.analyzer-header {
         position: sticky;
         top: 0;
@@ -133,7 +128,7 @@
         margin-bottom: var(--spacing);
       }
       .header-left h1 {
-        font-size: 2rem;
+        font-size: clamp(1.5rem, 4vw, 2rem);
         margin: 0;
         font-weight: 700;
       }
@@ -155,13 +150,7 @@
         width: 0%;
         transition: width 0.3s ease;
       }
-      .header-right {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-      }
 
-      /* Buttons */
       button.btn {
         background: var(--gradient-light);
         color: #fff;
@@ -181,7 +170,6 @@
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
 
-      /* Dark Mode Toggle */
       .dark-mode-slider {
         position: relative;
         width: 60px;
@@ -211,7 +199,6 @@
         background-color: var(--primary-light);
       }
 
-      /* Layout Container */
       .layout-container {
         display: grid;
         grid-template-columns: 1fr 3fr;
@@ -219,10 +206,9 @@
         align-items: start;
       }
 
-      /* Glass Panels */
       .glass-panel {
         background: var(--panel-light);
-        border: 1px solid var(--border-light);
+        border: 2px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
@@ -232,10 +218,9 @@
       .glass-panel h2 {
         color: var(--highlight);
         margin-top: 0;
-        font-size: 1.8rem;
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
       }
 
-      /* Sidebar */
       aside#ideaRubricSection {
         position: sticky;
         top: 100px;
@@ -245,8 +230,11 @@
         margin-top: 1rem;
         padding: 0.5rem;
       }
+      #scoreSummary {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
 
-      /* Main Content */
       .main-content {
         display: flex;
         flex-direction: column;
@@ -273,7 +261,6 @@
         outline: none;
       }
 
-      /* Similar Videos */
       .similar-videos-list {
         display: flex;
         flex-wrap: wrap;
@@ -291,14 +278,13 @@
         transform: scale(1.05);
       }
 
-      /* Rubric Table */
       .rubric-table {
         width: 100%;
         overflow-x: auto;
       }
       .modern-table {
         width: 100%;
-        min-width: 900px; /* Widened table */
+        min-width: clamp(600px, 100vw, 900px);
         border-collapse: separate;
         border-spacing: 0;
         border-radius: var(--radius);
@@ -331,7 +317,6 @@
       }
       @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-      /* Social Share */
       .social-share {
         text-align: center;
         padding: var(--spacing);
@@ -349,7 +334,6 @@
         color: var(--highlight);
       }
 
-      /* Footer */
       footer {
         text-align: center;
         padding: var(--spacing);
@@ -362,6 +346,38 @@
       }
       footer a:hover {
         text-decoration: underline;
+      }
+
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-light);
+        color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        display: none;
+        z-index: 1000;
+      }
+
+      #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+      #loadingOverlay div {
+        background: var(--panel-light);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
       }
 
       @media (max-width: 768px) {
@@ -410,7 +426,7 @@
         <div class="header-left">
           <h1>StoryCraft Analyzer</h1>
           <div class="score-info">
-            <p>Total Score: <span id="total">0</span> / 56</p>
+            <p>Total Score: <span id="total">0</span> / 52</p>
             <p>Ranking: <span id="ranking">Incomplete</span></p>
             <div class="progress-container">
               <div id="progressBar"></div>
@@ -442,6 +458,7 @@
           <p>Upload a PNG sketch (e.g., Roblox concept art):</p>
           <input type="file" id="ideaRubricUpload" accept="image/png" aria-label="Upload PNG sketch" />
           <div id="ideaRubricImageContainer"></div>
+          <div id="scoreSummary"></div>
         </aside>
 
         <!-- Right Column: Main Content -->
@@ -592,30 +609,12 @@
           <section class="glass-panel input-section" id="selfAssessmentSection">
             <h2>✅ Self-Assessment Checklist</h2>
             <ul>
-              <li>
-                <input type="checkbox" id="check1" />
-                <label for="check1"><strong>Pre-Writing:</strong> Is the theme, conflict, and structure clearly defined?</label>
-              </li>
-              <li>
-                <input type="checkbox" id="check2" />
-                <label for="check2"><strong>Writing:</strong> Do beats connect logically, with character-driven resolutions?</label>
-              </li>
-              <li>
-                <input type="checkbox" id="check3" />
-                <label for="check3"><strong>World-Building:</strong> Are rules and stakes clear and consistent?</label>
-              </li>
-              <li>
-                <input type="checkbox" id="check4" />
-                <label for="check4"><strong>Review:</strong> Does the story flow smoothly with tied-up subplots?</label>
-              </li>
-              <li>
-                <input type="checkbox" id="check5" />
-                <label for="check5"><strong>Polishing:</strong> Are weak beats and plot holes removed?</label>
-              </li>
-              <li>
-                <input type="checkbox" id="check6" />
-                <label for="check6"><strong>Pre-Shoot:</strong> Is everything prepared for filming?</label>
-              </li>
+              <li><input type="checkbox" id="check1" /><label for="check1"><strong>Pre-Writing:</strong> Is the theme, conflict, and structure clearly defined?</label></li>
+              <li><input type="checkbox" id="check2" /><label for="check2"><strong>Writing:</strong> Do beats connect logically, with character-driven resolutions?</label></li>
+              <li><input type="checkbox" id="check3" /><label for="check3"><strong>World-Building:</strong> Are rules and stakes clear and consistent?</label></li>
+              <li><input type="checkbox" id="check4" /><label for="check4"><strong>Review:</strong> Does the story flow smoothly with tied-up subplots?</label></li>
+              <li><input type="checkbox" id="check5" /><label for="check5"><strong>Polishing:</strong> Are weak beats and plot holes removed?</label></li>
+              <li><input type="checkbox" id="check6" /><label for="check6"><strong>Pre-Shoot:</strong> Is everything prepared for filming?</label></li>
             </ul>
           </section>
         </div>
@@ -634,11 +633,28 @@
       </footer>
     </div>
 
+    <!-- Toast and Loading Overlay -->
+    <div id="toast"></div>
+    <div id="loadingOverlay"><div><p>Exporting... Please wait.</p></div></div>
+
     <!-- JavaScript -->
     <script>
       let scores = {};
 
       window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('darkMode') === 'true') {
+          document.getElementById('darkModeToggle').checked = true;
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+        const savedScores = JSON.parse(localStorage.getItem('scores') || '{}');
+        scores = savedScores;
+        Object.entries(scores).forEach(([cat, rating]) => {
+          document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
+        });
+        document.getElementById('quickSummary').value = localStorage.getItem('quickSummary') || '';
+        document.getElementById('humanFeedback').value = localStorage.getItem('humanFeedback') || '';
+        updateTotal();
+
         document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
@@ -656,7 +672,10 @@
         });
 
         document.querySelectorAll('.story-input').forEach(textarea => {
-          textarea.addEventListener('input', autoResize);
+          textarea.addEventListener('input', () => {
+            localStorage.setItem(textarea.id, textarea.value);
+            autoResize({ target: textarea });
+          });
         });
 
         document.getElementById('ideaRubricUpload').addEventListener('change', handleIdeaRubricUpload);
@@ -666,7 +685,7 @@
         const file = e.target.files[0];
         if (!file) return;
         if (!file.type.match('image/png')) {
-          alert('Please upload a PNG file.');
+          showToast('Please upload a PNG file.', 3000);
           return;
         }
         const reader = new FileReader();
@@ -682,7 +701,7 @@
           "Simple stories with big payoffs win every time.",
           "Test your idea: Would YOU click this thumbnail?"
         ];
-        alert(quotes[Math.floor(Math.random() * quotes.length)]);
+        showToast(quotes[Math.floor(Math.random() * quotes.length)]);
       }
 
       function selectRating(cell) {
@@ -694,6 +713,7 @@
         });
         cell.classList.add('selected');
         scores[categoryIndex] = rating;
+        localStorage.setItem('scores', JSON.stringify(scores));
         updateTotal();
       }
 
@@ -701,13 +721,15 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
+        const summary = Object.entries(scores).map(([cat, score]) => `Category ${parseInt(cat) + 1}: ${score}`).join('<br>');
+        document.getElementById('scoreSummary').innerHTML = `<strong>Scored Categories:</strong><br>${summary || 'None yet'}`;
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
-        } else if (total < 21) {
+        } else if (total < 20) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
-        } else if (total < 32) {
+        } else if (total < 30) {
           ranking.textContent = 'Good Start 🟡';
           ranking.style.color = 'orange';
         } else if (total < 40) {
@@ -722,7 +744,7 @@
       }
 
       function updateProgressBar(total) {
-        const maxScore = 56;
+        const maxScore = 52;
         const percentage = (total / maxScore) * 100;
         document.getElementById('progressBar').style.width = `${percentage}%`;
       }
@@ -734,7 +756,8 @@
       }
 
       async function exportPNG() {
-        const loading = alert('Exporting... Please wait.');
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.style.display = 'flex';
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.top = '-9999px';
@@ -757,12 +780,16 @@
           const link = document.createElement('a');
           link.download = 'storycraft-analysis.png';
           link.href = dataUrl;
+          document.body.appendChild(link);
           link.click();
+          document.body.removeChild(link);
+          showToast('Export successful!');
         } catch (error) {
           console.error('PNG export failed:', error);
-          alert(`Export failed: ${error.message}. Check console for details.`);
+          showToast(`Export failed: ${error.message}`, 3000);
         } finally {
           document.body.removeChild(tempContainer);
+          overlay.style.display = 'none';
         }
       }
 
@@ -776,10 +803,14 @@
         document.getElementById('similarVideosList').innerHTML = '';
         document.getElementById('total').textContent = 0;
         document.getElementById('progressBar').style.width = '0%';
+        localStorage.clear();
+        showToast('Reset complete!');
       }
 
       function toggleTheme(e) {
-        document.documentElement.setAttribute("data-theme", e.target.checked ? "dark" : "");
+        const isDark = e.target.checked;
+        document.documentElement.setAttribute("data-theme", isDark ? "dark" : "");
+        localStorage.setItem('darkMode', isDark);
       }
 
       function addYouTubeVideo() {
@@ -793,7 +824,7 @@
           videoId = urlObj.hostname === "youtu.be" ? urlObj.pathname.slice(1) : urlObj.searchParams.get("v");
           if (!videoId) throw new Error("Invalid YouTube URL");
         } catch (err) {
-          alert("Invalid URL");
+          showToast("Invalid URL", 3000);
           return;
         }
 
@@ -807,7 +838,7 @@
         img.alt = `Thumbnail for YouTube video ${videoId}`;
         img.onerror = () => {
           videoList.removeChild(videoContainer);
-          alert('Failed to load YouTube thumbnail.');
+          showToast('Failed to load thumbnail.', 3000);
         };
         videoContainer.appendChild(img);
 
@@ -825,19 +856,37 @@
 
         videoList.appendChild(videoContainer);
         urlInput.value = '';
+        showToast('Video added!');
+      }
+
+      function truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        const truncated = text.substring(0, maxLength - 3);
+        return truncated.substring(0, truncated.lastIndexOf(' ')) + '...';
       }
 
       function shareOnTwitter() {
         const score = document.getElementById('total').textContent;
         const ranking = document.getElementById('ranking').textContent;
-        const text = `I scored ${score}/56 on StoryCraft Analyzer! Ranking: ${ranking}. Check out my viral idea: ${document.getElementById('quickSummary').value.substring(0, 100)}...`;
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        const summary = truncateText(document.getElementById('quickSummary').value, 200);
+        const text = `I scored ${score}/52 on StoryCraft Analyzer! Ranking: ${ranking}. Idea: ${summary}`;
+        if (text.length > 280) showToast('Text too long for Twitter! Shorten your summary.', 3000);
+        else window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
       }
 
       function shareOnDiscord() {
         const score = document.getElementById('total').textContent;
-        const summary = document.getElementById('quickSummary').value.substring(0, 100);
-        alert(`Copy this to Discord:\nMy StoryCraft Score: ${score}/56\nIdea: ${summary}...`);
+        const summary = truncateText(document.getElementById('quickSummary').value, 100);
+        const url = window.location.href;
+        showToast(`Copied to clipboard!\nMy Score: ${score}/52\nIdea: ${summary}\nTry it: ${url}`, 5000);
+        navigator.clipboard.writeText(`My StoryCraft Score: ${score}/52\nIdea: ${summary}\nTry it: ${url}`);
+      }
+
+      function showToast(message, duration = 2000) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', duration);
       }
     </script>
   </body>
