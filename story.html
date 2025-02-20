@@ -4,24 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StoryCraft Analyzer - Craft Viral Hits!</title>
+    <meta name="description" content="Analyze and score your viral YouTube and Roblox story ideas with StoryCraft Analyzer!">
+    <meta name="keywords" content="StoryCraft, YouTube, Roblox, viral content, story analyzer">
+    <meta name="author" content="loverfellayt">
+    <!-- Placeholder favicon - replace with your own -->
+    <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon">
 
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
     <!-- CSS Styles -->
     <style>
@@ -34,13 +30,13 @@
         --border-light: rgba(255, 255, 255, 0.2);
         --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
         --transition: all 0.2s ease;
-        --radius: 14px;
+        --radius: 16px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-        --spacing: 1rem;
+        --spacing: 1.5rem;
         --font-base: 'Poppins', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
         --section-bg: rgba(79, 172, 254, 0.2);
-        --highlight: #ff6b6b; /* Vibrant accent color */
+        --highlight: #ff6b6b;
       }
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
@@ -59,90 +55,82 @@
         background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
         background-size: 30px 30px;
         color: var(--text-light);
-        transition: var(--transition);
+        line-height: 1.6;
+      }
+
+      /* Centered Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--spacing);
       }
 
       /* Hero Section */
       .hero {
         text-align: center;
-        padding: 3rem 1rem;
+        padding: 4rem 2rem;
         background: var(--gradient-light);
         color: #fff;
         border-radius: 0 0 var(--radius) var(--radius);
         box-shadow: var(--shadow);
+        margin-bottom: var(--spacing);
       }
       .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         margin: 0;
         font-weight: 700;
         animation: fadeIn 1s ease-in;
       }
       .hero p {
-        font-size: 1.2rem;
-        margin: 0.5rem 0 1.5rem;
+        font-size: 1.3rem;
+        margin: 0.5rem 0 2rem;
       }
       .hero .btn {
         font-size: 1.2rem;
         padding: 0.8rem 2rem;
         animation: bounce 2s infinite;
       }
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
-      }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
 
-      /* How It Works Section */
+      /* How It Works */
       .how-it-works {
-        max-width: 1100px;
-        margin: 2rem auto;
         display: flex;
-        justify-content: space-around;
-        gap: 1rem;
+        justify-content: space-between;
+        gap: var(--spacing);
         flex-wrap: wrap;
+        margin-bottom: var(--spacing);
       }
       .step {
         flex: 1;
-        min-width: 200px;
+        min-width: 250px;
         text-align: center;
-        padding: 1rem;
+        padding: 1.5rem;
+        background: var(--panel-light);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
       }
       .step h3 {
         color: var(--primary-light);
         margin: 0.5rem 0;
+        font-size: 1.4rem;
       }
 
-      /* Layout Container */
-      .layout-container {
-        display: flex;
-        align-items: flex-start;
-        width: 98%;
-        max-width: 1100px;
-        margin: 2rem auto;
-        gap: 1rem;
-      }
-
-      /* Sticky Header */
+      /* Header */
       header.analyzer-header {
         position: sticky;
         top: 0;
         z-index: 1000;
-        padding: 1.5rem 2rem;
-        margin: 0 auto var(--spacing);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        padding: 1.5rem;
         background: var(--panel-light);
         border: 1px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
-        max-width: 1100px;
-        width: 98%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing);
       }
       .header-left h1 {
         font-size: 2rem;
@@ -150,22 +138,27 @@
         font-weight: 700;
       }
       .score-info p {
-        margin: 0.2rem 0;
-        font-size: 0.9rem;
+        margin: 0.3rem 0;
+        font-size: 1rem;
       }
       .progress-container {
-        width: 200px;
-        height: 16px;
-        background: #ccc;
-        border-radius: 5px;
+        width: 250px;
+        height: 20px;
+        background: #e0e0e0;
+        border-radius: 8px;
         overflow: hidden;
-        margin-top: 0.3rem;
+        margin-top: 0.5rem;
       }
       #progressBar {
         height: 100%;
         background: var(--gradient-light);
         width: 0%;
-        transition: width 0.3s;
+        transition: width 0.3s ease;
+      }
+      .header-right {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
       }
 
       /* Buttons */
@@ -173,7 +166,7 @@
         background: var(--gradient-light);
         color: #fff;
         border: none;
-        padding: 0.6rem 1.2rem;
+        padding: 0.7rem 1.5rem;
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: 600;
@@ -188,6 +181,44 @@
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
 
+      /* Dark Mode Toggle */
+      .dark-mode-slider {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+        transition: background-color 0.3s;
+      }
+      .dark-mode-slider .slider-thumb {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+      }
+      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
+        transform: translateX(30px);
+      }
+      input#darkModeToggle:checked + .dark-mode-slider {
+        background-color: var(--primary-light);
+      }
+
+      /* Layout Container */
+      .layout-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: var(--spacing);
+        align-items: start;
+      }
+
       /* Glass Panels */
       .glass-panel {
         background: var(--panel-light);
@@ -195,47 +226,41 @@
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
-        padding: 2.5rem;
-        margin: 2rem 0;
+        padding: 2rem;
         text-align: center;
       }
       .glass-panel h2 {
         color: var(--highlight);
+        margin-top: 0;
+        font-size: 1.8rem;
       }
 
+      /* Sidebar */
       aside#ideaRubricSection {
-        width: 400px;
-        flex-shrink: 0;
+        position: sticky;
+        top: 100px;
       }
       #ideaRubricUpload {
-        width: 90%;
+        width: 100%;
         margin-top: 1rem;
-      }
-      #ideaRubricImageContainer {
-        margin-top: 1rem;
-        overflow-x: auto;
-      }
-      #ideaRubricImageContainer img {
-        border-radius: var(--radius);
-        display: block;
-        max-width: none;
+        padding: 0.5rem;
       }
 
+      /* Main Content */
       .main-content {
-        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing);
       }
-
       .story-input {
-        width: 80%;
-        max-width: 800px;
-        margin: 0.5rem auto;
-        min-height: 120px;
+        width: 100%;
+        min-height: 150px;
         padding: 1rem;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
         font-size: 1rem;
         background: var(--bg-light);
-        resize: none;
+        resize: vertical;
         transition: var(--transition);
         color: var(--text-light);
       }
@@ -243,137 +268,73 @@
         color: #fff;
       }
       .story-input:focus {
-        outline: none;
         border-color: var(--primary-light);
         box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+        outline: none;
       }
 
-      input[type="text"] {
-        padding: 0.5rem;
-        width: 70%;
-        border: 2px solid var(--border-light);
-        border-radius: var(--radius);
-      }
-
+      /* Similar Videos */
       .similar-videos-list {
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
-        margin-top: 1rem;
+        justify-content: center;
       }
       .video-thumbnail {
-        width: 200px;
-        overflow: hidden;
+        width: 220px;
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         transition: var(--transition);
         position: relative;
       }
-      .video-thumbnail img {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-        display: block;
-      }
-      .video-title {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .remove-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: rgba(255, 255, 255, 0.8);
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.2rem;
-        padding: 0 4px;
-        line-height: 1;
-      }
       .video-thumbnail:hover {
-        transform: scale(1.02);
+        transform: scale(1.05);
       }
 
       /* Rubric Table */
       .rubric-table {
-        margin: 1rem 0;
+        width: 100%;
+        overflow-x: auto;
       }
       .modern-table {
         width: 100%;
+        min-width: 900px; /* Widened table */
         border-collapse: separate;
         border-spacing: 0;
         border-radius: var(--radius);
         overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: var(--transition);
+        box-shadow: var(--shadow);
+      }
+      .modern-table th, .modern-table td {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
       }
       .modern-table th {
-        padding: 0.75rem 1.5rem;
-        font-weight: 500;
-        text-align: left;
-        position: sticky;
-        top: 0;
-        backdrop-filter: blur(10px);
-        z-index: 10;
         background: var(--gradient-light);
         color: #fff;
       }
-      .modern-table th:nth-child(2) { background: #f87171; color: #fff; }
-      .modern-table th:nth-child(3) { background: #fb923c; color: #fff; }
+      .modern-table th:nth-child(2) { background: #f87171; }
+      .modern-table th:nth-child(3) { background: #fb923c; }
       .modern-table th:nth-child(4) { background: #facc15; color: #000; }
-      .modern-table th:nth-child(5) { background: #4ade80; color: #fff; }
-      .modern-table td {
-        padding: 0.75rem 1.5rem;
-        background: var(--table-cell-bg-light);
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        transition: var(--transition);
-        vertical-align: top;
+      .modern-table th:nth-child(5) { background: #4ade80; }
+      .modern-table td[data-rating] {
+        cursor: pointer;
+        transition: background 0.2s;
       }
-      .modern-table td:hover:not(.category-header) {
-        background: rgba(224, 231, 255, 0.3);
+      .modern-table td[data-rating]:hover, .modern-table td[data-rating]:focus {
+        background: rgba(79, 172, 254, 0.2);
       }
       .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5) !important;
+        background: rgba(224, 231, 255, 0.5);
         border-left: 4px solid var(--primary-light);
+        animation: pulse 0.3s ease;
       }
-      .category-header {
-        font-weight: 600;
-        background: rgba(79, 172, 254, 0.03);
-        position: sticky;
-        left: 0;
-        min-width: 160px;
-      }
+      @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-      .section-header {
-        text-align: center;
-        font-weight: bold;
-        background: var(--section-bg);
-        padding: 0.75rem 0;
-      }
-
-      #selfAssessmentSection ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0 auto;
-        max-width: 600px;
-        text-align: left;
-      }
-      #selfAssessmentSection li {
-        margin-bottom: 0.5rem;
-      }
-      #selfAssessmentSection li label {
-        cursor: pointer;
-      }
-
-      /* Social Share Section */
+      /* Social Share */
       .social-share {
         text-align: center;
-        padding: 1rem;
+        padding: var(--spacing);
       }
       .social-btn {
         background: none;
@@ -383,334 +344,333 @@
         cursor: pointer;
         transition: var(--transition);
       }
-      .social-btn:hover {
+      .social-btn:hover, .social-btn:focus {
         transform: scale(1.2);
         color: var(--highlight);
       }
 
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: var(--spacing);
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+      footer a {
+        color: var(--primary-light);
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+
       @media (max-width: 768px) {
         .layout-container {
-          flex-direction: column;
-          align-items: flex-start;
+          grid-template-columns: 1fr;
         }
-        aside#ideaRubricSection {
-          width: 100%;
-          margin-bottom: 1rem;
+        .modern-table th, .modern-table td {
+          padding: 0.8rem;
+          font-size: 0.9rem;
         }
-        .main-content {
-          width: 100%;
+        header.analyzer-header {
+          position: relative;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Hero Section -->
-    <section class="hero">
-      <h1>StoryCraft Analyzer</h1>
-      <p>Score your story ideas and turn them into viral hits for YouTube & Roblox!</p>
-      <button class="btn" onclick="document.getElementById('quickSummarySection').scrollIntoView({behavior: 'smooth'})">
-        Start Crafting Now!
-      </button>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-it-works">
-      <div class="step">
-        <h3>1. Summarize Your Idea</h3>
-        <p>Write a quick pitch for your story or video concept.</p>
-      </div>
-      <div class="step">
-        <h3>2. Score with Rubric</h3>
-        <p>Use our detailed rubric to rate its potential.</p>
-      </div>
-      <div class="step">
-        <h3>3. Export & Share</h3>
-        <p>Download your analysis and share it with friends!</p>
-      </div>
-    </section>
-
-    <!-- HEADER -->
-    <header class="analyzer-header">
-      <div class="header-left">
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="hero">
         <h1>StoryCraft Analyzer</h1>
-        <div class="score-info">
-          <p>Total Score: <span id="total">0</span> / 56</p>
-          <p>Ranking: <span id="ranking">Incomplete</span></p>
-          <div class="progress-container">
-            <div id="progressBar"></div>
+        <p>Score your story ideas and turn them into viral hits for YouTube & Roblox!</p>
+        <button class="btn" onclick="document.getElementById('quickSummarySection').scrollIntoView({behavior: 'smooth'})">
+          Start Crafting Now!
+        </button>
+      </section>
+
+      <!-- How It Works -->
+      <section class="how-it-works">
+        <div class="step">
+          <h3>1. Summarize Your Idea</h3>
+          <p>Write a quick pitch for your story or video concept.</p>
+        </div>
+        <div class="step">
+          <h3>2. Score with Rubric</h3>
+          <p>Use our detailed rubric to rate its potential.</p>
+        </div>
+        <div class="step">
+          <h3>3. Export & Share</h3>
+          <p>Download your analysis and share it with friends!</p>
+        </div>
+      </section>
+
+      <!-- HEADER -->
+      <header class="analyzer-header">
+        <div class="header-left">
+          <h1>StoryCraft Analyzer</h1>
+          <div class="score-info">
+            <p>Total Score: <span id="total">0</span> / 56</p>
+            <p>Ranking: <span id="ranking">Incomplete</span></p>
+            <div class="progress-container">
+              <div id="progressBar"></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="header-right">
-        <button class="btn" id="resetBtn">🔄 Reset</button>
-        <button class="btn" id="exportBtn">🖼️ Export PNG</button>
-        <button class="btn" id="rainbowBtn">🌈 Tips</button>
-        <div class="dark-mode">
-          <label class="toggle-label" for="darkModeToggle">
-            <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" />
-            <div class="dark-mode-slider">
-              <span class="mode-label">☀️</span>
-              <span class="mode-label">🌙</span>
-              <div class="slider-thumb"></div>
-            </div>
-          </label>
+        <div class="header-right">
+          <button class="btn" id="resetBtn" aria-label="Reset all inputs">🔄 Reset</button>
+          <button class="btn" id="exportBtn" aria-label="Export as PNG">🖼️ Export PNG</button>
+          <button class="btn" id="rainbowBtn" aria-label="Show a random tip">🌈 Tips</button>
+          <div class="dark-mode">
+            <label class="toggle-label" for="darkModeToggle">
+              <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" />
+              <div class="dark-mode-slider">
+                <span class="mode-label">☀️</span>
+                <span class="mode-label">🌙</span>
+                <div class="slider-thumb"></div>
+              </div>
+            </label>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
 
-    <!-- MAIN CONTENT -->
-    <main>
-      <div class="layout-container">
-        <!-- Left Column: "Idea Rubric" -->
+      <!-- MAIN CONTENT -->
+      <main class="layout-container">
+        <!-- Left Column: Idea Rubric -->
         <aside class="glass-panel" id="ideaRubricSection">
           <h2>Idea Rubric</h2>
           <p>Upload a PNG sketch (e.g., Roblox concept art):</p>
-          <input type="file" id="ideaRubricUpload" accept="image/png" />
+          <input type="file" id="ideaRubricUpload" accept="image/png" aria-label="Upload PNG sketch" />
           <div id="ideaRubricImageContainer"></div>
         </aside>
 
         <!-- Right Column: Main Content -->
         <div class="main-content">
           <!-- Quick Summary Section -->
-          <div class="glass-panel input-section" id="quickSummarySection">
+          <section class="glass-panel input-section" id="quickSummarySection">
             <h2>📝 Quick Summary</h2>
             <textarea id="quickSummary" class="story-input" placeholder="Example: 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet!'"></textarea>
-          </div>
+          </section>
 
           <!-- Similar Videos Section -->
-          <div class="glass-panel input-section" id="similarVideosSection">
+          <section class="glass-panel input-section" id="similarVideosSection">
             <h2>📺 Similar Videos</h2>
-            <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." />
-            <button class="btn" id="addVideoBtn">Add Video</button>
+            <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." aria-label="YouTube video URL" />
+            <button class="btn" id="addVideoBtn" aria-label="Add YouTube video">Add Video</button>
             <div id="similarVideosList" class="similar-videos-list"></div>
-          </div>
+          </section>
 
           <!-- Rubric Table Section -->
-          <div class="glass-panel rubric-table" id="rubricSection">
+          <section class="glass-panel rubric-table" id="rubricSection">
             <h2>📊 Rubric Table</h2>
-            <table class="modern-table">
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Good (1)</th>
-                  <th>Great (2)</th>
-                  <th>Excellent (3)</th>
-                  <th>Outstanding (4)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- SECTION: Video Concept & Pre Planning -->
-                <tr>
-                  <td colspan="5" class="section-header">VIDEO CONCEPT & PRE PLANNING</td>
-                </tr>
-                <!-- 1) Video Concept -->
-                <tr>
-                  <td class="category-header" data-category="0">🎬 Video Concept</td>
-                  <td data-category="0" data-rating="1">Weak or unoriginal concept; doesn’t stand out.</td>
-                  <td data-category="0" data-rating="2">Decent concept with some originality, but still feels familiar.</td>
-                  <td data-category="0" data-rating="3">Strong concept with a unique twist that draws interest.</td>
-                  <td data-category="0" data-rating="4">Highly compelling and innovative concept; stands out instantly.</td>
-                </tr>
-                <!-- 2) Planning & Outline -->
-                <tr>
-                  <td class="category-header" data-category="1">📝 Planning & Outline</td>
-                  <td data-category="1" data-rating="1">Concept is loosely formed; unclear breakdown of key elements (hook, conflict, CTA, etc.).</td>
-                  <td data-category="1" data-rating="2">Basic structure or progression is outlined but lacks detail in some areas.</td>
-                  <td data-category="1" data-rating="3">Well‐conceived plan with a thorough script or breakdown ensuring each segment ties into the main goal.</td>
-                  <td data-category="1" data-rating="4">Comprehensive pre‐production that accounts for hooking device, escalations, pacing, and seamless goal integration.</td>
-                </tr>
-                <!-- 3) Production Feasibility & Planning -->
-                <tr>
-                  <td class="category-header" data-category="2">🎥 Production Feasibility & Planning</td>
-                  <td data-category="2" data-rating="1">Unrealistic or vague plan with potential production obstacles.</td>
-                  <td data-category="2" data-rating="2">Basic plan exists but lacks thorough logistics (locations, timing, assets).</td>
-                  <td data-category="2" data-rating="3">Well-thought-out plan with production logistics considered.</td>
-                  <td data-category="2" data-rating="4">Comprehensive pre-production, including contingency plans and efficient scheduling.</td>
-                </tr>
-                <!-- 4) Retention-Based Structure -->
-                <tr>
-                  <td class="category-header" data-category="3">📈 Retention-Based Structure</td>
-                  <td data-category="3" data-rating="1">No clear plan for keeping viewers engaged.</td>
-                  <td data-category="3" data-rating="2">Some engaging points, but may have weak retention structure.</td>
-                  <td data-category="3" data-rating="3">Pacing and retention elements are mapped out effectively.</td>
-                  <td data-category="3" data-rating="4">Highly structured for retention with peaks, suspense, and pacing mapped minute-by-minute.</td>
-                </tr>
-                <!-- 5) Originality & Trend‐Jacking -->
-                <tr>
-                  <td class="category-header" data-category="4">🚀 Originality & Trend‐Jacking</td>
-                  <td data-category="4" data-rating="1">Overdone or cliché concept with no unique spin.</td>
-                  <td data-category="4" data-rating="2">Minor twist on popular trends but still somewhat familiar.</td>
-                  <td data-category="4" data-rating="3">A distinct approach or fresh angle that helps it stand out.</td>
-                  <td data-category="4" data-rating="4">Boundary‐pushing content or trend usage that feels truly innovative.</td>
-                </tr>
+            <div class="rubric-table">
+              <table class="modern-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Good (1)</th>
+                    <th>Great (2)</th>
+                    <th>Excellent (3)</th>
+                    <th>Outstanding (4)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="5" class="section-header">VIDEO CONCEPT & PRE PLANNING</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="0">🎬 Video Concept</td>
+                    <td data-category="0" data-rating="1" tabindex="0" role="button" aria-label="Rate Video Concept as Good (1)">Weak or unoriginal concept; doesn’t stand out.</td>
+                    <td data-category="0" data-rating="2" tabindex="0" role="button" aria-label="Rate Video Concept as Great (2)">Decent concept with some originality, but still feels familiar.</td>
+                    <td data-category="0" data-rating="3" tabindex="0" role="button" aria-label="Rate Video Concept as Excellent (3)">Strong concept with a unique twist that draws interest.</td>
+                    <td data-category="0" data-rating="4" tabindex="0" role="button" aria-label="Rate Video Concept as Outstanding (4)">Highly compelling and innovative concept; stands out instantly.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="1">📝 Planning & Outline</td>
+                    <td data-category="1" data-rating="1" tabindex="0" role="button" aria-label="Rate Planning & Outline as Good (1)">Concept is loosely formed; unclear breakdown of key elements.</td>
+                    <td data-category="1" data-rating="2" tabindex="0" role="button" aria-label="Rate Planning & Outline as Great (2)">Basic structure outlined but lacks detail in some areas.</td>
+                    <td data-category="1" data-rating="3" tabindex="0" role="button" aria-label="Rate Planning & Outline as Excellent (3)">Well-conceived plan with a thorough script.</td>
+                    <td data-category="1" data-rating="4" tabindex="0" role="button" aria-label="Rate Planning & Outline as Outstanding (4)">Comprehensive pre-production with pacing and goal integration.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="2">🎥 Production Feasibility</td>
+                    <td data-category="2" data-rating="1" tabindex="0" role="button" aria-label="Rate Production Feasibility as Good (1)">Unrealistic or vague plan with obstacles.</td>
+                    <td data-category="2" data-rating="2" tabindex="0" role="button" aria-label="Rate Production Feasibility as Great (2)">Basic plan exists but lacks logistics.</td>
+                    <td data-category="2" data-rating="3" tabindex="0" role="button" aria-label="Rate Production Feasibility as Excellent (3)">Well-thought-out plan with logistics.</td>
+                    <td data-category="2" data-rating="4" tabindex="0" role="button" aria-label="Rate Production Feasibility as Outstanding (4)">Comprehensive with contingency plans.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="3">📈 Retention Structure</td>
+                    <td data-category="3" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention Structure as Good (1)">No clear plan for engagement.</td>
+                    <td data-category="3" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention Structure as Great (2)">Some engaging points, weak structure.</td>
+                    <td data-category="3" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention Structure as Excellent (3)">Effective pacing and retention mapped.</td>
+                    <td data-category="3" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention Structure as Outstanding (4)">Highly structured with suspense.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="4">🚀 Originality</td>
+                    <td data-category="4" data-rating="1" tabindex="0" role="button" aria-label="Rate Originality as Good (1)">Overdone or cliché concept.</td>
+                    <td data-category="4" data-rating="2" tabindex="0" role="button" aria-label="Rate Originality as Great (2)">Minor twist on trends.</td>
+                    <td data-category="4" data-rating="3" tabindex="0" role="button" aria-label="Rate Originality as Excellent (3)">Distinct approach that stands out.</td>
+                    <td data-category="4" data-rating="4" tabindex="0" role="button" aria-label="Rate Originality as Outstanding (4)">Boundary-pushing innovation.</td>
+                  </tr>
 
-                <!-- SECTION: Video Fundamentals -->
-                <tr>
-                  <td colspan="5" class="section-header">VIDEO FUNDAMENTALS</td>
-                </tr>
-                <!-- 6) Hook & Intro -->
-                <tr>
-                  <td class="category-header" data-category="5">🎣 Hook & Intro</td>
-                  <td data-category="5" data-rating="1">Slow start or unclear hook; doesn’t entice immediate engagement.</td>
-                  <td data-category="5" data-rating="2">Basic but functional hook; viewers might stay out of mild curiosity.</td>
-                  <td data-category="5" data-rating="3">Clear, intriguing opening that sparks immediate interest.</td>
-                  <td data-category="5" data-rating="4">Unignorable opener; compels viewers to keep watching almost instantly.</td>
-                </tr>
-                <!-- 7) Clarity of Goal -->
-                <tr>
-                  <td class="category-header" data-category="6">🎯 Clarity of Goal</td>
-                  <td data-category="6" data-rating="1">Goal is vague, hidden, or tacked on; viewers may not know why they’re watching.</td>
-                  <td data-category="6" data-rating="2">A stated goal exists but can get lost or muddled mid‐video.</td>
-                  <td data-category="6" data-rating="3">The central goal is well‐defined, and each segment clearly ties back to it.</td>
-                  <td data-category="6" data-rating="4">Crystal‐clear premise; the entire video revolves around a high‐stakes goal that viewers can’t wait to see resolved.</td>
-                </tr>
-                <!-- 8) Conflict & Stakes -->
-                <tr>
-                  <td class="category-header" data-category="7">⚔️ Conflict & Stakes</td>
-                  <td data-category="7" data-rating="1">Low urgency; conflicts feel trivial or manufactured.</td>
-                  <td data-category="7" data-rating="2">Basic obstacles are present but feel predictable.</td>
-                  <td data-category="7" data-rating="3">High stakes that keep viewers invested in how events will unfold.</td>
-                  <td data-category="7" data-rating="4">Unavoidable drama and ever‐escalating tension that compels viewers to see the outcome.</td>
-                </tr>
-                <!-- 9) Challenges & Obstacles -->
-                <tr>
-                  <td class="category-header" data-category="8">🛑 Challenges & Obstacles</td>
-                  <td data-category="8" data-rating="1">Challenges feel artificial, forced, or too easy.</td>
-                  <td data-category="8" data-rating="2">Some obstacles exist but feel predictable.</td>
-                  <td data-category="8" data-rating="3">Well-balanced challenges that create tension and excitement.</td>
-                  <td data-category="8" data-rating="4">Dynamic, unpredictable challenges that elevate engagement.</td>
-                </tr>
-                <!-- 10) Credibility & Believability -->
-                <tr>
-                  <td class="category-header" data-category="9">🤝 Credibility & Believability</td>
-                  <td data-category="9" data-rating="1">Feels forced or overly staged; viewer trust may be low.</td>
-                  <td data-category="9" data-rating="2">Some genuine elements, but parts still come off as artificial or scripted.</td>
-                  <td data-category="9" data-rating="3">The content feels sincere and honest; overall sense of integrity.</td>
-                  <td data-category="9" data-rating="4">Deeply credible; the creator’s transparency and approach leave no doubt about authenticity.</td>
-                </tr>
+                  <tr>
+                    <td colspan="5" class="section-header">VIDEO FUNDAMENTALS</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="5">🎣 Hook & Intro</td>
+                    <td data-category="5" data-rating="1" tabindex="0" role="button" aria-label="Rate Hook & Intro as Good (1)">Slow or unclear hook.</td>
+                    <td data-category="5" data-rating="2" tabindex="0" role="button" aria-label="Rate Hook & Intro as Great (2)">Basic but functional hook.</td>
+                    <td data-category="5" data-rating="3" tabindex="0" role="button" aria-label="Rate Hook & Intro as Excellent (3)">Clear, intriguing opener.</td>
+                    <td data-category="5" data-rating="4" tabindex="0" role="button" aria-label="Rate Hook & Intro as Outstanding (4)">Unignorable opener.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="6">🎯 Clarity of Goal</td>
+                    <td data-category="6" data-rating="1" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Good (1)">Vague or hidden goal.</td>
+                    <td data-category="6" data-rating="2" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Great (2)">Stated but muddled goal.</td>
+                    <td data-category="6" data-rating="3" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Excellent (3)">Well-defined goal.</td>
+                    <td data-category="6" data-rating="4" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Outstanding (4)">Crystal-clear premise.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="7">⚔️ Conflict & Stakes</td>
+                    <td data-category="7" data-rating="1" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Good (1)">Low urgency, trivial conflicts.</td>
+                    <td data-category="7" data-rating="2" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Great (2)">Basic, predictable obstacles.</td>
+                    <td data-category="7" data-rating="3" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Excellent (3)">High stakes keep viewers invested.</td>
+                    <td data-category="7" data-rating="4" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Outstanding (4)">Escalating tension compels viewers.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="8">🛑 Challenges</td>
+                    <td data-category="8" data-rating="1" tabindex="0" role="button" aria-label="Rate Challenges as Good (1)">Artificial or easy challenges.</td>
+                    <td data-category="8" data-rating="2" tabindex="0" role="button" aria-label="Rate Challenges as Great (2)">Predictable obstacles.</td>
+                    <td data-category="8" data-rating="3" tabindex="0" role="button" aria-label="Rate Challenges as Excellent (3)">Balanced challenges create tension.</td>
+                    <td data-category="8" data-rating="4" tabindex="0" role="button" aria-label="Rate Challenges as Outstanding (4)">Dynamic, unpredictable challenges.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="9">🤝 Credibility</td>
+                    <td data-category="9" data-rating="1" tabindex="0" role="button" aria-label="Rate Credibility as Good (1)">Feels forced or staged.</td>
+                    <td data-category="9" data-rating="2" tabindex="0" role="button" aria-label="Rate Credibility as Great (2)">Some genuine elements.</td>
+                    <td data-category="9" data-rating="3" tabindex="0" role="button" aria-label="Rate Credibility as Excellent (3)">Sincere and honest content.</td>
+                    <td data-category="9" data-rating="4" tabindex="0" role="button" aria-label="Rate Credibility as Outstanding (4)">Deeply credible and authentic.</td>
+                  </tr>
 
-                <!-- SECTION: Video Pacing -->
-                <tr>
-                  <td colspan="5" class="section-header">VIDEO PACING</td>
-                </tr>
-                <!-- 11) Pacing & Rhythm -->
-                <tr>
-                  <td class="category-header" data-category="10">⏱️ Pacing & Rhythm</td>
-                  <td data-category="10" data-rating="1">Uneven pacing; segments linger too long or abruptly cut.</td>
-                  <td data-category="10" data-rating="2">Mostly smooth transitions but with occasional slow or rushed sections.</td>
-                  <td data-category="10" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
-                  <td data-category="10" data-rating="4">Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.</td>
-                </tr>
-                <!-- 12) Retention-Based Structure -->
-                <tr>
-                  <td class="category-header" data-category="11">📈 Retention-Based Structure</td>
-                  <td data-category="11" data-rating="1">No clear plan for keeping viewers engaged.</td>
-                  <td data-category="11" data-rating="2">Some engaging points, but may have weak retention structure.</td>
-                  <td data-category="11" data-rating="3">Pacing and retention elements are mapped out effectively.</td>
-                  <td data-category="11" data-rating="4">Highly structured for retention with peaks, suspense, and pacing mapped minute-by-minute.</td>
-                </tr>
-                <!-- 13) Storytelling & Emotional Investment -->
-                <tr>
-                  <td class="category-header" data-category="12">📖 Storytelling & Emotional Investment</td>
-                  <td data-category="12" data-rating="1">No emotional stakes; the audience may not care about the outcome.</td>
-                  <td data-category="12" data-rating="2">Basic stakes are present, but they may feel predictable or unearned.</td>
-                  <td data-category="12" data-rating="3">Strong emotional connection; the audience is invested in the journey.</td>
-                  <td data-category="12" data-rating="4">Deep emotional pull with well-executed character arcs or stakes.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  <tr>
+                    <td colspan="5" class="section-header">VIDEO PACING</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="10">⏱️ Pacing & Rhythm</td>
+                    <td data-category="10" data-rating="1" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Good (1)">Uneven pacing, abrupt cuts.</td>
+                    <td data-category="10" data-rating="2" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Great (2)">Mostly smooth with minor issues.</td>
+                    <td data-category="10" data-rating="3" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Excellent (3)">Well-paced with strong rhythm.</td>
+                    <td data-category="10" data-rating="4" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Outstanding (4)">Flawless pacing and momentum.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="11">📈 Retention Structure</td>
+                    <td data-category="11" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention Structure as Good (1)">No engagement plan.</td>
+                    <td data-category="11" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention Structure as Great (2)">Some engaging points.</td>
+                    <td data-category="11" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention Structure as Excellent (3)">Effective retention mapping.</td>
+                    <td data-category="11" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention Structure as Outstanding (4)">Minute-by-minute suspense.</td>
+                  </tr>
+                  <tr>
+                    <td class="category-header" data-category="12">📖 Storytelling</td>
+                    <td data-category="12" data-rating="1" tabindex="0" role="button" aria-label="Rate Storytelling as Good (1)">No emotional stakes.</td>
+                    <td data-category="12" data-rating="2" tabindex="0" role="button" aria-label="Rate Storytelling as Great (2)">Basic, predictable stakes.</td>
+                    <td data-category="12" data-rating="3" tabindex="0" role="button" aria-label="Rate Storytelling as Excellent (3)">Strong emotional connection.</td>
+                    <td data-category="12" data-rating="4" tabindex="0" role="button" aria-label="Rate Storytelling as Outstanding (4)">Deep emotional pull.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
 
           <!-- Human Feedback Section -->
-          <div class="glass-panel input-section" id="humanFeedbackSection">
+          <section class="glass-panel input-section" id="humanFeedbackSection">
             <h2>👥 Human Feedback</h2>
-            <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes—like how it fits Roblox trends!" style="min-height: 100px;"></textarea>
-          </div>
+            <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes—like how it fits Roblox trends!"></textarea>
+          </section>
 
           <!-- Self-Assessment Checklist Section -->
-          <div class="glass-panel input-section" id="selfAssessmentSection">
+          <section class="glass-panel input-section" id="selfAssessmentSection">
             <h2>✅ Self-Assessment Checklist</h2>
             <ul>
               <li>
                 <input type="checkbox" id="check1" />
-                <label for="check1"><strong>Pre-Writing:</strong> Is the theme, central conflict, and structure (e.g., Save the Cat, Story Circle) clearly defined?</label>
+                <label for="check1"><strong>Pre-Writing:</strong> Is the theme, conflict, and structure clearly defined?</label>
               </li>
               <li>
                 <input type="checkbox" id="check2" />
-                <label for="check2"><strong>Writing:</strong> Do beats connect logically (“And, But, Therefore”), and are resolutions character-driven rather than coincidental?</label>
+                <label for="check2"><strong>Writing:</strong> Do beats connect logically, with character-driven resolutions?</label>
               </li>
               <li>
                 <input type="checkbox" id="check3" />
-                <label for="check3"><strong>World-Building & Stakes:</strong> Are mechanics, rules, and stakes clear and consistent? Do conflicts escalate meaningfully?</label>
+                <label for="check3"><strong>World-Building:</strong> Are rules and stakes clear and consistent?</label>
               </li>
               <li>
                 <input type="checkbox" id="check4" />
-                <label for="check4"><strong>Review:</strong> Does the story flow smoothly, with no unnecessary complexity? Do all setups and subplots tie into the resolution?</label>
+                <label for="check4"><strong>Review:</strong> Does the story flow smoothly with tied-up subplots?</label>
               </li>
               <li>
                 <input type="checkbox" id="check5" />
-                <label for="check5"><strong>Polishing:</strong> Have weak beats, plot holes, and unearned resolutions (e.g., deus ex machina) been removed?</label>
+                <label for="check5"><strong>Polishing:</strong> Are weak beats and plot holes removed?</label>
               </li>
               <li>
                 <input type="checkbox" id="check6" />
-                <label for="check6"><strong>Pre-Shoot:</strong> Is everything (set, props, equipment, talent, backups) fully prepared for filming?</label>
+                <label for="check6"><strong>Pre-Shoot:</strong> Is everything prepared for filming?</label>
               </li>
             </ul>
-          </div>
-        </div> <!-- end .main-content -->
-      </div> <!-- end .layout-container -->
-    </main>
+          </section>
+        </div>
+      </main>
 
-    <!-- Social Share -->
-    <section class="social-share">
-      <p>Share your analysis!</p>
-      <button class="social-btn" onclick="shareOnTwitter()">🐦</button>
-      <button class="social-btn" onclick="shareOnDiscord()">💬</button>
-    </section>
+      <!-- Social Share -->
+      <section class="social-share">
+        <p>Share your analysis!</p>
+        <button class="social-btn" onclick="shareOnTwitter()" aria-label="Share on Twitter">🐦</button>
+        <button class="social-btn" onclick="shareOnDiscord()" aria-label="Share on Discord">💬</button>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <p>Created by loverfellayt - <a href="https://youtube.com/@yourchannel" target="_blank">Subscribe!</a></p>
+      </footer>
+    </div>
 
     <!-- JavaScript -->
     <script>
-      // Global variables
       let scores = {};
 
       window.addEventListener('DOMContentLoaded', () => {
-        // Dark mode toggle
         document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
-
-        // Buttons
         document.getElementById('exportBtn').addEventListener('click', exportPNG);
         document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
         document.getElementById('resetBtn').addEventListener('click', resetScores);
         document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
 
-        // Rubric clicking
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
+          cell.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectRating(cell);
+            }
+          });
         });
 
-        // Auto-resize textareas
         document.querySelectorAll('.story-input').forEach(textarea => {
           textarea.addEventListener('input', autoResize);
         });
 
-        // Idea Rubric upload
         document.getElementById('ideaRubricUpload').addEventListener('change', handleIdeaRubricUpload);
       });
 
       function handleIdeaRubricUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
-
         if (!file.type.match('image/png')) {
           alert('Please upload a PNG file.');
           return;
         }
-
         const reader = new FileReader();
-        reader.onload = function(evt) {
-          const container = document.getElementById('ideaRubricImageContainer');
-          container.innerHTML = `<img src="${evt.target.result}" alt="Idea Rubric" />`;
-        };
+        reader.onload = evt => document.getElementById('ideaRubricImageContainer').innerHTML = `<img src="${evt.target.result}" alt="Uploaded Idea Rubric" />`;
         reader.readAsDataURL(file);
       }
 
@@ -722,8 +682,7 @@
           "Simple stories with big payoffs win every time.",
           "Test your idea: Would YOU click this thumbnail?"
         ];
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        alert(quotes[randomIndex]);
+        alert(quotes[Math.floor(Math.random() * quotes.length)]);
       }
 
       function selectRating(cell) {
@@ -745,10 +704,7 @@
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
-          updateProgressBar(total);
-          return;
-        }
-        if (total < 21) {
+        } else if (total < 21) {
           ranking.textContent = 'Needs Work 🔴';
           ranking.style.color = 'red';
         } else if (total < 32) {
@@ -760,38 +716,34 @@
         } else {
           ranking.textContent = 'Perfect! 🔵';
           ranking.style.color = 'blue';
-          if (typeof confetti === 'function') {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-          }
+          if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
         updateProgressBar(total);
       }
 
       function updateProgressBar(total) {
-        const maxScore = 56; // Updated to match rubric total
+        const maxScore = 56;
         const percentage = (total / maxScore) * 100;
-        document.getElementById("progressBar").style.width = percentage + "%";
+        document.getElementById('progressBar').style.width = `${percentage}%`;
       }
 
       function autoResize(e) {
         const textarea = e.target;
         textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
+        textarea.style.height = `${textarea.scrollHeight}px`;
       }
 
       async function exportPNG() {
+        const loading = alert('Exporting... Please wait.');
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.top = '-9999px';
         tempContainer.style.left = '-9999px';
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
-        tempContainer.style.padding = "1rem";
+        tempContainer.style.padding = '1rem';
 
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
         headerClone.style.position = 'static';
-        headerClone.style.top = '0';
-        headerClone.style.margin = '0';
-
         const layoutClone = document.querySelector('.layout-container').cloneNode(true);
 
         tempContainer.appendChild(headerClone);
@@ -800,18 +752,18 @@
 
         try {
           const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true });
+          if (!canvas) throw new Error('Canvas generation failed');
           const dataUrl = canvas.toDataURL('image/png');
           const link = document.createElement('a');
           link.download = 'storycraft-analysis.png';
           link.href = dataUrl;
-          document.body.appendChild(link);
           link.click();
-          document.body.removeChild(link);
         } catch (error) {
           console.error('PNG export failed:', error);
-          alert('Error exporting PNG. Please try again.');
+          alert(`Export failed: ${error.message}. Check console for details.`);
+        } finally {
+          document.body.removeChild(tempContainer);
         }
-        document.body.removeChild(tempContainer);
       }
 
       function resetScores() {
@@ -827,11 +779,7 @@
       }
 
       function toggleTheme(e) {
-        if (e.target.checked) {
-          document.documentElement.setAttribute("data-theme", "dark");
-        } else {
-          document.documentElement.removeAttribute("data-theme");
-        }
+        document.documentElement.setAttribute("data-theme", e.target.checked ? "dark" : "");
       }
 
       function addYouTubeVideo() {
@@ -842,28 +790,25 @@
         let videoId = "";
         try {
           const urlObj = new URL(url);
-          if (urlObj.hostname === "youtu.be") {
-            videoId = urlObj.pathname.slice(1);
-          } else if (urlObj.searchParams.get("v")) {
-            videoId = urlObj.searchParams.get("v");
-          }
+          videoId = urlObj.hostname === "youtu.be" ? urlObj.pathname.slice(1) : urlObj.searchParams.get("v");
+          if (!videoId) throw new Error("Invalid YouTube URL");
         } catch (err) {
           alert("Invalid URL");
-          return;
-        }
-        if (!videoId) {
-          alert("Could not extract YouTube video ID.");
           return;
         }
 
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
         const videoList = document.getElementById('similarVideosList');
-
         const videoContainer = document.createElement('div');
         videoContainer.className = 'video-thumbnail';
 
         const img = document.createElement('img');
         img.src = thumbnailUrl;
+        img.alt = `Thumbnail for YouTube video ${videoId}`;
+        img.onerror = () => {
+          videoList.removeChild(videoContainer);
+          alert('Failed to load YouTube thumbnail.');
+        };
         videoContainer.appendChild(img);
 
         const title = document.createElement('div');
@@ -874,13 +819,11 @@
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-btn';
         removeBtn.innerHTML = '×';
-        removeBtn.addEventListener('click', () => {
-          videoList.removeChild(videoContainer);
-        });
+        removeBtn.setAttribute('aria-label', 'Remove video');
+        removeBtn.addEventListener('click', () => videoList.removeChild(videoContainer));
         videoContainer.appendChild(removeBtn);
 
         videoList.appendChild(videoContainer);
-
         urlInput.value = '';
       }
 
