@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoryCraft Analyzer Pro+ Enhanced</title>
+    <title>StoryCraft Analyzer - Craft Viral Hits!</title>
 
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-    <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -17,11 +16,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- Google Font: Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -39,9 +37,10 @@
         --radius: 14px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
         --spacing: 1rem;
-        --font-base: 'Roboto', sans-serif;
+        --font-base: 'Poppins', sans-serif;
         --table-cell-bg-light: rgba(255, 255, 255, 0.85);
         --section-bg: rgba(79, 172, 254, 0.2);
+        --highlight: #ff6b6b; /* Vibrant accent color */
       }
       html[data-theme="dark"] {
         --bg-light: #1f1f1f;
@@ -63,7 +62,61 @@
         transition: var(--transition);
       }
 
-      /* Layout container: two columns (aside + main), back to 98% & 1100px */
+      /* Hero Section */
+      .hero {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: var(--gradient-light);
+        color: #fff;
+        border-radius: 0 0 var(--radius) var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        margin: 0;
+        font-weight: 700;
+        animation: fadeIn 1s ease-in;
+      }
+      .hero p {
+        font-size: 1.2rem;
+        margin: 0.5rem 0 1.5rem;
+      }
+      .hero .btn {
+        font-size: 1.2rem;
+        padding: 0.8rem 2rem;
+        animation: bounce 2s infinite;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+      }
+
+      /* How It Works Section */
+      .how-it-works {
+        max-width: 1100px;
+        margin: 2rem auto;
+        display: flex;
+        justify-content: space-around;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .step {
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+        padding: 1rem;
+      }
+      .step h3 {
+        color: var(--primary-light);
+        margin: 0.5rem 0;
+      }
+
+      /* Layout Container */
       .layout-container {
         display: flex;
         align-items: flex-start;
@@ -73,13 +126,13 @@
         gap: 1rem;
       }
 
-      /* Sticky Banner */
+      /* Sticky Header */
       header.analyzer-header {
         position: sticky;
         top: 0;
         z-index: 1000;
         padding: 1.5rem 2rem;
-        margin-bottom: var(--spacing);
+        margin: 0 auto var(--spacing);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -88,33 +141,18 @@
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
-        animation: headerGlow 3s infinite alternate;
-      }
-      @keyframes headerGlow {
-        /* Neon/cyan glow */
-        from { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
-        to   { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
-      }
-
-      .header-left {
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
+        max-width: 1100px;
+        width: 98%;
       }
       .header-left h1 {
         font-size: 2rem;
         margin: 0;
-        font-weight: bold;
-      }
-      .score-info {
-        margin-top: 0.5rem;
+        font-weight: 700;
       }
       .score-info p {
         margin: 0.2rem 0;
         font-size: 0.9rem;
       }
-
-      /* Thicker progress bar */
       .progress-container {
         width: 200px;
         height: 16px;
@@ -124,19 +162,13 @@
         margin-top: 0.3rem;
       }
       #progressBar {
-        height: 16px;
-        background: #4facfe;
+        height: 100%;
+        background: var(--gradient-light);
         width: 0%;
         transition: width 0.3s;
       }
 
-      .header-right {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-
+      /* Buttons */
       button.btn {
         background: var(--gradient-light);
         color: #fff;
@@ -155,64 +187,8 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
-      button.rainbow-btn {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-      button.rainbow-btn:hover {
-        transform: scale(1.2);
-      }
 
-      .dark-mode {
-        display: inline-flex;
-        align-items: center;
-        cursor: pointer;
-      }
-      .toggle-label {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-      }
-      .dark-mode-slider {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        background-color: #e0e0e0;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
-        transition: background-color 0.3s;
-      }
-      .dark-mode-slider .mode-label {
-        font-size: 16px;
-        user-select: none;
-      }
-      .dark-mode-slider .slider-thumb {
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s;
-      }
-      input#darkModeToggle {
-        display: none;
-      }
-      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        transform: translateX(30px);
-      }
-      input#darkModeToggle:checked + .dark-mode-slider {
-        background-color: var(--primary-light);
-      }
-
-      /* Thicker glass panels (padding changed to 2.5rem, margin 2rem) */
+      /* Glass Panels */
       .glass-panel {
         background: var(--panel-light);
         border: 1px solid var(--border-light);
@@ -224,10 +200,9 @@
         text-align: center;
       }
       .glass-panel h2 {
-        margin-top: 0;
+        color: var(--highlight);
       }
 
-      /* Left Column: "Idea Rubric" - 400px wide */
       aside#ideaRubricSection {
         width: 400px;
         flex-shrink: 0;
@@ -243,15 +218,13 @@
       #ideaRubricImageContainer img {
         border-radius: var(--radius);
         display: block;
-        max-width: none; /* Show full size */
+        max-width: none;
       }
 
-      /* Right column for main content */
       .main-content {
         flex: 1;
       }
 
-      /* Text boxes in quick summary & feedback. Dark mode => #fff text. */
       .story-input {
         width: 80%;
         max-width: 800px;
@@ -397,6 +370,24 @@
         cursor: pointer;
       }
 
+      /* Social Share Section */
+      .social-share {
+        text-align: center;
+        padding: 1rem;
+      }
+      .social-btn {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        margin: 0 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .social-btn:hover {
+        transform: scale(1.2);
+        color: var(--highlight);
+      }
+
       @media (max-width: 768px) {
         .layout-container {
           flex-direction: column;
@@ -413,7 +404,32 @@
     </style>
   </head>
   <body>
-    <!-- HEADER / Sticky Banner -->
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>StoryCraft Analyzer</h1>
+      <p>Score your story ideas and turn them into viral hits for YouTube & Roblox!</p>
+      <button class="btn" onclick="document.getElementById('quickSummarySection').scrollIntoView({behavior: 'smooth'})">
+        Start Crafting Now!
+      </button>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+      <div class="step">
+        <h3>1. Summarize Your Idea</h3>
+        <p>Write a quick pitch for your story or video concept.</p>
+      </div>
+      <div class="step">
+        <h3>2. Score with Rubric</h3>
+        <p>Use our detailed rubric to rate its potential.</p>
+      </div>
+      <div class="step">
+        <h3>3. Export & Share</h3>
+        <p>Download your analysis and share it with friends!</p>
+      </div>
+    </section>
+
+    <!-- HEADER -->
     <header class="analyzer-header">
       <div class="header-left">
         <h1>StoryCraft Analyzer</h1>
@@ -428,7 +444,7 @@
       <div class="header-right">
         <button class="btn" id="resetBtn">🔄 Reset</button>
         <button class="btn" id="exportBtn">🖼️ Export PNG</button>
-        <button class="btn" id="rainbowBtn">🌈</button>
+        <button class="btn" id="rainbowBtn">🌈 Tips</button>
         <div class="dark-mode">
           <label class="toggle-label" for="darkModeToggle">
             <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" />
@@ -448,17 +464,17 @@
         <!-- Left Column: "Idea Rubric" -->
         <aside class="glass-panel" id="ideaRubricSection">
           <h2>Idea Rubric</h2>
-          <p>Upload a PNG below to display:</p>
+          <p>Upload a PNG sketch (e.g., Roblox concept art):</p>
           <input type="file" id="ideaRubricUpload" accept="image/png" />
           <div id="ideaRubricImageContainer"></div>
         </aside>
 
-        <!-- Right Column: main content -->
+        <!-- Right Column: Main Content -->
         <div class="main-content">
           <!-- Quick Summary Section -->
           <div class="glass-panel input-section" id="quickSummarySection">
             <h2>📝 Quick Summary</h2>
-            <textarea id="quickSummary" class="story-input" placeholder="Summarize the story or video in a few lines..."></textarea>
+            <textarea id="quickSummary" class="story-input" placeholder="Example: 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet!'"></textarea>
           </div>
 
           <!-- Similar Videos Section -->
@@ -497,7 +513,7 @@
                 </tr>
                 <!-- 2) Planning & Outline -->
                 <tr>
-                  <td class="category-header" data-category="1">📝 Planning &amp; Outline</td>
+                  <td class="category-header" data-category="1">📝 Planning & Outline</td>
                   <td data-category="1" data-rating="1">Concept is loosely formed; unclear breakdown of key elements (hook, conflict, CTA, etc.).</td>
                   <td data-category="1" data-rating="2">Basic structure or progression is outlined but lacks detail in some areas.</td>
                   <td data-category="1" data-rating="3">Well‐conceived plan with a thorough script or breakdown ensuring each segment ties into the main goal.</td>
@@ -505,7 +521,7 @@
                 </tr>
                 <!-- 3) Production Feasibility & Planning -->
                 <tr>
-                  <td class="category-header" data-category="2">🎥 Production Feasibility &amp; Planning</td>
+                  <td class="category-header" data-category="2">🎥 Production Feasibility & Planning</td>
                   <td data-category="2" data-rating="1">Unrealistic or vague plan with potential production obstacles.</td>
                   <td data-category="2" data-rating="2">Basic plan exists but lacks thorough logistics (locations, timing, assets).</td>
                   <td data-category="2" data-rating="3">Well-thought-out plan with production logistics considered.</td>
@@ -521,7 +537,7 @@
                 </tr>
                 <!-- 5) Originality & Trend‐Jacking -->
                 <tr>
-                  <td class="category-header" data-category="4">🚀 Originality &amp; Trend‐Jacking</td>
+                  <td class="category-header" data-category="4">🚀 Originality & Trend‐Jacking</td>
                   <td data-category="4" data-rating="1">Overdone or cliché concept with no unique spin.</td>
                   <td data-category="4" data-rating="2">Minor twist on popular trends but still somewhat familiar.</td>
                   <td data-category="4" data-rating="3">A distinct approach or fresh angle that helps it stand out.</td>
@@ -534,7 +550,7 @@
                 </tr>
                 <!-- 6) Hook & Intro -->
                 <tr>
-                  <td class="category-header" data-category="5">🎣 Hook &amp; Intro</td>
+                  <td class="category-header" data-category="5">🎣 Hook & Intro</td>
                   <td data-category="5" data-rating="1">Slow start or unclear hook; doesn’t entice immediate engagement.</td>
                   <td data-category="5" data-rating="2">Basic but functional hook; viewers might stay out of mild curiosity.</td>
                   <td data-category="5" data-rating="3">Clear, intriguing opening that sparks immediate interest.</td>
@@ -550,7 +566,7 @@
                 </tr>
                 <!-- 8) Conflict & Stakes -->
                 <tr>
-                  <td class="category-header" data-category="7">⚔️ Conflict &amp; Stakes</td>
+                  <td class="category-header" data-category="7">⚔️ Conflict & Stakes</td>
                   <td data-category="7" data-rating="1">Low urgency; conflicts feel trivial or manufactured.</td>
                   <td data-category="7" data-rating="2">Basic obstacles are present but feel predictable.</td>
                   <td data-category="7" data-rating="3">High stakes that keep viewers invested in how events will unfold.</td>
@@ -558,7 +574,7 @@
                 </tr>
                 <!-- 9) Challenges & Obstacles -->
                 <tr>
-                  <td class="category-header" data-category="8">🛑 Challenges &amp; Obstacles</td>
+                  <td class="category-header" data-category="8">🛑 Challenges & Obstacles</td>
                   <td data-category="8" data-rating="1">Challenges feel artificial, forced, or too easy.</td>
                   <td data-category="8" data-rating="2">Some obstacles exist but feel predictable.</td>
                   <td data-category="8" data-rating="3">Well-balanced challenges that create tension and excitement.</td>
@@ -566,7 +582,7 @@
                 </tr>
                 <!-- 10) Credibility & Believability -->
                 <tr>
-                  <td class="category-header" data-category="9">🤝 Credibility &amp; Believability</td>
+                  <td class="category-header" data-category="9">🤝 Credibility & Believability</td>
                   <td data-category="9" data-rating="1">Feels forced or overly staged; viewer trust may be low.</td>
                   <td data-category="9" data-rating="2">Some genuine elements, but parts still come off as artificial or scripted.</td>
                   <td data-category="9" data-rating="3">The content feels sincere and honest; overall sense of integrity.</td>
@@ -579,13 +595,13 @@
                 </tr>
                 <!-- 11) Pacing & Rhythm -->
                 <tr>
-                  <td class="category-header" data-category="10">⏱️ Pacing &amp; Rhythm</td>
+                  <td class="category-header" data-category="10">⏱️ Pacing & Rhythm</td>
                   <td data-category="10" data-rating="1">Uneven pacing; segments linger too long or abruptly cut.</td>
                   <td data-category="10" data-rating="2">Mostly smooth transitions but with occasional slow or rushed sections.</td>
                   <td data-category="10" data-rating="3">Generally well‐paced with clear transitions and strong narrative rhythm.</td>
                   <td data-category="10" data-rating="4">Flawless pacing; each section transitions effortlessly, sustaining tension or momentum at all times.</td>
                 </tr>
-                <!-- 12) Retention-Based Structure (again) -->
+                <!-- 12) Retention-Based Structure -->
                 <tr>
                   <td class="category-header" data-category="11">📈 Retention-Based Structure</td>
                   <td data-category="11" data-rating="1">No clear plan for keeping viewers engaged.</td>
@@ -595,7 +611,7 @@
                 </tr>
                 <!-- 13) Storytelling & Emotional Investment -->
                 <tr>
-                  <td class="category-header" data-category="12">📖 Storytelling &amp; Emotional Investment</td>
+                  <td class="category-header" data-category="12">📖 Storytelling & Emotional Investment</td>
                   <td data-category="12" data-rating="1">No emotional stakes; the audience may not care about the outcome.</td>
                   <td data-category="12" data-rating="2">Basic stakes are present, but they may feel predictable or unearned.</td>
                   <td data-category="12" data-rating="3">Strong emotional connection; the audience is invested in the journey.</td>
@@ -608,7 +624,7 @@
           <!-- Human Feedback Section -->
           <div class="glass-panel input-section" id="humanFeedbackSection">
             <h2>👥 Human Feedback</h2>
-            <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes and feedback here..." style="min-height: 100px;"></textarea>
+            <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes—like how it fits Roblox trends!" style="min-height: 100px;"></textarea>
           </div>
 
           <!-- Self-Assessment Checklist Section -->
@@ -625,7 +641,7 @@
               </li>
               <li>
                 <input type="checkbox" id="check3" />
-                <label for="check3"><strong>World-Building &amp; Stakes:</strong> Are mechanics, rules, and stakes clear and consistent? Do conflicts escalate meaningfully?</label>
+                <label for="check3"><strong>World-Building & Stakes:</strong> Are mechanics, rules, and stakes clear and consistent? Do conflicts escalate meaningfully?</label>
               </li>
               <li>
                 <input type="checkbox" id="check4" />
@@ -644,6 +660,13 @@
         </div> <!-- end .main-content -->
       </div> <!-- end .layout-container -->
     </main>
+
+    <!-- Social Share -->
+    <section class="social-share">
+      <p>Share your analysis!</p>
+      <button class="social-btn" onclick="shareOnTwitter()">🐦</button>
+      <button class="social-btn" onclick="shareOnDiscord()">💬</button>
+    </section>
 
     <!-- JavaScript -->
     <script>
@@ -693,11 +716,11 @@
 
       function showRainbowQuote() {
         const quotes = [
-          "The test of good writing and good story is: does it not only reward the first viewing, but also the second viewing?",
-          "Movies are all about the last ten minutes\nTools, not rules",
-          "When the climax is established, work backwards and ask \"if this scene was removed, would the climax still work? If it would still work, remove that scene\"",
-          "You gotta identify with your situation/characters; you can’t just write ‘cool’. What would make YOU act that way?",
-          "What’s the essence of your story? The most economical telling of it? If you know that, you can build out from there."
+          "For Roblox: Make it wild—like hatching a pet that takes over the game!",
+          "Viral Tip: Add a twist no one sees coming.",
+          "Keep viewers hooked with escalating stakes!",
+          "Simple stories with big payoffs win every time.",
+          "Test your idea: Would YOU click this thumbnail?"
         ];
         const randomIndex = Math.floor(Math.random() * quotes.length);
         alert(quotes[randomIndex]);
@@ -719,7 +742,6 @@
         const total = Object.values(scores).reduce((a, b) => a + b, 0);
         document.getElementById('total').textContent = total;
         const ranking = document.getElementById('ranking');
-        // Same logic: need at least 10 categories for final ranking
         if (Object.keys(scores).length < 10) {
           ranking.textContent = 'Incomplete';
           ranking.style.color = '#64748b';
@@ -746,7 +768,7 @@
       }
 
       function updateProgressBar(total) {
-        const maxScore = 40;
+        const maxScore = 56; // Updated to match rubric total
         const percentage = (total / maxScore) * 100;
         document.getElementById("progressBar").style.width = percentage + "%";
       }
@@ -765,13 +787,11 @@
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
         tempContainer.style.padding = "1rem";
 
-        // Clone the header
         const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
         headerClone.style.position = 'static';
         headerClone.style.top = '0';
         headerClone.style.margin = '0';
 
-        // Clone main layout
         const layoutClone = document.querySelector('.layout-container').cloneNode(true);
 
         tempContainer.appendChild(headerClone);
@@ -814,11 +834,6 @@
         }
       }
 
-      /* 
-         Removed the AI Review code section 
-         per previous instructions.
-      */
-      
       function addYouTubeVideo() {
         const urlInput = document.getElementById('youtubeLinkInput');
         const url = urlInput.value.trim();
@@ -858,7 +873,7 @@
 
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-btn';
-        removeBtn.innerHTML = '&times;';
+        removeBtn.innerHTML = '×';
         removeBtn.addEventListener('click', () => {
           videoList.removeChild(videoContainer);
         });
@@ -867,6 +882,19 @@
         videoList.appendChild(videoContainer);
 
         urlInput.value = '';
+      }
+
+      function shareOnTwitter() {
+        const score = document.getElementById('total').textContent;
+        const ranking = document.getElementById('ranking').textContent;
+        const text = `I scored ${score}/56 on StoryCraft Analyzer! Ranking: ${ranking}. Check out my viral idea: ${document.getElementById('quickSummary').value.substring(0, 100)}...`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+      }
+
+      function shareOnDiscord() {
+        const score = document.getElementById('total').textContent;
+        const summary = document.getElementById('quickSummary').value.substring(0, 100);
+        alert(`Copy this to Discord:\nMy StoryCraft Score: ${score}/56\nIdea: ${summary}...`);
       }
     </script>
   </body>
