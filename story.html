@@ -224,7 +224,7 @@
         border: 1px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(14px);
+        backdrop-filter: blur(12px);
         padding: 3rem;
         margin: var(--spacing) 0;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -826,7 +826,7 @@
           document.getElementById('darkModeToggle').textContent = '☀️';
         }
 
-        // Event Listeners
+        // Event Listeners for Buttons and Inputs
         document.getElementById('darkModeToggle').addEventListener('click', () => {
           const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
           document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
@@ -853,29 +853,35 @@
           autoResize({ target: document.getElementById('quickSummary') });
           saveToHistory();
         });
+
         document.getElementById('humanFeedback').addEventListener('input', () => {
           localStorage.setItem('humanFeedback', document.getElementById('humanFeedback').value);
           updateProgress();
           autoResize({ target: document.getElementById('humanFeedback') });
           saveToHistory();
         });
+
         document.getElementById('audienceAge').addEventListener('change', () => {
           localStorage.setItem('audienceAge', document.getElementById('audienceAge').value);
           saveToHistory();
         });
+
         document.getElementById('audienceInterests').addEventListener('input', () => {
           localStorage.setItem('audienceInterests', document.getElementById('audienceInterests').value);
           saveToHistory();
         });
+
         document.getElementById('titleInput').addEventListener('input', () => {
           localStorage.setItem('title', document.getElementById('titleInput').value);
           updateTitleCharCount();
           saveToHistory();
         });
+
         document.getElementById('reviewTitle').addEventListener('input', () => {
           localStorage.setItem('reviewTitle', document.getElementById('reviewTitle').value);
           saveToHistory();
         });
+
         document.getElementById('reviewNotes').addEventListener('input', () => {
           localStorage.setItem('reviewNotes', document.getElementById('reviewNotes').value);
           autoResize({ target: document.getElementById('reviewNotes') });
@@ -1402,12 +1408,12 @@
             <hr style="border: 1px solid var(--border-light); margin: 1.5rem 0;">
             <h2 style="color: var(--primary-light); font-size: 1.8rem;">Concept</h2><p style="margin: 0.5rem 0 1.5rem;">${document.getElementById('quickSummary').value || 'No concept entered yet.'}</p>
             <h2 style="color: var(--primary-light); font-size: 1.8rem;">Audience</h2><p style="margin: 0.5rem 0 1.5rem;">Age: ${document.getElementById('audienceAge').value}, Interests: ${document.getElementById('audienceInterests').value || 'Not specified'}</p>
-            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Title</h2><p style="margin: 0.5rem 0 1.5rem;">${document.getElementById('titleInput').value || 'No title yet.'}</p>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Title</h2><p style="margin: 0.5rem 0 1.5rem;">${document.getElementById('titleInput').value || 'No title yet.'
             <h2 style="color: var(--primary-light); font-size: 1.8rem;">Rubric Scores</h2>${getRubricTableHTML()}
             <p style="margin: 1rem 0; font-weight: bold;">Total Weighted Score: ${calculateTotalScore().toFixed(1)} / ${calculateMaxScore().toFixed(1)} (${getScoreRating(calculateTotalScore(), calculateMaxScore())})</p>
             <h2 style="color: var(--primary-light); font-size: 1.8rem;">Feedback</h2>${document.getElementById('feedbackOutput').innerHTML.replace(/<ul>/g, '<ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">')}
-            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Production Plan</h2>${document.getElementById('plannerList').innerHTML.replace(/<ul>/g, '<ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">
-                        <h2 style="color: var(--primary-light); font-size: 1.8rem;">Timeline</h2><ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">${getTimeline().map(item => `<li>${item}</li>`).join('') || '<li>No timeline blocks added.</li>'}</ul>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Production Plan</h2>${document.getElementById('plannerList').innerHTML.replace(/<ul>/g, '<ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">')}
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Timeline</h2><ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">${getTimeline().map(item => `<li>${item}</li>`).join('') || '<li>No timeline blocks added.</li>'}</ul>
             <h2 style="color: var(--primary-light); font-size: 1.8rem;">Resources & Budget</h2><p style="margin: 0.5rem 0 1.5rem;">${getResources().replace(/<br>/g, '<br>') || 'No resources added.'}</p>
             <h2 style="color: var(--primary-light); font-size: 1.8rem;">Review</h2>
             <p style="margin: 0.5rem 0;">Title: ${document.getElementById('reviewTitle').value || 'No title'}</p>
@@ -1498,4 +1504,4 @@
       }
     </script>
   </body>
-</html>                                                                                                                                           
+</html>                                                                                                                        
