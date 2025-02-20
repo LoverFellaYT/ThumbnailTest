@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoryCraft Analyzer - Plan Viral Videos</title>
-    <meta name="description" content="Review and enhance your YouTube and Roblox video concepts before recording with StoryCraft Analyzer!" />
+    <title>StoryCraft Analyzer - Ultimate Video Planning</title>
+    <meta name="description" content="The ultimate tool to craft, produce, and review YouTube and Roblox video stories!" />
     <meta name="keywords" content="StoryCraft, YouTube, Roblox, video planning, story analyzer" />
     <meta name="author" content="loverfellayt" />
     <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon" />
@@ -15,31 +15,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
     <!-- CSS Styles -->
     <style>
       :root {
         --primary-light: #4facfe;
         --accent-light: #00f2fe;
-        --bg-light: #f9fafb;
-        --text-light: #1e293b;
-        --panel-light: rgba(255, 255, 255, 0.96);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-        --transition: all 0.2s ease;
-        --radius: 16px;
+        --bg-light: #f4f7fa;
+        --bg-dark: #1a1e2e;
+        --text-light: #2c3e50;
+        --text-dark: #ecf0f1;
+        --panel-light: rgba(255, 255, 255, 0.95);
+        --panel-dark: rgba(30, 35, 50, 0.95);
+        --border-light: rgba(200, 200, 200, 0.3);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+        --radius: 20px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-        --spacing: 1.5rem;
+        --spacing: 2rem;
         --font-base: 'Poppins', sans-serif;
-        --highlight: #ff6b6b;
+        --highlight: #e91e63;
       }
       html[data-theme="dark"] {
-        --bg-light: #1f1f1f;
-        --text-light: #f3f3f3;
-        --panel-light: rgba(18, 18, 18, 0.98);
+        --bg-light: var(--bg-dark);
+        --text-light: var(--text-dark);
+        --panel-light: var(--panel-dark);
         --border-light: rgba(255, 255, 255, 0.2);
-        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       }
 
       body {
@@ -49,116 +51,142 @@
         background: var(--bg-light);
         color: var(--text-light);
         line-height: 1.6;
+        overflow-x: hidden;
       }
 
       .container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: var(--spacing);
         position: relative;
+        animation: fadeIn 0.5s ease-in;
       }
 
       .hero {
         text-align: center;
-        padding: 3rem 1rem;
+        padding: 4rem 2rem;
         background: var(--gradient-light);
         color: #fff;
         border-radius: 0 0 var(--radius) var(--radius);
         box-shadow: var(--shadow);
+        margin-bottom: var(--spacing);
       }
       .hero h1 {
-        font-size: clamp(2rem, 5vw, 2.8rem);
+        font-size: clamp(2.5rem, 6vw, 3.5rem);
         margin: 0;
         font-weight: 700;
       }
       .hero p {
-        font-size: clamp(1rem, 3vw, 1.3rem);
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
         margin: 0.5rem 0 1rem;
+        font-weight: 300;
       }
 
       #darkModeToggle {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 1.5rem;
+        right: 1.5rem;
         background: none;
         border: none;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+      #darkModeToggle:hover {
+        transform: rotate(20deg);
       }
 
       #progress {
         position: relative;
-        height: 20px;
-        background: #e0e0e0;
-        border-radius: 10px;
+        height: 25px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
         overflow: hidden;
-        margin: 1rem 0;
-        text-align: center;
+        margin: 1.5rem 0;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
       }
       #progressBar {
         height: 100%;
         width: 0%;
         background: var(--gradient-light);
-        transition: width 0.3s ease;
+        transition: width 0.5s ease;
       }
       #progressText {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 0.9rem;
-        color: var(--text-light);
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       }
 
       nav {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 1.5rem;
         margin: var(--spacing) 0;
+        background: var(--panel-light);
+        padding: 1rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
       }
       nav button {
-        background: var(--panel-light);
-        border: 2px solid var(--border-light);
-        padding: 0.8rem 1.5rem;
+        background: var(--gradient-light);
+        border: none;
+        padding: 1rem 2rem;
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: 600;
+        color: #fff;
         transform: scale(1);
-        transition: transform 0.2s, background 0.2s;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
       nav button.active, nav button:hover {
-        background: var(--gradient-light);
-        color: #fff;
         transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
       }
 
       .tab {
         display: none;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.5s forwards;
       }
       .tab.active {
         display: block;
       }
+      @keyframes slideIn {
+        to { opacity: 1; transform: translateY(0); }
+      }
 
       .glass-panel {
         background: var(--panel-light);
-        border: 2px solid var(--border-light);
+        border: 1px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        padding: 2rem;
+        backdrop-filter: blur(10px);
+        padding: 2.5rem;
         margin: var(--spacing) 0;
+        transition: transform 0.3s ease;
+      }
+      .glass-panel:hover {
+        transform: translateY(-5px);
       }
       .glass-panel h2, .glass-panel h3 {
         color: var(--highlight);
-        font-size: clamp(1.4rem, 4vw, 1.8rem);
-        margin-top: 0;
+        font-size: clamp(1.6rem, 4vw, 2rem);
+        margin: 0 0 1rem;
+        font-weight: 600;
       }
 
       .story-input {
         width: 100%;
-        min-height: 150px;
-        padding: 1rem;
+        min-height: 120px;
+        padding: 1.2rem;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
         font-size: 1rem;
@@ -166,36 +194,53 @@
         resize: vertical;
         transition: var(--transition);
         color: var(--text-light);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
       }
       html[data-theme="dark"] .story-input {
-        color: #fff;
+        color: var(--text-dark);
       }
       .story-input:focus {
         border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+        box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
         outline: none;
+      }
+
+      select, input[type="text"], input[type="number"] {
+        padding: 0.8rem;
+        border-radius: var(--radius);
+        border: 2px solid var(--border-light);
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        transition: var(--transition);
+      }
+      select:focus, input:focus {
+        border-color: var(--primary-light);
       }
 
       .rubric-table {
         width: 100%;
         overflow-x: auto;
+        margin: 1rem 0;
       }
       .modern-table {
         width: 100%;
-        min-width: clamp(600px, 100vw, 900px);
+        min-width: clamp(700px, 100vw, 1000px);
         border-collapse: separate;
         border-spacing: 0;
         border-radius: var(--radius);
         overflow: hidden;
         box-shadow: var(--shadow);
+        background: var(--panel-light);
       }
       .modern-table th, .modern-table td {
-        padding: 1rem 1.5rem;
-        font-size: 0.9rem;
+        padding: 1.2rem 1.5rem;
+        font-size: 0.95rem;
+        text-align: left;
       }
       .modern-table th {
         background: var(--gradient-light);
         color: #fff;
+        font-weight: 600;
       }
       .modern-table th:nth-child(2) { background: #f87171; }
       .modern-table th:nth-child(3) { background: #fb923c; }
@@ -203,21 +248,22 @@
       .modern-table th:nth-child(5) { background: #4ade80; }
       .modern-table td[data-rating] {
         cursor: pointer;
-        transition: background 0.2s;
+        transition: background 0.3s ease, transform 0.2s ease;
       }
       .modern-table td[data-rating]:hover, .modern-table td[data-rating]:focus {
         background: rgba(79, 172, 254, 0.2);
+        transform: scale(1.02);
       }
       .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5);
+        background: rgba(79, 172, 254, 0.4);
         border-left: 4px solid var(--primary-light);
-        animation: pulse 0.3s ease;
+        animation: pulse 0.5s ease;
       }
       .weight {
         width: 50px;
         margin-left: 0.5rem;
-        padding: 0.2rem;
-        border-radius: 4px;
+        padding: 0.3rem;
+        border-radius: 6px;
       }
       .tooltip {
         position: relative;
@@ -225,19 +271,20 @@
       }
       .tooltip .tooltiptext {
         visibility: hidden;
-        width: 200px;
+        width: 220px;
         background: var(--panel-light);
         color: var(--text-light);
         text-align: center;
-        border-radius: 6px;
-        padding: 0.5rem;
+        border-radius: 8px;
+        padding: 0.8rem;
         position: absolute;
         z-index: 1;
         bottom: 125%;
         left: 50%;
         transform: translateX(-50%);
         opacity: 0;
-        transition: opacity 0.2s;
+        transition: opacity 0.3s;
+        box-shadow: var(--shadow);
       }
       .tooltip:hover .tooltiptext {
         visibility: visible;
@@ -245,7 +292,7 @@
       }
       @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-      #feedbackOutput, #plannerList {
+      #feedbackOutput, #plannerList, #resources {
         text-align: left;
         margin-top: 1rem;
       }
@@ -257,52 +304,76 @@
         display: none;
         text-align: left;
         margin-top: 1rem;
+        animation: fadeIn 0.3s ease;
       }
 
       .timeline-block {
         display: inline-block;
         padding: 1rem;
-        border: 1px solid var(--border-light);
+        border: 2px solid var(--border-light);
         margin: 0.5rem;
-        border-radius: 8px;
+        border-radius: 10px;
         background: var(--bg-light);
+        transition: transform 0.3s ease;
+      }
+      .timeline-block:hover {
+        transform: translateY(-2px);
       }
       .timeline-block input {
-        width: 200px;
+        width: 220px;
         padding: 0.5rem;
         border: none;
         background: transparent;
         color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      #resourceTable {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      #resourceTable th, #resourceTable td {
+        padding: 0.8rem;
+        border-bottom: 1px solid var(--border-light);
+      }
+      #resourceTable input, #resourceTable select {
+        width: 100%;
+        padding: 0.5rem;
+        border: none;
+        background: transparent;
       }
 
       button.btn {
         background: var(--gradient-light);
         color: #fff;
         border: none;
-        padding: 0.7rem 1.5rem;
+        padding: 0.8rem 1.8rem;
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: 600;
-        transition: var(--transition);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         margin: 0.5rem;
       }
       button.btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
       }
 
       footer {
         text-align: center;
         padding: var(--spacing);
         font-size: 0.9rem;
-        color: #64748b;
+        color: #7f8c8d;
+        font-weight: 300;
       }
       footer a {
         color: var(--primary-light);
         text-decoration: none;
+        transition: color 0.3s ease;
       }
       footer a:hover {
-        text-decoration: underline;
+        color: var(--highlight);
       }
 
       #toast {
@@ -312,12 +383,16 @@
         transform: translateX(-50%);
         background: var(--primary-light);
         color: #fff;
-        padding: 1rem;
-        border-radius: 8px;
+        padding: 1.2rem 2rem;
+        border-radius: 12px;
         display: none;
         z-index: 1000;
         white-space: pre-wrap;
+        box-shadow: var(--shadow);
+        animation: fadeIn 0.3s ease;
       }
+
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
       @media (max-width: 768px) {
         .modern-table th, .modern-table td {
@@ -326,6 +401,7 @@
         }
         nav { flex-direction: column; align-items: center; }
         .timeline-block { display: block; width: 100%; }
+        .glass-panel { padding: 1.5rem; }
       }
     </style>
   </head>
@@ -334,24 +410,25 @@
       <!-- Hero Section -->
       <section class="hero">
         <h1>StoryCraft Analyzer</h1>
-        <p>Plan and enhance your YouTube & Roblox video concepts before recording!</p>
+        <p>The Ultimate Tool for Crafting YouTube & Roblox Video Stories</p>
       </section>
 
       <!-- Dark Mode Toggle -->
-      <button id="darkModeToggle">🌙</button>
+      <button id="darkModeToggle" aria-label="Toggle Dark Mode">🌙</button>
 
       <!-- Progress Tracker -->
       <div id="progress">
         <div id="progressBar"></div>
-        <span id="progressText">0/4</span>
+        <span id="progressText">0/5</span>
       </div>
 
       <!-- Workflow Tabs -->
       <nav>
-        <button id="tab-concept" class="active" onclick="showTab('concept')">1. Concept</button>
-        <button id="tab-score" onclick="showTab('score')">2. Score</button>
-        <button id="tab-feedback" onclick="showTab('feedback')">3. Feedback</button>
-        <button id="tab-plan" onclick="showTab('plan')">4. Plan</button>
+        <button id="tab-concept" class="active" onclick="showTab('concept')" aria-label="Concept Tab">1. Concept</button>
+        <button id="tab-score" onclick="showTab('score')" aria-label="Score Tab">2. Score</button>
+        <button id="tab-feedback" onclick="showTab('feedback')" aria-label="Feedback Tab">3. Feedback</button>
+        <button id="tab-plan" onclick="showTab('plan')" aria-label="Plan Tab">4. Plan</button>
+        <button id="tab-review" onclick="showTab('review')" aria-label="Review Tab">5. Review</button>
       </nav>
 
       <!-- Main Content -->
@@ -359,15 +436,29 @@
         <!-- Concept Input -->
         <section id="concept" class="tab glass-panel active">
           <h2>📝 Video Concept</h2>
-          <select id="examples">
-            <option value="">Pick an example</option>
+          <select id="examples" aria-label="Select Example Concept">
+            <option value="">Pick an Example</option>
             <option value="I prank 100 Roblox players with a fake update and chaos ensues.">Roblox Prank</option>
             <option value="I race to hatch a legendary pet in Pet Simulator 99 before the server crashes.">Pet Sim Challenge</option>
             <option value="I turn Restaurant Tycoon into a haunted diner for 24 hours.">Haunted Tycoon</option>
           </select>
-          <select id="templates"><option value="">Load a template</option></select>
+          <select id="templates" aria-label="Load Saved Template"><option value="">Load a Template</option></select>
           <button class="btn" onclick="saveTemplate()">Save Template</button>
-          <textarea id="quickSummary" class="story-input" placeholder="Include your hook, conflict, and goal (e.g., 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet, racing against a server crash')"></textarea>
+          <div id="audience">
+            <h3>Audience</h3>
+            <select id="audienceAge" aria-label="Target Audience Age">
+              <option value="kids">Kids (8-12)</option>
+              <option value="teens">Teens (13-17)</option>
+              <option value="adults">Adults (18+)</option>
+            </select>
+            <input type="text" id="audienceInterests" placeholder="e.g., Roblox, pranks" aria-label="Audience Interests">
+          </div>
+          <div id="titleOptimizer">
+            <h3>Video Title</h3>
+            <input type="text" id="titleInput" class="story-input" style="min-height: 50px;" placeholder="e.g., 'I Hatched 1000 Eggs for a Legendary Pet!'" aria-label="Video Title">
+            <p>Characters: <span id="titleCharCount">0</span>/70 <button class="btn" onclick="suggestTitles()">Suggest Titles</button></p>
+          </div>
+          <textarea id="quickSummary" class="story-input" placeholder="Include your hook, conflict, and goal (e.g., 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet, racing against a server crash')" aria-label="Video Concept Summary"></textarea>
           <p>Word count: <span id="wordCount">0</span></p>
           <button class="btn" onclick="showTab('score')">Next: Score Your Idea</button>
         </section>
@@ -375,6 +466,7 @@
         <!-- Scoring -->
         <section id="score" class="tab glass-panel">
           <h2>📊 Score Your Idea</h2>
+          <p>Total Weighted Score: <span id="totalScore">0</span></p>
           <div class="rubric-table">
             <table class="modern-table">
               <thead>
@@ -388,67 +480,67 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="tooltip">🎣 Hook <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="0"><span class="tooltiptext">First 10 seconds to grab attention</span></td>
-                  <td data-category="0" data-rating="1" tabindex="0" role="button" aria-label="Rate Hook as Good">Slow or unclear start</td>
-                  <td data-category="0" data-rating="2" tabindex="0" role="button" aria-label="Rate Hook as Great">Basic hook, mildly curious</td>
-                  <td data-category="0" data-rating="3" tabindex="0" role="button" aria-label="Rate Hook as Excellent">Intriguing opener draws interest</td>
-                  <td data-category="0" data-rating="4" tabindex="0" role="button" aria-label="Rate Hook as Outstanding">Unignorable, instant grab</td>
+                  <td class="tooltip">🎣 Hook <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="0"><span class="tooltiptext">First 10 seconds to grab attention—sets the tone</span></td>
+                  <td data-category="0" data-rating="1" tabindex="0" role="button" aria-label="Rate Hook as Good">Weak hook fails to spark interest</td>
+                  <td data-category="0" data-rating="2" tabindex="0" role="button" aria-label="Rate Hook as Great">Basic hook keeps mild curiosity alive</td>
+                  <td data-category="0" data-rating="3" tabindex="0" role="button" aria-label="Rate Hook as Excellent">Intriguing opener hooks viewers fast</td>
+                  <td data-category="0" data-rating="4" tabindex="0" role="button" aria-label="Rate Hook as Outstanding">Unignorable start demands attention now</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">🎯 Goal <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="1"><span class="tooltiptext">What’s the video aiming to achieve?</span></td>
-                  <td data-category="1" data-rating="1" tabindex="0" role="button" aria-label="Rate Goal as Good">Vague or hidden purpose</td>
-                  <td data-category="1" data-rating="2" tabindex="0" role="button" aria-label="Rate Goal as Great">Goal present but unclear</td>
-                  <td data-category="1" data-rating="3" tabindex="0" role="button" aria-label="Rate Goal as Excellent">Well-defined objective</td>
-                  <td data-category="1" data-rating="4" tabindex="0" role="button" aria-label="Rate Goal as Outstanding">Crystal-clear, high-stakes aim</td>
+                  <td class="tooltip">🎯 Goal <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="1"><span class="tooltiptext">Clear purpose driving the video</span></td>
+                  <td data-category="1" data-rating="1" tabindex="0" role="button" aria-label="Rate Goal as Good">Vague purpose loses viewer focus</td>
+                  <td data-category="1" data-rating="2" tabindex="0" role="button" aria-label="Rate Goal as Great">Goal exists but lacks clarity</td>
+                  <td data-category="1" data-rating="3" tabindex="0" role="button" aria-label="Rate Goal as Excellent">Defined aim guides the story well</td>
+                  <td data-category="1" data-rating="4" tabindex="0" role="button" aria-label="Rate Goal as Outstanding">Crystal-clear, stakes-driven mission</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">⚔️ Conflict <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="2"><span class="tooltiptext">Main obstacle driving tension</span></td>
-                  <td data-category="2" data-rating="1" tabindex="0" role="button" aria-label="Rate Conflict as Good">Trivial or weak tension</td>
-                  <td data-category="2" data-rating="2" tabindex="0" role="button" aria-label="Rate Conflict as Great">Predictable obstacle</td>
-                  <td data-category="2" data-rating="3" tabindex="0" role="button" aria-label="Rate Conflict as Excellent">Engaging stakes keep interest</td>
-                  <td data-category="2" data-rating="4" tabindex="0" role="button" aria-label="Rate Conflict as Outstanding">High-stakes drama hooks viewers</td>
+                  <td class="tooltip">⚔️ Conflict <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="2"><span class="tooltiptext">Core tension keeping viewers hooked</span></td>
+                  <td data-category="2" data-rating="1" tabindex="0" role="button" aria-label="Rate Conflict as Good">Trivial tension feels flat</td>
+                  <td data-category="2" data-rating="2" tabindex="0" role="button" aria-label="Rate Conflict as Great">Predictable conflict lacks punch</td>
+                  <td data-category="2" data-rating="3" tabindex="0" role="button" aria-label="Rate Conflict as Excellent">Engaging stakes build solid drama</td>
+                  <td data-category="2" data-rating="4" tabindex="0" role="button" aria-label="Rate Conflict as Outstanding">High-stakes clash fuels epic payoff</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">🛑 Challenges <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="3"><span class="tooltiptext">Tasks or hurdles to overcome</span></td>
-                  <td data-category="3" data-rating="1" tabindex="0" role="button" aria-label="Rate Challenges as Good">Easy or forced hurdles</td>
-                  <td data-category="3" data-rating="2" tabindex="0" role="button" aria-label="Rate Challenges as Great">Routine tasks, expected</td>
-                  <td data-category="3" data-rating="3" tabindex="0" role="button" aria-label="Rate Challenges as Excellent">Balanced, exciting challenges</td>
-                  <td data-category="3" data-rating="4" tabindex="0" role="button" aria-label="Rate Challenges as Outstanding">Dynamic, unique obstacles</td>
+                  <td class="tooltip">🛑 Challenges <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="3"><span class="tooltiptext">Obstacles testing creativity</span></td>
+                  <td data-category="3" data-rating="1" tabindex="0" role="button" aria-label="Rate Challenges as Good">Easy hurdles lack excitement</td>
+                  <td data-category="3" data-rating="2" tabindex="0" role="button" aria-label="Rate Challenges as Great">Routine tasks feel standard</td>
+                  <td data-category="3" data-rating="3" tabindex="0" role="button" aria-label="Rate Challenges as Excellent">Balanced obstacles spark interest</td>
+                  <td data-category="3" data-rating="4" tabindex="0" role="button" aria-label="Rate Challenges as Outstanding">Dynamic trials push creative limits</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">📈 Retention <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="4"><span class="tooltiptext">Keeping viewers watching</span></td>
-                  <td data-category="4" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention as Good">Boring, no engagement</td>
-                  <td data-category="4" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention as Great">Some peaks, uneven pacing</td>
-                  <td data-category="4" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention as Excellent">Well-paced with hooks</td>
-                  <td data-category="4" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention as Outstanding">Suspenseful, constant pull</td>
+                  <td class="tooltip">📈 Retention <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="4"><span class="tooltiptext">Pacing to keep viewers watching</span></td>
+                  <td data-category="4" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention as Good">Boring pace drops viewers fast</td>
+                  <td data-category="4" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention as Great">Some peaks but pacing lags</td>
+                  <td data-category="4" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention as Excellent">Solid pacing with engaging beats</td>
+                  <td data-category="4" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention as Outstanding">Suspenseful flow locks in viewers</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">🚀 Originality <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="5"><span class="tooltiptext">Uniqueness of the idea</span></td>
-                  <td data-category="5" data-rating="1" tabindex="0" role="button" aria-label="Rate Originality as Good">Cliché or overdone idea</td>
-                  <td data-category="5" data-rating="2" tabindex="0" role="button" aria-label="Rate Originality as Great">Familiar with small twist</td>
-                  <td data-category="5" data-rating="3" tabindex="0" role="button" aria-label="Rate Originality as Excellent">Distinct, fresh approach</td>
-                  <td data-category="5" data-rating="4" tabindex="0" role="button" aria-label="Rate Originality as Outstanding">Innovative, boundary-pushing</td>
+                  <td class="tooltip">🚀 Originality <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="5"><span class="tooltiptext">Freshness setting you apart</span></td>
+                  <td data-category="5" data-rating="1" tabindex="0" role="button" aria-label="Rate Originality as Good">Cliché idea blends into noise</td>
+                  <td data-category="5" data-rating="2" tabindex="0" role="button" aria-label="Rate Originality as Great">Familiar idea with slight twist</td>
+                  <td data-category="5" data-rating="3" tabindex="0" role="button" aria-label="Rate Originality as Excellent">Distinct concept stands out</td>
+                  <td data-category="5" data-rating="4" tabindex="0" role="button" aria-label="Rate Originality as Outstanding">Innovative idea redefines norms</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">📖 Story <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="6"><span class="tooltiptext">Narrative and emotional arc</span></td>
-                  <td data-category="6" data-rating="1" tabindex="0" role="button" aria-label="Rate Story as Good">Flat, no stakes</td>
-                  <td data-category="6" data-rating="2" tabindex="0" role="button" aria-label="Rate Story as Great">Basic arc, predictable</td>
-                  <td data-category="6" data-rating="3" tabindex="0" role="button" aria-label="Rate Story as Excellent">Engaging narrative</td>
-                  <td data-category="6" data-rating="4" tabindex="0" role="button" aria-label="Rate Story as Outstanding">Emotional, gripping tale</td>
+                  <td class="tooltip">📖 Story <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="6"><span class="tooltiptext">Narrative pulling viewers in</span></td>
+                  <td data-category="6" data-rating="1" tabindex="0" role="button" aria-label="Rate Story as Good">Flat tale lacks any stakes</td>
+                  <td data-category="6" data-rating="2" tabindex="0" role="button" aria-label="Rate Story as Great">Basic arc feels predictable</td>
+                  <td data-category="6" data-rating="3" tabindex="0" role="button" aria-label="Rate Story as Excellent">Engaging story builds connection</td>
+                  <td data-category="6" data-rating="4" tabindex="0" role="button" aria-label="Rate Story as Outstanding">Emotional arc grips heartstrings</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">🎥 Feasibility <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="7"><span class="tooltiptext">Can you realistically film it?</span></td>
-                  <td data-category="7" data-rating="1" tabindex="0" role="button" aria-label="Rate Feasibility as Good">Unrealistic, vague plan</td>
-                  <td data-category="7" data-rating="2" tabindex="0" role="button" aria-label="Rate Feasibility as Great">Possible but unclear logistics</td>
-                  <td data-category="7" data-rating="3" tabindex="0" role="button" aria-label="Rate Feasibility as Excellent">Planned with resources</td>
-                  <td data-category="7" data-rating="4" tabindex="0" role="button" aria-label="Rate Feasibility as Outstanding">Fully ready to execute</td>
+                  <td class="tooltip">🎥 Feasibility <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="7"><span class="tooltiptext">Practicality of execution</span></td>
+                  <td data-category="7" data-rating="1" tabindex="0" role="button" aria-label="Rate Feasibility as Good">Unrealistic plan stalls production</td>
+                  <td data-category="7" data-rating="2" tabindex="0" role="button" aria-label="Rate Feasibility as Great">Vague logistics need work</td>
+                  <td data-category="7" data-rating="3" tabindex="0" role="button" aria-label="Rate Feasibility as Excellent">Planned setup ensures smooth shoot</td>
+                  <td data-category="7" data-rating="4" tabindex="0" role="button" aria-label="Rate Feasibility as Outstanding">Fully prepped for flawless execution</td>
                 </tr>
                 <tr>
-                  <td class="tooltip">🎨 Visuals <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="8"><span class="tooltiptext">Visual appeal for thumbnails/views</span></td>
-                  <td data-category="8" data-rating="1" tabindex="0" role="button" aria-label="Rate Visuals as Good">Dull or uninspired look</td>
-                  <td data-category="8" data-rating="2" tabindex="0" role="button" aria-label="Rate Visuals as Great">Average, basic visuals</td>
-                  <td data-category="8" data-rating="3" tabindex="0" role="button" aria-label="Rate Visuals as Excellent">Appealing, eye-catching</td>
-                  <td data-category="8" data-rating="4" tabindex="0" role="button" aria-label="Rate Visuals as Outstanding">Stunning, click-worthy</td>
+                  <td class="tooltip">🎨 Visuals <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="8"><span class="tooltiptext">Visual appeal driving clicks</span></td>
+                  <td data-category="8" data-rating="1" tabindex="0" role="button" aria-label="Rate Visuals as Good">Dull look fails to attract</td>
+                  <td data-category="8" data-rating="2" tabindex="0" role="button" aria-label="Rate Visuals as Great">Average visuals lack pop</td>
+                  <td data-category="8" data-rating="3" tabindex="0" role="button" aria-label="Rate Visuals as Excellent">Appealing style draws eyes</td>
+                  <td data-category="8" data-rating="4" tabindex="0" role="button" aria-label="Rate Visuals as Outstanding">Stunning visuals scream clicks</td>
                 </tr>
               </tbody>
             </table>
@@ -462,7 +554,7 @@
         <section id="feedback" class="tab glass-panel">
           <h2>💡 Next Steps</h2>
           <div id="feedbackOutput"></div>
-          <textarea id="humanFeedback" class="story-input" placeholder="Weakest part? Best twist? Production concerns?"></textarea>
+          <textarea id="humanFeedback" class="story-input" placeholder="Weakest part? Best twist? Production concerns?" aria-label="Personal Feedback"></textarea>
           <button class="btn" onclick="togglePrompts()">Show Prompts</button>
           <ul id="prompts">
             <li>What’s your retention peak?</li>
@@ -482,11 +574,15 @@
             <div id="timelineBlocks"></div>
             <button class="btn" onclick="addTimelineBlock()">Add Beat</button>
           </div>
-          <div id="thumbnail" class="glass-panel">
-            <h3>Thumbnail Idea</h3>
-            <input type="text" id="thumbnailInput" class="story-input" style="min-height: 50px;" placeholder="e.g., Shocked face with rare pet">
+          <div id="resources" class="glass-panel">
+            <h3>Resources & Budget</h3>
+            <table id="resourceTable">
+              <thead><tr><th>Item</th><th>Cost ($)</th><th>Status</th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <button class="btn" onclick="addResource()">Add Resource</button>
           </div>
-          <select id="exportFormat">
+          <select id="exportFormat" aria-label="Export Format">
             <option value="png">PNG</option>
             <option value="text">Text</option>
           </select>
@@ -495,6 +591,47 @@
           <button class="btn" onclick="exportPlan()">Export Everything</button>
           <button class="btn" onclick="submitToShowcase()">Submit to Showcase</button>
           <button class="btn" onclick="resetAll()">Reset All</button>
+        </section>
+
+        <!-- Review -->
+        <section id="review" class="tab glass-panel">
+          <h2>📉 Review Past Video</h2>
+          <input type="text" id="reviewTitle" class="story-input" style="min-height: 50px;" placeholder="Video title" aria-label="Reviewed Video Title">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Poor (1)</th>
+                <th>Fair (2)</th>
+                <th>Good (3)</th>
+                <th>Great (4)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Watch Time</td>
+                <td data-category="r0" data-rating="1" tabindex="0" role="button" aria-label="Rate Watch Time as Poor">Under 30%</td>
+                <td data-category="r0" data-rating="2" tabindex="0" role="button" aria-label="Rate Watch Time as Fair">30-50%</td>
+                <td data-category="r0" data-rating="3" tabindex="0" role="button" aria-label="Rate Watch Time as Good">50-70%</td>
+                <td data-category="r0" data-rating="4" tabindex="0" role="button" aria-label="Rate Watch Time as Great">Over 70%</td>
+              </tr>
+              <tr>
+                <td>Likes</td>
+                <td data-category="r1" data-rating="1" tabindex="0" role="button" aria-label="Rate Likes as Poor">Few likes</td>
+                <td data-category="r1" data-rating="2" tabindex="0" role="button" aria-label="Rate Likes as Fair">Moderate likes</td>
+                <td data-category="r1" data-rating="3" tabindex="0" role="button" aria-label="Rate Likes as Good">High likes</td>
+                <td data-category="r1" data-rating="4" tabindex="0" role="button" aria-label="Rate Likes as Great">Viral likes</td>
+              </tr>
+              <tr>
+                <td>Comments</td>
+                <td data-category="r2" data-rating="1" tabindex="0" role="button" aria-label="Rate Comments as Poor">Silent chat</td>
+                <td data-category="r2" data-rating="2" tabindex="0" role="button" aria-label="Rate Comments as Fair">Some chatter</td>
+                <td data-category="r2" data-rating="3" tabindex="0" role="button" aria-label="Rate Comments as Good">Active discussion</td>
+                <td data-category="r2" data-rating="4" tabindex="0" role="button" aria-label="Rate Comments as Great">Buzzing community</td>
+              </tr>
+            </tbody>
+          </table>
+          <textarea id="reviewNotes" class="story-input" placeholder="What worked? What didn’t?" aria-label="Review Notes"></textarea>
         </section>
       </main>
 
@@ -510,6 +647,7 @@
     <!-- JavaScript -->
     <script>
       let scores = {};
+      let reviewScores = {};
       let history = [];
       let historyIndex = -1;
 
@@ -518,15 +656,26 @@
         const savedScores = JSON.parse(localStorage.getItem('scores') || '{}');
         scores = savedScores;
         Object.entries(scores).forEach(([cat, rating]) => {
-          const cell = document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`);
+          const cell = document.querySelector(`#score td[data-category="${cat}"][data-rating="${rating}"]`);
+          if (cell) cell.classList.add('selected');
+        });
+        reviewScores = JSON.parse(localStorage.getItem('reviewScores') || '{}');
+        Object.entries(reviewScores).forEach(([cat, rating]) => {
+          const cell = document.querySelector(`#review td[data-category="${cat}"][data-rating="${rating}"]`);
           if (cell) cell.classList.add('selected');
         });
         document.getElementById('quickSummary').value = localStorage.getItem('quickSummary') || '';
         document.getElementById('humanFeedback').value = localStorage.getItem('humanFeedback') || '';
-        document.getElementById('thumbnailInput').value = localStorage.getItem('thumbnail') || '';
+        document.getElementById('audienceAge').value = localStorage.getItem('audienceAge') || 'kids';
+        document.getElementById('audienceInterests').value = localStorage.getItem('audienceInterests') || '';
+        document.getElementById('titleInput').value = localStorage.getItem('title') || '';
+        document.getElementById('reviewTitle').value = localStorage.getItem('reviewTitle') || '';
+        document.getElementById('reviewNotes').value = localStorage.getItem('reviewNotes') || '';
         updateWordCount();
+        updateTitleCharCount();
         updateProgress();
         updateTemplateDropdown();
+        updateTotalScore();
 
         // Dark mode
         if (localStorage.getItem('darkMode') === 'true') {
@@ -567,17 +716,40 @@
           autoResize({ target: document.getElementById('humanFeedback') });
           saveToHistory();
         });
-        document.getElementById('thumbnailInput').addEventListener('input', () => {
-          localStorage.setItem('thumbnail', document.getElementById('thumbnailInput').value);
+        document.getElementById('audienceAge').addEventListener('change', () => {
+          localStorage.setItem('audienceAge', document.getElementById('audienceAge').value);
+          saveToHistory();
+        });
+        document.getElementById('audienceInterests').addEventListener('input', () => {
+          localStorage.setItem('audienceInterests', document.getElementById('audienceInterests').value);
+          saveToHistory();
+        });
+        document.getElementById('titleInput').addEventListener('input', () => {
+          localStorage.setItem('title', document.getElementById('titleInput').value);
+          updateTitleCharCount();
+          saveToHistory();
+        });
+        document.getElementById('reviewTitle').addEventListener('input', () => {
+          localStorage.setItem('reviewTitle', document.getElementById('reviewTitle').value);
+          saveToHistory();
+        });
+        document.getElementById('reviewNotes').addEventListener('input', () => {
+          localStorage.setItem('reviewNotes', document.getElementById('reviewNotes').value);
+          autoResize({ target: document.getElementById('reviewNotes') });
           saveToHistory();
         });
 
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-          cell.addEventListener('click', () => { selectRating(cell); updateProgress(); });
+          cell.addEventListener('click', () => {
+            if (cell.closest('#score')) selectRating(cell);
+            else selectReviewRating(cell);
+            updateProgress();
+          });
           cell.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              selectRating(cell);
+              if (cell.closest('#score')) selectRating(cell);
+              else selectReviewRating(cell);
               updateProgress();
             }
           });
@@ -591,6 +763,7 @@
               case '2': showTab('score'); break;
               case '3': showTab('feedback'); break;
               case '4': showTab('plan'); break;
+              case '5': showTab('review'); break;
               case 'z': undo(); break;
               case 'y': redo(); break;
             }
@@ -602,10 +775,18 @@
       });
 
       function showTab(tabId) {
-        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(tab => {
+          tab.classList.remove('active');
+          tab.style.opacity = '0';
+          tab.style.transform = 'translateY(20px)';
+        });
         document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
+        const activeTab = document.getElementById(tabId);
+        activeTab.classList.add('active');
+        activeTab.style.opacity = '1';
+        activeTab.style.transform = 'translateY(0)';
         document.getElementById(`tab-${tabId}`).classList.add('active');
+        if (tabId === 'score') updateTotalScore();
         if (tabId === 'feedback') updateFeedback();
         if (tabId === 'plan') updatePlanner();
         updateProgress();
@@ -621,6 +802,20 @@
         cell.classList.add('selected');
         scores[categoryIndex] = rating;
         localStorage.setItem('scores', JSON.stringify(scores));
+        updateTotalScore();
+        saveToHistory();
+      }
+
+      function selectReviewRating(cell) {
+        const categoryIndex = cell.getAttribute('data-category');
+        const rating = parseInt(cell.getAttribute('data-rating'));
+        const row = cell.parentElement;
+        row.querySelectorAll('td').forEach(td => {
+          if (td !== row.firstElementChild) td.classList.remove('selected');
+        });
+        cell.classList.add('selected');
+        reviewScores[categoryIndex] = rating;
+        localStorage.setItem('reviewScores', JSON.stringify(reviewScores));
         saveToHistory();
       }
 
@@ -628,6 +823,11 @@
         const text = document.getElementById('quickSummary').value;
         const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
         document.getElementById('wordCount').textContent = wordCount;
+      }
+
+      function updateTitleCharCount() {
+        const text = document.getElementById('titleInput').value;
+        document.getElementById('titleCharCount').textContent = text.length;
       }
 
       function autoResize(e) {
@@ -638,9 +838,14 @@
 
       function calculateTotalScore() {
         return Object.entries(scores).reduce((total, [cat, score]) => {
-          const weight = parseFloat(document.querySelector(`.weight[data-category="${cat}"]`).value) || 1;
+          const weight = parseFloat(document.querySelector(`#score .weight[data-category="${cat}"]`)?.value) || 1;
           return total + (score * weight);
         }, 0);
+      }
+
+      function updateTotalScore() {
+        const total = calculateTotalScore();
+        document.getElementById('totalScore').textContent = total.toFixed(1);
       }
 
       function updateFeedback() {
@@ -656,6 +861,11 @@
         if ((scores[8] || 0) < 3) feedback.push("Visuals: Add bold colors, effects, or Roblox assets to pop.");
         const keywordSuggestions = getKeywordSuggestions(document.getElementById('quickSummary').value.toLowerCase());
         feedback.push(...keywordSuggestions);
+        const age = document.getElementById('audienceAge').value;
+        const interests = document.getElementById('audienceInterests').value.toLowerCase();
+        if (age === 'kids' && !interests.includes('fun')) feedback.push("Kids: Add a fun, simple element.");
+        if (age === 'teens' && scores[5] < 3) feedback.push("Teens: Boost originality with a bold twist.");
+        if (interests.includes('pranks')) feedback.push("Prank fans: Plan a big reveal moment.");
         document.getElementById('feedbackOutput').innerHTML = `<ul>${feedback.map(item => `<li>${item}</li>`).join('') || '<li>Your concept looks solid—ready to plan!</li>'}</ul>`;
       }
 
@@ -675,16 +885,21 @@
           (scores[2] || 0) < 3 ? "Plan a key conflict moment (e.g., mid-video escalation)." : "Reinforce your conflict scene with timing.",
           (scores[7] || 0) < 3 ? "List props, locations, or tools needed." : "Confirm all resources are ready (e.g., props, software).",
           "Schedule 2-3 retention peaks (e.g., reveals, cuts, surprises).",
-          (scores[8] || 0) < 3 ? "Design a standout visual (e.g., effect, thumbnail idea)." : "Polish your visual hook for impact.",
+          (scores[8] || 0) < 3 ? "Design standout visuals (e.g., effects, assets)." : "Polish visuals for maximum impact.",
           "Write a call-to-action for the ending (e.g., like, subscribe)."
         ];
-        document.getElementById('plannerList').innerHTML = `<ul>${planner.map(item => `<li>${item}</li>`).join('')}</ul><p>Estimated Length: ${estimateLength()}</p>`;
+        const analytics = predictAnalytics();
+        document.getElementById('plannerList').innerHTML = `
+          <ul>${planner.map(item => `<li>${item}</li>`).join('')}</ul>
+          <p>Estimated Length: ${estimateLength()}</p>
+          <p>Predicted Views: ${analytics.views}, Watch Time: ${analytics.watchTime}%</p>
+        `;
       }
 
       function addTimelineBlock() {
         const block = document.createElement('div');
         block.className = 'timeline-block';
-        block.innerHTML = '<input type="text" placeholder="e.g., Hook: Pet escapes" style="width: 200px;">';
+        block.innerHTML = '<input type="text" placeholder="e.g., Hook: Pet escapes" style="width: 220px;" aria-label="Timeline Beat">';
         document.getElementById('timelineBlocks').appendChild(block);
         saveToHistory();
       }
@@ -702,32 +917,76 @@
         return `${Math.floor(estimatedSeconds / 60)}:${(estimatedSeconds % 60).toString().padStart(2, '0')}`;
       }
 
+      function predictAnalytics() {
+        const totalScore = calculateTotalScore();
+        const audienceSize = { kids: 1000, teens: 500, adults: 200 }[document.getElementById('audienceAge').value];
+        const views = Math.round(totalScore * audienceSize * 0.1);
+        const watchTime = Math.min(100, totalScore * 2); // % up to 100
+        return { views, watchTime };
+      }
+
+      function addResource() {
+        const tbody = document.getElementById('resourceTable').querySelector('tbody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="text" placeholder="e.g., Rare Pet Asset" aria-label="Resource Item"></td>
+          <td><input type="number" step="0.01" placeholder="e.g., 5" aria-label="Resource Cost"></td>
+          <td><select aria-label="Resource Status"><option>Needed</option><option>Acquired</option></select></td>
+        `;
+        tbody.appendChild(row);
+        saveToHistory();
+      }
+
+      function getResources() {
+        const rows = document.getElementById('resourceTable').querySelectorAll('tbody tr');
+        return Array.from(rows).map(row => {
+          const [item, cost, status] = row.querySelectorAll('input, select');
+          return `${item.value || 'Unnamed'} - $${cost.value || 0} - ${status.value}`;
+        }).join('<br>');
+      }
+
       function getRubricSummary() {
         const categories = ['Hook', 'Goal', 'Conflict', 'Challenges', 'Retention', 'Originality', 'Story', 'Feasibility', 'Visuals'];
         const ratings = [
-          ['Slow or unclear start', 'Basic hook, mildly curious', 'Intriguing opener draws interest', 'Unignorable, instant grab'],
-          ['Vague or hidden purpose', 'Goal present but unclear', 'Well-defined objective', 'Crystal-clear, high-stakes aim'],
-          ['Trivial or weak tension', 'Predictable obstacle', 'Engaging stakes keep interest', 'High-stakes drama hooks viewers'],
-          ['Easy or forced hurdles', 'Routine tasks, expected', 'Balanced, exciting challenges', 'Dynamic, unique obstacles'],
-          ['Boring, no engagement', 'Some peaks, uneven pacing', 'Well-paced with hooks', 'Suspenseful, constant pull'],
-          ['Cliché or overdone idea', 'Familiar with small twist', 'Distinct, fresh approach', 'Innovative, boundary-pushing'],
-          ['Flat, no stakes', 'Basic arc, predictable', 'Engaging narrative', 'Emotional, gripping tale'],
-          ['Unrealistic, vague plan', 'Possible but unclear logistics', 'Planned with resources', 'Fully ready to execute'],
-          ['Dull or uninspired look', 'Average, basic visuals', 'Appealing, eye-catching', 'Stunning, click-worthy']
+          ['Weak hook fails to spark interest', 'Basic hook keeps mild curiosity alive', 'Intriguing opener hooks viewers fast', 'Unignorable start demands attention now'],
+          ['Vague purpose loses viewer focus', 'Goal exists but lacks clarity', 'Defined aim guides the story well', 'Crystal-clear, stakes-driven mission'],
+          ['Trivial tension feels flat', 'Predictable conflict lacks punch', 'Engaging stakes build solid drama', 'High-stakes clash fuels epic payoff'],
+          ['Easy hurdles lack excitement', 'Routine tasks feel standard', 'Balanced obstacles spark interest', 'Dynamic trials push creative limits'],
+          ['Boring pace drops viewers fast', 'Some peaks but pacing lags', 'Solid pacing with engaging beats', 'Suspenseful flow locks in viewers'],
+          ['Cliché idea blends into noise', 'Familiar idea with slight twist', 'Distinct concept stands out', 'Innovative idea redefines norms'],
+          ['Flat tale lacks any stakes', 'Basic arc feels predictable', 'Engaging story builds connection', 'Emotional arc grips heartstrings'],
+          ['Unrealistic plan stalls production', 'Vague logistics need work', 'Planned setup ensures smooth shoot', 'Fully prepped for flawless execution'],
+          ['Dull look fails to attract', 'Average visuals lack pop', 'Appealing style draws eyes', 'Stunning visuals scream clicks']
         ];
         return Object.entries(scores).map(([cat, score]) => {
-          const weight = parseFloat(document.querySelector(`.weight[data-category="${cat}"]`).value) || 1;
+          const weight = parseFloat(document.querySelector(`#score .weight[data-category="${cat}"]`)?.value) || 1;
           return `${categories[cat]}: ${ratings[cat][score - 1]} (Weighted: ${score * weight})`;
         }).join('<br>');
+      }
+
+      function getReviewSummary() {
+        const metrics = ['Watch Time', 'Likes', 'Comments'];
+        const ratings = [
+          ['Under 30%', '30-50%', '50-70%', 'Over 70%'],
+          ['Few likes', 'Moderate likes', 'High likes', 'Viral likes'],
+          ['Silent chat', 'Some chatter', 'Active discussion', 'Buzzing community']
+        ];
+        return Object.entries(reviewScores).map(([cat, score]) => `${metrics[cat.slice(1)]}: ${ratings[cat.slice(1)][score - 1]}`).join('<br>');
       }
 
       function saveToHistory() {
         const state = {
           scores: { ...scores },
+          reviewScores: { ...reviewScores },
           quickSummary: document.getElementById('quickSummary').value,
           humanFeedback: document.getElementById('humanFeedback').value,
-          thumbnail: document.getElementById('thumbnailInput').value,
-          timeline: getTimeline()
+          audienceAge: document.getElementById('audienceAge').value,
+          audienceInterests: document.getElementById('audienceInterests').value,
+          title: document.getElementById('titleInput').value,
+          timeline: getTimeline(),
+          resources: getResources(),
+          reviewTitle: document.getElementById('reviewTitle').value,
+          reviewNotes: document.getElementById('reviewNotes').value
         };
         if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
         history.push(state);
@@ -753,24 +1012,132 @@
 
       function applyHistoryState(state) {
         scores = { ...state.scores };
-        document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+        reviewScores = { ...state.reviewScores };
+        document.querySelectorAll('#score .selected').forEach(cell => cell.classList.remove('selected'));
         Object.entries(scores).forEach(([cat, rating]) => {
-          document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
+          document.querySelector(`#score td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
+        });
+        document.querySelectorAll('#review .selected').forEach(cell => cell.classList.remove('selected'));
+        Object.entries(reviewScores).forEach(([cat, rating]) => {
+          document.querySelector(`#review td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
         });
         document.getElementById('quickSummary').value = state.quickSummary;
         document.getElementById('humanFeedback').value = state.humanFeedback;
-        document.getElementById('thumbnailInput').value = state.thumbnail;
+        document.getElementById('audienceAge').value = state.audienceAge;
+        document.getElementById('audienceInterests').value = state.audienceInterests;
+        document.getElementById('titleInput').value = state.title;
+        document.getElementById('reviewTitle').value = state.reviewTitle;
+        document.getElementById('reviewNotes').value = state.reviewNotes;
         document.getElementById('timelineBlocks').innerHTML = '';
         state.timeline.forEach(item => {
           addTimelineBlock();
           document.querySelector('#timelineBlocks input:last-child').value = item;
         });
+        document.getElementById('resourceTable').querySelector('tbody').innerHTML = state.resources.split('<br>').map(res => {
+          const [item, cost, status] = res.split(' - ');
+          return `<tr><td><input type="text" value="${item}"></td><td><input type="number" step="0.01" value="${cost.slice(1)}"></td><td><select><option ${status === 'Needed' ? 'selected' : ''}>Needed</option><option ${status === 'Acquired' ? 'selected' : ''}>Acquired</option></select></td></tr>`;
+        }).join('');
         updateWordCount();
+        updateTitleCharCount();
         updateProgress();
+        updateTotalScore();
         localStorage.setItem('scores', JSON.stringify(scores));
+        localStorage.setItem('reviewScores', JSON.stringify(reviewScores));
         localStorage.setItem('quickSummary', state.quickSummary);
         localStorage.setItem('humanFeedback', state.humanFeedback);
-        localStorage.setItem('thumbnail', state.thumbnail);
+        localStorage.setItem('audienceAge', state.audienceAge);
+        localStorage.setItem('audienceInterests', state.audienceInterests);
+        localStorage.setItem('title', state.title);
+        localStorage.setItem('reviewTitle', state.reviewTitle);
+        localStorage.setItem('reviewNotes', state.reviewNotes);
+      }
+
+      function exportShareCode() {
+        const data = {
+          scores,
+          reviewScores,
+          quickSummary: document.getElementById('quickSummary').value,
+          humanFeedback: document.getElementById('humanFeedback').value,
+          audienceAge: document.getElementById('audienceAge').value,
+          audienceInterests: document.getElementById('audienceInterests').value,
+          title: document.getElementById('titleInput').value,
+          timeline: getTimeline(),
+          resources: getResources(),
+          reviewTitle: document.getElementById('reviewTitle').value,
+          reviewNotes: document.getElementById('reviewNotes').value
+        };
+        const code = btoa(JSON.stringify(data));
+        prompt('Copy this share code:', code);
+        showToast('Share code generated!');
+      }
+
+      function importShareCode() {
+        const code = prompt('Paste share code:');
+        if (code) {
+          try {
+            const data = JSON.parse(atob(code));
+            applyHistoryState(data);
+            showToast('Plan imported!');
+          } catch (e) {
+            showToast('Invalid share code!', 3000);
+          }
+        }
+      }
+
+      function saveTemplate() {
+        const name = prompt('Name this template:');
+        if (name) {
+          const template = {
+            quickSummary: document.getElementById('quickSummary').value,
+            scores,
+            humanFeedback: document.getElementById('humanFeedback').value,
+            audienceAge: document.getElementById('audienceAge').value,
+            audienceInterests: document.getElementById('audienceInterests').value,
+            title: document.getElementById('titleInput').value,
+            timeline: getTimeline(),
+            resources: getResources()
+          };
+          const templates = JSON.parse(localStorage.getItem('templates') || '{}');
+          templates[name] = template;
+          localStorage.setItem('templates', JSON.stringify(templates));
+          updateTemplateDropdown();
+          showToast('Template saved!');
+        }
+      }
+
+      function loadTemplate(name) {
+        const templates = JSON.parse(localStorage.getItem('templates') || '{}');
+        const template = templates[name];
+        if (template) {
+          resetAll();
+          applyHistoryState(template);
+          showToast('Template loaded!');
+        }
+      }
+
+      function updateTemplateDropdown() {
+        const templates = JSON.parse(localStorage.getItem('templates') || '{}');
+        const dropdown = document.getElementById('templates');
+        dropdown.innerHTML = '<option value="">Load a Template</option>' + 
+          Object.keys(templates).map(name => `<option value="${name}">${name}</option>`).join('');
+      }
+
+      function validatePlan() {
+        const issues = [];
+        if (!document.getElementById('quickSummary').value) issues.push("Concept is empty.");
+        if (Object.keys(scores).length < 5) issues.push("Score at least 5 categories.");
+        if (!getTimeline().length) issues.push("Add at least one timeline block.");
+        return issues;
+      }
+
+      function suggestTitles() {
+        const summary = document.getElementById('quickSummary').value.toLowerCase();
+        const suggestions = [
+          summary.includes('roblox') ? 'Insane Roblox Challenge You NEED to See!' : 'Epic Video You Won’t Believe!',
+          summary.includes('challenge') ? 'Can I Beat This Crazy Challenge?' : 'Shocking Twist in My Latest Video!',
+          `My Wild ${summary.split(' ')[0]?.charAt(0).toUpperCase() + summary.split(' ')[0]?.slice(1)} Adventure!`
+        ].filter(t => t.length <= 70);
+        showToast(`Suggested Titles:\n${suggestions.join('\n')}`, 5000);
       }
 
       async function exportPlan() {
@@ -784,33 +1151,43 @@
         const content = `
           StoryCraft Video Plan
           Concept: ${document.getElementById('quickSummary').value || 'No concept entered yet.'}
+          Audience: Age: ${document.getElementById('audienceAge').value}, Interests: ${document.getElementById('audienceInterests').value || 'Not specified'}
+          Title: ${document.getElementById('titleInput').value || 'No title yet.'}
           Rubric Scores:
           ${getRubricSummary()}
           Total Weighted Score: ${calculateTotalScore()}
           Feedback: ${document.getElementById('feedbackOutput').textContent}
           Production Plan: ${document.getElementById('plannerList').textContent}
           Timeline: ${getTimeline().join(', ') || 'No timeline blocks added.'}
-          Thumbnail: ${document.getElementById('thumbnailInput').value || 'No thumbnail idea yet.'}
-          Notes: ${document.getElementById('humanFeedback').value || 'No notes added.'}
+          Resources & Budget: ${getResources() || 'No resources added.'}
+          Review:
+          Title: ${document.getElementById('reviewTitle').value || 'No title'}
+          Scores: ${getReviewSummary() || 'No scores'}
+          Notes: ${document.getElementById('reviewNotes').value || 'No notes'}
         `;
 
         if (format === 'png') {
           showToast('Exporting PNG... Please wait.');
           const tempContainer = document.createElement('div');
           tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
-          tempContainer.style.padding = '2rem';
+          tempContainer.style.padding = '2.5rem';
           tempContainer.style.fontFamily = 'Poppins, sans-serif';
           tempContainer.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
           tempContainer.innerHTML = `
-            <h1 style="text-align: center; color: var(--highlight); font-size: 2rem;">StoryCraft Video Plan</h1>
+            <h1 style="text-align: center; color: var(--highlight); font-size: 2.5rem;">StoryCraft Video Plan</h1>
             <h2 style="color: var(--primary-light);">Concept</h2><p>${document.getElementById('quickSummary').value || 'No concept entered yet.'}</p>
+            <h2 style="color: var(--primary-light);">Audience</h2><p>Age: ${document.getElementById('audienceAge').value}, Interests: ${document.getElementById('audienceInterests').value || 'Not specified'}</p>
+            <h2 style="color: var(--primary-light);">Title</h2><p>${document.getElementById('titleInput').value || 'No title yet.'}</p>
             <h2 style="color: var(--primary-light);">Rubric Scores</h2><p>${getRubricSummary().replace(/<br>/g, '<br>')}</p>
             <h2 style="color: var(--primary-light);">Total Weighted Score</h2><p>${calculateTotalScore()}</p>
             <h2 style="color: var(--primary-light);">Feedback</h2>${document.getElementById('feedbackOutput').innerHTML}
             <h2 style="color: var(--primary-light);">Production Plan</h2>${document.getElementById('plannerList').innerHTML}
             <h2 style="color: var(--primary-light);">Timeline</h2><ul>${getTimeline().map(item => `<li>${item}</li>`).join('') || '<li>No timeline blocks added.</li>'}</ul>
-            <h2 style="color: var(--primary-light);">Thumbnail</h2><p>${document.getElementById('thumbnailInput').value || 'No thumbnail idea yet.'}</p>
-            <h2 style="color: var(--primary-light);">Notes</h2><p>${document.getElementById('humanFeedback').value || 'No notes added.'}</p>
+            <h2 style="color: var(--primary-light);">Resources & Budget</h2><p>${getResources() || 'No resources added.'}</p>
+            <h2 style="color: var(--primary-light);">Review</h2>
+            <p>Title: ${document.getElementById('reviewTitle').value || 'No title'}</p>
+            <p>Scores: ${getReviewSummary().replace(/<br>/g, '<br>') || 'No scores'}</p>
+            <p>Notes: ${document.getElementById('reviewNotes').value || 'No notes'}</p>
           `;
           document.body.appendChild(tempContainer);
 
@@ -836,114 +1213,27 @@
 
       function resetAll() {
         scores = {};
+        reviewScores = {};
         history = [];
         historyIndex = -1;
-        document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
+        document.querySelectorAll('#score .selected').forEach(cell => cell.classList.remove('selected'));
+        document.querySelectorAll('#review .selected').forEach(cell => cell.classList.remove('selected'));
         document.getElementById('quickSummary').value = '';
         document.getElementById('humanFeedback').value = '';
-        document.getElementById('thumbnailInput').value = '';
+        document.getElementById('audienceAge').value = 'kids';
+        document.getElementById('audienceInterests').value = '';
+        document.getElementById('titleInput').value = '';
+        document.getElementById('reviewTitle').value = '';
+        document.getElementById('reviewNotes').value = '';
         document.getElementById('timelineBlocks').innerHTML = '';
+        document.getElementById('resourceTable').querySelector('tbody').innerHTML = '';
         localStorage.clear();
         updateWordCount();
+        updateTitleCharCount();
         updateProgress();
+        updateTotalScore();
         showTab('concept');
         showToast('All data reset!');
-      }
-
-      function exportShareCode() {
-        const data = {
-          scores,
-          quickSummary: document.getElementById('quickSummary').value,
-          humanFeedback: document.getElementById('humanFeedback').value,
-          thumbnail: document.getElementById('thumbnailInput').value,
-          timeline: getTimeline()
-        };
-        const code = btoa(JSON.stringify(data));
-        prompt('Copy this share code:', code);
-        showToast('Share code generated!');
-      }
-
-      function importShareCode() {
-        const code = prompt('Paste share code:');
-        if (code) {
-          try {
-            const data = JSON.parse(atob(code));
-            scores = data.scores;
-            Object.entries(scores).forEach(([cat, rating]) => {
-              document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
-            });
-            document.getElementById('quickSummary').value = data.quickSummary;
-            document.getElementById('humanFeedback').value = data.humanFeedback;
-            document.getElementById('thumbnailInput').value = data.thumbnail;
-            document.getElementById('timelineBlocks').innerHTML = '';
-            data.timeline.forEach(item => {
-              addTimelineBlock();
-              document.querySelector('#timelineBlocks input:last-child').value = item;
-            });
-            updateWordCount();
-            updateProgress();
-            saveToHistory();
-            showToast('Plan imported!');
-          } catch (e) {
-            showToast('Invalid share code!', 3000);
-          }
-        }
-      }
-
-      function saveTemplate() {
-        const name = prompt('Name this template:');
-        if (name) {
-          const template = {
-            quickSummary: document.getElementById('quickSummary').value,
-            scores,
-            humanFeedback: document.getElementById('humanFeedback').value,
-            thumbnail: document.getElementById('thumbnailInput').value,
-            timeline: getTimeline()
-          };
-          const templates = JSON.parse(localStorage.getItem('templates') || '{}');
-          templates[name] = template;
-          localStorage.setItem('templates', JSON.stringify(templates));
-          updateTemplateDropdown();
-          showToast('Template saved!');
-        }
-      }
-
-      function loadTemplate(name) {
-        const templates = JSON.parse(localStorage.getItem('templates') || '{}');
-        const template = templates[name];
-        if (template) {
-          resetAll();
-          scores = template.scores;
-          Object.entries(scores).forEach(([cat, rating]) => {
-            document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
-          });
-          document.getElementById('quickSummary').value = template.quickSummary;
-          document.getElementById('humanFeedback').value = template.humanFeedback;
-          document.getElementById('thumbnailInput').value = template.thumbnail;
-          template.timeline.forEach(item => {
-            addTimelineBlock();
-            document.querySelector('#timelineBlocks input:last-child').value = item;
-          });
-          updateWordCount();
-          updateProgress();
-          saveToHistory();
-          showToast('Template loaded!');
-        }
-      }
-
-      function updateTemplateDropdown() {
-        const templates = JSON.parse(localStorage.getItem('templates') || '{}');
-        const dropdown = document.getElementById('templates');
-        dropdown.innerHTML = '<option value="">Load a template</option>' + 
-          Object.keys(templates).map(name => `<option value="${name}">${name}</option>`).join('');
-      }
-
-      function validatePlan() {
-        const issues = [];
-        if (!document.getElementById('quickSummary').value) issues.push("Concept is empty.");
-        if (Object.keys(scores).length < 5) issues.push("Score at least 5 categories.");
-        if (!getTimeline().length) issues.push("Add at least one timeline block.");
-        return issues;
       }
 
       function submitToShowcase() {
@@ -962,9 +1252,10 @@
         if (document.getElementById('quickSummary').value) completed++;
         if (Object.keys(scores).length > 4) completed++;
         if (document.getElementById('humanFeedback').value) completed++;
+        if (getTimeline().length > 0) completed++;
         if (document.getElementById('plan').classList.contains('active')) completed++;
-        document.getElementById('progressText').textContent = `${completed}/4`;
-        document.getElementById('progressBar').style.width = `${(completed / 4) * 100}%`;
+        document.getElementById('progressText').textContent = `${completed}/5`;
+        document.getElementById('progressBar').style.width = `${(completed / 5) * 100}%`;
       }
 
       function togglePrompts() {
