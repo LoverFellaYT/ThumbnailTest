@@ -3,14 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoryCraft Analyzer - Craft Viral Hits!</title>
-    <meta name="description" content="Analyze and score your viral YouTube and Roblox story ideas with StoryCraft Analyzer!" />
-    <meta name="keywords" content="StoryCraft, YouTube, Roblox, viral content, story analyzer" />
+    <title>StoryCraft Analyzer - Plan Viral Videos</title>
+    <meta name="description" content="Review and enhance your YouTube and Roblox video concepts before recording with StoryCraft Analyzer!" />
+    <meta name="keywords" content="StoryCraft, YouTube, Roblox, video planning, story analyzer" />
     <meta name="author" content="loverfellayt" />
     <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon" />
 
     <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -33,8 +32,6 @@
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
         --spacing: 1.5rem;
         --font-base: 'Poppins', sans-serif;
-        --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-        --section-bg: rgba(79, 172, 254, 0.2);
         --highlight: #ff6b6b;
       }
       html[data-theme="dark"] {
@@ -43,16 +40,13 @@
         --panel-light: rgba(18, 18, 18, 0.98);
         --border-light: rgba(255, 255, 255, 0.2);
         --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
-        --section-bg: rgba(79, 172, 254, 0.3);
       }
 
       body {
         margin: 0;
         padding: 0;
         font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
-        background-size: 30px 30px;
+        background: var(--bg-light);
         color: var(--text-light);
         line-height: 1.6;
       }
@@ -65,145 +59,48 @@
 
       .hero {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: 3rem 1rem;
         background: var(--gradient-light);
         color: #fff;
         border-radius: 0 0 var(--radius) var(--radius);
         box-shadow: var(--shadow);
-        margin-bottom: var(--spacing);
       }
       .hero h1 {
         font-size: clamp(2rem, 5vw, 2.8rem);
         margin: 0;
         font-weight: 700;
-        animation: fadeIn 1s ease-in;
       }
       .hero p {
         font-size: clamp(1rem, 3vw, 1.3rem);
-        margin: 0.5rem 0 2rem;
+        margin: 0.5rem 0 1rem;
       }
-      .hero .btn {
-        font-size: 1.2rem;
-        padding: 0.8rem 2rem;
-        animation: bounce 2s infinite;
-      }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-      @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
 
-      .how-it-works {
+      nav {
         display: flex;
-        justify-content: space-between;
-        gap: var(--spacing);
+        justify-content: space-around;
         flex-wrap: wrap;
-        margin-bottom: var(--spacing);
+        gap: 1rem;
+        margin: var(--spacing) 0;
       }
-      .step {
-        flex: 1;
-        min-width: 250px;
-        text-align: center;
-        padding: 1.5rem;
+      nav button {
         background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-      }
-      .step h3 {
-        color: var(--primary-light);
-        margin: 0.5rem 0;
-        font-size: 1.4rem;
-      }
-
-      header.analyzer-header {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        padding: 1.5rem;
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--spacing);
-      }
-      .header-left h1 {
-        font-size: clamp(1.5rem, 4vw, 2rem);
-        margin: 0;
-        font-weight: 700;
-      }
-      .score-info p {
-        margin: 0.3rem 0;
-        font-size: 1rem;
-      }
-      .progress-container {
-        width: 250px;
-        height: 20px;
-        background: #e0e0e0;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-top: 0.5rem;
-      }
-      #progressBar {
-        height: 100%;
-        background: var(--gradient-light);
-        width: 0%;
-        transition: width 0.3s ease;
-      }
-
-      button.btn {
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        padding: 0.7rem 1.5rem;
+        border: 2px solid var(--border-light);
+        padding: 0.8rem 1.5rem;
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: 600;
         transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
       }
-      button.btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
+      nav button.active, nav button:hover {
+        background: var(--gradient-light);
+        color: #fff;
       }
 
-      .dark-mode-slider {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        background-color: #e0e0e0;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
-        transition: background-color 0.3s;
+      .tab {
+        display: none;
       }
-      .dark-mode-slider .slider-thumb {
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s;
-      }
-      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        transform: translateX(30px);
-      }
-      input#darkModeToggle:checked + .dark-mode-slider {
-        background-color: var(--primary-light);
-      }
-
-      .layout-container {
-        display: grid;
-        grid-template-columns: 1fr 3fr;
-        gap: var(--spacing);
-        align-items: start;
+      .tab.active {
+        display: block;
       }
 
       .glass-panel {
@@ -213,33 +110,14 @@
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
         padding: 2rem;
-        text-align: center;
+        margin: var(--spacing) 0;
       }
       .glass-panel h2 {
         color: var(--highlight);
-        margin-top: 0;
         font-size: clamp(1.4rem, 4vw, 1.8rem);
+        margin-top: 0;
       }
 
-      aside#ideaRubricSection {
-        position: sticky;
-        top: 100px;
-      }
-      #ideaRubricUpload {
-        width: 100%;
-        margin-top: 1rem;
-        padding: 0.5rem;
-      }
-      #scoreSummary {
-        margin-top: 1rem;
-        font-size: 0.9rem;
-      }
-
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing);
-      }
       .story-input {
         width: 100%;
         min-height: 150px;
@@ -261,23 +139,6 @@
         outline: none;
       }
 
-      .similar-videos-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
-      }
-      .video-thumbnail {
-        width: 220px;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        position: relative;
-      }
-      .video-thumbnail:hover {
-        transform: scale(1.05);
-      }
-
       .rubric-table {
         width: 100%;
         overflow-x: auto;
@@ -293,7 +154,7 @@
       }
       .modern-table th, .modern-table td {
         padding: 1rem 1.5rem;
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
       .modern-table th {
         background: var(--gradient-light);
@@ -317,21 +178,29 @@
       }
       @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-      .social-share {
-        text-align: center;
-        padding: var(--spacing);
+      #feedbackOutput, #plannerList {
+        text-align: left;
+        margin-top: 1rem;
       }
-      .social-btn {
-        background: none;
+      #feedbackOutput ul, #plannerList ul {
+        list-style-type: disc;
+        padding-left: 2rem;
+      }
+
+      button.btn {
+        background: var(--gradient-light);
+        color: #fff;
         border: none;
-        font-size: 2rem;
-        margin: 0 1rem;
+        padding: 0.7rem 1.5rem;
+        border-radius: var(--radius);
         cursor: pointer;
+        font-weight: 600;
         transition: var(--transition);
+        margin-top: 1rem;
       }
-      .social-btn:hover, .social-btn:focus {
-        transform: scale(1.2);
-        color: var(--highlight);
+      button.btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
       }
 
       footer {
@@ -361,35 +230,14 @@
         z-index: 1000;
       }
 
-      #loadingOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-      }
-      #loadingOverlay div {
-        background: var(--panel-light);
-        padding: 2rem;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-      }
-
       @media (max-width: 768px) {
-        .layout-container {
-          grid-template-columns: 1fr;
-        }
         .modern-table th, .modern-table td {
           padding: 0.8rem;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
         }
-        header.analyzer-header {
-          position: relative;
+        nav {
+          flex-direction: column;
+          align-items: center;
         }
       }
     </style>
@@ -399,233 +247,127 @@
       <!-- Hero Section -->
       <section class="hero">
         <h1>StoryCraft Analyzer</h1>
-        <p>Score your story ideas and turn them into viral hits for YouTube & Roblox!</p>
-        <button class="btn" onclick="document.getElementById('quickSummarySection').scrollIntoView({behavior: 'smooth'})">
-          Start Crafting Now!
-        </button>
+        <p>Plan and enhance your YouTube & Roblox video concepts before recording!</p>
       </section>
 
-      <!-- How It Works -->
-      <section class="how-it-works">
-        <div class="step">
-          <h3>1. Summarize Your Idea</h3>
-          <p>Write a quick pitch for your story or video concept.</p>
-        </div>
-        <div class="step">
-          <h3>2. Score with Rubric</h3>
-          <p>Use our detailed rubric to rate its potential.</p>
-        </div>
-        <div class="step">
-          <h3>3. Export & Share</h3>
-          <p>Download your analysis and share it with friends!</p>
-        </div>
-      </section>
+      <!-- Workflow Tabs -->
+      <nav>
+        <button id="tab-concept" class="active" onclick="showTab('concept')">1. Concept</button>
+        <button id="tab-score" onclick="showTab('score')">2. Score</button>
+        <button id="tab-feedback" onclick="showTab('feedback')">3. Feedback</button>
+        <button id="tab-plan" onclick="showTab('plan')">4. Plan</button>
+      </nav>
 
-      <!-- HEADER -->
-      <header class="analyzer-header">
-        <div class="header-left">
-          <h1>StoryCraft Analyzer</h1>
-          <div class="score-info">
-            <p>Total Score: <span id="total">0</span> / 52</p>
-            <p>Ranking: <span id="ranking">Incomplete</span></p>
-            <div class="progress-container">
-              <div id="progressBar"></div>
-            </div>
+      <!-- Main Content -->
+      <main>
+        <!-- Concept Input -->
+        <section id="concept" class="tab glass-panel active">
+          <h2>📝 Video Concept</h2>
+          <textarea id="quickSummary" class="story-input" placeholder="Include your hook, conflict, and goal (e.g., 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet, racing against a server crash')"></textarea>
+          <p>Word count: <span id="wordCount">0</span></p>
+          <button class="btn" onclick="showTab('score')">Next: Score Your Idea</button>
+        </section>
+
+        <!-- Scoring -->
+        <section id="score" class="tab glass-panel">
+          <h2>📊 Score Your Idea</h2>
+          <div class="rubric-table">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Good (1)</th>
+                  <th>Great (2)</th>
+                  <th>Excellent (3)</th>
+                  <th>Outstanding (4)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>🎣 Hook</td>
+                  <td data-category="0" data-rating="1" tabindex="0" role="button" aria-label="Rate Hook as Good">Slow</td>
+                  <td data-category="0" data-rating="2" tabindex="0" role="button" aria-label="Rate Hook as Great">Functional</td>
+                  <td data-category="0" data-rating="3" tabindex="0" role="button" aria-label="Rate Hook as Excellent">Intriguing</td>
+                  <td data-category="0" data-rating="4" tabindex="0" role="button" aria-label="Rate Hook as Outstanding">Unignorable</td>
+                </tr>
+                <tr>
+                  <td>🎯 Goal</td>
+                  <td data-category="1" data-rating="1" tabindex="0" role="button" aria-label="Rate Goal as Good">Vague</td>
+                  <td data-category="1" data-rating="2" tabindex="0" role="button" aria-label="Rate Goal as Great">Muddled</td>
+                  <td data-category="1" data-rating="3" tabindex="0" role="button" aria-label="Rate Goal as Excellent">Defined</td>
+                  <td data-category="1" data-rating="4" tabindex="0" role="button" aria-label="Rate Goal as Outstanding">Crystal-clear</td>
+                </tr>
+                <tr>
+                  <td>⚔️ Conflict</td>
+                  <td data-category="2" data-rating="1" tabindex="0" role="button" aria-label="Rate Conflict as Good">Trivial</td>
+                  <td data-category="2" data-rating="2" tabindex="0" role="button" aria-label="Rate Conflict as Great">Predictable</td>
+                  <td data-category="2" data-rating="3" tabindex="0" role="button" aria-label="Rate Conflict as Excellent">Engaging</td>
+                  <td data-category="2" data-rating="4" tabindex="0" role="button" aria-label="Rate Conflict as Outstanding">High-stakes</td>
+                </tr>
+                <tr>
+                  <td>🛑 Challenges</td>
+                  <td data-category="3" data-rating="1" tabindex="0" role="button" aria-label="Rate Challenges as Good">Easy</td>
+                  <td data-category="3" data-rating="2" tabindex="0" role="button" aria-label="Rate Challenges as Great">Routine</td>
+                  <td data-category="3" data-rating="3" tabindex="0" role="button" aria-label="Rate Challenges as Excellent">Balanced</td>
+                  <td data-category="3" data-rating="4" tabindex="0" role="button" aria-label="Rate Challenges as Outstanding">Dynamic</td>
+                </tr>
+                <tr>
+                  <td>📈 Retention</td>
+                  <td data-category="4" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention as Good">Boring</td>
+                  <td data-category="4" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention as Great">Some peaks</td>
+                  <td data-category="4" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention as Excellent">Paced well</td>
+                  <td data-category="4" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention as Outstanding">Suspenseful</td>
+                </tr>
+                <tr>
+                  <td>🚀 Originality</td>
+                  <td data-category="5" data-rating="1" tabindex="0" role="button" aria-label="Rate Originality as Good">Cliché</td>
+                  <td data-category="5" data-rating="2" tabindex="0" role="button" aria-label="Rate Originality as Great">Familiar</td>
+                  <td data-category="5" data-rating="3" tabindex="0" role="button" aria-label="Rate Originality as Excellent">Distinct</td>
+                  <td data-category="5" data-rating="4" tabindex="0" role="button" aria-label="Rate Originality as Outstanding">Innovative</td>
+                </tr>
+                <tr>
+                  <td>📖 Story</td>
+                  <td data-category="6" data-rating="1" tabindex="0" role="button" aria-label="Rate Story as Good">Flat</td>
+                  <td data-category="6" data-rating="2" tabindex="0" role="button" aria-label="Rate Story as Great">Basic</td>
+                  <td data-category="6" data-rating="3" tabindex="0" role="button" aria-label="Rate Story as Excellent">Engaging</td>
+                  <td data-category="6" data-rating="4" tabindex="0" role="button" aria-label="Rate Story as Outstanding">Emotional</td>
+                </tr>
+                <tr>
+                  <td>🎥 Feasibility</td>
+                  <td data-category="7" data-rating="1" tabindex="0" role="button" aria-label="Rate Feasibility as Good">Unrealistic</td>
+                  <td data-category="7" data-rating="2" tabindex="0" role="button" aria-label="Rate Feasibility as Great">Vague</td>
+                  <td data-category="7" data-rating="3" tabindex="0" role="button" aria-label="Rate Feasibility as Excellent">Planned</td>
+                  <td data-category="7" data-rating="4" tabindex="0" role="button" aria-label="Rate Feasibility as Outstanding">Ready</td>
+                </tr>
+                <tr>
+                  <td>🎨 Visuals</td>
+                  <td data-category="8" data-rating="1" tabindex="0" role="button" aria-label="Rate Visuals as Good">Dull</td>
+                  <td data-category="8" data-rating="2" tabindex="0" role="button" aria-label="Rate Visuals as Great">Average</td>
+                  <td data-category="8" data-rating="3" tabindex="0" role="button" aria-label="Rate Visuals as Excellent">Appealing</td>
+                  <td data-category="8" data-rating="4" tabindex="0" role="button" aria-label="Rate Visuals as Outstanding">Stunning</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-        <div class="header-right">
-          <button class="btn" id="resetBtn" aria-label="Reset all inputs">🔄 Reset</button>
-          <button class="btn" id="exportBtn" aria-label="Export as PNG">🖼️ Export PNG</button>
-          <button class="btn" id="rainbowBtn" aria-label="Show a random tip">🌈 Tips</button>
-          <div class="dark-mode">
-            <label class="toggle-label" for="darkModeToggle">
-              <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" />
-              <div class="dark-mode-slider">
-                <span class="mode-label">☀️</span>
-                <span class="mode-label">🌙</span>
-                <div class="slider-thumb"></div>
-              </div>
-            </label>
-          </div>
-        </div>
-      </header>
+          <button class="btn" onclick="showTab('feedback')">Next: Get Feedback</button>
+        </section>
 
-      <!-- MAIN CONTENT -->
-      <main class="layout-container">
-        <!-- Left Column: Idea Rubric -->
-        <aside class="glass-panel" id="ideaRubricSection">
-          <h2>Idea Rubric</h2>
-          <p>Upload a PNG sketch (e.g., Roblox concept art):</p>
-          <input type="file" id="ideaRubricUpload" accept="image/png" aria-label="Upload PNG sketch" />
-          <div id="ideaRubricImageContainer"></div>
-          <div id="scoreSummary"></div>
-        </aside>
+        <!-- Feedback -->
+        <section id="feedback" class="tab glass-panel">
+          <h2>💡 Next Steps</h2>
+          <div id="feedbackOutput"></div>
+          <textarea id="humanFeedback" class="story-input" placeholder="Weakest part? Best twist? Production concerns?"></textarea>
+          <button class="btn" onclick="showTab('plan')">Next: Production Plan</button>
+        </section>
 
-        <!-- Right Column: Main Content -->
-        <div class="main-content">
-          <!-- Quick Summary Section -->
-          <section class="glass-panel input-section" id="quickSummarySection">
-            <h2>📝 Quick Summary</h2>
-            <textarea id="quickSummary" class="story-input" placeholder="Example: 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet!'"></textarea>
-          </section>
-
-          <!-- Similar Videos Section -->
-          <section class="glass-panel input-section" id="similarVideosSection">
-            <h2>📺 Similar Videos</h2>
-            <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube video URL..." aria-label="YouTube video URL" />
-            <button class="btn" id="addVideoBtn" aria-label="Add YouTube video">Add Video</button>
-            <div id="similarVideosList" class="similar-videos-list"></div>
-          </section>
-
-          <!-- Rubric Table Section -->
-          <section class="glass-panel rubric-table" id="rubricSection">
-            <h2>📊 Rubric Table</h2>
-            <div class="rubric-table">
-              <table class="modern-table">
-                <thead>
-                  <tr>
-                    <th>Category</th>
-                    <th>Good (1)</th>
-                    <th>Great (2)</th>
-                    <th>Excellent (3)</th>
-                    <th>Outstanding (4)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colspan="5" class="section-header">VIDEO CONCEPT & PRE PLANNING</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="0">🎬 Video Concept</td>
-                    <td data-category="0" data-rating="1" tabindex="0" role="button" aria-label="Rate Video Concept as Good (1)">Weak or unoriginal concept; doesn’t stand out.</td>
-                    <td data-category="0" data-rating="2" tabindex="0" role="button" aria-label="Rate Video Concept as Great (2)">Decent concept with some originality, but still feels familiar.</td>
-                    <td data-category="0" data-rating="3" tabindex="0" role="button" aria-label="Rate Video Concept as Excellent (3)">Strong concept with a unique twist that draws interest.</td>
-                    <td data-category="0" data-rating="4" tabindex="0" role="button" aria-label="Rate Video Concept as Outstanding (4)">Highly compelling and innovative concept; stands out instantly.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="1">📝 Planning & Outline</td>
-                    <td data-category="1" data-rating="1" tabindex="0" role="button" aria-label="Rate Planning & Outline as Good (1)">Concept is loosely formed; unclear breakdown of key elements.</td>
-                    <td data-category="1" data-rating="2" tabindex="0" role="button" aria-label="Rate Planning & Outline as Great (2)">Basic structure outlined but lacks detail in some areas.</td>
-                    <td data-category="1" data-rating="3" tabindex="0" role="button" aria-label="Rate Planning & Outline as Excellent (3)">Well-conceived plan with a thorough script.</td>
-                    <td data-category="1" data-rating="4" tabindex="0" role="button" aria-label="Rate Planning & Outline as Outstanding (4)">Comprehensive pre-production with pacing and goal integration.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="2">🎥 Production Feasibility</td>
-                    <td data-category="2" data-rating="1" tabindex="0" role="button" aria-label="Rate Production Feasibility as Good (1)">Unrealistic or vague plan with obstacles.</td>
-                    <td data-category="2" data-rating="2" tabindex="0" role="button" aria-label="Rate Production Feasibility as Great (2)">Basic plan exists but lacks logistics.</td>
-                    <td data-category="2" data-rating="3" tabindex="0" role="button" aria-label="Rate Production Feasibility as Excellent (3)">Well-thought-out plan with logistics.</td>
-                    <td data-category="2" data-rating="4" tabindex="0" role="button" aria-label="Rate Production Feasibility as Outstanding (4)">Comprehensive with contingency plans.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="3">📈 Retention Structure</td>
-                    <td data-category="3" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention Structure as Good (1)">No clear plan for engagement.</td>
-                    <td data-category="3" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention Structure as Great (2)">Some engaging points, weak structure.</td>
-                    <td data-category="3" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention Structure as Excellent (3)">Effective pacing and retention mapped.</td>
-                    <td data-category="3" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention Structure as Outstanding (4)">Highly structured with suspense.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="4">🚀 Originality</td>
-                    <td data-category="4" data-rating="1" tabindex="0" role="button" aria-label="Rate Originality as Good (1)">Overdone or cliché concept.</td>
-                    <td data-category="4" data-rating="2" tabindex="0" role="button" aria-label="Rate Originality as Great (2)">Minor twist on trends.</td>
-                    <td data-category="4" data-rating="3" tabindex="0" role="button" aria-label="Rate Originality as Excellent (3)">Distinct approach that stands out.</td>
-                    <td data-category="4" data-rating="4" tabindex="0" role="button" aria-label="Rate Originality as Outstanding (4)">Boundary-pushing innovation.</td>
-                  </tr>
-
-                  <tr>
-                    <td colspan="5" class="section-header">VIDEO FUNDAMENTALS</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="5">🎣 Hook & Intro</td>
-                    <td data-category="5" data-rating="1" tabindex="0" role="button" aria-label="Rate Hook & Intro as Good (1)">Slow or unclear hook.</td>
-                    <td data-category="5" data-rating="2" tabindex="0" role="button" aria-label="Rate Hook & Intro as Great (2)">Basic but functional hook.</td>
-                    <td data-category="5" data-rating="3" tabindex="0" role="button" aria-label="Rate Hook & Intro as Excellent (3)">Clear, intriguing opener.</td>
-                    <td data-category="5" data-rating="4" tabindex="0" role="button" aria-label="Rate Hook & Intro as Outstanding (4)">Unignorable opener.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="6">🎯 Clarity of Goal</td>
-                    <td data-category="6" data-rating="1" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Good (1)">Vague or hidden goal.</td>
-                    <td data-category="6" data-rating="2" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Great (2)">Stated but muddled goal.</td>
-                    <td data-category="6" data-rating="3" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Excellent (3)">Well-defined goal.</td>
-                    <td data-category="6" data-rating="4" tabindex="0" role="button" aria-label="Rate Clarity of Goal as Outstanding (4)">Crystal-clear premise.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="7">⚔️ Conflict & Stakes</td>
-                    <td data-category="7" data-rating="1" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Good (1)">Low urgency, trivial conflicts.</td>
-                    <td data-category="7" data-rating="2" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Great (2)">Basic, predictable obstacles.</td>
-                    <td data-category="7" data-rating="3" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Excellent (3)">High stakes keep viewers invested.</td>
-                    <td data-category="7" data-rating="4" tabindex="0" role="button" aria-label="Rate Conflict & Stakes as Outstanding (4)">Escalating tension compels viewers.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="8">🛑 Challenges</td>
-                    <td data-category="8" data-rating="1" tabindex="0" role="button" aria-label="Rate Challenges as Good (1)">Artificial or easy challenges.</td>
-                    <td data-category="8" data-rating="2" tabindex="0" role="button" aria-label="Rate Challenges as Great (2)">Predictable obstacles.</td>
-                    <td data-category="8" data-rating="3" tabindex="0" role="button" aria-label="Rate Challenges as Excellent (3)">Balanced challenges create tension.</td>
-                    <td data-category="8" data-rating="4" tabindex="0" role="button" aria-label="Rate Challenges as Outstanding (4)">Dynamic, unpredictable challenges.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="9">🤝 Credibility</td>
-                    <td data-category="9" data-rating="1" tabindex="0" role="button" aria-label="Rate Credibility as Good (1)">Feels forced or staged.</td>
-                    <td data-category="9" data-rating="2" tabindex="0" role="button" aria-label="Rate Credibility as Great (2)">Some genuine elements.</td>
-                    <td data-category="9" data-rating="3" tabindex="0" role="button" aria-label="Rate Credibility as Excellent (3)">Sincere and honest content.</td>
-                    <td data-category="9" data-rating="4" tabindex="0" role="button" aria-label="Rate Credibility as Outstanding (4)">Deeply credible and authentic.</td>
-                  </tr>
-
-                  <tr>
-                    <td colspan="5" class="section-header">VIDEO PACING</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="10">⏱️ Pacing & Rhythm</td>
-                    <td data-category="10" data-rating="1" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Good (1)">Uneven pacing, abrupt cuts.</td>
-                    <td data-category="10" data-rating="2" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Great (2)">Mostly smooth with minor issues.</td>
-                    <td data-category="10" data-rating="3" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Excellent (3)">Well-paced with strong rhythm.</td>
-                    <td data-category="10" data-rating="4" tabindex="0" role="button" aria-label="Rate Pacing & Rhythm as Outstanding (4)">Flawless pacing and momentum.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="11">📈 Retention Structure</td>
-                    <td data-category="11" data-rating="1" tabindex="0" role="button" aria-label="Rate Retention Structure as Good (1)">No engagement plan.</td>
-                    <td data-category="11" data-rating="2" tabindex="0" role="button" aria-label="Rate Retention Structure as Great (2)">Some engaging points.</td>
-                    <td data-category="11" data-rating="3" tabindex="0" role="button" aria-label="Rate Retention Structure as Excellent (3)">Effective retention mapping.</td>
-                    <td data-category="11" data-rating="4" tabindex="0" role="button" aria-label="Rate Retention Structure as Outstanding (4)">Minute-by-minute suspense.</td>
-                  </tr>
-                  <tr>
-                    <td class="category-header" data-category="12">📖 Storytelling</td>
-                    <td data-category="12" data-rating="1" tabindex="0" role="button" aria-label="Rate Storytelling as Good (1)">No emotional stakes.</td>
-                    <td data-category="12" data-rating="2" tabindex="0" role="button" aria-label="Rate Storytelling as Great (2)">Basic, predictable stakes.</td>
-                    <td data-category="12" data-rating="3" tabindex="0" role="button" aria-label="Rate Storytelling as Excellent (3)">Strong emotional connection.</td>
-                    <td data-category="12" data-rating="4" tabindex="0" role="button" aria-label="Rate Storytelling as Outstanding (4)">Deep emotional pull.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <!-- Human Feedback Section -->
-          <section class="glass-panel input-section" id="humanFeedbackSection">
-            <h2>👥 Human Feedback</h2>
-            <textarea id="humanFeedback" class="story-input" placeholder="Add your own notes—like how it fits Roblox trends!"></textarea>
-          </section>
-
-          <!-- Self-Assessment Checklist Section -->
-          <section class="glass-panel input-section" id="selfAssessmentSection">
-            <h2>✅ Self-Assessment Checklist</h2>
-            <ul>
-              <li><input type="checkbox" id="check1" /><label for="check1"><strong>Pre-Writing:</strong> Is the theme, conflict, and structure clearly defined?</label></li>
-              <li><input type="checkbox" id="check2" /><label for="check2"><strong>Writing:</strong> Do beats connect logically, with character-driven resolutions?</label></li>
-              <li><input type="checkbox" id="check3" /><label for="check3"><strong>World-Building:</strong> Are rules and stakes clear and consistent?</label></li>
-              <li><input type="checkbox" id="check4" /><label for="check4"><strong>Review:</strong> Does the story flow smoothly with tied-up subplots?</label></li>
-              <li><input type="checkbox" id="check5" /><label for="check5"><strong>Polishing:</strong> Are weak beats and plot holes removed?</label></li>
-              <li><input type="checkbox" id="check6" /><label for="check6"><strong>Pre-Shoot:</strong> Is everything prepared for filming?</label></li>
-            </ul>
-          </section>
-        </div>
+        <!-- Production Plan -->
+        <section id="plan" class="tab glass-panel">
+          <h2>🎬 Production Plan</h2>
+          <div id="plannerList"></div>
+          <button class="btn" onclick="exportPNG()">Export Plan as PNG</button>
+          <button class="btn" onclick="resetAll()">Reset All</button>
+        </section>
       </main>
-
-      <!-- Social Share -->
-      <section class="social-share">
-        <p>Share your analysis!</p>
-        <button class="social-btn" onclick="shareOnTwitter()" aria-label="Share on Twitter">🐦</button>
-        <button class="social-btn" onclick="shareOnDiscord()" aria-label="Share on Discord">💬</button>
-      </section>
 
       <!-- Footer -->
       <footer>
@@ -633,33 +375,35 @@
       </footer>
     </div>
 
-    <!-- Toast and Loading Overlay -->
+    <!-- Toast -->
     <div id="toast"></div>
-    <div id="loadingOverlay"><div><p>Exporting... Please wait.</p></div></div>
 
     <!-- JavaScript -->
     <script>
       let scores = {};
 
       window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('darkMode') === 'true') {
-          document.getElementById('darkModeToggle').checked = true;
-          document.documentElement.setAttribute("data-theme", "dark");
-        }
+        // Load saved state
         const savedScores = JSON.parse(localStorage.getItem('scores') || '{}');
         scores = savedScores;
         Object.entries(scores).forEach(([cat, rating]) => {
-          document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`)?.classList.add('selected');
+          const cell = document.querySelector(`td[data-category="${cat}"][data-rating="${rating}"]`);
+          if (cell) cell.classList.add('selected');
         });
         document.getElementById('quickSummary').value = localStorage.getItem('quickSummary') || '';
         document.getElementById('humanFeedback').value = localStorage.getItem('humanFeedback') || '';
-        updateTotal();
+        updateWordCount();
 
-        document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
-        document.getElementById('exportBtn').addEventListener('click', exportPNG);
-        document.getElementById('rainbowBtn').addEventListener('click', showRainbowQuote);
-        document.getElementById('resetBtn').addEventListener('click', resetScores);
-        document.getElementById('addVideoBtn').addEventListener('click', addYouTubeVideo);
+        // Event Listeners
+        document.getElementById('quickSummary').addEventListener('input', () => {
+          localStorage.setItem('quickSummary', document.getElementById('quickSummary').value);
+          updateWordCount();
+          autoResize({ target: document.getElementById('quickSummary') });
+        });
+        document.getElementById('humanFeedback').addEventListener('input', () => {
+          localStorage.setItem('humanFeedback', document.getElementById('humanFeedback').value);
+          autoResize({ target: document.getElementById('humanFeedback') });
+        });
 
         document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
           cell.addEventListener('click', () => selectRating(cell));
@@ -671,37 +415,17 @@
           });
         });
 
-        document.querySelectorAll('.story-input').forEach(textarea => {
-          textarea.addEventListener('input', () => {
-            localStorage.setItem(textarea.id, textarea.value);
-            autoResize({ target: textarea });
-          });
-        });
-
-        document.getElementById('ideaRubricUpload').addEventListener('change', handleIdeaRubricUpload);
+        // Show initial tab
+        showTab('concept');
       });
 
-      function handleIdeaRubricUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (!file.type.match('image/png')) {
-          showToast('Please upload a PNG file.', 3000);
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = evt => document.getElementById('ideaRubricImageContainer').innerHTML = `<img src="${evt.target.result}" alt="Uploaded Idea Rubric" />`;
-        reader.readAsDataURL(file);
-      }
-
-      function showRainbowQuote() {
-        const quotes = [
-          "For Roblox: Make it wild—like hatching a pet that takes over the game!",
-          "Viral Tip: Add a twist no one sees coming.",
-          "Keep viewers hooked with escalating stakes!",
-          "Simple stories with big payoffs win every time.",
-          "Test your idea: Would YOU click this thumbnail?"
-        ];
-        showToast(quotes[Math.floor(Math.random() * quotes.length)]);
+      function showTab(tabId) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        if (tabId === 'feedback') updateFeedback();
+        if (tabId === 'plan') updatePlanner();
       }
 
       function selectRating(cell) {
@@ -714,39 +438,12 @@
         cell.classList.add('selected');
         scores[categoryIndex] = rating;
         localStorage.setItem('scores', JSON.stringify(scores));
-        updateTotal();
       }
 
-      function updateTotal() {
-        const total = Object.values(scores).reduce((a, b) => a + b, 0);
-        document.getElementById('total').textContent = total;
-        const ranking = document.getElementById('ranking');
-        const summary = Object.entries(scores).map(([cat, score]) => `Category ${parseInt(cat) + 1}: ${score}`).join('<br>');
-        document.getElementById('scoreSummary').innerHTML = `<strong>Scored Categories:</strong><br>${summary || 'None yet'}`;
-        if (Object.keys(scores).length < 10) {
-          ranking.textContent = 'Incomplete';
-          ranking.style.color = '#64748b';
-        } else if (total < 20) {
-          ranking.textContent = 'Needs Work 🔴';
-          ranking.style.color = 'red';
-        } else if (total < 30) {
-          ranking.textContent = 'Good Start 🟡';
-          ranking.style.color = 'orange';
-        } else if (total < 40) {
-          ranking.textContent = 'Great! 🟢';
-          ranking.style.color = 'green';
-        } else {
-          ranking.textContent = 'Perfect! 🔵';
-          ranking.style.color = 'blue';
-          if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        }
-        updateProgressBar(total);
-      }
-
-      function updateProgressBar(total) {
-        const maxScore = 52;
-        const percentage = (total / maxScore) * 100;
-        document.getElementById('progressBar').style.width = `${percentage}%`;
+      function updateWordCount() {
+        const text = document.getElementById('quickSummary').value;
+        const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+        document.getElementById('wordCount').textContent = wordCount;
       }
 
       function autoResize(e) {
@@ -755,131 +452,79 @@
         textarea.style.height = `${textarea.scrollHeight}px`;
       }
 
+      function updateFeedback() {
+        const feedback = [];
+        if ((scores[0] || 0) < 3) feedback.push("Hook: Add a surprising stat, question, or action in the first 10 seconds.");
+        if ((scores[1] || 0) < 3) feedback.push("Goal: Clarify what you’re aiming for—make it specific and exciting.");
+        if ((scores[2] || 0) < 3) feedback.push("Conflict: Raise stakes with a bigger obstacle or time limit.");
+        if ((scores[3] || 0) < 3) feedback.push("Challenges: Add unique or unexpected hurdles to overcome.");
+        if ((scores[4] || 0) < 3) feedback.push("Retention: Plan peaks every 30 seconds—cuts, reveals, or twists.");
+        if ((scores[5] || 0) < 3) feedback.push("Originality: Twist a trend or combine two ideas for a fresh angle.");
+        if ((scores[6] || 0) < 3) feedback.push("Story: Deepen emotional stakes—why should viewers care?");
+        if ((scores[7] || 0) < 3) feedback.push("Feasibility: List resources needed to make this doable.");
+        if ((scores[8] || 0) < 3) feedback.push("Visuals: Add bold colors, effects, or Roblox assets to pop.");
+        document.getElementById('feedbackOutput').innerHTML = `<ul>${feedback.map(item => `<li>${item}</li>`).join('') || '<li>Your concept looks solid—ready to plan!</li>'}</ul>`;
+      }
+
+      function updatePlanner() {
+        const summary = document.getElementById('quickSummary').value.toLowerCase();
+        const planner = [
+          "Script your hook scene (first 10-15 seconds).",
+          summary.includes('roblox') ? "Set up Roblox Studio with required assets." : "Gather filming equipment (camera, mic, etc.).",
+          (scores[2] || 0) < 3 ? "Plan a key conflict moment (e.g., mid-video escalation)." : "Reinforce your conflict scene with timing.",
+          (scores[7] || 0) < 3 ? "List props, locations, or tools needed." : "Confirm all resources are ready (e.g., props, software).",
+          "Schedule 2-3 retention peaks (e.g., reveals, cuts, surprises).",
+          (scores[8] || 0) < 3 ? "Design a standout visual (e.g., effect, thumbnail idea)." : "Polish your visual hook for impact.",
+          "Write a call-to-action for the ending (e.g., like, subscribe)."
+        ];
+        document.getElementById('plannerList').innerHTML = `<ul>${planner.map(item => `<li>${item}</li>`).join('')}</ul>`;
+      }
+
       async function exportPNG() {
-        const overlay = document.getElementById('loadingOverlay');
-        overlay.style.display = 'flex';
+        showToast('Exporting... Please wait.');
         const tempContainer = document.createElement('div');
-        tempContainer.style.position = 'absolute';
-        tempContainer.style.top = '-9999px';
-        tempContainer.style.left = '-9999px';
         tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
-        tempContainer.style.padding = '1rem';
-
-        const headerClone = document.querySelector('header.analyzer-header').cloneNode(true);
-        headerClone.style.position = 'static';
-        const layoutClone = document.querySelector('.layout-container').cloneNode(true);
-
-        tempContainer.appendChild(headerClone);
-        tempContainer.appendChild(layoutClone);
+        tempContainer.style.padding = '2rem';
+        tempContainer.style.fontFamily = 'Poppins, sans-serif';
+        tempContainer.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
+        tempContainer.innerHTML = `
+          <h1 style="text-align: center; color: var(--highlight); font-size: 2rem;">StoryCraft Video Plan</h1>
+          <h2 style="color: var(--primary-light);">Concept</h2>
+          <p>${document.getElementById('quickSummary').value || 'No concept entered yet.'}</p>
+          <h2 style="color: var(--primary-light);">Feedback</h2>
+          ${document.getElementById('feedbackOutput').innerHTML}
+          <h2 style="color: var(--primary-light);">Production Plan</h2>
+          ${document.getElementById('plannerList').innerHTML}
+          <h2 style="color: var(--primary-light);">Notes</h2>
+          <p>${document.getElementById('humanFeedback').value || 'No notes added.'}</p>
+        `;
         document.body.appendChild(tempContainer);
 
         try {
-          const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true });
-          if (!canvas) throw new Error('Canvas generation failed');
+          const canvas = await html2canvas(tempContainer, { scale: 2 });
           const dataUrl = canvas.toDataURL('image/png');
           const link = document.createElement('a');
-          link.download = 'storycraft-analysis.png';
+          link.download = 'storycraft-video-plan.png';
           link.href = dataUrl;
-          document.body.appendChild(link);
           link.click();
-          document.body.removeChild(link);
-          showToast('Export successful!');
+          showToast('Plan exported successfully!');
         } catch (error) {
           console.error('PNG export failed:', error);
-          showToast(`Export failed: ${error.message}`, 3000);
+          showToast('Export failed! Check console.', 3000);
         } finally {
           document.body.removeChild(tempContainer);
-          overlay.style.display = 'none';
         }
       }
 
-      function resetScores() {
+      function resetAll() {
         scores = {};
         document.querySelectorAll('.selected').forEach(cell => cell.classList.remove('selected'));
         document.getElementById('quickSummary').value = '';
         document.getElementById('humanFeedback').value = '';
-        document.getElementById('ranking').textContent = 'Incomplete';
-        document.getElementById('ranking').style.color = '#64748b';
-        document.getElementById('similarVideosList').innerHTML = '';
-        document.getElementById('total').textContent = 0;
-        document.getElementById('progressBar').style.width = '0%';
         localStorage.clear();
-        showToast('Reset complete!');
-      }
-
-      function toggleTheme(e) {
-        const isDark = e.target.checked;
-        document.documentElement.setAttribute("data-theme", isDark ? "dark" : "");
-        localStorage.setItem('darkMode', isDark);
-      }
-
-      function addYouTubeVideo() {
-        const urlInput = document.getElementById('youtubeLinkInput');
-        const url = urlInput.value.trim();
-        if (!url) return;
-
-        let videoId = "";
-        try {
-          const urlObj = new URL(url);
-          videoId = urlObj.hostname === "youtu.be" ? urlObj.pathname.slice(1) : urlObj.searchParams.get("v");
-          if (!videoId) throw new Error("Invalid YouTube URL");
-        } catch (err) {
-          showToast("Invalid URL", 3000);
-          return;
-        }
-
-        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-        const videoList = document.getElementById('similarVideosList');
-        const videoContainer = document.createElement('div');
-        videoContainer.className = 'video-thumbnail';
-
-        const img = document.createElement('img');
-        img.src = thumbnailUrl;
-        img.alt = `Thumbnail for YouTube video ${videoId}`;
-        img.onerror = () => {
-          videoList.removeChild(videoContainer);
-          showToast('Failed to load thumbnail.', 3000);
-        };
-        videoContainer.appendChild(img);
-
-        const title = document.createElement('div');
-        title.className = 'video-title';
-        title.textContent = `Video ID: ${videoId}`;
-        videoContainer.appendChild(title);
-
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-btn';
-        removeBtn.innerHTML = '×';
-        removeBtn.setAttribute('aria-label', 'Remove video');
-        removeBtn.addEventListener('click', () => videoList.removeChild(videoContainer));
-        videoContainer.appendChild(removeBtn);
-
-        videoList.appendChild(videoContainer);
-        urlInput.value = '';
-        showToast('Video added!');
-      }
-
-      function truncateText(text, maxLength) {
-        if (text.length <= maxLength) return text;
-        const truncated = text.substring(0, maxLength - 3);
-        return truncated.substring(0, truncated.lastIndexOf(' ')) + '...';
-      }
-
-      function shareOnTwitter() {
-        const score = document.getElementById('total').textContent;
-        const ranking = document.getElementById('ranking').textContent;
-        const summary = truncateText(document.getElementById('quickSummary').value, 200);
-        const text = `I scored ${score}/52 on StoryCraft Analyzer! Ranking: ${ranking}. Idea: ${summary}`;
-        if (text.length > 280) showToast('Text too long for Twitter! Shorten your summary.', 3000);
-        else window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-      }
-
-      function shareOnDiscord() {
-        const score = document.getElementById('total').textContent;
-        const summary = truncateText(document.getElementById('quickSummary').value, 100);
-        const url = window.location.href;
-        showToast(`Copied to clipboard!\nMy Score: ${score}/52\nIdea: ${summary}\nTry it: ${url}`, 5000);
-        navigator.clipboard.writeText(`My StoryCraft Score: ${score}/52\nIdea: ${summary}\nTry it: ${url}`);
+        updateWordCount();
+        showTab('concept');
+        showToast('All data reset!');
       }
 
       function showToast(message, duration = 2000) {
