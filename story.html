@@ -12,6 +12,7 @@
     <!-- External Libraries -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,10 +30,11 @@
         --panel-light: rgba(255, 255, 255, 0.95);
         --panel-dark: rgba(30, 35, 50, 0.95);
         --border-light: rgba(200, 200, 200, 0.3);
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         --transition: all 0.3s ease;
         --radius: 20px;
         --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+        --gradient-bg: linear-gradient(135deg, var(--bg-light) 0%, #e0e6ef 100%);
         --spacing: 2rem;
         --font-base: 'Poppins', sans-serif;
         --highlight: #e91e63;
@@ -42,16 +44,21 @@
         --text-light: var(--text-dark);
         --panel-light: var(--panel-dark);
         --border-light: rgba(255, 255, 255, 0.2);
+        --gradient-bg: linear-gradient(135deg, var(--bg-dark) 0%, #2a3145 100%);
       }
 
       body {
         margin: 0;
         padding: 0;
         font-family: var(--font-base);
-        background: var(--bg-light);
+        background: var(--gradient-bg);
         color: var(--text-light);
         line-height: 1.6;
         overflow-x: hidden;
+        cursor: default;
+      }
+      body:hover {
+        cursor: pointer;
       }
 
       .container {
@@ -59,67 +66,97 @@
         margin: 0 auto;
         padding: var(--spacing);
         position: relative;
-        animation: fadeIn 0.5s ease-in;
+        animation: fadeIn 0.8s ease-in;
+      }
+
+      #particles-js {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.3;
       }
 
       .hero {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: 5rem 2rem;
         background: var(--gradient-light);
         color: #fff;
         border-radius: 0 0 var(--radius) var(--radius);
         box-shadow: var(--shadow);
         margin-bottom: var(--spacing);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0.5;
+        animation: pulseGlow 3s infinite ease-in-out;
       }
       .hero h1 {
-        font-size: clamp(2.5rem, 6vw, 3.5rem);
+        font-size: clamp(2.8rem, 6vw, 4rem);
         margin: 0;
         font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       }
       .hero p {
-        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        font-size: clamp(1.3rem, 4vw, 1.7rem);
         margin: 0.5rem 0 1rem;
         font-weight: 300;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
       }
 
       #darkModeToggle {
         position: absolute;
         top: 1.5rem;
         right: 1.5rem;
-        background: none;
+        background: rgba(255, 255, 255, 0.2);
         border: none;
-        font-size: 1.8rem;
+        font-size: 2rem;
         cursor: pointer;
-        transition: transform 0.3s ease;
+        padding: 0.5rem;
+        border-radius: 50%;
+        transition: transform 0.3s ease, background 0.3s ease;
       }
       #darkModeToggle:hover {
         transform: rotate(20deg);
+        background: rgba(255, 255, 255, 0.4);
       }
 
       #progress {
         position: relative;
-        height: 25px;
+        height: 30px;
         background: rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
+        border-radius: 15px;
         overflow: hidden;
-        margin: 1.5rem 0;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        margin: 2rem 0;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05), 0 5px 15px rgba(0, 0, 0, 0.1);
       }
       #progressBar {
         height: 100%;
         width: 0%;
         background: var(--gradient-light);
         transition: width 0.5s ease;
+        box-shadow: 0 0 15px rgba(79, 172, 254, 0.8);
+        animation: progressGlow 2s infinite ease-in-out;
       }
       #progressText {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: 600;
         color: #fff;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
       }
 
       nav {
@@ -129,32 +166,51 @@
         gap: 1.5rem;
         margin: var(--spacing) 0;
         background: var(--panel-light);
-        padding: 1rem;
+        padding: 1.5rem;
         border-radius: var(--radius);
         box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
       }
       nav button {
         background: var(--gradient-light);
         border: none;
-        padding: 1rem 2rem;
+        padding: 1rem 2.5rem;
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: 600;
         color: #fff;
         transform: scale(1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+      }
+      nav button::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+      }
+      nav button:active::after {
+        width: 200px;
+        height: 200px;
       }
       nav button.active, nav button:hover {
         transform: scale(1.05);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 20px rgba(79, 172, 254, 0.5);
       }
 
       .tab {
         display: none;
         opacity: 0;
-        transform: translateY(20px);
-        animation: slideIn 0.5s forwards;
+        transform: translateY(30px);
+        animation: slideIn 0.6s forwards;
       }
       .tab.active {
         display: block;
@@ -168,63 +224,69 @@
         border: 1px solid var(--border-light);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(10px);
-        padding: 2.5rem;
+        backdrop-filter: blur(14px);
+        padding: 3rem;
         margin: var(--spacing) 0;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
       }
       .glass-panel:hover {
-        transform: translateY(-5px);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
       }
       .glass-panel h2, .glass-panel h3 {
         color: var(--highlight);
-        font-size: clamp(1.6rem, 4vw, 2rem);
-        margin: 0 0 1rem;
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        margin: 0 0 1.5rem;
         font-weight: 600;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
       }
 
       .story-input {
         width: 100%;
-        min-height: 120px;
-        padding: 1.2rem;
+        min-height: 130px;
+        padding: 1.5rem;
         border: 2px solid var(--border-light);
         border-radius: var(--radius);
-        font-size: 1rem;
+        font-size: 1.1rem;
         background: var(--bg-light);
         resize: vertical;
         transition: var(--transition);
         color: var(--text-light);
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.05);
       }
       html[data-theme="dark"] .story-input {
         color: var(--text-dark);
       }
       .story-input:focus {
         border-color: var(--primary-light);
-        box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
+        box-shadow: 0 0 0 5px rgba(79, 172, 254, 0.3), inset 0 0 10px rgba(79, 172, 254, 0.1);
         outline: none;
       }
 
       select, input[type="text"], input[type="number"] {
-        padding: 0.8rem;
+        padding: 1rem;
         border-radius: var(--radius);
         border: 2px solid var(--border-light);
         font-size: 1rem;
-        margin: 0.5rem 0;
+        margin: 0.8rem 0;
         transition: var(--transition);
+        background: var(--bg-light);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
       }
       select:focus, input:focus {
         border-color: var(--primary-light);
+        box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
       }
 
       .rubric-table {
         width: 100%;
         overflow-x: auto;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
       }
       .modern-table {
         width: 100%;
-        min-width: clamp(700px, 100vw, 1000px);
+        min-width: clamp(800px, 100vw, 1100px);
         border-collapse: separate;
         border-spacing: 0;
         border-radius: var(--radius);
@@ -233,37 +295,41 @@
         background: var(--panel-light);
       }
       .modern-table th, .modern-table td {
-        padding: 1.2rem 1.5rem;
-        font-size: 0.95rem;
+        padding: 1.5rem 2rem;
+        font-size: 1rem;
         text-align: left;
       }
       .modern-table th {
         background: var(--gradient-light);
         color: #fff;
         font-weight: 600;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       }
       .modern-table th:nth-child(2) { background: #f87171; }
       .modern-table th:nth-child(3) { background: #fb923c; }
       .modern-table th:nth-child(4) { background: #facc15; color: #000; }
       .modern-table th:nth-child(5) { background: #4ade80; }
+      .modern-table tr:nth-child(even) td { background: rgba(245, 245, 245, 0.5); }
+      html[data-theme="dark"] .modern-table tr:nth-child(even) td { background: rgba(40, 45, 60, 0.5); }
       .modern-table td[data-rating] {
         cursor: pointer;
-        transition: background 0.3s ease, transform 0.2s ease;
+        transition: background 0.3s ease, transform 0.3s ease;
       }
       .modern-table td[data-rating]:hover, .modern-table td[data-rating]:focus {
         background: rgba(79, 172, 254, 0.2);
-        transform: scale(1.02);
+        transform: scale(1.03);
       }
       .modern-table td.selected {
         background: rgba(79, 172, 254, 0.4);
-        border-left: 4px solid var(--primary-light);
+        border-left: 5px solid var(--primary-light);
         animation: pulse 0.5s ease;
       }
       .weight {
-        width: 50px;
-        margin-left: 0.5rem;
-        padding: 0.3rem;
-        border-radius: 6px;
+        width: 60px;
+        margin-left: 0.8rem;
+        padding: 0.4rem;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
       }
       .tooltip {
         position: relative;
@@ -271,19 +337,19 @@
       }
       .tooltip .tooltiptext {
         visibility: hidden;
-        width: 220px;
+        width: 240px;
         background: var(--panel-light);
         color: var(--text-light);
         text-align: center;
-        border-radius: 8px;
-        padding: 0.8rem;
+        border-radius: 10px;
+        padding: 1rem;
         position: absolute;
         z-index: 1;
-        bottom: 125%;
+        bottom: 130%;
         left: 50%;
         transform: translateX(-50%);
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.3s ease;
         box-shadow: var(--shadow);
       }
       .tooltip:hover .tooltiptext {
@@ -294,78 +360,125 @@
 
       #feedbackOutput, #plannerList, #resources {
         text-align: left;
-        margin-top: 1rem;
+        margin-top: 1.5rem;
       }
       #feedbackOutput ul, #plannerList ul {
         list-style-type: disc;
-        padding-left: 2rem;
+        padding-left: 2.5rem;
       }
       #prompts {
         display: none;
         text-align: left;
-        margin-top: 1rem;
-        animation: fadeIn 0.3s ease;
+        margin-top: 1.5rem;
+        animation: fadeIn 0.4s ease;
       }
 
       .timeline-block {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         padding: 1rem;
         border: 2px solid var(--border-light);
-        margin: 0.5rem;
-        border-radius: 10px;
+        margin: 0.8rem;
+        border-radius: 12px;
         background: var(--bg-light);
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
       .timeline-block:hover {
-        transform: translateY(-2px);
+        transform: translateY(-4px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
       .timeline-block input {
-        width: 220px;
-        padding: 0.5rem;
+        width: 240px;
+        padding: 0.6rem;
         border: none;
         background: transparent;
         color: var(--text-light);
-        font-size: 0.95rem;
+        font-size: 1rem;
+      }
+      .timeline-block button {
+        background: #ff6b6b;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin-left: 0.5rem;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+      .timeline-block button:hover {
+        transform: scale(1.1);
       }
 
       #resourceTable {
         width: 100%;
         border-collapse: collapse;
+        margin-top: 1rem;
       }
       #resourceTable th, #resourceTable td {
-        padding: 0.8rem;
+        padding: 1rem;
         border-bottom: 1px solid var(--border-light);
       }
       #resourceTable input, #resourceTable select {
         width: 100%;
-        padding: 0.5rem;
+        padding: 0.6rem;
         border: none;
         background: transparent;
+        font-size: 0.95rem;
+      }
+      #resourceTable .remove-btn {
+        background: #ff6b6b;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+      #resourceTable .remove-btn:hover {
+        transform: scale(1.1);
       }
 
       button.btn {
         background: var(--gradient-light);
         color: #fff;
         border: none;
-        padding: 0.8rem 1.8rem;
+        padding: 1rem 2rem;
         border-radius: var(--radius);
         cursor: pointer;
         font-weight: 600;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        margin: 0.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+      }
+      button.btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+      }
+      button.btn:active::after {
+        width: 200px;
+        height: 200px;
       }
       button.btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 20px rgba(79, 172, 254, 0.5);
       }
 
       footer {
         text-align: center;
         padding: var(--spacing);
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: #7f8c8d;
         font-weight: 300;
+        margin-top: 2rem;
       }
       footer a {
         color: var(--primary-light);
@@ -378,34 +491,51 @@
 
       #toast {
         position: fixed;
-        bottom: 20px;
+        bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
         background: var(--primary-light);
         color: #fff;
-        padding: 1.2rem 2rem;
-        border-radius: 12px;
+        padding: 1.5rem 2.5rem;
+        border-radius: 15px;
         display: none;
         z-index: 1000;
         white-space: pre-wrap;
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        animation: bounceIn 0.5s ease;
       }
 
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes bounceIn { 
+        0% { transform: translateX(-50%) translateY(20px); opacity: 0; } 
+        60% { transform: translateX(-50%) translateY(-5px); opacity: 1; } 
+        100% { transform: translateX(-50%) translateY(0); opacity: 1; } 
+      }
+      @keyframes pulseGlow { 
+        0% { opacity: 0.5; } 
+        50% { opacity: 0.7; } 
+        100% { opacity: 0.5; } 
+      }
+      @keyframes progressGlow { 
+        0% { box-shadow: 0 0 15px rgba(79, 172, 254, 0.8); } 
+        50% { box-shadow: 0 0 25px rgba(79, 172, 254, 1); } 
+        100% { box-shadow: 0 0 15px rgba(79, 172, 254, 0.8); } 
+      }
 
       @media (max-width: 768px) {
         .modern-table th, .modern-table td {
-          padding: 0.8rem;
-          font-size: 0.85rem;
+          padding: 1rem;
+          font-size: 0.9rem;
         }
-        nav { flex-direction: column; align-items: center; }
-        .timeline-block { display: block; width: 100%; }
-        .glass-panel { padding: 1.5rem; }
+        nav { flex-direction: column; align-items: center; gap: 1rem; }
+        .timeline-block { display: block; width: 100%; margin: 0.5rem 0; }
+        .glass-panel { padding: 2rem; }
+        .hero { padding: 3rem 1rem; }
       }
     </style>
   </head>
   <body>
+    <div id="particles-js"></div>
     <div class="container">
       <!-- Hero Section -->
       <section class="hero">
@@ -455,7 +585,7 @@
           </div>
           <div id="titleOptimizer">
             <h3>Video Title</h3>
-            <input type="text" id="titleInput" class="story-input" style="min-height: 50px;" placeholder="e.g., 'I Hatched 1000 Eggs for a Legendary Pet!'" aria-label="Video Title">
+            <input type="text" id="titleInput" class="story-input" style="min-height: 60px;" placeholder="e.g., 'I Hatched 1000 Eggs for a Legendary Pet!'" aria-label="Video Title">
             <p>Characters: <span id="titleCharCount">0</span>/70 <button class="btn" onclick="suggestTitles()">Suggest Titles</button></p>
           </div>
           <textarea id="quickSummary" class="story-input" placeholder="Include your hook, conflict, and goal (e.g., 'I hatch 1000 eggs in Pet Simulator 99 to find a legendary pet, racing against a server crash')" aria-label="Video Concept Summary"></textarea>
@@ -466,7 +596,7 @@
         <!-- Scoring -->
         <section id="score" class="tab glass-panel">
           <h2>📊 Score Your Idea</h2>
-          <p>Total Weighted Score: <span id="totalScore">0</span></p>
+          <p>Total Weighted Score: <span id="totalScore">0</span> / <span id="maxScore">36</span> (<span id="scoreRating">Incomplete</span>)</p>
           <div class="rubric-table">
             <table class="modern-table">
               <thead>
@@ -577,7 +707,7 @@
           <div id="resources" class="glass-panel">
             <h3>Resources & Budget</h3>
             <table id="resourceTable">
-              <thead><tr><th>Item</th><th>Cost ($)</th><th>Status</th></tr></thead>
+              <thead><tr><th>Item</th><th>Cost ($)</th><th>Status</th><th></th></tr></thead>
               <tbody></tbody>
             </table>
             <button class="btn" onclick="addResource()">Add Resource</button>
@@ -596,7 +726,7 @@
         <!-- Review -->
         <section id="review" class="tab glass-panel">
           <h2>📉 Review Past Video</h2>
-          <input type="text" id="reviewTitle" class="story-input" style="min-height: 50px;" placeholder="Video title" aria-label="Reviewed Video Title">
+          <input type="text" id="reviewTitle" class="story-input" style="min-height: 60px;" placeholder="Video title" aria-label="Reviewed Video Title">
           <table class="modern-table">
             <thead>
               <tr>
@@ -652,6 +782,19 @@
       let historyIndex = -1;
 
       window.addEventListener('DOMContentLoaded', () => {
+        // Particles.js initialization
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 50, density: { enable: true, value_area: 800 } },
+            color: { value: '#4facfe' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            move: { enable: true, speed: 1, direction: 'none', random: true }
+          },
+          interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'repulse' } } }
+        });
+
         // Load saved state
         const savedScores = JSON.parse(localStorage.getItem('scores') || '{}');
         scores = savedScores;
@@ -744,6 +887,9 @@
             if (cell.closest('#score')) selectRating(cell);
             else selectReviewRating(cell);
             updateProgress();
+            updateTotalScore();
+            updateFeedback();
+            updatePlanner();
           });
           cell.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -751,6 +897,9 @@
               if (cell.closest('#score')) selectRating(cell);
               else selectReviewRating(cell);
               updateProgress();
+              updateTotalScore();
+              updateFeedback();
+              updatePlanner();
             }
           });
         });
@@ -778,7 +927,7 @@
         document.querySelectorAll('.tab').forEach(tab => {
           tab.classList.remove('active');
           tab.style.opacity = '0';
-          tab.style.transform = 'translateY(20px)';
+          tab.style.transform = 'translateY(30px)';
         });
         document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
         const activeTab = document.getElementById(tabId);
@@ -843,9 +992,27 @@
         }, 0);
       }
 
+      function calculateMaxScore() {
+        const weights = Array.from(document.querySelectorAll('#score .weight')).map(input => parseFloat(input.value) || 1);
+        return weights.reduce((sum, weight) => sum + (4 * weight), 0);
+      }
+
+      function getScoreRating(total, max) {
+        const unweightedTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
+        if (Object.keys(scores).length < 9) return 'Incomplete';
+        if (unweightedTotal < 18) return 'Good';
+        if (unweightedTotal < 26) return 'Great';
+        if (unweightedTotal < 33) return 'Excellent';
+        return 'Outstanding';
+      }
+
       function updateTotalScore() {
         const total = calculateTotalScore();
+        const max = calculateMaxScore();
+        const rating = getScoreRating(total, max);
         document.getElementById('totalScore').textContent = total.toFixed(1);
+        document.getElementById('maxScore').textContent = max.toFixed(1);
+        document.getElementById('scoreRating').textContent = rating;
       }
 
       function updateFeedback() {
@@ -854,7 +1021,7 @@
         if ((scores[1] || 0) < 3) feedback.push("Goal: Clarify what you’re aiming for—make it specific and exciting.");
         if ((scores[2] || 0) < 3) feedback.push("Conflict: Raise stakes with a bigger obstacle or time limit.");
         if ((scores[3] || 0) < 3) feedback.push("Challenges: Add unique or unexpected hurdles to overcome.");
-        if ((scores[4] || 0) < 3) feedback.push("Retention: Plan peaks every 30 seconds—cuts, reveals, or twists.");
+        if ((scores[4] || 0) < 3 || (reviewScores['r0'] || 0) < 3) feedback.push("Retention: Plan peaks every 30 seconds—cuts, reveals, or twists (past watch time suggests improvement needed).");
         if ((scores[5] || 0) < 3) feedback.push("Originality: Twist a trend or combine two ideas for a fresh angle.");
         if ((scores[6] || 0) < 3) feedback.push("Story: Deepen emotional stakes—why should viewers care?");
         if ((scores[7] || 0) < 3) feedback.push("Feasibility: List resources needed to make this doable.");
@@ -899,7 +1066,10 @@
       function addTimelineBlock() {
         const block = document.createElement('div');
         block.className = 'timeline-block';
-        block.innerHTML = '<input type="text" placeholder="e.g., Hook: Pet escapes" style="width: 220px;" aria-label="Timeline Beat">';
+        block.innerHTML = `
+          <input type="text" placeholder="e.g., Hook: Pet escapes" style="width: 240px;" aria-label="Timeline Beat">
+          <button class="delete-btn" onclick="this.parentElement.remove(); saveToHistory();" aria-label="Delete Timeline Beat">✖</button>
+        `;
         document.getElementById('timelineBlocks').appendChild(block);
         saveToHistory();
       }
@@ -932,6 +1102,7 @@
           <td><input type="text" placeholder="e.g., Rare Pet Asset" aria-label="Resource Item"></td>
           <td><input type="number" step="0.01" placeholder="e.g., 5" aria-label="Resource Cost"></td>
           <td><select aria-label="Resource Status"><option>Needed</option><option>Acquired</option></select></td>
+          <td><button class="remove-btn" onclick="this.parentElement.parentElement.remove(); saveToHistory();" aria-label="Remove Resource">✖</button></td>
         `;
         tbody.appendChild(row);
         saveToHistory();
@@ -964,6 +1135,52 @@
         }).join('<br>');
       }
 
+      function getRubricTableHTML() {
+        const categories = ['Hook', 'Goal', 'Conflict', 'Challenges', 'Retention', 'Originality', 'Story', 'Feasibility', 'Visuals'];
+        const ratings = [
+          ['Weak hook fails to spark interest', 'Basic hook keeps mild curiosity alive', 'Intriguing opener hooks viewers fast', 'Unignorable start demands attention now'],
+          ['Vague purpose loses viewer focus', 'Goal exists but lacks clarity', 'Defined aim guides the story well', 'Crystal-clear, stakes-driven mission'],
+          ['Trivial tension feels flat', 'Predictable conflict lacks punch', 'Engaging stakes build solid drama', 'High-stakes clash fuels epic payoff'],
+          ['Easy hurdles lack excitement', 'Routine tasks feel standard', 'Balanced obstacles spark interest', 'Dynamic trials push creative limits'],
+          ['Boring pace drops viewers fast', 'Some peaks but pacing lags', 'Solid pacing with engaging beats', 'Suspenseful flow locks in viewers'],
+          ['Cliché idea blends into noise', 'Familiar idea with slight twist', 'Distinct concept stands out', 'Innovative idea redefines norms'],
+          ['Flat tale lacks any stakes', 'Basic arc feels predictable', 'Engaging story builds connection', 'Emotional arc grips heartstrings'],
+          ['Unrealistic plan stalls production', 'Vague logistics need work', 'Planned setup ensures smooth shoot', 'Fully prepped for flawless execution'],
+          ['Dull look fails to attract', 'Average visuals lack pop', 'Appealing style draws eyes', 'Stunning visuals scream clicks']
+        ];
+        let html = `
+          <table style="width: 100%; border-collapse: collapse; font-family: 'Poppins', sans-serif; font-size: 14px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+            <thead>
+              <tr style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: #fff;">
+                <th style="padding: 15px 20px; text-align: left; font-weight: 600; border-bottom: 1px solid rgba(255, 255, 255, 0.2);">Category (Weight)</th>
+                <th style="padding: 15px 20px; text-align: left; font-weight: 600; background: #f87171;">Good (1)</th>
+                <th style="padding: 15px 20px; text-align: left; font-weight: 600; background: #fb923c;">Great (2)</th>
+                <th style="padding: 15px 20px; text-align: left; font-weight: 600; background: #facc15; color: #000;">Excellent (3)</th>
+                <th style="padding: 15px 20px; text-align: left; font-weight: 600; background: #4ade80;">Outstanding (4)</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        categories.forEach((category, i) => {
+          const weight = parseFloat(document.querySelector(`#score .weight[data-category="${i}"]`)?.value) || 1;
+          const score = scores[i] || 0;
+          html += `
+            <tr style="background: ${i % 2 === 0 ? 'rgba(245, 245, 245, 0.5)' : 'transparent'};">
+              <td style="padding: 15px 20px; border-bottom: 1px solid rgba(200, 200, 200, 0.3);">${category} (${weight})</td>
+              <td style="padding: 15px 20px; border-bottom: 1px solid rgba(200, 200, 200, 0.3); ${score === 1 ? 'background: rgba(248, 113, 113, 0.4);' : ''}">${ratings[i][0]}</td>
+              <td style="padding: 15px 20px; border-bottom: 1px solid rgba(200, 200, 200, 0.3); ${score === 2 ? 'background: rgba(251, 146, 60, 0.4);' : ''}">${ratings[i][1]}</td>
+              <td style="padding: 15px 20px; border-bottom: 1px solid rgba(200, 200, 200, 0.3); ${score === 3 ? 'background: rgba(250, 204, 21, 0.4);' : ''}">${ratings[i][2]}</td>
+              <td style="padding: 15px 20px; border-bottom: 1px solid rgba(200, 200, 200, 0.3); ${score === 4 ? 'background: rgba(74, 222, 128, 0.4);' : ''}">${ratings[i][3]}</td>
+            </tr>
+          `;
+        });
+        html += `
+            </tbody>
+          </table>
+        `;
+        return html;
+      }
+
       function getReviewSummary() {
         const metrics = ['Watch Time', 'Likes', 'Comments'];
         const ratings = [
@@ -992,6 +1209,9 @@
         history.push(state);
         historyIndex++;
         localStorage.setItem('history', JSON.stringify(history));
+        updateTotalScore();
+        updateFeedback();
+        updatePlanner();
       }
 
       function undo() {
@@ -1035,12 +1255,14 @@
         });
         document.getElementById('resourceTable').querySelector('tbody').innerHTML = state.resources.split('<br>').map(res => {
           const [item, cost, status] = res.split(' - ');
-          return `<tr><td><input type="text" value="${item}"></td><td><input type="number" step="0.01" value="${cost.slice(1)}"></td><td><select><option ${status === 'Needed' ? 'selected' : ''}>Needed</option><option ${status === 'Acquired' ? 'selected' : ''}>Acquired</option></select></td></tr>`;
+          return `<tr><td><input type="text" value="${item}" aria-label="Resource Item"></td><td><input type="number" step="0.01" value="${cost.slice(1)}" aria-label="Resource Cost"></td><td><select aria-label="Resource Status"><option ${status === 'Needed' ? 'selected' : ''}>Needed</option><option ${status === 'Acquired' ? 'selected' : ''}>Acquired</option></select></td><td><button class="remove-btn" onclick="this.parentElement.parentElement.remove(); saveToHistory();" aria-label="Remove Resource">✖</button></td></tr>`;
         }).join('');
         updateWordCount();
         updateTitleCharCount();
         updateProgress();
         updateTotalScore();
+        updateFeedback();
+        updatePlanner();
         localStorage.setItem('scores', JSON.stringify(scores));
         localStorage.setItem('reviewScores', JSON.stringify(reviewScores));
         localStorage.setItem('quickSummary', state.quickSummary);
@@ -1132,10 +1354,12 @@
 
       function suggestTitles() {
         const summary = document.getElementById('quickSummary').value.toLowerCase();
+        const age = document.getElementById('audienceAge').value;
+        const interests = document.getElementById('audienceInterests').value.toLowerCase();
         const suggestions = [
-          summary.includes('roblox') ? 'Insane Roblox Challenge You NEED to See!' : 'Epic Video You Won’t Believe!',
-          summary.includes('challenge') ? 'Can I Beat This Crazy Challenge?' : 'Shocking Twist in My Latest Video!',
-          `My Wild ${summary.split(' ')[0]?.charAt(0).toUpperCase() + summary.split(' ')[0]?.slice(1)} Adventure!`
+          summary.includes('roblox') ? `Insane Roblox ${interests || 'Adventure'} You NEED to See!` : 'Epic Video You Won’t Believe!',
+          summary.includes('challenge') ? `Can I Beat This ${age === 'kids' ? 'Fun' : 'Crazy'} Challenge?` : 'Shocking Twist in My Latest Video!',
+          `${age === 'kids' ? 'Cool' : 'Wild'} ${summary.split(' ')[0]?.charAt(0).toUpperCase() + summary.split(' ')[0]?.slice(1)} ${interests || 'Adventure'}!`
         ].filter(t => t.length <= 70);
         showToast(`Suggested Titles:\n${suggestions.join('\n')}`, 5000);
       }
@@ -1153,9 +1377,8 @@
           Concept: ${document.getElementById('quickSummary').value || 'No concept entered yet.'}
           Audience: Age: ${document.getElementById('audienceAge').value}, Interests: ${document.getElementById('audienceInterests').value || 'Not specified'}
           Title: ${document.getElementById('titleInput').value || 'No title yet.'}
-          Rubric Scores:
-          ${getRubricSummary()}
-          Total Weighted Score: ${calculateTotalScore()}
+          Rubric Scores:\n${getRubricSummary()}
+          Total Weighted Score: ${calculateTotalScore()} out of ${calculateMaxScore()} (${getScoreRating(calculateTotalScore(), calculateMaxScore())})
           Feedback: ${document.getElementById('feedbackOutput').textContent}
           Production Plan: ${document.getElementById('plannerList').textContent}
           Timeline: ${getTimeline().join(', ') || 'No timeline blocks added.'}
@@ -1170,24 +1393,26 @@
           showToast('Exporting PNG... Please wait.');
           const tempContainer = document.createElement('div');
           tempContainer.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
-          tempContainer.style.padding = '2.5rem';
+          tempContainer.style.padding = '3rem';
           tempContainer.style.fontFamily = 'Poppins, sans-serif';
           tempContainer.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
+          tempContainer.style.lineHeight = '1.8';
           tempContainer.innerHTML = `
-            <h1 style="text-align: center; color: var(--highlight); font-size: 2.5rem;">StoryCraft Video Plan</h1>
-            <h2 style="color: var(--primary-light);">Concept</h2><p>${document.getElementById('quickSummary').value || 'No concept entered yet.'}</p>
-            <h2 style="color: var(--primary-light);">Audience</h2><p>Age: ${document.getElementById('audienceAge').value}, Interests: ${document.getElementById('audienceInterests').value || 'Not specified'}</p>
-            <h2 style="color: var(--primary-light);">Title</h2><p>${document.getElementById('titleInput').value || 'No title yet.'}</p>
-            <h2 style="color: var(--primary-light);">Rubric Scores</h2><p>${getRubricSummary().replace(/<br>/g, '<br>')}</p>
-            <h2 style="color: var(--primary-light);">Total Weighted Score</h2><p>${calculateTotalScore()}</p>
-            <h2 style="color: var(--primary-light);">Feedback</h2>${document.getElementById('feedbackOutput').innerHTML}
-            <h2 style="color: var(--primary-light);">Production Plan</h2>${document.getElementById('plannerList').innerHTML}
-            <h2 style="color: var(--primary-light);">Timeline</h2><ul>${getTimeline().map(item => `<li>${item}</li>`).join('') || '<li>No timeline blocks added.</li>'}</ul>
-            <h2 style="color: var(--primary-light);">Resources & Budget</h2><p>${getResources() || 'No resources added.'}</p>
-            <h2 style="color: var(--primary-light);">Review</h2>
-            <p>Title: ${document.getElementById('reviewTitle').value || 'No title'}</p>
-            <p>Scores: ${getReviewSummary().replace(/<br>/g, '<br>') || 'No scores'}</p>
-            <p>Notes: ${document.getElementById('reviewNotes').value || 'No notes'}</p>
+            <h1 style="text-align: center; color: var(--highlight); font-size: 2.8rem; margin-bottom: 2rem; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">StoryCraft Video Plan</h1>
+            <hr style="border: 1px solid var(--border-light); margin: 1.5rem 0;">
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Concept</h2><p style="margin: 0.5rem 0 1.5rem;">${document.getElementById('quickSummary').value || 'No concept entered yet.'}</p>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Audience</h2><p style="margin: 0.5rem 0 1.5rem;">Age: ${document.getElementById('audienceAge').value}, Interests: ${document.getElementById('audienceInterests').value || 'Not specified'}</p>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Title</h2><p style="margin: 0.5rem 0 1.5rem;">${document.getElementById('titleInput').value || 'No title yet.'}</p>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Rubric Scores</h2>${getRubricTableHTML()}
+            <p style="margin: 1rem 0; font-weight: bold;">Total Weighted Score: ${calculateTotalScore().toFixed(1)} / ${calculateMaxScore().toFixed(1)} (${getScoreRating(calculateTotalScore(), calculateMaxScore())})</p>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Feedback</h2>${document.getElementById('feedbackOutput').innerHTML.replace(/<ul>/g, '<ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">')}
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Production Plan</h2>${document.getElementById('plannerList').innerHTML.replace(/<ul>/g, '<ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">
+                        <h2 style="color: var(--primary-light); font-size: 1.8rem;">Timeline</h2><ul style="margin: 0.5rem 0 1.5rem; padding-left: 2rem;">${getTimeline().map(item => `<li>${item}</li>`).join('') || '<li>No timeline blocks added.</li>'}</ul>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Resources & Budget</h2><p style="margin: 0.5rem 0 1.5rem;">${getResources().replace(/<br>/g, '<br>') || 'No resources added.'}</p>
+            <h2 style="color: var(--primary-light); font-size: 1.8rem;">Review</h2>
+            <p style="margin: 0.5rem 0;">Title: ${document.getElementById('reviewTitle').value || 'No title'}</p>
+            <p style="margin: 0.5rem 0;">Scores: ${getReviewSummary().replace(/<br>/g, '<br>') || 'No scores'}</p>
+            <p style="margin: 0.5rem 0 1.5rem;">Notes: ${document.getElementById('reviewNotes').value || 'No notes'}</p>
           `;
           document.body.appendChild(tempContainer);
 
@@ -1232,6 +1457,8 @@
         updateTitleCharCount();
         updateProgress();
         updateTotalScore();
+        updateFeedback();
+        updatePlanner();
         showTab('concept');
         showToast('All data reset!');
       }
@@ -1271,4 +1498,4 @@
       }
     </script>
   </body>
-</html>
+</html>                                                                                                                                           
