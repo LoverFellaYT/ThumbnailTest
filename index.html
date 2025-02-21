@@ -1266,50 +1266,53 @@
        * Reset Scores
        ***************************************************/
       function resetScores() {
-        scores = {};
-        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
-          cell.classList.remove('selected');
-        });
-        document.getElementById('total').textContent = '0';
-        document.getElementById('scoreLabel').textContent = 'Good';
-        document.getElementById('ranking').textContent = 'Incomplete';
-        document.getElementById('ranking').style.color = '#64748b';
-        confettiShown = false;
-        milestoneTriggered = {};
-
-        // Reset progress bar & message
-        document.getElementById("progressBar").style.width = "0%";
-        document.getElementById("milestoneMessage").textContent = "";
-
-        // Reset Title & Previews
-        document.getElementById('videoTitle').value = '';
-        document.getElementById('homeTitle').textContent = '';
-        document.getElementById('suggestedTitle').textContent = '';
-        const defaultImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-        document.getElementById('homePreview').src = defaultImg;
-        document.getElementById('homePreviewSmall').src = defaultImg;
-        document.getElementById('suggestedPreview').src = defaultImg;
-
-        // Clear any auto-insight messages
-        document.getElementById('brightnessMessage').textContent = "";
-        document.getElementById('contrastMessage').textContent = "";
-        document.getElementById('paletteContainer').innerHTML = "";
-        document.getElementById('colorSuggestions').innerHTML = "";
-        document.getElementById('objectRecognitionResults').textContent = "";
-        document.getElementById('sharpnessResult').textContent = "";
-        document.getElementById('compositionFeedback').innerHTML =
-          `Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
-           <a href="#" onclick="openTutorial('composition')">Learn How</a>`;
-
-        // Clear composition canvas
-        const compCanvas = document.getElementById("compositionCanvas");
-        if (compCanvas) {
-          const ctx = compCanvas.getContext("2d");
-          ctx.clearRect(0, 0, compCanvas.width, compCanvas.height);
-          compCanvas.width = compCanvas.height = 0;
-        }
+      scores = {};
+      document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => {
+        cell.classList.remove('selected');
+      });
+      document.getElementById('total').textContent = '0';
+      document.getElementById('scoreLabel').textContent = 'Good';
+      document.getElementById('ranking').textContent = 'Incomplete';
+      document.getElementById('ranking').style.color = '#64748b';
+      confettiShown = false;
+      milestoneTriggered = {};
+    
+      // Reset progress bar & message
+      document.getElementById("progressBar").style.width = "0%";
+      document.getElementById("milestoneMessage").textContent = "";
+    
+      // Reset Title & Previews
+      document.getElementById('videoTitle').value = '';
+      document.getElementById('homeTitle').textContent = '';
+      document.getElementById('suggestedTitle').textContent = '';
+      const defaultImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+      document.getElementById('homePreview').src = defaultImg;
+      document.getElementById('homePreviewSmall').src = defaultImg;
+      document.getElementById('suggestedPreview').src = defaultImg;
+    
+      // Clear any auto-insight messages
+      document.getElementById('brightnessMessage').textContent = "";
+      document.getElementById('contrastMessage').textContent = "";
+      document.getElementById('paletteContainer').innerHTML = "";
+      document.getElementById('colorSuggestions').innerHTML = "";
+      document.getElementById('objectRecognitionResults').textContent = "";
+      document.getElementById('sharpnessResult').textContent = "";
+      document.getElementById('compositionFeedback').innerHTML =
+        `Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
+         <a href="#" onclick="openTutorial('composition')">Learn How</a>`;
+    
+      // Clear composition canvas
+      const compCanvas = document.getElementById("compositionCanvas");
+      if (compCanvas) {
+        const ctx = compCanvas.getContext("2d");
+        ctx.clearRect(0, 0, compCanvas.width, compCanvas.height);
+        compCanvas.width = compCanvas.height = 0;
       }
-
+    
+      // Reset feedback fields
+      document.getElementById('humanFeedback').innerHTML = '';
+      document.getElementById('aiFeedback').innerHTML = '';
+    }
       /***************************************************
        * Title Preview & Synergy
        ***************************************************/
