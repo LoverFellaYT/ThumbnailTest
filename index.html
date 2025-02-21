@@ -978,14 +978,16 @@
 
           <!-- Mandatory "Does This Demand a Click?" Checkbox -->
           <div class="click-demand">
-            <label for="clickDemandCheckbox">
-              🔲 Does this thumbnail make you feel like you must click?
-            </label>
-            <input type="checkbox" id="clickDemandCheckbox" required aria-required="true" style="margin-top: 0.5rem;">
-            <p style="margin-top: 0.5rem;">
-              ✅ YES → It’s good to go!<br>
-              ❌ NO → We need to rethink the concept.
-            </p>
+          <p><strong>Does this thumbnail make you feel like you must click?</strong></p>
+          <label style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <input type="radio" name="clickDemand" value="yes" required />
+            ✅ YES → It’s good to go!
+          </label>
+          <br>
+          <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+            <input type="radio" name="clickDemand" value="no" required />
+            ❌ NO → We need to rethink the concept.
+          </label>
           </div>
         </section>
 
