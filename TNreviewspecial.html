@@ -1366,33 +1366,129 @@
               `;
             }).join('');
             // Generate AI/heuristic advice based on the palette
-            const advice = generateAIColorAdvice(palette);
-            document.getElementById('aiColorAdvice').textContent = advice;
-            generateColorSuggestions();
-          } catch (err) {
-            paletteContainer.innerHTML = 'Unable to extract palette.';
-            console.error(err);
+            // Convert a hex color to an RGB array
+        function hexToRgb(hex) {
+          hex = hex.replace(/^#/, '');
+          if (hex.length === 3) {
+            hex = hex.split('').map(ch => ch + ch).join('');
           }
-        };
-      }
-      function generateColorSuggestions() {
-        if (!window.currentPalette || window.currentPalette.length === 0) {
-          document.getElementById("colorSuggestions").textContent = "No color suggestions available.";
-          return;
+          const bigint = parseInt(hex, 16);
+          return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
         }
-        let suggestionsHTML = "";
-        window.currentPalette.forEach(color => {
-          const origHex = rgbToHex(color[0], color[1], color[2]);
-          const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
-          suggestionsHTML += `
-            <div style="display: flex; flex-direction: column; align-items: center;">
-              <div class="color-block" data-hex="${origHex}" style="background:${origHex};" onclick="copyHex(this)"></div>
-              <div class="color-block" data-hex="${compHex}" style="background:${compHex};" onclick="copyHex(this)"></div>
-            </div>
-          `;
-        });
-        document.getElementById("colorSuggestions").innerHTML = suggestionsHTML;
-      }
+        
+        // Compute relative luminance for an RGB color (per WCAG)
+        function relativeLuminance(rgb) {
+          return rgb.map(c => {
+            c = c / 255;
+            return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+          }).reduce((l, c, i) => l + c * [0.2126, 0.7152, 0.0722][i], 0);
+        }
+        
+        // Compute contrast ratio between two hex colors
+        function contrastRatio(hex1, hex2) {
+          const L1 = relativeLuminance(hexToRgb(hex1));
+          const L2 = relativeLuminance(hexToRgb(hex2));
+          const lighter = Math.max(L1, L2);
+          const darker = Math.min(L1, L2);
+          return (lighter + 0.05) / (darker + 0.05);
+        }
+        
+        // Simulate protanopia (red-blindness) using a simple matrix transformation.
+        // This is a rough approximation for demo purposes.
+        function simulateProtanopia(rgb) {
+          const [r, g, b] = rgb;
+          const newR = 0.56667 * r + 0.43333 * g;
+          const newG = 0.55833 * r + 0.44167 * g;
+          const newB = 0.24167 * g + 0.75833 * b;
+          return [Math.round(newR), Math.round(newG), Math.round(newB)];
+        }
+        
+        // Convert an RGB array back to hex
+        function rgbToHexFromArray(rgb) {
+          return "#" + rgb.map(c => {
+            const hex = c.toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+          }).join("");
+        }
+        
+        // Enhanced AI advice: check for contrast issues under simulated protanopia conditions.
+        function generateEnhancedAIAdvice(palette) {
+          let advice = "";
+          // For each dominant color, simulate how it appears to a red-colorblind viewer,
+          // and then check its contrast ratio with white (#ffffff)
+          palette.forEach(color => {
+            const simulated = simulateProtanopia(color);
+            const hexSimulated = rgbToHexFromArray(simulated);
+            const ratio = contrastRatio(hexSimulated, "#ffffff");
+            // A contrast ratio below 4.5 is typically insufficient for readability
+            if (ratio < 4.5) {
+              advice += `• Simulated color ${hexSimulated} has low contrast with white (ratio: ${ratio.toFixed(2)}). Consider darkening it.\n`;
+            }
+          });
+          if (!advice) {
+            advice = "No contrast issues detected under simulated protanopia conditions.";
+          }
+          return advice;
+        }
+        
+        // Existing simple heuristic based on number of colors and average brightness
+        function analyzePaletteForColorIssues(palette) {
+          let message = "";
+          const distinctColors = palette.length;
+          if (distinctColors > 5) {
+            message += `• Warning: This thumbnail uses ${distinctColors} dominant colors. It might look too busy.\n`;
+          }
+          let totalBrightness = 0;
+          palette.forEach(color => {
+            const b = 0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2];
+            totalBrightness += b;
+          });
+          const avgBrightness = totalBrightness / distinctColors;
+          if (avgBrightness < 60) {
+            message += "• Overall, the palette is very dark. Ensure that text overlays are sufficiently contrasted.\n";
+          } else if (avgBrightness > 200) {
+            message += "• The palette is very bright. Verify that overlay text is readable.\n";
+          }
+          return message;
+        }
+
+        // New async function that integrates the heuristics with an AI endpoint call.
+        // Here, we show how to call an endpoint; if unavailable, we fall back to our enhanced advice.
+        async function fetchAIColorAdvice(palette) {
+          const paletteData = palette.map(color => color.join(',')).join(';');
+          try {
+            const response = await fetch('https://api.example.com/ai-color-advice', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+                // 'Authorization': 'Bearer YOUR_API_KEY' // if needed
+              },
+              body: JSON.stringify({ palette: paletteData })
+            });
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data.advice || "";
+          } catch (error) {
+            console.error("Error fetching AI advice:", error);
+            return "";
+          }
+        }
+        
+        async function generateAIColorAdvice(palette) {
+          const heuristicMsg = analyzePaletteForColorIssues(palette);
+          // Attempt to fetch advice from an AI endpoint
+          const aiAdvice = await fetchAIColorAdvice(palette);
+          // If the AI endpoint returns nothing useful, use our enhanced advice.
+          const enhancedAdvice = aiAdvice || generateEnhancedAIAdvice(palette);
+          let finalAdvice = "";
+          if (heuristicMsg) {
+            finalAdvice += heuristicMsg + "\n";
+          }
+          finalAdvice += "AI Suggestion: " + enhancedAdvice;
+          return finalAdvice;
+        }
 
       /***************************************************
        * Brightness & Contrast
