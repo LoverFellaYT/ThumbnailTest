@@ -1,121 +1,1642 @@
-<!-- IMPROVED RUBRIC FOR COLORBLIND-FRIENDLY THUMBNAIL JUDGING -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thumbnail Analyzer - Colorblind Enhanced</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Thumbnail Analyzer Pro+ (Final)</title>
+
+    <!-- Roboto Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Color Thief for Palette Extraction -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+    <!-- TensorFlow & MobileNet for Object Recognition -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <!-- html2canvas for PNG Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Canvas Confetti for Outstanding Score Effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
     <style>
+      :root {
+        /* Colors & Theme Variables */
+        --primary-light: #4facfe;
+        --accent-light: #00f2fe;
+        --bg-light: #f9fafb;
+        --text-light: #1e293b;
+        --panel-light: rgba(255, 255, 255, 0.96);
+        --border-light: rgba(255, 255, 255, 0.2);
+        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        --transition: all 0.2s ease;
+        --radius: 14px;
+        --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+        /* Table & Title Colors */
+        --table-cell-bg-light: rgba(255, 255, 255, 0.85);
+        --yt-title-color-light: #030303;
+      }
+
+      /* Dark mode – maintain blue gradient */
+      html[data-theme="dark"] {
+        --bg-light: #1f1f1f;
+        --text-light: #f3f3f3;
+        --panel-light: rgba(18, 18, 18, 0.98);
+        --border-light: rgba(255, 255, 255, 0.2);
+        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-light: #4facfe;
+        --accent-light: #00f2fe;
+        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
+        --yt-title-color-light: #ffffff;
+      }
+
       body {
-        font-family: 'Roboto', sans-serif;
-        background: #1f1f1f;
-        color: white;
-        padding: 20px;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg-light);
+        color: var(--text-light);
+        transition: var(--transition);
       }
-      table {
-        width: 100%;
-        border-collapse: collapse;
+
+      button:focus,
+      [tabindex]:focus {
+        outline: 2px solid var(--accent-light);
       }
-      th, td {
-        padding: 10px;
-        text-align: left;
+
+      /* Panels */
+      .glass-panel {
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+        transition: var(--transition);
+        padding: 1rem;
+        margin-bottom: 1rem;
       }
-      th {
-        background: #4facfe;
+
+      /* Tooltip for score */
+      .total-score:hover::after {
+        content: "Your thumbnail is rated on 11 factors, each up to 4 points, for a total of 44.\A40–44: Outstanding\A30–39: Excellent\A20–29: Great\A<20: Good";
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 0.5rem;
+        border-radius: 4px;
+        top: 110%;
+        left: 0;
+        white-space: pre-line;
+        font-size: 0.85rem;
+        z-index: 1000;
       }
-      td[data-score] {
+
+      /* Custom tooltip for rubric cells */
+      .modern-table td[data-tip] {
+        position: relative;
+      }
+      .modern-table td[data-tip]:hover::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        z-index: 1000;
+        margin-bottom: 4px;
+      }
+
+      /* HEADER */
+      header.analyzer-header {
+        position: sticky;
+        top: 0;
+        z-index: 2000;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        position: relative;
+      }
+      .home-btn {
+        background: none;
+        border: none;
+        font-size: 1.75rem;
         cursor: pointer;
-        border: 1px solid #666;
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+        color: var(--text-light);
       }
-      td[data-score].selected {
-        background: orange;
+      .total-score {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: var(--gradient-light);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: var(--transition);
+        position: relative;
       }
-      .contrast-checker, .edge-detection {
-        margin-top: 20px;
+      .status-indicator {
+        font-weight: 600;
       }
-      .score-summary {
-        font-size: 1.5em;
-        margin-top: 20px;
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .header-right .group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      /* Dark Mode Toggle */
+      .dark-mode-label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+      .dark-mode-slider {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        transition: background-color 0.3s;
+      }
+      .dark-mode-slider .mode-label {
+        font-size: 16px;
+      }
+      .dark-mode-slider .slider-thumb {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+      }
+      input#darkModeToggle {
+        display: none;
+      }
+      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
+        transform: translateX(32px);
+      }
+      input#darkModeToggle:checked + .dark-mode-slider {
+        background-color: var(--primary-light);
+      }
+
+      .btn {
+        background: var(--gradient-light);
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
+        opacity: 0.9;
+      }
+
+      /* MAIN CONTAINER */
+      .analyzer-container {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 3rem;
+        width: 95%;
+        max-width: 1600px;
+        margin: 2rem auto;
+        padding: 0 2rem 2rem;
+      }
+
+      aside.sidebar {
+        position: sticky;
+        top: 120px;
+        z-index: 900;
+        width: 340px;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+      }
+      .preview-section {
+        padding: 1.5rem;
+      }
+      .preview-section h2 {
+        margin: 0 0 1rem 0;
+      }
+      .title-input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        margin-bottom: 0.75rem;
+        box-sizing: border-box;
+      }
+      .title-input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+      }
+      .upload-container {
+        margin-bottom: 1rem;
+      }
+      .thumbnail-wrap {
+        background: #f1f5f9;
+        border: 1px solid rgba(126, 34, 206, 0.2);
+        border-radius: var(--radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .thumbnail-wrap.dragover {
+        border-color: var(--accent-light);
+        background: rgba(236, 72, 153, 0.05);
+      }
+      .youtube-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+      }
+      .youtube-title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        margin-top: 0.5rem;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        color: var(--yt-title-color-light);
+      }
+      .previews-container {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .preview-box {
+        transition: transform 0.2s ease;
+      }
+      .preview-box:hover {
+        transform: scale(1.05);
+      }
+
+      main.main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      /* Modern Rubric Table */
+      .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-family: 'Roboto', sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .modern-table thead th {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+      }
+      .modern-table thead th:first-child {
+        background: var(--gradient-light);
+        color: #fff;
+      }
+      .modern-table thead th:nth-child(2) { background: #f87171 !important; }
+      .modern-table thead th:nth-child(3) { background: #fb923c !important; }
+      .modern-table thead th:nth-child(4) { background: #facc15 !important; }
+      .modern-table thead th:nth-child(5) { background: #4ade80 !important; }
+      .modern-table tbody td {
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: var(--transition);
+        vertical-align: top;
+        cursor: pointer;
+        background: var(--table-cell-bg-light);
+      }
+      .modern-table tbody tr:hover td {
+        background-color: rgba(0, 0, 0, 0.03);
+      }
+      .modern-table td[data-rating]:hover,
+      .modern-table td[data-rating]:focus {
+        background: rgba(224, 231, 255, 0.3);
+      }
+      .modern-table td.selected {
+        background: rgba(224, 231, 255, 0.5) !important;
+        box-shadow: inset 4px 0 0 var(--primary-light);
+      }
+
+      /* FEEDBACK PANEL */
+      .feedback-panel {
+        margin-top: 1rem;
+      }
+      .feedback-panel h3 {
+        margin-top: 0;
+      }
+      .feedback-panel .feedback-entry {
+        margin-bottom: 1rem;
+      }
+      .feedback-panel label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+      .feedback-input {
+        display: block;
+        width: 100%;
+        max-width: 600px;
+        box-sizing: border-box;
+        min-height: 80px;
+        padding: 0.8rem;
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-family: 'Inter', sans-serif;
+        transition: var(--transition);
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow: auto;
+      }
+      .feedback-input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+      }
+      .feedback-input:empty::before {
+        content: attr(data-placeholder);
+        color: #9ca3af;
+      }
+
+      /* DESIGN INSIGHTS SECTION */
+      .auto-insights {
+        background: var(--panel-light);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin-top: 0;
+      }
+      .auto-insights h3 {
+        margin-bottom: 0.75rem;
+        font-size: 1.6rem;
+      }
+      .auto-insights h4 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 0.25rem;
+      }
+      .auto-insights .insight-message {
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+      }
+      .color-suggestions-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 0.5rem;
+      }
+
+      #compositionFeedback {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #555;
+      }
+
+      /* Legend & Definitions */
+      #toggleLegend {
+        margin: 0.5rem 0;
+        padding: 0.4rem 0.8rem;
+        background: var(--gradient-light);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      #toggleLegend:hover {
+        opacity: 0.9;
+      }
+      #legend {
+        display: none;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        background: var(--panel-light);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        padding: 0.75rem;
+      }
+      #legend h4 {
+        margin-top: 0;
+      }
+
+      /* Mandatory Click-Demand Checkbox */
+      .click-demand {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius);
+        background: var(--panel-light);
+      }
+      .click-demand label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      /* MODAL */
+      .modal-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 1rem;
+      }
+      .modal-bg.show {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .modal-content {
+        position: relative;
+        background: #fff;
+        border-radius: var(--radius);
+        max-width: 90%;
+        max-height: 90%;
+        overflow-y: auto;
+        padding: 1.5rem;
+      }
+      .modal-content img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 1);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 992px) {
+        .analyzer-container {
+          display: block;
+          padding: 0 1rem 2rem;
+        }
+        aside.sidebar {
+          position: static;
+          width: 100%;
+          margin-bottom: 2rem;
+        }
+        main.main-content {
+          margin-top: 0;
+        }
+      }
+
+      .palette-container,
+      .color-suggestions-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .color-block {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <h1>Thumbnail Analyzer - Colorblind Mode</h1>
-    <p>Use this rubric to evaluate thumbnails. Click on the best description for each category.</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>1 - Needs Work</th>
-          <th>2 - Could Improve</th>
-          <th>3 - Good</th>
-          <th>4 - Outstanding</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>🤔 Curiosity &amp; Intrigue</strong></td>
-          <td data-score="1">No real curiosity, predictable</td>
-          <td data-score="2">Mildly interesting</td>
-          <td data-score="3">Good hook</td>
-          <td data-score="4">Strong, must-click factor</td>
-        </tr>
-        <tr>
-          <td><strong>🌈 Color &amp; Contrast</strong></td>
-          <td data-score="1">Poor contrast, blends together</td>
-          <td data-score="2">Decent contrast, not ideal</td>
-          <td data-score="3">Good separation</td>
-          <td data-score="4">Subject pops off the screen</td>
-        </tr>
-        <tr>
-          <td><strong>📐 Composition</strong></td>
-          <td data-score="1">Messy, unbalanced</td>
-          <td data-score="2">Some structure</td>
-          <td data-score="3">Well-balanced</td>
-          <td data-score="4">Perfect Rule of Thirds use</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="score-summary">Final Score: <span id="finalScore">0</span>/12</div>
-    <button onclick="checkContrast()">Run Contrast Check</button>
-    <button onclick="runEdgeDetection()">Run Edge Detection</button>
-    <div class="contrast-checker" id="contrastResult"></div>
-    <div class="edge-detection" id="edgeResult"></div>
+    <!-- HEADER -->
+    <header class="analyzer-header glass-panel">
+      <div class="header-left">
+        <!-- Home Button -->
+        <a href="https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics" 
+           class="home-btn" aria-label="Home">🏠
+        </a>
+        <div class="total-score" 
+             title="Your thumbnail is rated on 11 factors, each up to 4 points, for a total of 44. 40–44: Outstanding, 30–39: Excellent, 20–29: Great, <20: Good">
+          Score: <span id="total">0</span>/44 – 
+          <span id="scoreLabel">Good</span>
+        </div>
+        <!-- Progress Bar -->
+        <div id="progressBarContainer" style="position: relative; width: 100%; height: 20px; background: #eee; border-radius: 10px; margin-top: 0.5rem;">
+          <div id="progressBar" 
+               style="height: 100%; width: 0%; background: var(--gradient-light); border-radius: 10px; transition: width 0.3s ease;">
+          </div>
+        </div>
+        <div id="milestoneMessage" 
+             style="font-size:0.9rem; color:#555; margin-top: 0.5rem;">
+        </div>
+        <div class="status-indicator" 
+             id="ranking">Incomplete
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="group">
+          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
+          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
+          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
+        </div>
+        <!-- Dark Mode Toggle -->
+        <div class="dark-mode">
+          <label class="toggle-label dark-mode-label">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)">
+            <div class="dark-mode-slider">
+              <span class="mode-label mode-light">☀️</span>
+              <span class="mode-label mode-dark">🌙</span>
+              <div class="slider-thumb"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="analyzer-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar glass-panel">
+        <section class="preview-section">
+          <h2>Video Title &amp; Thumbnails</h2>
+          <input 
+            type="text" 
+            id="videoTitle" 
+            class="title-input" 
+            placeholder="Enter video title here..." 
+            aria-label="Video Title"
+          />
+          <div class="upload-container">
+            <button class="btn" onclick="document.getElementById('thumbnailUpload').click()" aria-label="Upload Image">
+              📁 Upload Image
+            </button>
+            <input 
+              type="file" 
+              id="thumbnailUpload" 
+              accept="image/*" 
+              style="display:none;" 
+            />
+            <p style="font-size:0.9rem; color:#555;">
+              Or drag &amp; drop image below
+            </p>
+          </div>
+          <!-- The upload area is clickable to enlarge -->
+          <div 
+            class="thumbnail-wrap" 
+            id="uploadArea"
+            style="width:320px; height:180px;" 
+            onclick="enlargeImage('homePreview')" 
+            ondragover="handleDragOver(event)" 
+            ondrop="handleDrop(event)" 
+            role="button" 
+            tabindex="0" 
+            aria-label="Drag and drop thumbnail image here"
+          >
+            <img 
+              id="homePreview" 
+              class="youtube-thumb"
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+              alt="Default Thumbnail Preview" 
+              loading="lazy"
+            />
+          </div>
+          <div class="previews-container">
+            <div class="preview-box">
+              <div class="preview-label">YouTube Home</div>
+              <div 
+                class="thumbnail-wrap" 
+                style="width:210px; height:118px;" 
+                onclick="enlargeImage('homePreview')" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Enlarge Home Thumbnail"
+              >
+                <img 
+                  id="homePreviewSmall" 
+                  class="youtube-thumb"
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                  alt="Small YouTube Home Thumbnail"
+                  loading="lazy"
+                />
+              </div>
+              <div id="homeTitle" class="youtube-title"></div>
+            </div>
+            <div class="preview-box">
+              <div class="preview-label">Suggested Video</div>
+              <div 
+                class="thumbnail-wrap" 
+                style="width:168px; height:94px;" 
+                onclick="enlargeImage('suggestedPreview')" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Enlarge Suggested Thumbnail"
+              >
+                <img 
+                  id="suggestedPreview"
+                  class="youtube-thumb"
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                  alt="Small Suggested Video Thumbnail"
+                  loading="lazy"
+                />
+              </div>
+              <div id="suggestedTitle" class="youtube-title"></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- MAIN CONTENT (Rubric & Insights) -->
+      <main class="main-content">
+        <!-- Rubric Table Panel -->
+        <section class="rubric-table glass-panel">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Good (1)</th>
+                <th>Great (2)</th>
+                <th>Excellent (3)</th>
+                <th>Outstanding (4)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 1: Curiosity & Intrigue (cat-0) -->
+              <tr>
+                <td data-category="0">
+                  <strong>🤔 Curiosity &amp; Intrigue</strong>
+                </td>
+                <td data-category="0" data-rating="1" role="button" tabindex="0" data-tip="To reach a higher level, try adding an element of surprise or contradiction.">
+                  Slightly interesting; minimal curiosity. Feels generic or bland.
+                </td>
+                <td data-category="0" data-rating="2" role="button" tabindex="0" data-tip="Enhance intrigue with a more unexpected element or twist.">
+                  Moderately interesting scenario or question; hooks some viewers but not enough to stand out.
+                </td>
+                <td data-category="0" data-rating="3" role="button" tabindex="0" data-tip="For Outstanding, incorporate dramatic elements like contradiction, impossibility, or hidden info.">
+                  Clearly intriguing; offers a fresh or surprising angle that strongly compels viewers to see what happens next.
+                </td>
+                <td data-category="0" data-rating="4" role="button" tabindex="0">
+                  <em>The thumbnail uses at least one of the following:</em><br>
+                  ✅ Contradiction: (A villager attacking a player)<br>
+                  ✅ Impossibility: (A lava block floating in mid-air)<br>
+                  ✅ Hidden Information: (A locked chest with ??? on it)<br>
+                  ✅ Extreme Stakes: (A player dangling over lava with 0.5 hearts!)<br>
+                  ✅ Unpredictable Transformation: (book → forbidden, god-tier artifact!)<br><br>
+                </td>
+              </tr>
+              <!-- 2: Main Subject Clarity (cat-1) -->
+              <tr>
+                <td data-category="1">
+                  <strong>👀 Main Subject Clarity</strong>
+                </td>
+                <td data-category="1" data-rating="1" role="button" tabindex="0" data-tip="Simplify background and remove distractions to improve clarity.">
+                  Has a subject, but somewhat cluttered
+                </td>
+                <td data-category="1" data-rating="2" role="button" tabindex="0" data-tip="Focus more on the subject and reduce any extraneous details.">
+                  Recognizable at a glance
+                </td>
+                <td data-category="1" data-rating="3" role="button" tabindex="0" data-tip="Aim for perfection by eliminating all clutter for crystal-clear subject.">
+                  Clear focal point; minimal distractions
+                </td>
+                <td data-category="1" data-rating="4" role="button" tabindex="0">
+                  Crystal-clear subject; zero clutter
+                </td>
+              </tr>
+              <!-- 3: Human Element & Emotion (cat-2) -->
+              <tr>
+                <td data-category="2">
+                  <strong>😀 Human Element &amp; Emotion</strong>
+                </td>
+                <td data-category="2" data-rating="1" role="button" tabindex="0" data-tip="Amplify facial expression to convey stronger emotion.">
+                  Person/character shown; emotion understated
+                </td>
+                <td data-category="2" data-rating="2" role="button" tabindex="0" data-tip="Enhance the expression further for greater viewer connection.">
+                  Noticeable expression or emotive face
+                </td>
+                <td data-category="2" data-rating="3" role="button" tabindex="0" data-tip="Push for an exaggerated reaction to fully captivate viewers.">
+                  Clear emotional reaction; conveys excitement/tone
+                </td>
+                <td data-category="2" data-rating="4" role="button" tabindex="0">
+                  Face shows extreme emotion (shock, fear, anger, triumph) with clear eyes and exaggerated expression. No neutral faces. Strong eye contact or gaze leading to focal point.
+                </td>
+              </tr>
+              <!-- 4: Must-Click Factor (cat-3) -->
+              <tr>
+                <td data-category="3">
+                  <strong>⚡ Must-Click Factor</strong>
+                </td>
+                <td data-category="3" data-rating="1" role="button" tabindex="0" data-tip="Add a visual twist or element of danger to pique curiosity.">
+                  No mystery, no stakes, and no urgency. Viewers can predict the entire video just by looking.
+                </td>
+                <td data-category="3" data-rating="2" role="button" tabindex="0" data-tip="Introduce unexpected stakes or drama to elevate click demand.">
+                  Some intrigue, but lacks drama or transformation. Progression is expected (e.g., Book → Enchanted Book).
+                </td>
+                <td data-category="3" data-rating="3" role="button" tabindex="0" data-tip="Incorporate an even bolder twist or higher stakes for maximum click appeal.">
+                  Has mystery, stakes, or an unexpected visual twist. Viewer asks, "Wait… what happened here?"
+                </td>
+                <td data-category="3" data-rating="4" role="button" tabindex="0">
+                  The thumbnail demands a click by using high curiosity (mystery/impossibility), high stakes (danger/drama), or extreme transformation (not obvious). Viewers feel like they need to see the video.
+                </td>
+              </tr>
+              <!-- 5: Title-Thumbnail Synergy (cat-4) -->
+              <tr>
+                <td data-category="4">
+                  <strong>🔗 Title-Thumbnail Synergy</strong>
+                </td>
+                <td data-category="4" data-rating="1" role="button" tabindex="0" data-tip="Make the thumbnail more visually complementary to the title.">
+                  Loosely connected; might repeat words
+                </td>
+                <td data-category="4" data-rating="2" role="button" tabindex="0" data-tip="Enhance synergy by adding unique visual cues not mentioned in the title.">
+                  Reasonable hook; complements the title
+                </td>
+                <td data-category="4" data-rating="3" role="button" tabindex="0" data-tip="Ensure the thumbnail provides new insights beyond the title.">
+                  Adds unique intrigue; compelling mini-story
+                </td>
+                <td data-category="4" data-rating="4" role="button" tabindex="0">
+                  Thumbnail adds new visual information that enhances the title’s curiosity, rather than repeating it.
+                </td>
+              </tr>
+              <!-- 6: Simplicity & Focus (cat-5) -->
+              <tr>
+                <td data-category="5">
+                  <strong>👌 Simplicity &amp; Focus</strong>
+                </td>
+                <td data-category="5" data-rating="1" role="button" tabindex="0" data-tip="Remove minor distractions to sharpen the focus.">
+                  Slightly busy; minor unnecessary elements
+                </td>
+                <td data-category="5" data-rating="2" role="button" tabindex="0" data-tip="Eliminate remaining clutter for a more focused design.">
+                  Fairly clean layout; main visual stands out
+                </td>
+                <td data-category="5" data-rating="3" role="button" tabindex="0" data-tip="Achieve perfection by ensuring every element has purpose and no extras.">
+                  Focused design with enough detail
+                </td>
+                <td data-category="5" data-rating="4" role="button" tabindex="0">
+                  Every element serves a purpose: One strong focal point, no unnecessary clutter, and a clear question or problem being visually asked.
+                </td>
+              </tr>
+              <!-- 7: Color & Contrast (cat-6) -->
+              <tr>
+                <td data-category="6">
+                  <strong>🌈 Color &amp; Contrast</strong>
+                </td>
+                <td data-category="6" data-rating="1" role="button" tabindex="0" data-tip="Increase contrast and use more vibrant colors.">
+                  Decent colors; subject might blend in
+                </td>
+                <td data-category="6" data-rating="2" role="button" tabindex="0" data-tip="Enhance vibrancy and consider complementary colors for extra pop.">
+                  Solid contrast; main subject stands out
+                </td>
+                <td data-category="6" data-rating="3" role="button" tabindex="0" data-tip="Ensure optimal color balance and contrast for maximum impact.">
+                  Bold, vibrant palette; subject pops
+                </td>
+                <td data-category="6" data-rating="4" role="button" tabindex="0">
+                  Uses high-contrast complementary colors to maximize click appeal. Background is desaturated for clarity, and no more than three dominant colors compete for attention.
+                </td>
+              </tr>
+              <!-- 8: Composition & Layout (cat-7) -->
+              <tr>
+                <td data-category="7">
+                  <strong>📐 Composition &amp; Layout</strong>
+                </td>
+                <td data-category="7" data-rating="1" role="button" tabindex="0" data-tip="Refine placement to clearly define the focal point.">
+                  Somewhat even placement; minor overlaps
+                </td>
+                <td data-category="7" data-rating="2" role="button" tabindex="0" data-tip="Polish the composition by emphasizing the main subject even more.">
+                  Balanced layout; no major overlaps
+                </td>
+                <td data-category="7" data-rating="3" role="button" tabindex="0" data-tip="Adopt advanced techniques like the Golden Ratio for optimal layout.">
+                  Polished composition; main subject first
+                </td>
+                <td data-category="7" data-rating="4" role="button" tabindex="0">
+                  Uses advanced composition techniques like the Golden Ratio, Rule of Thirds, and strong focal hierarchy to direct the viewer’s eye instantly to the hook.
+                </td>
+              </tr>
+              <!-- 9: Text Usage (If Any) (cat-8) -->
+              <tr>
+                <td data-category="8">
+                  <strong>📝 Text Usage (If Any)</strong>
+                </td>
+                <td data-category="8" data-rating="1" role="button" tabindex="0" data-tip="Shorten and enlarge text for clarity and impact.">
+                  May be too long, small, or repeats title
+                </td>
+                <td data-category="8" data-rating="2" role="button" tabindex="0" data-tip="Refine text to be more striking without overpowering the image.">
+                  Short, legible text; mild intrigue
+                </td>
+                <td data-category="8" data-rating="3" role="button" tabindex="0" data-tip="Ensure text is only used to enhance the thumbnail, not distract.">
+                  Minimal, bold &amp; clear; complements title
+                </td>
+                <td data-category="8" data-rating="4" role="button" tabindex="0">
+                  Minimal, bold text only when necessary—it enhances intrigue rather than repeating the title.
+                </td>
+              </tr>
+              <!-- 10: Authenticity & Accuracy (cat-9) -->
+              <tr>
+                <td data-category="9">
+                  <strong>✅ Authenticity &amp; Accuracy</strong>
+                </td>
+                <td data-category="9" data-rating="1" role="button" tabindex="0" data-tip="Tighten the focus to eliminate any misleading elements.">
+                  Mostly relevant; mild exaggeration
+                </td>
+                <td data-category="9" data-rating="2" role="button" tabindex="0" data-tip="Reduce any exaggeration to ensure full authenticity.">
+                  Accurate with slight hype
+                </td>
+                <td data-category="9" data-rating="3" role="button" tabindex="0" data-tip="Keep it real, but consider adding a bit more hook if possible.">
+                  Fully aligned; no misleading
+                </td>
+                <td data-category="9" data-rating="4" role="button" tabindex="0">
+                  100% honest yet enticing
+                </td>
+              </tr>
+              <!-- 11: Technical Quality (cat-10) -->
+              <tr>
+                <td data-category="10">
+                  <strong>💎 Technical Quality</strong>
+                </td>
+                <td data-category="10" data-rating="1" role="button" tabindex="0" data-tip="Improve resolution and clarity.">
+                  Decent resolution; could be sharper
+                </td>
+                <td data-category="10" data-rating="2" role="button" tabindex="0" data-tip="Enhance lighting and sharpness for a crisper image.">
+                  Clear, properly formatted; not pixelated
+                </td>
+                <td data-category="10" data-rating="3" role="button" tabindex="0" data-tip="Aim for perfection by ensuring flawless technical execution.">
+                  High-res, crisp; excellent lighting
+                </td>
+                <td data-category="10" data-rating="4" role="button" tabindex="0">
+                  Crisp, high-resolution; glow effects used only for focal emphasis.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Legend Toggle Button -->
+          <button id="toggleLegend" onclick="toggleLegend()">
+            Show Legend &amp; Definitions
+          </button>
+          <!-- Legend Section (Initially hidden) -->
+          <div id="legend">
+            <h4>Legend &amp; Definitions</h4>
+            <p><strong>Curiosity &amp; Intrigue:</strong> Hooks viewers with a mysterious or surprising element.</p>
+            <p><strong>Main Subject Clarity:</strong> Ensure the focal point is obvious at a glance.</p>
+            <p><strong>Human Element &amp; Emotion:</strong> Faces or strong emotions create an instant connection.</p>
+            <p><strong>Game Context Clarity:</strong> Clearly indicate which game is featured.</p>
+            <p><strong>Title-Thumbnail Synergy:</strong> Complement the title’s promise without simply repeating it.</p>
+            <p><strong>Simplicity &amp; Focus:</strong> Minimize clutter; highlight the key element.</p>
+            <p><strong>Color &amp; Contrast:</strong> Use bold, complementary colors to make thumbnails stand out.</p>
+            <p><strong>Composition &amp; Layout:</strong> Balanced placement draws the eye to key elements.</p>
+            <p><strong>Text Usage (If Any):</strong> Keep text legible and purposeful.</p>
+            <p><strong>Authenticity &amp; Accuracy:</strong> Ensure the thumbnail is honest and true to the content.</p>
+            <p><strong>Technical Quality:</strong> High resolution, correct aspect ratio, and crisp lighting.</p>
+
+            <h5>Rating Levels</h5>
+            <ul>
+              <li><strong>Good (1):</strong> Meets minimal requirements; weak design/impact.</li>
+              <li><strong>Great (2):</strong> Some effective elements, still unrefined.</li>
+              <li><strong>Excellent (3):</strong> Highly effective design, clear focal point, easy to read text.</li>
+              <li><strong>Outstanding (4):</strong> Flawless and compelling; advanced techniques used well.</li>
+            </ul>
+          </div>
+
+          <!-- Mandatory "Does This Demand a Click?" Radio Buttons -->
+          <div class="click-demand">
+            <p><strong>Does this thumbnail make you feel like you must click?</strong></p>
+            <label style="display: inline-flex; align-items: center; gap: 0.5rem;">
+              <input type="radio" name="clickDemand" value="yes" required />
+              ✅ YES → It’s good to go!
+            </label>
+            <br>
+            <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+              <input type="radio" name="clickDemand" value="no" required />
+              ❌ NO → We need to rethink the concept.
+            </label>
+          </div>
+        </section>
+
+        <!-- Feedback Panel -->
+        <section class="feedback-panel glass-panel">
+          <h3>Feedback</h3>
+          <div class="feedback-entry">
+            <label for="humanFeedback">Human Feedback</label>
+            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
+          </div>
+          <div class="feedback-entry">
+            <label for="aiFeedback">AI Feedback</label>
+            <div id="aiFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your AI feedback here..." aria-label="AI Feedback"></div>
+          </div>
+        </section>
+
+        <!-- Design Insights Section -->
+        <section class="auto-insights glass-panel">
+          <h3>Design Insights</h3>
+          <div class="insight-message" id="brightnessMessage"></div>
+          <div class="insight-message" id="contrastMessage"></div>
+
+          <h4>Color Palette</h4>
+          <p style="margin:0;">Dominant Colors Extracted:</p>
+          <div id="paletteContainer" class="palette-container"></div>
+
+          <h4>Color Suggestions (Complementary)</h4>
+          <div id="colorSuggestions" class="color-suggestions-container"></div>
+
+          <!-- New AI / Heuristic Color Advice Section -->
+          <h4>AI / Heuristic Color Advice</h4>
+          <div class="insight-message" id="aiColorAdvice" style="font-style: italic;"></div>
+
+          <h4>Composition Grid (Rule of Thirds)</h4>
+          <canvas id="compositionCanvas" style="border:1px solid #ccc; max-width:320px;"></canvas>
+          <p id="compositionFeedback">
+            Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
+            <a href="#" onclick="openTutorial('composition')">Learn How</a>
+          </p>
+
+          <h4>Object &amp; Scene Recognition</h4>
+          <div class="insight-message" id="objectRecognitionResults"></div>
+
+          <h4>Sharpness Evaluation</h4>
+          <div class="insight-message" id="sharpnessResult"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div class="modal-bg" id="imgModal" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()" aria-label="Close Modal">✕</span>
+        <img id="modalImg" src="" alt="Enlarged thumbnail" />
+      </div>
+    </div>
+
+    <!-- How-To Modal -->
+    <div class="modal-bg" id="howToModal" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeHowTo()" aria-label="Close How To">✕</span>
+        <h2>How to Use Thumbnail Analyzer Pro+</h2>
+        <ul>
+          <li>Enter your video title; previews update live.</li>
+          <li>Upload a thumbnail image or drag &amp; drop it into the upload area.</li>
+          <li>Click any preview (including the main upload image) to enlarge it.</li>
+          <li>Rate your thumbnail on each row (Good→Outstanding). Watch your /44 score update.</li>
+          <li>Provide feedback if desired. Check the auto insights for composition and color tips.</li>
+          <li>Export a snapshot of your entire analysis as a PNG if needed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div class="modal-bg" id="tutorialModal" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">✕</span>
+        <div id="tutorialContent"></div>
+      </div>
+    </div>
+
+    <!-- Hidden Audio Elements for Sound Effects -->
+    <audio id="victorySound" src="victory.mp3"></audio>
+    <audio id="wompSound" src="womp.mp3"></audio>
+
     <script>
-      let scores = {};
-      document.querySelectorAll('td[data-score]').forEach(td => {
-        td.addEventListener('click', () => {
-          let row = td.parentElement;
-          row.querySelectorAll('td[data-score]').forEach(cell => cell.classList.remove('selected'));
-          td.classList.add('selected');
-          scores[row.rowIndex] = parseInt(td.getAttribute('data-score'));
-          updateScore();
+      /***************************************************
+       * Helper Functions
+       ***************************************************/
+      function rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+          const hex = x.toString(16);
+          return hex.length === 1 ? "0" + hex : hex;
+        }).join("");
+      }
+      function copyHex(elem) {
+        var hex = elem.getAttribute("data-hex");
+        navigator.clipboard.writeText(hex).then(() => {
+          elem.style.borderColor = "lime";
+          setTimeout(() => { elem.style.borderColor = "#ccc"; }, 1000);
         });
+      }
+
+      /***************************************************
+       * AI / Heuristic-based Color Advice Functions
+       ***************************************************/
+      function analyzePaletteForColorIssues(palette) {
+        let message = "";
+        const distinctColors = palette.length;
+        if (distinctColors > 5) {
+          message += `• Warning: This thumbnail uses ${distinctColors} dominant colors. It might look too busy.\n`;
+        }
+        let totalBrightness = 0;
+        palette.forEach(color => {
+          const b = 0.299*color[0] + 0.587*color[1] + 0.114*color[2];
+          totalBrightness += b;
+        });
+        const avgBrightness = totalBrightness / distinctColors;
+        if (avgBrightness < 60) {
+          message += "• Overall, the palette is very dark. Ensure that text overlays are sufficiently contrasted.\n";
+        } else if (avgBrightness > 200) {
+          message += "• The palette is very bright. Verify that overlay text is readable.\n";
+        }
+        return message;
+      }
+      function generateAIColorAdvice(palette) {
+        const heuristicMsg = analyzePaletteForColorIssues(palette);
+        let finalAdvice = heuristicMsg;
+        if (heuristicMsg) {
+          finalAdvice += "AI Suggestion: Adjust contrast or limit color usage to emphasize the main subject.";
+        }
+        return finalAdvice;
+      }
+
+      /***************************************************
+       * Global Variables
+       ***************************************************/
+      let scores = {};
+      window.currentPalette = [];
+      let confettiShown = false;
+      window.lastPredictions = null;
+      const SAMPLE_STEP = 16;
+      let milestoneTriggered = {};
+      const milestoneMessages = {
+        10: "Almost there—keep going!",
+        20: "Great progress!",
+        30: "So close, don’t give up!",
+        40: "You leveled up to Thumbnail Master!"
+      };
+      const progressAudio = {
+        victory: document.getElementById("victorySound"),
+        womp: document.getElementById("wompSound")
+      };
+      let mobileNetModel = null;
+
+      /***************************************************
+       * DOMContentLoaded
+       ***************************************************/
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelector('.modern-table').addEventListener('click', (e) => {
+          const cell = e.target.closest('td[data-rating]');
+          if (cell) selectRating(cell);
+        });
+        document.querySelector('.modern-table').addEventListener('keydown', (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            const cell = e.target.closest('td[data-rating]');
+            if (cell) {
+              e.preventDefault();
+              selectRating(cell);
+            }
+          }
+        });
+
+        document.getElementById('thumbnailUpload').addEventListener('change', handleImageUpload);
+        document.getElementById('videoTitle').addEventListener('input', () => {
+          updateTitlePreview();
+          checkTitleThumbnailSynergy();
+        });
+
+        loadMobileNet();
+        document.getElementById("compositionCanvas").addEventListener("click", enlargeComposition);
       });
-      function updateScore() {
-        let total = Object.values(scores).reduce((a, b) => a + b, 0);
-        document.getElementById('finalScore').innerText = total;
+
+      /***************************************************
+       * Rubric: selectRating & updateTotal
+       ***************************************************/
+      function selectRating(cell) {
+        const categoryIndex = Number(cell.getAttribute('data-category'));
+        const rating = parseInt(cell.getAttribute('data-rating'));
+        const row = cell.parentElement;
+        row.querySelectorAll('td[data-rating]').forEach(td => td.classList.remove('selected'));
+        cell.classList.add('selected');
+        scores[categoryIndex] = rating;
+        updateTotal();
       }
-      function checkContrast() {
-        document.getElementById('contrastResult').innerText = 'Checking contrast...';
-        setTimeout(() => {
-          document.getElementById('contrastResult').innerText = 'Contrast levels are acceptable!';
-        }, 1000);
+
+      function updateTotal() {
+        const total = Object.values(scores).reduce((a, b) => a + b, 0);
+        document.getElementById('total').textContent = total;
+        const hasScoreOne = Object.values(scores).includes(1);
+        if (hasScoreOne) {
+          document.getElementById('scoreLabel').textContent = "REJECTED";
+          document.getElementById('ranking').textContent = "Rejected";
+          document.getElementById('ranking').style.color = '#ef4444';
+          updateProgressBar(total, 44);
+          return;
+        }
+        let label = "";
+        if (total >= 40) {
+          label = "Outstanding";
+          if (!confettiShown) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }});
+            confettiShown = true;
+          }
+        } else if (total >= 30) {
+          label = "Excellent";
+          confettiShown = false;
+        } else if (total >= 20) {
+          label = "Great";
+          confettiShown = false;
+        } else {
+          label = "Good";
+          confettiShown = false;
+        }
+        if (total < 19) {
+          label += " (Redone from scratch)";
+        }
+        document.getElementById('scoreLabel').textContent = label;
+
+        const ranking = document.getElementById('ranking');
+        if (Object.keys(scores).length < 11) {
+          ranking.textContent = 'Incomplete';
+          ranking.style.color = '#64748b';
+        } else if (total <= 19) {
+          ranking.textContent = 'Needs Work 🔴';
+          ranking.style.color = '#ef4444';
+          progressAudio.womp.play();
+        } else if (total <= 29) {
+          ranking.textContent = 'Great! 🟢';
+          ranking.style.color = '#22c55e';
+        } else if (total <= 39) {
+          ranking.textContent = 'Excellent 🟡';
+          ranking.style.color = '#eab308';
+        } else {
+          ranking.textContent = 'Outstanding 🔵';
+          ranking.style.color = '#3b82f6';
+          progressAudio.victory.play();
+        }
+        updateProgressBar(total, 44);
       }
-      function runEdgeDetection() {
-        document.getElementById('edgeResult').innerText = 'Running edge detection...';
+
+      function updateProgressBar(total, maxPoints) {
+        const percentage = (total / maxPoints) * 100;
+        const bar = document.getElementById("progressBar");
+        bar.style.width = percentage + "%";
+        const milestoneDiv = document.getElementById("milestoneMessage");
+        if (milestoneMessages[total] && !milestoneTriggered[total]) {
+          milestoneDiv.textContent = milestoneMessages[total];
+          milestoneTriggered[total] = true;
+          setTimeout(() => { milestoneDiv.textContent = ""; }, 3000);
+        }
+      }
+
+      /***************************************************
+       * Reset Scores
+       ***************************************************/
+      function resetScores() {
+        scores = {};
+        document.querySelectorAll('.modern-table td[data-rating]').forEach(cell => cell.classList.remove('selected'));
+        document.getElementById('total').textContent = '0';
+        document.getElementById('scoreLabel').textContent = 'Good';
+        document.getElementById('ranking').textContent = 'Incomplete';
+        document.getElementById('ranking').style.color = '#64748b';
+        confettiShown = false;
+        milestoneTriggered = {};
+
+        // Reset progress bar & message
+        document.getElementById("progressBar").style.width = "0%";
+        document.getElementById("milestoneMessage").textContent = "";
+
+        // Reset Title & Previews
+        document.getElementById('videoTitle').value = '';
+        document.getElementById('homeTitle').textContent = '';
+        document.getElementById('suggestedTitle').textContent = '';
+        const defaultImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+        document.getElementById('homePreview').src = defaultImg;
+        document.getElementById('homePreviewSmall').src = defaultImg;
+        document.getElementById('suggestedPreview').src = defaultImg;
+
+        // Clear auto-insight messages
+        document.getElementById('brightnessMessage').textContent = "";
+        document.getElementById('contrastMessage').textContent = "";
+        document.getElementById('paletteContainer').innerHTML = "";
+        document.getElementById('colorSuggestions').innerHTML = "";
+        document.getElementById('objectRecognitionResults').textContent = "";
+        document.getElementById('sharpnessResult').textContent = "";
+        document.getElementById('compositionFeedback').innerHTML =
+          `Composition Feedback: Your main subject may be off‑center. Align it with the grid lines for better balance.
+           <a href="#" onclick="openTutorial('composition')">Learn How</a>`;
+
+        // Clear composition canvas
+        const compCanvas = document.getElementById("compositionCanvas");
+        if (compCanvas) {
+          const ctx = compCanvas.getContext("2d");
+          ctx.clearRect(0, 0, compCanvas.width, compCanvas.height);
+          compCanvas.width = compCanvas.height = 0;
+        }
+
+        // Clear feedback fields
+        document.getElementById('humanFeedback').innerHTML = '';
+        document.getElementById('aiFeedback').innerHTML = '';
+      }
+
+      /***************************************************
+       * Title Preview & Synergy
+       ***************************************************/
+      let debounceTimer;
+      function updateTitlePreview() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          const title = document.getElementById('videoTitle').value;
+          document.getElementById('homeTitle').textContent = truncateTitle(title, 66);
+          document.getElementById('suggestedTitle').textContent = truncateTitle(title, 60);
+        }, 300);
+      }
+      function truncateTitle(str, limit) {
+        if (!str) return "";
+        return (str.length <= limit) ? str : str.slice(0, limit - 3) + "...";
+      }
+      function checkTitleThumbnailSynergy() {
+        if (!window.lastPredictions) return;
+        // Example synergy logic if you want
+      }
+
+      /***************************************************
+       * Image Upload & Drag-and-Drop
+       ***************************************************/
+      function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => processImage(ev.target.result);
+        reader.readAsDataURL(file);
+        e.target.value = "";
+      }
+      function handleDragOver(e) {
+        e.preventDefault();
+        document.getElementById('uploadArea').classList.add('dragover');
+      }
+      function handleDrop(e) {
+        e.preventDefault();
+        document.getElementById('uploadArea').classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = ev => processImage(ev.target.result);
+          reader.readAsDataURL(file);
+        }
+      }
+      function processImage(dataUrl) {
+        updateAllPreviews(dataUrl);
+        extractColors(dataUrl);
         setTimeout(() => {
-          document.getElementById('edgeResult').innerText = 'Main subject edges are clear!';
-        }, 1000);
+          checkContrastAndBrightness(dataUrl);
+          drawCompositionGrid(dataUrl);
+          runObjectRecognition(dataUrl);
+          showSharpness(dataUrl);
+        }, 300);
+      }
+      function updateAllPreviews(dataUrl) {
+        document.getElementById('homePreview').src = dataUrl;
+        document.getElementById('homePreviewSmall').src = dataUrl;
+        document.getElementById('suggestedPreview').src = dataUrl;
+      }
+
+      /***************************************************
+       * Color Extraction & AI Color Advice
+       ***************************************************/
+      function extractColors(imageSrc) {
+        const paletteContainer = document.getElementById('paletteContainer');
+        paletteContainer.innerHTML = 'Detecting palette…';
+        const img = new Image();
+        img.src = imageSrc;
+        img.onload = () => {
+          const colorThief = new ColorThief();
+          try {
+            const palette = colorThief.getPalette(img, 6);
+            window.currentPalette = palette;
+            paletteContainer.innerHTML = palette.map(color => {
+              const hex = rgbToHex(color[0], color[1], color[2]);
+              return `
+                <div 
+                  class="color-block" 
+                  style="background:${hex};" 
+                  data-hex="${hex}" 
+                  onclick="copyHex(this)">
+                </div>
+              `;
+            }).join('');
+            // Generate AI/heuristic advice based on the palette
+            const advice = generateAIColorAdvice(palette);
+            document.getElementById('aiColorAdvice').textContent = advice;
+            generateColorSuggestions();
+          } catch (err) {
+            paletteContainer.innerHTML = 'Unable to extract palette.';
+            console.error(err);
+          }
+        };
+      }
+      function generateColorSuggestions() {
+        if (!window.currentPalette || window.currentPalette.length === 0) {
+          document.getElementById("colorSuggestions").textContent = "No color suggestions available.";
+          return;
+        }
+        let suggestionsHTML = "";
+        window.currentPalette.forEach(color => {
+          const origHex = rgbToHex(color[0], color[1], color[2]);
+          const compHex = rgbToHex(255 - color[0], 255 - color[1], 255 - color[2]);
+          suggestionsHTML += `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div class="color-block" data-hex="${origHex}" style="background:${origHex};" onclick="copyHex(this)"></div>
+              <div class="color-block" data-hex="${compHex}" style="background:${compHex};" onclick="copyHex(this)"></div>
+            </div>
+          `;
+        });
+        document.getElementById("colorSuggestions").innerHTML = suggestionsHTML;
+      }
+
+      /***************************************************
+       * Brightness & Contrast
+       ***************************************************/
+      function checkContrastAndBrightness(imageSrc) {
+        const brightnessMessage = document.getElementById('brightnessMessage');
+        const contrastMessage = document.getElementById('contrastMessage');
+        const img = new Image();
+        img.src = imageSrc;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          let total = 0, count = 0;
+          for (let i = 0; i < data.length; i += 4 * SAMPLE_STEP) {
+            const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+            total += brightness;
+            count++;
+          }
+          const avg = total / count;
+          brightnessMessage.innerHTML = `Average Brightness: ${Math.round(avg)}/255 `;
+          brightnessMessage.innerHTML += (avg < 80) ? "(Very Dark) " : (avg < 160) ? "(Moderate) " : "(Bright) ";
+          brightnessMessage.innerHTML += `<a href="#" onclick="openTutorial('brightness')">Learn How</a>`;
+          contrastMessage.innerHTML = `Ensure text overlay meets accessibility contrast (~4.5:1). <a href="#" onclick="openTutorial('contrast')">Learn How</a>`;
+        };
+      }
+
+      /***************************************************
+       * Composition Grid
+       ***************************************************/
+      function drawCompositionGrid(imageSrc) {
+        const canvas = document.getElementById("compositionCanvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.src = imageSrc;
+        img.onload = function() {
+          const maxDisplayWidth = canvas.clientWidth || 320;
+          const scaleFactor = maxDisplayWidth / img.width;
+          const displayWidth = maxDisplayWidth;
+          const displayHeight = img.height * scaleFactor;
+          const ratio = window.devicePixelRatio || 1;
+          canvas.width = displayWidth * ratio;
+          canvas.height = displayHeight * ratio;
+          canvas.style.width = displayWidth + "px";
+          canvas.style.height = displayHeight + "px";
+          ctx.scale(ratio, ratio);
+          ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
+          ctx.strokeStyle = "rgba(255,255,255,1)";
+          ctx.lineWidth = 4;
+          ctx.setLineDash([5, 5]);
+          const v1 = displayWidth / 3, v2 = (displayWidth * 2) / 3;
+          ctx.beginPath();
+          ctx.moveTo(v1, 0);
+          ctx.lineTo(v1, displayHeight);
+          ctx.moveTo(v2, 0);
+          ctx.lineTo(v2, displayHeight);
+          const h1 = displayHeight / 3, h2 = (displayHeight * 2) / 3;
+          ctx.moveTo(0, h1);
+          ctx.lineTo(displayWidth, h1);
+          ctx.moveTo(0, h2);
+          ctx.lineTo(displayWidth, h2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          canvas.style.cursor = 'pointer';
+        };
+      }
+      function enlargeComposition() {
+        const canvas = document.getElementById("compositionCanvas");
+        if (!canvas.width) return;
+        const dataUrl = canvas.toDataURL();
+        document.getElementById('modalImg').src = dataUrl;
+        document.getElementById('imgModal').classList.add('show');
+      }
+
+      /***************************************************
+       * Object & Scene Recognition
+       ***************************************************/
+      async function loadMobileNet() {
+        if (typeof mobilenet === "undefined") {
+          console.log("MobileNet not loaded.");
+          return;
+        }
+        mobileNetModel = await mobilenet.load();
+      }
+      async function runObjectRecognition(imageSrc) {
+        if (!mobileNetModel) {
+          document.getElementById("objectRecognitionResults").textContent = "Object recognition model not loaded.";
+          return;
+        }
+        const img = new Image();
+        img.src = imageSrc;
+        img.onload = async function() {
+          const predictions = await mobileNetModel.classify(img);
+          window.lastPredictions = predictions;
+          if (predictions.length > 0) {
+            const text = predictions
+              .map(p => `${p.className} (${(p.probability * 100).toFixed(1)}%)`)
+              .join(', ');
+            document.getElementById("objectRecognitionResults").innerHTML =
+              `Predictions: ${text} <a href="#" onclick="openTutorial('object')">Learn How</a>`;
+          } else {
+            document.getElementById("objectRecognitionResults").textContent = "No objects recognized.";
+          }
+          checkTitleThumbnailSynergy();
+        };
+      }
+
+      /***************************************************
+       * Sharpness Evaluation
+       ***************************************************/
+      async function calculateSharpness(imageSrc) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = imageSrc;
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let sumDiff = 0, count = 0;
+            for (let i = 0; i < data.length - 4; i += 4 * SAMPLE_STEP) {
+              const b1 = (data[i] + data[i+1] + data[i+2]) / 3;
+              const b2 = (data[i+4] + data[i+5] + data[i+6]) / 3;
+              sumDiff += Math.abs(b1 - b2);
+              count++;
+            }
+            const avgDiff = sumDiff / count;
+            resolve(avgDiff);
+          };
+          img.onerror = reject;
+        });
+      }
+      async function showSharpness(imageSrc) {
+        const sharpness = await calculateSharpness(imageSrc);
+        let sharpnessText = `Sharpness Metric: ${sharpness.toFixed(2)} (higher is sharper)`;
+        if (sharpness < 10) {
+          sharpnessText += " - Image appears blurry; consider a higher-res export.";
+        }
+        document.getElementById("sharpnessResult").textContent = sharpnessText;
+      }
+
+      /***************************************************
+       * Export as PNG
+       ***************************************************/
+      async function exportPNG() {
+        const header = document.querySelector("header.analyzer-header");
+        const originalPos = header.style.position;
+        header.style.position = "static";
+        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true, allowTaint: true });
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'thumbnail-analysis.png';
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        header.style.position = originalPos;
+      }
+
+      /***************************************************
+       * Theme Toggle
+       ***************************************************/
+      function toggleTheme(input) {
+        const html = document.documentElement;
+        if (input.checked) {
+          html.setAttribute("data-theme", "dark");
+        } else {
+          html.removeAttribute("data-theme");
+        }
+      }
+
+      /***************************************************
+       * Lightbox
+       ***************************************************/
+      function enlargeImage(imgId) {
+        const src = document.getElementById(imgId).src;
+        document.getElementById('modalImg').src = src;
+        document.getElementById('imgModal').classList.add('show');
+      }
+      function closeModal() {
+        document.getElementById('imgModal').classList.remove('show');
+      }
+
+      /***************************************************
+       * How-To & Tutorial Modals
+       ***************************************************/
+      function openHowTo() {
+        document.getElementById('howToModal').classList.add('show');
+      }
+      function closeHowTo() {
+        document.getElementById('howToModal').classList.remove('show');
+      }
+      function openTutorial(topic) {
+        const contentEl = document.getElementById('tutorialContent');
+        let content = "";
+        if (topic === 'brightness') {
+          content = "<h2>Adjusting Brightness</h2><p>If it’s too dark, use 'Brightness/Contrast' in your editor. <a href='#'>Learn More</a></p>";
+        } else if (topic === 'contrast') {
+          content = "<h2>Improving Contrast</h2><p>Ensure text stands out; aim for ~4.5:1 ratio. <a href='#'>Learn More</a></p>";
+        } else if (topic === 'composition') {
+          content = "<h2>Enhancing Composition</h2><p>Use the rule‑of‑thirds or symmetrical balance. <a href='#'>Learn More</a></p>";
+        } else if (topic === 'object') {
+          content = "<h2>Object Positioning</h2><p>Keep important subjects un‑obscured. <a href='#'>Learn More</a></p>";
+        } else {
+          content = "<h2>Tutorial</h2><p>No tutorial available.</p>";
+        }
+        contentEl.innerHTML = content;
+        document.getElementById('tutorialModal').classList.add('show');
+      }
+      function closeTutorial() {
+        document.getElementById('tutorialModal').classList.remove('show');
+      }
+
+      /***************************************************
+       * Legend Toggle
+       ***************************************************/
+      function toggleLegend() {
+        const legend = document.getElementById("legend");
+        const btn = document.getElementById("toggleLegend");
+        if (legend.style.display === "none" || legend.style.display === "") {
+          legend.style.display = "block";
+          btn.textContent = "Hide Legend & Definitions";
+        } else {
+          legend.style.display = "none";
+          btn.textContent = "Show Legend & Definitions";
+        }
+      }
+
+      /***************************************************
+       * Easter Egg
+       ***************************************************/
+      document.addEventListener("keydown", function(e) {
+        if (e.altKey && e.key.toLowerCase() === "e") {
+          triggerEasterEgg();
+        }
+      });
+      function triggerEasterEgg() {
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 }});
+        alert("🎉 You found the secret easter egg! Keep being awesome and enjoy coding!");
       }
     </script>
   </body>
