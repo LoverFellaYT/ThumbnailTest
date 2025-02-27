@@ -1,859 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editing Review Pro+ (Unified Table)</title>
-
-    <!-- Font Awesome for editing icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-
-    <!-- Roboto Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- html2canvas for PNG Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Canvas Confetti for Outstanding Score Effect -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-
-    <style>
-      /* CSS Variables & Base Styles */
-      :root {
-        --primary-light: #4facfe;
-        --accent-light: #00f2fe;
-        --bg-light: #f9fafb;
-        --text-light: #1e293b;
-        --panel-light: rgba(255, 255, 255, 0.96);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-        --transition: all 0.2s ease;
-        --radius: 14px;
-        --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-        --spacing: 1rem;
-        --font-base: 'Roboto', sans-serif;
-        --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-      }
-
-      /* Dark Mode Variables */
-      html[data-theme="dark"] {
-        --bg-light: #1f1f1f;
-        --text-light: #f3f3f3;
-        --panel-light: rgba(18, 18, 18, 0.98);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
-      }
-
-      /* Base styles */
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
-        background-size: 30px 30px;
-        color: var(--text-light);
-        transition: var(--transition);
-      }
-
-      button:focus,
-      [tabindex]:focus {
-        outline: 2px solid var(--accent-light);
-      }
-
-      /* Panels */
-      .glass-panel {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        padding: var(--spacing);
-        margin-bottom: var(--spacing);
-      }
-
-      /* HEADER */
-      header.analyzer-header {
-        position: sticky;
-        top: 0;
-        z-index: 2000;
-        padding: 1.5rem 2rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .header-left {
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-      }
-
-      .site-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .site-title i {
-        color: var(--accent-light);
-      }
-
-      .total-score {
-        font-size: 1.2rem;
-        font-weight: 600;
-        background: var(--gradient-light);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        position: relative;
-        cursor: default;
-        transition: var(--transition);
-      }
-      .total-score:hover::after {
-        content: "Overall (0/84)";
-        position: absolute;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 4px;
-        top: 110%;
-        left: 0;
-        white-space: pre-line;
-        font-size: 0.85rem;
-        z-index: 1000;
-      }
-      .status-indicator {
-        font-weight: 600;
-      }
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-      .header-right .group {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      .btn {
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: 600;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
-      }
-      .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
-      }
-
-      /* Dark Mode Slider */
-      .dark-mode { }
-      .toggle-label.dark-mode-label {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-      }
-      .dark-mode-slider {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        background-color: #e0e0e0;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
-        transition: background-color 0.3s;
-      }
-      .dark-mode-slider .mode-label {
-        font-size: 16px;
-      }
-      .dark-mode-slider .slider-thumb {
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s;
-      }
-      input#darkModeToggle { display: none; }
-      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        transform: translateX(30px);
-      }
-      input#darkModeToggle:checked + .dark-mode-slider {
-        background-color: var(--primary-light);
-      }
-
-      /* Quote Section (Top) */
-      .quote-section {
-        text-align: center;
-        margin: 1rem auto;
-        font-style: italic;
-        padding: 0.5rem;
-        background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.8s ease-in-out;
-        max-width: 800px;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      /* Main Content */
-      main {
-        margin: var(--spacing) auto;
-      }
-      .analyzer-container {
-        width: 95%;
-        max-width: 1400px;
-        margin: 2rem auto;
-        padding: 0 var(--spacing) 2rem;
-      }
-
-      /* Rubric Table */
-      .rubric-table {
-        margin-bottom: var(--spacing);
-        overflow-x: auto;
-      }
-      .modern-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        font-family: var(--font-base);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: var(--radius);
-        overflow: hidden;
-        transition: var(--transition);
-      }
-      .modern-table thead th {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        position: sticky;
-        top: 0;
-        backdrop-filter: blur(10px);
-        z-index: 10;
-        text-align: left;
-      }
-      /* Revert to the original table header colors */
-      .modern-table thead th:first-child {
-        background: var(--gradient-light);
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(2) {
-        background: #f87171;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(3) {
-        background: #fb923c;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(4) {
-        background: #facc15;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(5) {
-        background: #4ade80;
-        color: #fff;
-      }
-
-      .modern-table tbody td {
-        padding: 0.75rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        transition: var(--transition);
-        vertical-align: top;
-        cursor: pointer;
-        background: var(--table-cell-bg-light);
-      }
-      .modern-table tbody td:hover {
-        transform: scale(1.01);
-        background-color: rgba(224, 231, 255, 0.3);
-      }
-      .modern-table tbody tr:hover td {
-        background-color: rgba(0, 0, 0, 0.03);
-      }
-      .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5) !important;
-        box-shadow: inset 4px 0 0 var(--primary-light);
-      }
-
-      .category-header {
-        font-weight: normal;
-      }
-
-      /* Section headers for groups */
-      .section-header {
-        background: white;
-        color: #000;
-        text-align: center;
-        font-size: 1.1rem;
-        cursor: pointer;
-        transition: background-color 0.5s ease;
-      }
-      tr.collapsed {
-        opacity: 0;
-        pointer-events: none;
-        height: 0px;
-        transition: all 0.3s ease;
-      }
-      tr.collapsed td {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        border: 0 !important;
-        line-height: 0 !important;
-      }
-
-      /* Feedback Panel */
-      .feedback-panel h3 { margin-top: 0; }
-      .feedback-panel .feedback-entry { margin-bottom: var(--spacing); }
-      .feedback-panel label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 0.3rem;
-      }
-      .feedback-input {
-        display: block;
-        width: 100%;
-        max-width: 600px;
-        box-sizing: border-box;
-        min-height: 80px;
-        padding: var(--spacing);
-        border: 2px solid #e2e8f0;
-        border-radius: var(--radius);
-        font-size: 1rem;
-        transition: var(--transition);
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow: auto;
-      }
-      .feedback-input:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
-      }
-      .feedback-input:empty::before {
-        content: attr(data-placeholder);
-        color: #9ca3af;
-      }
-
-      /* Legend & Definitions */
-      #toggleLegend {
-        margin: var(--spacing) 0;
-        padding: 0.4rem 0.8rem;
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: var(--transition);
-      }
-      #toggleLegend:hover { opacity: 0.9; }
-      #legend {
-        display: none;
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        padding: var(--spacing);
-      }
-      #legend h4 { margin-top: 0; }
-
-      /* Review Checklist Section */
-      .review-checklist {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: var(--spacing);
-        margin: 2rem auto 1rem;
-        max-width: 800px;
-      }
-      .review-checklist h3 {
-        text-align: center;
-        margin-top: 0;
-      }
-      .review-checklist ul {
-        list-style: none;
-        padding-left: 0;
-      }
-      .review-checklist li {
-        margin: 0.75rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .review-checklist input[type="checkbox"] {
-        transform: scale(1.2);
-        cursor: pointer;
-      }
-      .assessment-result {
-        text-align: center;
-        font-weight: bold;
-        margin-top: var(--spacing);
-      }
-
-      /* Fun Fact Section (Bottom) */
-      .fun-fact-section {
-        text-align: center;
-        margin: 1rem auto;
-        font-style: italic;
-        padding: 0.5rem;
-        background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.8s ease-in-out;
-        max-width: 800px;
-      }
-
-      /* Disney Magic Easter Egg Icon */
-      #disneyMagic {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        cursor: pointer;
-        font-size: 2em;
-        z-index: 10000;
-        animation: pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
-      }
-
-      /* Modal Styles – Using semantic <dialog> for better accessibility */
-      .modal-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: var(--spacing);
-      }
-      .modal-bg.show {
-        display: flex;
-        animation: fadeIn 0.3s ease-in-out;
-      }
-      .modal-content {
-        position: relative;
-        background: #fff;
-        border-radius: var(--radius);
-        max-width: 90%;
-        max-height: 90%;
-        overflow-y: auto;
-        padding: 1.5rem;
-      }
-      .close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .close-btn:hover {
-        background: rgba(255, 255, 255, 1);
-      }
-
-      /* Responsive */
-      @media (max-width: 992px) {
-        .analyzer-container { padding: 0 1rem 2rem; }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- HEADER -->
-    <header class="analyzer-header glass-panel">
-      <div class="header-left">
-        <div class="site-title">
-          <i class="fas fa-film" aria-hidden="true"></i>
-          <span>Editing Review Pro+</span>
-        </div>
-        <div class="total-score" id="scoreDisplay" tabindex="0">
-          Overall (<span id="scoreTotal">0</span>/84) – <span id="scoreLabel">Needs Work</span>
-        </div>
-        <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
-      </div>
-      <div class="header-right">
-        <div class="group">
-          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Renamed 'Rubrics' to 'Home' -->
-          <button class="btn" onclick="window.open('https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics','_blank');" aria-label="Home">
-            <i class="fas fa-home"></i> Home
-          </button>
-        </div>
-        <!-- Dark Mode Toggle -->
-        <div class="dark-mode">
-          <label class="toggle-label dark-mode-label" for="darkModeToggle">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)" aria-label="Toggle Dark Mode" />
-            <div class="dark-mode-slider">
-              <span class="mode-label mode-light">☀️</span>
-              <span class="mode-label mode-dark">🌙</span>
-              <div class="slider-thumb"></div>
-            </div>
-          </label>
-        </div>
-      </div>
-    </header>
-
-    <!-- QUOTE OF WISDOM SECTION (Top) -->
-    <div class="quote-section glass-panel" id="quoteSection" role="note" aria-live="polite">
-      <!-- A random inspirational quote will appear here -->
-    </div>
-
-    <main>
-      <div class="analyzer-container">
-        <!-- Rubric Table -->
-        <section class="rubric-table glass-panel" aria-labelledby="masterRubricHeading">
-          <h2 id="masterRubricHeading">Editing Review Rubric</h2>
-          <table class="modern-table" id="masterTable">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Needs Improvement</th>
-                <th>Fair</th>
-                <th>Good</th>
-                <th>Outstanding</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Section 1: Story & Structure (Categories 0-4) -->
-              <tr class="section-header" data-group="g1">
-                <td colspan="5">Story &amp; Structure</td>
-              </tr>
-              <!-- 0: Hook & Opening Impact -->
-              <tr data-group="g1">
-                <td data-category="0" class="category-header"><strong>Hook &amp; Opening Impact</strong></td>
-                <td data-category="0" data-rating="1">
-                  Opens with a slow, generic intro or idle footage<br>
-                  No clear reference to title/thumbnail promise<br>
-                  Viewers lack incentive to watch
-                </td>
-                <td data-category="0" data-rating="2">
-                  Some attempt to mention the premise but takes 20–30 seconds<br>
-                  Hook is present but weakly tied to title/thumbnail
-                </td>
-                <td data-category="0" data-rating="3">
-                  Clearly states or shows the challenge in the first 10–15 seconds<br>
-                  Uses a brief flash-forward or intriguing question
-                </td>
-                <td data-category="0" data-rating="4">
-                  Grabs attention immediately (within 5–10 seconds)<br>
-                  Perfectly aligns with the title/thumbnail promise and creates a strong curiosity gap
-                </td>
-              </tr>
-              <!-- 1: Pacing & Momentum -->
-              <tr data-group="g1">
-                <td data-category="1" class="category-header"><strong>Pacing &amp; Momentum</strong></td>
-                <td data-category="1" data-rating="1">
-                  Long, uncut or boring segments<br>
-                  Extended silence/filler that drags
-                </td>
-                <td data-category="1" data-rating="2">
-                  Some cuts remove dead air but pacing remains uneven<br>
-                  Noticeable slow spots
-                </td>
-                <td data-category="1" data-rating="3">
-                  Frequent cuts eliminate most dull parts<br>
-                  Generally maintains viewer engagement with minor dips
-                </td>
-                <td data-category="1" data-rating="4">
-                  Tight, purposeful editing throughout with minimal filler<br>
-                  Smoothly alternates fast action with brief breathers for contrast
-                </td>
-              </tr>
-              <!-- 2: Progression & Urgency -->
-              <tr data-group="g1">
-                <td data-category="2" class="category-header"><strong>Progression &amp; Urgency</strong></td>
-                <td data-category="2" data-rating="1">
-                  No clear sense of progress or stakes<br>
-                  Feels aimless with random gameplay
-                </td>
-                <td data-category="2" data-rating="2">
-                  States a goal but it's introduced late or not emphasized<br>
-                  Occasional updates that lack urgency
-                </td>
-                <td data-category="2" data-rating="3">
-                  Clearly introduces a challenge early<br>
-                  Regularly shows progress or setbacks
-                </td>
-                <td data-category="2" data-rating="4">
-                  Instantly establishes stakes with a “hero’s journey” narrative<br>
-                  Uses open loops and twists to sustain high viewer interest
-                </td>
-              </tr>
-              <!-- 3: Transitions & Flow -->
-              <tr data-group="g1">
-                <td data-category="3" class="category-header"><strong>Transitions &amp; Flow</strong></td>
-                <td data-category="3" data-rating="1">
-                  Abrupt, confusing cuts<br>
-                  Time jumps with no explanation, disrupting immersion
-                </td>
-                <td data-category="3" data-rating="2">
-                  Standard cuts that work most times but occasionally feel rough<br>
-                  Lacks context for major jumps
-                </td>
-                <td data-category="3" data-rating="3">
-                  Smooth transitions (cutting on action or sound)<br>
-                  Uses simple text or fades to clarify time skips
-                </td>
-                <td data-category="3" data-rating="4">
-                  Seamless transitions that enhance the narrative<br>
-                  Masterfully uses J-cuts, L-cuts, or bridging text for full immersion
-                </td>
-              </tr>
-              <!-- 4: Timing & Beat -->
-              <tr data-group="g1">
-                <td data-category="4" class="category-header"><strong>Timing &amp; Beat</strong></td>
-                <td data-category="4" data-rating="1">
-                  Poor timing; key moments cut off or linger awkwardly<br>
-                  No discernible rhythm
-                </td>
-                <td data-category="4" data-rating="2">
-                  Some well-timed moments but overall inconsistency<br>
-                  Occasional issues with comedic or dramatic pacing
-                </td>
-                <td data-category="4" data-rating="3">
-                  Generally good rhythm with effective comedic/dramatic beats<br>
-                  Uses brief breathers after intense sequences
-                </td>
-                <td data-category="4" data-rating="4">
-                  Masterful timing that perfectly synchronizes edits with action and audio<br>
-                  Allows moments to breathe for maximum impact
-                </td>
-              </tr>
-
-              <!-- Section 2: Visual Engagement (Categories 5-7) -->
-              <tr class="section-header" data-group="g2">
-                <td colspan="5">Visual Engagement</td>
-              </tr>
-              <!-- 5: Visual Engagement & Graphics -->
-              <tr data-group="g2">
-                <td data-category="5" class="category-header"><strong>Visual Engagement &amp; Graphics</strong></td>
-                <td data-category="5" data-rating="1">
-                  Over- or underuse of on-screen elements<br>
-                  Distracting or missing text/graphics
-                </td>
-                <td data-category="5" data-rating="2">
-                  Some overlays or memes present but timing is off<br>
-                  Enhancements are inconsistent
-                </td>
-                <td data-category="5" data-rating="3">
-                  Uses purposeful on-screen text, memes, or emojis<br>
-                  Enhances key points without overwhelming
-                </td>
-                <td data-category="5" data-rating="4">
-                  Perfectly timed visual overlays that add clarity and humor<br>
-                  No clutter; every element serves the narrative
-                </td>
-              </tr>
-              <!-- 6: B-Roll & Cutaways -->
-              <tr data-group="g2">
-                <td data-category="6" class="category-header"><strong>B‑Roll &amp; Cutaways</strong></td>
-                <td data-category="6" data-rating="1">
-                  Stays on one continuous shot too long<br>
-                  No variety or illustrative inserts
-                </td>
-                <td data-category="6" data-rating="2">
-                  Occasional cutaways, but feels sporadic and random
-                </td>
-                <td data-category="6" data-rating="3">
-                  Regularly inserts relevant B‑roll or screenshots<br>
-                  Effectively clarifies commentary and breaks monotony
-                </td>
-                <td data-category="6" data-rating="4">
-                  Skillfully uses B‑roll as pattern interrupts<br>
-                  Great variety that enhances both comprehension and entertainment
-                </td>
-              </tr>
-              <!-- 7: Zooms & Movement -->
-              <tr data-group="g2">
-                <td data-category="7" class="category-header"><strong>Zooms &amp; Movement</strong></td>
-                <td data-category="7" data-rating="1">
-                  Static gameplay with no camera movement<br>
-                  Misses opportunities for emphasis
-                </td>
-                <td data-category="7" data-rating="2">
-                  Occasional zoom-ins or pans but timing is weak<br>
-                  Movements feel random
-                </td>
-                <td data-category="7" data-rating="3">
-                  Uses zooms effectively to highlight key or funny details<br>
-                  Generally smooth and purposeful
-                </td>
-                <td data-category="7" data-rating="4">
-                  Masterful use of camera movement and zooms for dramatic or comedic effect<br>
-                  Always directs viewer attention with precision
-                </td>
-              </tr>
-
-              <!-- Section 3: Audio (Categories 8-11) -->
-              <tr class="section-header" data-group="g3">
-                <td colspan="5">Audio</td>
-              </tr>
-              <!-- 8: Audio – Music & Sound Design -->
-              <tr data-group="g3">
-                <td data-category="8" class="category-header"><strong>Audio – Music &amp; Sound Design</strong></td>
-                <td data-category="8" data-rating="1">
-                  No music or mismatched tracks<br>
-                  Large volume imbalances and jarring audio cuts
-                </td>
-                <td data-category="8" data-rating="2">
-                  Some background music present<br>
-                  Transitions are abrupt; commentary occasionally drowned out
-                </td>
-                <td data-category="8" data-rating="3">
-                  Well-chosen music that fits the mood<br>
-                  Balanced levels and smooth audio transitions
-                </td>
-                <td data-category="8" data-rating="4">
-                  Perfectly integrated music and sound effects<br>
-                  Expert volume mixing that heightens every scene
-                </td>
-              </tr>
-              <!-- 9: Emotional Cues & Reactions -->
-              <tr data-group="g3">
-                <td data-category="9" class="category-header"><strong>Emotional Cues &amp; Reactions</strong></td>
-                <td data-category="9" data-rating="1">
-                  Flat or overly scripted commentary<br>
-                  No genuine reactions shown
-                </td>
-                <td data-category="9" data-rating="2">
-                  Some natural reactions present but not emphasized<br>
-                  Creator’s personality is underutilized
-                </td>
-                <td data-category="9" data-rating="3">
-                  Clearly shows genuine excitement, frustration, or humor<br>
-                  Facecam integrated effectively for real-time reactions
-                </td>
-                <td data-category="9" data-rating="4">
-                  Strong, authentic emotional engagement<br>
-                  Editing amplifies reactions for a deep viewer connection
-                </td>
-              </tr>
-              <!-- 10: Music Choice & Impact -->
-              <tr data-group="g3">
-                <td data-category="10" class="category-header"><strong>Music Choice &amp; Impact</strong></td>
-                <td data-category="10" data-rating="1">
-                  Music does not match the tone; one track looped endlessly
-                </td>
-                <td data-category="10" data-rating="2">
-                  Basic background music that somewhat fits<br>
-                  Rarely changes for scene shifts
-                </td>
-                <td data-category="10" data-rating="3">
-                  Uses multiple tracks to reflect mood changes<br>
-                  Smooth transitions reinforce tension or excitement
-                </td>
-                <td data-category="10" data-rating="4">
-                  Each segment’s music is perfectly curated to elevate emotion<br>
-                  Seamless transitions that feel cinematic
-                </td>
-              </tr>
-              <!-- 11: Sound FX & Audio Highlights -->
-              <tr data-group="g3">
-                <td data-category="11" class="category-header"><strong>Sound FX &amp; Audio Highlights</strong></td>
-                <td data-category="11" data-rating="1">
-                  No sound effects or overuse of random, distracting sounds
-                </td>
-                <td data-category="11" data-rating="2">
-                  Minimal SFX usage; timing and volume are inconsistent
-                </td>
-                <td data-category="11" data-rating="3">
-                  Fitting SFX boost key moments and humor<br>
-                  Balanced with overall audio
-                </td>
-                <td data-category="11" data-rating="4">
-                  Expertly placed sound effects that punctuate action<br>
-                  Create memorable, engaging audio highlights
-                </td>
-              </tr>
-
-              <!-- Section 4: Retention & Pattern (Categories 12-14) -->
-              <tr class="section-header" data-group="g4">
-                <td colspan="5">Retention &amp; Pattern</td>
-              </tr>
-              <!-- 12: Retention Techniques -->
-              <tr data-group="g4">
-                <td data-category="12" class="category-header"><strong>Retention Techniques</strong></td>
-                <td data-category="12" data-rating="1">
-                  No strong hook; dull segments with no re-engagement<br>
-                  Weak ending with no payoff
-                </td>
-                <td data-category="12" data-rating="2">
-                  Decent intro but mid-video interest drops<br>
-                  Rarely uses open loops or foreshadowing
-                </td>
-                <td data-category="12" data-rating="3">
-                  Solid start with a teased payoff<br>
-                  Some mid-video twist or re-hook present
-                </td>
-                <td data-category="12" data-rating="4">
-                  Aggressive retention strategy with strong hook, multiple curiosity gaps<br>
-                  Climactic and rewarding ending
-                </td>
-              </tr>
-              <!-- 13: Pattern Interrupt & Layers -->
-              <tr data-group="g4">
-                <td data-category="13" class="category-header"><strong>Pattern Interrupt &amp; Layers</strong></td>
-                <td data-category="13" data-rating="1">
-                  Long stretches without any visual or auditory change<br>
-                  Repetitive content that bores the viewer
-                </td>
-                <td data-category="13" data-rating="2">
-                  Occasional interrupts (zoom, meme) but predictable<br>
-                  Variety is present but not frequent
-                </td>
-                <td data-category="13" data-rating="3">
-                  Regular use of cuts, text, or memes that refresh viewer attention<br>
-                  Switches between gameplay and reaction effectively
-                </td>
-                <td data-category="13" data-rating="4">
-                  Masterful layering of interrupts (camera changes, SFX, on-screen captions)<br>
-                  Ensures no 20–30 second span goes without something fresh
-                </td>
-              </tr>
-              <!-- 14: Teasers / Open Loops -->
               <tr data-group="g4">
                 <td data-category="14" class="category-header"><strong>Teasers / Open Loops</strong></td>
                 <td data-category="14" data-rating="1">
@@ -878,7 +22,6 @@
               <tr class="section-header" data-group="g5">
                 <td colspan="5">Overall Polish</td>
               </tr>
-              <!-- 15: Overall Engagement & Polish -->
               <tr data-group="g5">
                 <td data-category="15" class="category-header"><strong>Overall Engagement &amp; Polish</strong></td>
                 <td data-category="15" data-rating="1">
@@ -898,7 +41,6 @@
                   Exudes a high-end, “pro YouTuber” production quality
                 </td>
               </tr>
-              <!-- 16: Surprise & Unexpected -->
               <tr data-group="g5">
                 <td data-category="16" class="category-header"><strong>Surprise &amp; Unexpected</strong></td>
                 <td data-category="16" data-rating="1">
@@ -915,7 +57,6 @@
                   Packed with well-timed, organic surprises that reignite viewer excitement throughout
                 </td>
               </tr>
-              <!-- 17: Tone & Style Fit -->
               <tr data-group="g5">
                 <td data-category="17" class="category-header"><strong>Tone &amp; Style Fit</strong></td>
                 <td data-category="17" data-rating="1">
@@ -935,7 +76,6 @@
                   Viewers instantly recognize the polished brand identity
                 </td>
               </tr>
-              <!-- 18: Technical Polish & Finishing -->
               <tr data-group="g5">
                 <td data-category="18" class="category-header"><strong>Technical Polish &amp; Finishing</strong></td>
                 <td data-category="18" data-rating="1">
@@ -1072,11 +212,11 @@
        ***************************************************/
       let scoreData = {};
       let confettiShown = false;
-      // Updated total categories to 19 (categories 0 to 18)
+      // Still 19 categories total (0..18)
       const maxCategories = 19;
       const maxPoints = 84;
 
-      // Reduced emoji mapping for categories 0..18
+      // Updated emoji mapping for categories 0..18
       const categoryEmojis = {
         0: '⚡',
         1: '🚀',
@@ -1139,30 +279,30 @@
        * Initialization on DOMContentLoaded
        ***************************************************/
       document.addEventListener('DOMContentLoaded', function() {
-        // Initialize scoreData for categories 0 to 18
+        // Initialize scoreData for categories 0..18
         for (let i = 0; i < maxCategories; i++) {
           scoreData[i] = 0;
         }
-        
+
         // Add click listeners to all rating cells
         const ratingCells = document.querySelectorAll('td[data-rating]');
         ratingCells.forEach(cell => {
           cell.addEventListener('click', handleCellClick);
         });
-        
+
         // Insert emojis into category header cells
         initEmojis();
-        
+
         // Store original header text for each section header for later updates
         initSectionHeaders();
-        
-        // Call updateScore so that scores display immediately
+
+        // Call updateScore once so that overall and section scores display
         updateScore();
-        
+
         // Set a random inspirational quote and fun fact
         randomQuote();
         randomFunFact();
-        
+
         // Add a click listener to the Disney Magic icon
         document.getElementById('disneyMagic').addEventListener('click', onClickDisneyMagic);
       });
@@ -1170,42 +310,42 @@
       /***************************************************
        * Event Handlers & UI Functions
        ***************************************************/
-      
+
       // When a rating cell is clicked:
       function handleCellClick(event) {
         const cell = event.currentTarget;
         const category = cell.getAttribute('data-category');
         const rating = parseInt(cell.getAttribute('data-rating'));
-        
+
         // Remove 'selected' from other cells in this row
         const row = cell.parentElement;
         const cells = row.querySelectorAll('td[data-rating]');
         cells.forEach(c => c.classList.remove('selected'));
-        
+
         // Mark this cell as selected and update scoreData
         cell.classList.add('selected');
         scoreData[category] = rating;
-        
+
         updateScore();
       }
 
-      // Recalculate and update the overall score and section scores
+      // Recalculate and update the overall score, then update section scores
       function updateScore() {
         let overallTotal = 0;
         for (let key in scoreData) {
           overallTotal += parseInt(scoreData[key]) || 0;
         }
         document.getElementById('scoreTotal').innerText = overallTotal;
-        
+
         const ratingInfo = getRatingLabel(overallTotal);
         document.getElementById('scoreLabel').innerText = ratingInfo.scoreLabel;
         const rankingElem = document.getElementById('ranking');
         rankingElem.innerText = ratingInfo.rankingText;
         rankingElem.style.color = ratingInfo.color;
-        
+
         // Update section scores
         updateSectionScores();
-        
+
         // Launch confetti and play sound if overall score >= 80
         if (overallTotal >= 80 && !confettiShown) {
           launchConfetti();
@@ -1227,14 +367,14 @@
         const ratingCells = document.querySelectorAll('td[data-rating]');
         ratingCells.forEach(cell => cell.classList.remove('selected'));
         updateScore();
-        
+
         const wompSound = document.getElementById('wompSound');
         if (wompSound) {
           wompSound.play().catch(() => {});
         }
       }
 
-      // Export the review section as a PNG image using html2canvas
+      // Export the review section as a PNG using html2canvas
       function exportPNG() {
         const container = document.querySelector('.analyzer-container');
         if (!container) return;
@@ -1248,7 +388,7 @@
         });
       }
 
-      // Toggle the display of the Legend & Definitions section
+      // Toggle the Legend & Definitions
       function toggleLegend() {
         const legend = document.getElementById('legend');
         const toggleBtn = document.getElementById('toggleLegend');
@@ -1261,7 +401,7 @@
         }
       }
 
-      // Toggle between dark mode and light mode
+      // Toggle Dark/Light theme
       function toggleTheme(checkbox) {
         if (checkbox.checked) {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -1300,7 +440,7 @@
         }
       }
 
-      // Handle review checklist submission
+      // Submit the Review Checklist
       function submitAssessment() {
         const checkboxes = document.querySelectorAll('.review-checklist input[type="checkbox"]');
         let allChecked = true;
@@ -1317,7 +457,7 @@
         }
       }
 
-      // Prepend emoji for each category header based on its data-category attribute
+      // Prepend emoji for each category header
       function initEmojis() {
         const categoryHeaders = document.querySelectorAll('td.category-header');
         categoryHeaders.forEach(cell => {
@@ -1329,7 +469,7 @@
         });
       }
 
-      // Store the original header text for each section header for later updates
+      // Store original header text for each section header
       function initSectionHeaders() {
         const sectionHeaders = document.querySelectorAll('tr.section-header');
         sectionHeaders.forEach(row => {
@@ -1338,7 +478,7 @@
         });
       }
 
-      // Update section headers with section scores and background colors
+      // Update section headers with section score and color
       function updateSectionScores() {
         const sectionHeaders = document.querySelectorAll('tr.section-header');
         sectionHeaders.forEach(headerRow => {
@@ -1371,14 +511,14 @@
         });
       }
 
-      // Display a random inspirational quote in the Quote section
+      // Random inspirational quote
       function randomQuote() {
         const quoteSection = document.getElementById('quoteSection');
         const randomIndex = Math.floor(Math.random() * editorQuotes.length);
         quoteSection.innerText = editorQuotes[randomIndex];
       }
 
-      // Display a random fun fact in the Fun Fact section
+      // Random fun fact
       function randomFunFact() {
         const funFacts = [
           "Did you know? The first film edit was done by physically cutting and splicing film.",
@@ -1392,13 +532,12 @@
         funFactSection.innerText = funFacts[randomIndex];
       }
 
-      // When the Disney Magic icon is clicked, launch confetti and show an alert
+      // Disney Magic confetti
       function onClickDisneyMagic() {
         launchConfetti();
         alert("Disney Magic activated! ✨");
       }
 
-      // Launch confetti using the canvas-confetti library
       function launchConfetti() {
         if (typeof confetti === "function") {
           confetti({
