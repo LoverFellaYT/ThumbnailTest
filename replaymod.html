@@ -1,1105 +1,1147 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Replay mod</title>
-
-    <!-- Font Awesome for icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-
-    <!-- Google Fonts: Roboto for body and Cinzel for a cinematic title -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- html2canvas for PNG Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Canvas Confetti for Outstanding Score Effect -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoverFella Replay Evaluation</title>
     <style>
-      /* CSS Variables & Base Styles */
-      :root {
-        --primary-light: #4facfe;
-        --accent-light: #00f2fe;
-        --bg-light: #f9fafb;
-        --text-light: #1e293b;
-        --panel-light: rgba(255, 255, 255, 0.96);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-        --transition: all 0.2s ease;
-        --radius: 14px;
-        --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-        --spacing: 1rem;
-        --font-base: 'Roboto', sans-serif;
-        --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-      }
+        :root {
+            /* Apple design system colors */
+            --primary: #007AFF;
+            --primary-light: rgba(0, 122, 255, 0.1);
+            --success: #34C759;
+            --warning: #FF9500;
+            --alert: #FF3B30;
+            --system-gray-1: #8E8E93;
+            --system-gray-2: #AEAEB2;
+            --system-gray-3: #C7C7CC;
+            --system-gray-5: #E5E5EA;
+            --system-gray-6: #F2F2F7;
+            
+            /* Light theme */
+            --bg-color: #FFFFFF;
+            --secondary-bg: #F2F2F7;
+            --text-primary: #000000;
+            --text-secondary: #8E8E93;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --card-bg: #FFFFFF;
+            --card-shadow: rgba(0, 0, 0, 0.05);
+            
+            /* Category colors */
+            --excellent-color: #34C759; /* Green */
+            --great-color: #5AC8FA; /* Blue */
+            --good-color: #FF9500; /* Orange */
+        }
 
-      /* Dark Mode Variables */
-      html[data-theme="dark"] {
-        --bg-light: #1f1f1f;
-        --text-light: #f3f3f3;
-        --panel-light: rgba(18, 18, 18, 0.98);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
-      }
-
-      /* Reduce motion class disables animations & transitions */
-      body.reduce-motion *,
-      body.reduce-motion *::before,
-      body.reduce-motion *::after {
-        animation: none !important;
-        transition: none !important;
-      }
-
-      /* Base styles */
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
-        background-size: 30px 30px;
-        color: var(--text-light);
-        transition: var(--transition);
-      }
-
-      /* Skip to Content Link for Accessibility */
-      .skip-link {
-        position: absolute;
-        top: -40px;
-        left: 0;
-        background: var(--accent-light);
-        color: #fff;
-        padding: 8px;
-        z-index: 100;
-        transition: top 0.3s ease;
-      }
-      .skip-link:focus {
-        top: 0;
-      }
-
-      button:focus,
-      [tabindex]:focus {
-        outline: 2px solid var(--accent-light);
-      }
-
-      /* Panels */
-      .glass-panel {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        padding: var(--spacing);
-        margin-bottom: var(--spacing);
-      }
-
-      /* HEADER (using a dark gradient instead of an image) */
-      header.analyzer-header {
-        position: sticky;
-        top: 0;
-        z-index: 2000;
-        padding: 1.5rem 2rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: linear-gradient(to right, #444, #222);
-        color: #fff;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-      }
-      .header-left {
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-      }
-      /* Site Title with a cinematic font and text shadow */
-      .site-title {
-        font-size: 1.8rem;
-        font-family: 'Cinzel', serif;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-      }
-      .site-title i {
-        color: var(--accent-light);
-      }
-      .total-score {
-        font-size: 1.75rem;
-        font-weight: 700;
-        background: var(--gradient-light);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        position: relative;
-        cursor: default;
-        transition: var(--transition);
-      }
-      .total-score:hover::after {
-        content: "Overall: (Score Sum out of 28)";
-        position: absolute;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 4px;
-        top: 110%;
-        left: 0;
-        white-space: pre-line;
-        font-size: 0.85rem;
-        z-index: 1000;
-      }
-      .status-indicator {
-        font-weight: 600;
-      }
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-      .header-right .group {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      /* Home Button Styling */
-      .home-btn {
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: 600;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
-      }
-      .home-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
-      }
-      /* Reduce Motion Toggle */
-      .reduce-motion-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.9rem;
-      }
-
-      .btn {
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: 600;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
-      }
-      .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
-      }
-
-      /* Dark Mode Slider */
-      .dark-mode {}
-      .toggle-label.dark-mode-label {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-      }
-      .dark-mode-slider {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        background-color: #e0e0e0;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
-        transition: background-color 0.3s;
-      }
-      .dark-mode-slider .mode-label {
-        font-size: 16px;
-      }
-      .dark-mode-slider .slider-thumb {
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s;
-      }
-      input#darkModeToggle { display: none; }
-      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        transform: translateX(30px);
-      }
-      input#darkModeToggle:checked + .dark-mode-slider {
-        background-color: var(--primary-light);
-      }
-
-      /* Quote Section (Top) */
-      .quote-section {
-        text-align: center;
-        margin: 1rem auto;
-        font-style: italic;
-        padding: 0.5rem;
-        background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.8s ease-in-out;
-        max-width: 800px;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      /* Main Content */
-      main {
-        margin: var(--spacing) auto;
-      }
-      .analyzer-container {
-        width: 95%;
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 var(--spacing) 2rem;
-      }
-
-      /* Rubric Table */
-      .rubric-table {
-        margin-bottom: var(--spacing);
-        overflow-x: auto;
-      }
-      .modern-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        font-family: var(--font-base);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: var(--radius);
-        overflow: hidden;
-        transition: var(--transition);
-      }
-      .modern-table thead th {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        position: sticky;
-        top: 0;
-        backdrop-filter: blur(10px);
-        z-index: 10;
-      }
-      .modern-table thead th:first-child {
-        background: var(--gradient-light);
-        color: #fff;
-      }
-      /* Table headers for rating columns */
-      .modern-table thead th:nth-child(2) { background: #f87171; } /* Good */
-      .modern-table thead th:nth-child(3) { background: #fb923c; } /* Great */
-      .modern-table thead th:nth-child(4) { background: #facc15; } /* Excellent */
-      .modern-table thead th:nth-child(5) { background: #4ade80; } /* Outstanding */
-      .modern-table tbody td {
-        padding: 0.75rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        transition: var(--transition);
-        vertical-align: middle;
-        min-width: 150px;
-        cursor: pointer;
-        background: var(--table-cell-bg-light);
-      }
-      .modern-table tbody td:hover {
-        transform: scale(1.02);
-        background-color: rgba(224, 231, 255, 0.3);
-      }
-      .modern-table tbody tr:hover td {
-        background-color: rgba(0, 0, 0, 0.03);
-      }
-      .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5) !important;
-        box-shadow: inset 4px 0 0 var(--primary-light);
-      }
-      .category-header {
-        font-weight: bold;
-      }
-
-      /* Tooltip styling */
-      .tooltip {
-        position: relative;
-        cursor: help;
-        color: var(--accent-light);
-        margin-left: 5px;
-      }
-      .tooltip::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.75);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 4px;
-        white-space: nowrap;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.2s ease;
-        pointer-events: none;
-        font-size: 0.8rem;
-      }
-      .tooltip:hover::after {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      /* Feedback Panel (AI Feedback removed) */
-      .feedback-panel h3 { margin-top: 0; }
-      .feedback-panel .feedback-entry { margin-bottom: var(--spacing); }
-      .feedback-panel label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 0.3rem;
-      }
-      .feedback-input {
-        display: block;
-        width: 100%;
-        max-width: 600px;
-        box-sizing: border-box;
-        min-height: 80px;
-        padding: var(--spacing);
-        border: 2px solid #e2e8f0;
-        border-radius: var(--radius);
-        font-size: 1rem;
-        transition: var(--transition);
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow: auto;
-      }
-      .feedback-input:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
-      }
-      .feedback-input:empty::before {
-        content: attr(data-placeholder);
-        color: #9ca3af;
-      }
-
-      /* Legend & Definitions */
-      #toggleLegend {
-        margin: var(--spacing) 0;
-        padding: 0.4rem 0.8rem;
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: var(--transition);
-      }
-      #toggleLegend:hover { opacity: 0.9; }
-      #legend {
-        display: none;
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        padding: var(--spacing);
-      }
-      #legend h4 { margin-top: 0; }
-
-      /* Self-Assessment Checklist Section */
-      .self-assessment-section {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: var(--spacing);
-        margin: 1rem auto;
-        max-width: 800px;
-      }
-      .self-assessment-section h3 {
-        text-align: center;
-        margin-top: 0;
-      }
-      .self-assessment-section ul {
-        list-style: none;
-        padding-left: 0;
-      }
-      .self-assessment-section li {
-        margin: 0.5rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .self-assessment-section input[type="checkbox"] {
-        transform: scale(1.2);
-        cursor: pointer;
-      }
-      .assessment-result {
-        text-align: center;
-        font-weight: bold;
-        margin-top: var(--spacing);
-      }
-
-      /* Fun Fact Section (Bottom) */
-      .fun-fact-section {
-        text-align: center;
-        margin: 1rem auto;
-        font-style: italic;
-        padding: 0.5rem;
-        background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.8s ease-in-out;
-        max-width: 800px;
-      }
-
-      /* Cinematic Magic Easter Egg Icon */
-      #cinematicMagic {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        cursor: pointer;
-        font-size: 2em;
-        z-index: 10000;
-        animation: pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
-      }
-
-      /* Modal Styles */
-      .modal-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: var(--spacing);
-      }
-      .modal-bg.show {
-        display: flex;
-        animation: fadeIn 0.3s ease-in-out;
-      }
-      .modal-content {
-        position: relative;
-        background: #fff;
-        border-radius: var(--radius);
-        max-width: 90%;
-        max-height: 90%;
-        overflow-y: auto;
-        padding: 1.5rem;
-      }
-      .close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .close-btn:hover {
-        background: rgba(255, 255, 255, 1);
-      }
-
-      /* Responsive */
-      @media (max-width: 992px) {
-        .analyzer-container { padding: 0 1rem 2rem; }
-      }
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --secondary-bg: #1C1C1E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: #1C1C1E;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            padding: 16px 0;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        [data-theme="dark"] header {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            background-color: var(--secondary-bg);
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        main {
+            padding: 32px 0 80px;
+        }
+        
+        .eval-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 4px 20px var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 36px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .card-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 0;
+        }
+        
+        .score-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 18px 24px;
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-value {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .score-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .rating-indicator {
+            margin-left: auto;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .rating-good {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: #FF9500;
+        }
+        
+        .rating-great {
+            background-color: rgba(90, 200, 250, 0.1);
+            color: #5AC8FA;
+        }
+        
+        .rating-excellent {
+            background-color: rgba(52, 199, 89, 0.1);
+            color: #34C759;
+        }
+        
+        .rating-outstanding {
+            background-color: rgba(255, 45, 85, 0.1);
+            color: #FF2D55;
+        }
+        
+        .rubric-container {
+            padding: 14px 24px;
+        }
+        
+        .category-row {
+            margin-bottom: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .category-score {
+            margin-left: auto;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        .options-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .option-card {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .option-card input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        .option-content {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            min-height: 96px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+        
+        .option-card:hover .option-content {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .option-card input:checked + .option-content {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .option-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        
+        .option-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-grow: 1;
+        }
+        
+        /* Column-specific styling */
+        .option-good .option-title {
+            color: var(--good-color);
+        }
+        
+        .option-great .option-title {
+            color: var(--great-color);
+        }
+        
+        .option-excellent .option-title {
+            color: var(--excellent-color);
+        }
+        
+        .option-outstanding .option-title {
+            color: var(--alert);
+        }
+        
+        .option-card input:checked + .option-good {
+            border-color: var(--good-color);
+            background-color: rgba(255, 149, 0, 0.1);
+        }
+        
+        .option-card input:checked + .option-great {
+            border-color: var(--great-color);
+            background-color: rgba(90, 200, 250, 0.1);
+        }
+        
+        .option-card input:checked + .option-excellent {
+            border-color: var(--excellent-color);
+            background-color: rgba(52, 199, 89, 0.1);
+        }
+        
+        .option-card input:checked + .option-outstanding {
+            border-color: var(--alert);
+            background-color: rgba(255, 45, 85, 0.1);
+        }
+        
+        .footer-actions {
+            padding: 18px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background-color: var(--secondary-bg);
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 122, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 4px 20px var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .result-header {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .result-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin: 20px 0;
+        }
+        
+        .result-rating {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .result-details {
+            padding: 24px;
+        }
+        
+        .result-category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .result-category-item {
+            background-color: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 14px;
+        }
+        
+        .result-category-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .result-category-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-category-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .result-category-rating {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .result-actions {
+            padding: 18px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            background-color: var(--secondary-bg);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-10px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .options-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .score-summary {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .result-category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .options-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <!-- Skip to Content Link for Accessibility -->
-    <a href="#mainContent" class="skip-link">Skip to Content</a>
-
-    <!-- HEADER -->
-    <header class="analyzer-header glass-panel">
-      <div class="header-left">
-        <div class="site-title">
-          <i class="fas fa-camera" aria-hidden="true"></i>
-          <span>Replay mod</span>
-        </div>
-        <div class="total-score" id="scoreDisplay" tabindex="0">
-          Overall: <span id="overallTotal">0</span>/28 – <span id="scoreLabel">Needs Work</span>
-        </div>
-        <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
-      </div>
-      <div class="header-right">
-        <div class="group">
-          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Home button -->
-          <button class="home-btn" onclick="window.location.href='https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics'" aria-label="Home">
-            <i class="fas fa-home"></i> Home
-          </button>
-        </div>
-        <!-- Dark Mode Toggle -->
-        <div class="dark-mode">
-          <label class="toggle-label dark-mode-label" for="darkModeToggle">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)" aria-label="Toggle Dark Mode" />
-            <div class="dark-mode-slider">
-              <span class="mode-label mode-light">☀️</span>
-              <span class="mode-label mode-dark">🌙</span>
-              <div class="slider-thumb"></div>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                LoverFella Replay Quality Assessment
             </div>
-          </label>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            </button>
         </div>
-        <!-- Reduce Motion Toggle -->
-        <div class="reduce-motion-toggle">
-          <label for="reduceMotionToggle">Reduce Motion</label>
-          <input type="checkbox" id="reduceMotionToggle" onchange="toggleAnimations(this)" aria-label="Toggle Reduce Motion" />
-        </div>
-      </div>
     </header>
-
-    <!-- QUOTE OF WISDOM SECTION (Top) -->
-    <div class="quote-section glass-panel" id="quoteSection" role="note" aria-live="polite">
-      <!-- A random inspirational replay mod quote will appear here -->
-    </div>
-
-    <main id="mainContent">
-      <div class="analyzer-container">
-        <!-- REPLAY SHOT RUBRIC SECTION -->
-        <section class="rubric-table glass-panel" aria-labelledby="replayRubricHeading">
-          <h2 id="replayRubricHeading">Replay Shot Review Rubric</h2>
-          <table class="modern-table" id="replayTable">
-            <thead>
-              <tr>
-                <th scope="col">Category</th>
-                <th scope="col">Good</th>
-                <th scope="col">Great</th>
-                <th scope="col">Excellent</th>
-                <th scope="col">Outstanding</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 0. Composition & Framing -->
-              <tr>
-                <td class="category-header" data-category="0">
-                  <strong>🖼️ Composition & Framing</strong>
-                  <span class="tooltip" data-tooltip="Arrange visual elements harmoniously using rules (e.g. rule of thirds).">?</span>
-                </td>
-                <td data-category="0" data-rating="1" role="button" tabindex="0">
-                  Poorly arranged elements with no clear focus.
-                </td>
-                <td data-category="0" data-rating="2" role="button" tabindex="0">
-                  Basic framing following standard rules but lacking creativity.
-                </td>
-                <td data-category="0" data-rating="3" role="button" tabindex="0">
-                  Well-balanced composition with clear focal points.
-                </td>
-                <td data-category="0" data-rating="4" role="button" tabindex="0">
-                  Exceptionally arranged elements with artistic framing.
-                </td>
-              </tr>
-              <!-- 1. Camera Movement & Stability -->
-              <tr>
-                <td class="category-header" data-category="1">
-                  <strong>🎥 Camera Movement & Stability</strong>
-                  <span class="tooltip" data-tooltip="Smooth, deliberate motion is key. Avoid erratic movement.">?</span>
-                </td>
-                <td data-category="1" data-rating="1" role="button" tabindex="0">
-                  Erratic or unstable movement detracting from the shot.
-                </td>
-                <td data-category="1" data-rating="2" role="button" tabindex="0">
-                  Movement is present but lacks smoothness or intent.
-                </td>
-                <td data-category="1" data-rating="3" role="button" tabindex="0">
-                  Smooth, deliberate motion that enhances the visual.
-                </td>
-                <td data-category="1" data-rating="4" role="button" tabindex="0">
-                  Exceptionally fluid movement that adds dynamic quality.
-                </td>
-              </tr>
-              <!-- 2. Shot Timing & Pacing -->
-              <tr>
-                <td class="category-header" data-category="2">
-                  <strong>⏱️ Shot Timing & Pacing</strong>
-                  <span class="tooltip" data-tooltip="Consider the duration and flow of the shot. Aim for a natural rhythm.">?</span>
-                </td>
-                <td data-category="2" data-rating="1" role="button" tabindex="0">
-                  The shot feels too rushed or too drawn out.
-                </td>
-                <td data-category="2" data-rating="2" role="button" tabindex="0">
-                  Timing is acceptable but transitions may seem slightly off.
-                </td>
-                <td data-category="2" data-rating="3" role="button" tabindex="0">
-                  Well-timed shot with a smooth flow between moments.
-                </td>
-                <td data-category="2" data-rating="4" role="button" tabindex="0">
-                  Perfectly paced with seamless transitions that elevate the narrative.
-                </td>
-              </tr>
-              <!-- 3. Lighting, Color & Atmosphere -->
-              <tr>
-                <td class="category-header" data-category="3">
-                  <strong>🌅 Lighting, Color & Atmosphere</strong>
-                  <span class="tooltip" data-tooltip="Good lighting and color grading set the mood.">?</span>
-                </td>
-                <td data-category="3" data-rating="1" role="button" tabindex="0">
-                  Inadequate lighting and poor color balance resulting in a flat look.
-                </td>
-                <td data-category="3" data-rating="2" role="button" tabindex="0">
-                  Acceptable lighting with only a basic mood established.
-                </td>
-                <td data-category="3" data-rating="3" role="button" tabindex="0">
-                  Well-lit scene with appropriate color grading enhancing the mood.
-                </td>
-                <td data-category="3" data-rating="4" role="button" tabindex="0">
-                  Outstanding lighting and color that create an immersive atmosphere.
-                </td>
-              </tr>
-              <!-- 4. Technical Quality & Clarity -->
-              <tr>
-                <td class="category-header" data-category="4">
-                  <strong>🖥️ Technical Quality & Clarity</strong>
-                  <span class="tooltip" data-tooltip="Check resolution, focus, and stability.">?</span>
-                </td>
-                <td data-category="4" data-rating="1" role="button" tabindex="0">
-                  Visible technical issues (low resolution, glitches, or blurriness).
-                </td>
-                <td data-category="4" data-rating="2" role="button" tabindex="0">
-                  Adequate quality with minor flaws affecting clarity.
-                </td>
-                <td data-category="4" data-rating="3" role="button" tabindex="0">
-                  Clear, stable visuals with high-quality technical execution.
-                </td>
-                <td data-category="4" data-rating="4" role="button" tabindex="0">
-                  Pristine resolution and stability with flawless technical quality.
-                </td>
-              </tr>
-              <!-- 5. Creative Angles & Perspectives -->
-              <tr>
-                <td class="category-header" data-category="5">
-                  <strong>🔭 Creative Angles & Perspectives</strong>
-                  <span class="tooltip" data-tooltip="Experiment with unique angles to add visual interest.">?</span>
-                </td>
-                <td data-category="5" data-rating="1" role="button" tabindex="0">
-                  Conventional or uninspired angles with minimal variation.
-                </td>
-                <td data-category="5" data-rating="2" role="button" tabindex="0">
-                  Some creative angles attempted, though not consistently effective.
-                </td>
-                <td data-category="5" data-rating="3" role="button" tabindex="0">
-                  Well-chosen angles offering fresh perspectives.
-                </td>
-                <td data-category="5" data-rating="4" role="button" tabindex="0">
-                  Innovative angles that significantly enhance the shot.
-                </td>
-              </tr>
-              <!-- 6. Overall Cinematic Impact -->
-              <tr>
-                <td class="category-header" data-category="6">
-                  <strong>🌟 Overall Cinematic Impact</strong>
-                  <span class="tooltip" data-tooltip="How memorable and emotionally engaging is the shot?">?</span>
-                </td>
-                <td data-category="6" data-rating="1" role="button" tabindex="0">
-                  Fails to leave a memorable impression.
-                </td>
-                <td data-category="6" data-rating="2" role="button" tabindex="0">
-                  Some impact, but overall unremarkable.
-                </td>
-                <td data-category="6" data-rating="3" role="button" tabindex="0">
-                  Engaging and leaves a positive impression.
-                </td>
-                <td data-category="6" data-rating="4" role="button" tabindex="0">
-                  Exceptionally impressive, evoking strong emotion.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
-          <div id="legend">
-            <h4>Legend &amp; Definitions</h4>
-            <p><strong>Good (1):</strong> Significant shortcomings in this category.</p>
-            <p><strong>Great (2):</strong> Meets basic standards but room for improvement.</p>
-            <p><strong>Excellent (3):</strong> High-quality execution with only minor refinements needed.</p>
-            <p><strong>Outstanding (4):</strong> Exceeds standards with exceptional execution.</p>
-          </div>
-        </section>
-
-        <!-- FEEDBACK PANEL (AI Feedback removed) -->
-        <section class="feedback-panel glass-panel" aria-labelledby="feedbackHeading">
-          <h3 id="feedbackHeading">Reviewer Feedback</h3>
-          <div class="feedback-entry">
-            <label for="humanFeedback">Reviewer Comments</label>
-            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your reviewer feedback here..." aria-label="Reviewer Feedback"></div>
-          </div>
-        </section>
-      </div>
-
-      <!-- SELF-ASSESSMENT CHECKLIST SECTION -->
-      <section class="self-assessment-section" aria-labelledby="selfAssessmentHeading">
-        <h3 id="selfAssessmentHeading">Self-Assessment Checklist</h3>
-        <ul>
-          <li><input type="checkbox" id="check1"> <label for="check1">Is the composition well‑executed?</label></li>
-          <li><input type="checkbox" id="check2"> <label for="check2">Is the camera movement smooth and stable?</label></li>
-          <li><input type="checkbox" id="check3"> <label for="check3">Is the shot timing and pacing effective?</label></li>
-          <li><input type="checkbox" id="check4"> <label for="check4">Does the lighting and color set the appropriate mood?</label></li>
-          <li><input type="checkbox" id="check5"> <label for="check5">Is the technical quality (resolution, clarity) high?</label></li>
-          <li><input type="checkbox" id="check6"> <label for="check6">Are creative angles effectively used?</label></li>
-          <li><input type="checkbox" id="check7"> <label for="check7">Does the shot leave a strong overall impact?</label></li>
-        </ul>
-        <button class="btn" onclick="submitAssessment()">Submit Self-Assessment</button>
-        <div class="assessment-result" id="assessmentResult" aria-live="polite"></div>
-      </section>
-
-      <!-- FUN FACT SECTION (Bottom) -->
-      <div class="fun-fact-section glass-panel" id="funFactSection" role="note" aria-live="polite">
-        <!-- A random fun replay mod fact or tip will appear here -->
-      </div>
+    
+    <main class="container">
+        <div class="eval-card">
+            <div class="card-header">
+                <h1>Replay Quality Rubric</h1>
+                <p>Evaluate the footage quality using the criteria below. Select the appropriate rating for each category.</p>
+            </div>
+            
+            <div class="score-summary" id="score-summary">
+                <div class="score-box">
+                    <div class="score-value" id="total-score">0</div>
+                    <div class="score-label">/ 35 points</div>
+                </div>
+                <div class="rating-indicator" id="rating-indicator">Not rated</div>
+            </div>
+            
+            <div class="rubric-container">
+                <form id="replay-evaluation-form">
+                    <!-- Composition & Framing -->
+                    <div class="category-row" data-delay="0">
+                        <div class="category-header">
+                            <div class="category-name">Composition & Framing</div>
+                            <div class="category-score" id="composition-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="composition" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Basic framing following standard rules but lacking creativity.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="composition" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Well-balanced composition with clear focal points.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="composition" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Exceptionally arranged elements with artistic framing.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="composition" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Masterful composition that enhances storytelling.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Camera Movement & Stability -->
+                    <div class="category-row" data-delay="100">
+                        <div class="category-header">
+                            <div class="category-name">Camera Movement & Stability</div>
+                            <div class="category-score" id="camera-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="camera" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Movement is present but lacks smoothness or intent.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="camera" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Smooth, deliberate motion that enhances the visual.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="camera" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Exceptionally fluid movement that adds dynamic quality.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="camera" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Cinema-quality movement that perfectly complements content.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Shot Timing & Pacing -->
+                    <div class="category-row" data-delay="200">
+                        <div class="category-header">
+                            <div class="category-name">Shot Timing & Pacing</div>
+                            <div class="category-score" id="timing-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="timing" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Timing is acceptable but transitions may seem slightly off.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="timing" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Well-timed shot with a smooth flow between moments.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="timing" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Perfectly paced with seamless transitions that elevate the narrative.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="timing" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Masterful timing that creates optimal emotional impact.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Lighting, Color & Atmosphere -->
+                    <div class="category-row" data-delay="300">
+                        <div class="category-header">
+                            <div class="category-name">Lighting, Color & Atmosphere</div>
+                            <div class="category-score" id="lighting-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="lighting" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Acceptable lighting with only a basic mood established.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="lighting" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Well-lit scene with appropriate color grading enhancing the mood.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="lighting" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Outstanding lighting and color that create an immersive atmosphere.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="lighting" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Cinematic quality lighting that transports viewers.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Technical Quality & Clarity -->
+                    <div class="category-row" data-delay="400">
+                        <div class="category-header">
+                            <div class="category-name">Technical Quality & Clarity</div>
+                            <div class="category-score" id="technical-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="technical" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Adequate quality with minor flaws affecting clarity.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="technical" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Clear, stable visuals with high-quality technical execution.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="technical" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Pristine resolution and stability with flawless technical quality.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="technical" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Professional broadcast quality with perfect clarity.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Creative Angles & Perspectives -->
+                    <div class="category-row" data-delay="500">
+                        <div class="category-header">
+                            <div class="category-name">Creative Angles & Perspectives</div>
+                            <div class="category-score" id="angles-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="angles" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Some creative angles attempted, though not consistently effective.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="angles" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Well-chosen angles offering fresh perspectives.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="angles" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Innovative angles that significantly enhance the shot.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="angles" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Masterfully crafted angles that redefine how content is viewed.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Overall Cinematic Impact -->
+                    <div class="category-row" data-delay="600">
+                        <div class="category-header">
+                            <div class="category-name">Overall Cinematic Impact</div>
+                            <div class="category-score" id="impact-score">Not rated</div>
+                        </div>
+                        <div class="options-row">
+                            <label class="option-card">
+                                <input type="radio" name="impact" value="2">
+                                <div class="option-content option-good">
+                                    <div class="option-title">Good</div>
+                                    <div class="option-description">Some impact, but overall unremarkable.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="impact" value="3">
+                                <div class="option-content option-great">
+                                    <div class="option-title">Great</div>
+                                    <div class="option-description">Engaging and leaves a positive impression.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="impact" value="4">
+                                <div class="option-content option-excellent">
+                                    <div class="option-title">Excellent</div>
+                                    <div class="option-description">Exceptionally impressive, evoking strong emotion.</div>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="impact" value="5">
+                                <div class="option-content option-outstanding">
+                                    <div class="option-title">Outstanding</div>
+                                    <div class="option-description">Unforgettable impact that resonates well beyond viewing.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="footer-actions">
+                <button type="button" id="export-btn" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export Rubric
+                </button>
+                <button type="reset" id="reset-btn" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                    Reset
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-section" id="result-section">
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="result-title">Evaluation Results</div>
+                    <div class="result-score" id="result-score">0/35</div>
+                    <div class="result-rating rating-good" id="result-rating">Good</div>
+                </div>
+                
+                <div class="result-details">
+                    <h3>Category Breakdown</h3>
+                    <div class="result-category-grid" id="result-categories">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="result-actions">
+                    <button type="button" id="copy-btn" class="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        Copy Results
+                    </button>
+                    <button type="button" id="email-btn" class="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        Email Results
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- HOW-TO / FAQ MODAL -->
-    <dialog class="modal-bg" id="howToModal" aria-labelledby="howToHeading" aria-modal="true">
-      <div class="modal-content">
-        <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To / FAQ">&times;</button>
-        <h2 id="howToHeading">How to Use Replay mod &amp; FAQ</h2>
-        <section>
-          <h3>How to Use</h3>
-          <ul>
-            <li>Click on each rating cell to score the replay shot.</li>
-            <li>The Overall Score (out of 28) updates live as you select ratings.</li>
-            <li>Focus on objective criteria such as composition, movement, timing, lighting, technical quality, and creativity.</li>
-            <li>Provide your comments in the Reviewer Feedback section.</li>
-            <li>Use the Self-Assessment Checklist to reflect on your shot’s quality.</li>
-            <li>Reset scores or export your review as a PNG when finished.</li>
-          </ul>
-        </section>
-        <section>
-          <h3>Tips &amp; Tricks</h3>
-          <ul>
-            <li>Ensure your shot follows classic cinematography principles (e.g. rule of thirds, balanced composition).</li>
-            <li>Smooth camera movements add a professional touch—practice panning and tracking.</li>
-            <li>Good lighting and color grading set the mood; adjust your settings accordingly.</li>
-            <li>Experiment with creative angles to add visual interest.</li>
-            <li>Check your technical quality; a clear, stable shot is key.</li>
-          </ul>
-        </section>
-        <section>
-          <h3>FAQ</h3>
-          <ul>
-            <li><strong>Q:</strong> How do I improve my composition?<br><strong>A:</strong> Study visual balance, use guidelines like the rule of thirds, and experiment with framing.</li>
-            <li><strong>Q:</strong> What makes camera movement effective?<br><strong>A:</strong> Consistency, smoothness, and purposeful motion that supports the narrative.</li>
-            <li><strong>Q:</strong> How can I ensure proper lighting?<br><strong>A:</strong> Adjust your light sources and use color grading tools to create the desired atmosphere.</li>
-            <li><strong>Q:</strong> What technical aspects should I focus on?<br><strong>A:</strong> Resolution, focus, and stability are crucial for a clear and professional shot.</li>
-          </ul>
-        </section>
-      </div>
-    </dialog>
-
-    <!-- TUTORIAL MODAL (Optional additional modal for further instructions) -->
-    <dialog class="modal-bg" id="tutorialModal" aria-labelledby="tutorialHeading" aria-modal="true">
-      <div class="modal-content">
-        <button class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">&times;</button>
-        <div id="tutorialContent"></div>
-      </div>
-    </dialog>
-
-    <!-- Hidden Audio Elements for Sound Effects -->
-    <audio id="victorySound" src="victory.mp3"></audio>
-    <audio id="wompSound" src="womp.mp3"></audio>
-
-    <!-- CINEMATIC MAGIC EASTER EGG ICON -->
-    <div id="cinematicMagic" title="Click for a dose of cinematic magic!">✨</div>
-
     <script>
-      /***************************************************
-       * Global Variables & Setup
-       ***************************************************/
-      let shotScores = {};
-      let confettiShown = false;
-      const progressAudio = {
-        victory: document.getElementById("victorySound"),
-        womp: document.getElementById("wompSound")
-      };
-
-      // Extended array of inspirational replay mod quotes
-      const cineQuotes = [
-        "“Cinematography is the art of painting with light.” – Unknown",
-        "“A great shot is like a painting in motion.” – Unknown",
-        "“Every frame tells a story.” – Unknown",
-        "“Magic happens when the camera moves.” – Unknown",
-        "“Capture the moment and create the magic.” – Unknown",
-        "“In film, the image is everything.” – Fritz Lang",
-        "“The camera is a storyteller.” – George Lucas",
-        "“A film is never really good unless the camera is an eye in the head of a poet.” – Orson Welles",
-        "“The language of cinema is visual.” – Unknown",
-        "“A single shot can change the way you see the world.” – Unknown"
-      ];
-
-      // Array of fun facts and tips
-      const funFacts = [
-        "Fun Fact: Some of Minecraft’s most epic moments are captured with Replay mod!",
-        "Tip: Smooth camera movement transforms a basic shot into a cinematic scene.",
-        "Did you know? Lighting is key to setting the perfect mood in your replay.",
-        "Experiment with angles – sometimes a slight change makes a big difference.",
-        "Always check your technical quality: a stable, high‑res shot speaks volumes."
-      ];
-
-      // Function to select a random index without repeating any of the last 3 used
-      function getNonRepeatingRandomIndex(max) {
-        let lastUsed = JSON.parse(localStorage.getItem("lastUsedQuotes") || "[]");
-        let newIndex;
-        let attempts = 0;
-        do {
-          newIndex = Math.floor(Math.random() * max);
-          attempts++;
-        } while (lastUsed.includes(newIndex) && attempts < 10);
-        // Update lastUsed array (keep last 3)
-        lastUsed.push(newIndex);
-        if (lastUsed.length > 3) {
-          lastUsed = lastUsed.slice(lastUsed.length - 3);
-        }
-        localStorage.setItem("lastUsedQuotes", JSON.stringify(lastUsed));
-        return newIndex;
-      }
-
-      /***************************************************
-       * DOMContentLoaded Setup
-       ***************************************************/
-      document.addEventListener("DOMContentLoaded", () => {
-        // Set a random quote without immediate repetition
-        let newQuoteIndex = getNonRepeatingRandomIndex(cineQuotes.length);
-        document.getElementById("quoteSection").innerText = cineQuotes[newQuoteIndex];
-
-        // Set a random fun fact
-        document.getElementById("funFactSection").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
-
-        // Event delegation for the Replay rubric table
-        document.getElementById("replayTable").addEventListener("click", function(e) {
-          const cell = e.target.closest('td[data-rating]');
-          if (cell) selectRating(cell);
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the initial theme
+        htmlElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
         });
-
-        // Add click event for the Cinematic Magic icon
-        document.getElementById("cinematicMagic").addEventListener("click", triggerCinematicMagic);
-      });
-
-      /***************************************************
-       * Rubric Functions
-       ***************************************************/
-      function selectRating(cell) {
-        const categoryIndex = Number(cell.getAttribute('data-category'));
-        const rating = parseInt(cell.getAttribute('data-rating'));
-        const row = cell.parentElement;
-        row.querySelectorAll('td').forEach(td => {
-          if (td !== row.firstElementChild) td.classList.remove('selected');
-        });
-        cell.classList.add('selected');
-        shotScores[categoryIndex] = rating;
-        updateTotals();
-      }
-
-      function updateTotals() {
-        let overallTotal = Object.values(shotScores).reduce((a, b) => a + b, 0);
-        document.getElementById('overallTotal').textContent = overallTotal;
-        let scoreLabel = document.getElementById('scoreLabel');
-        let ranking = document.getElementById('ranking');
-        // Ensure all 7 categories are rated
-        if (Object.keys(shotScores).length < 7) {
-          ranking.textContent = "Incomplete";
-          ranking.style.color = "#64748b";
-        } else if (overallTotal < 13) {
-          scoreLabel.textContent = "Needs Work";
-          ranking.textContent = "Needs Work 🔴";
-          ranking.style.color = "#ef4444";
-          progressAudio.womp.play && progressAudio.womp.play();
-        } else if (overallTotal < 18) {
-          scoreLabel.textContent = "Good";
-          ranking.textContent = "Good 👍";
-          ranking.style.color = "#22c55e";
-        } else if (overallTotal < 23) {
-          scoreLabel.textContent = "Excellent";
-          ranking.textContent = "Excellent 🟡";
-          ranking.style.color = "#eab308";
-        } else {
-          scoreLabel.textContent = "Outstanding";
-          ranking.textContent = "Outstanding 🔵";
-          ranking.style.color = "#3b82f6";
-          progressAudio.victory.play && progressAudio.victory.play();
-          if (!confettiShown) {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            confettiShown = true;
-          }
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            } else {
+                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>';
+            }
         }
-      }
-
-      /***************************************************
-       * Reset Function
-       ***************************************************/
-      function resetScores() {
-        shotScores = {};
-        document.querySelectorAll('#replayTable td[data-rating]').forEach(cell => cell.classList.remove('selected'));
-        document.getElementById('overallTotal').textContent = '0';
-        document.getElementById('scoreLabel').textContent = 'Needs Work';
-        document.getElementById('ranking').textContent = 'Incomplete';
-        confettiShown = false;
-      }
-
-      /***************************************************
-       * Export Function (PNG)
-       ***************************************************/
-      async function exportPNG() {
-        const header = document.querySelector("header.analyzer-header");
-        const originalPosition = header.style.position;
-        header.style.position = "static";
-        const canvas = await html2canvas(document.body, { scale: 2, useCORS: true });
-        const dataUrl = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = 'replay-mod-review.png';
-        link.href = dataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        header.style.position = originalPosition;
-      }
-
-      /***************************************************
-       * Theme & Animation Toggle Functions
-       ***************************************************/
-      function toggleTheme(input) {
-        const html = document.documentElement;
-        if (input.checked) {
-          html.setAttribute("data-theme", "dark");
-        } else {
-          html.removeAttribute("data-theme");
-        }
-      }
-      function toggleAnimations(input) {
-        if (input.checked) {
-          document.body.classList.add("reduce-motion");
-        } else {
-          document.body.classList.remove("reduce-motion");
-        }
-      }
-
-      /***************************************************
-       * Modal Functions – Using <dialog> for accessibility
-       ***************************************************/
-      function openHowTo() {
-        const dialog = document.getElementById("howToModal");
-        dialog.showModal();
-        dialog.querySelector(".close-btn").focus();
-      }
-      function closeHowTo() {
-        document.getElementById("howToModal").close();
-      }
-      function openTutorial(topic) {
-        const tutorialContent = document.getElementById('tutorialContent');
-        let content = "";
-        if (topic === 'composition') {
-          content = "<h2>Enhancing Composition</h2><p>Arrange elements purposefully using rules like the rule of thirds to create a balanced frame.</p>";
-        } else if (topic === 'movement') {
-          content = "<h2>Smooth Camera Movement</h2><p>Ensure your camera movements are stable and intentional to enhance the shot’s visual flow.</p>";
-        } else if (topic === 'lighting') {
-          content = "<h2>Effective Lighting</h2><p>Proper lighting and color grading set the mood and clarity of the shot.</p>";
-        } else {
-          content = "<h2>Tutorial</h2><p>No tutorial available for this topic.</p>";
-        }
-        tutorialContent.innerHTML = content;
-        const dialog = document.getElementById("tutorialModal");
-        dialog.showModal();
-        dialog.querySelector(".close-btn").focus();
-      }
-      function closeTutorial() {
-        document.getElementById("tutorialModal").close();
-      }
-      function toggleLegend() {
-        const legend = document.getElementById("legend");
-        const btn = document.getElementById("toggleLegend");
-        if (legend.style.display === "none" || legend.style.display === "") {
-          legend.style.display = "block";
-          btn.textContent = "Hide Legend & Definitions";
-        } else {
-          legend.style.display = "none";
-          btn.textContent = "Show Legend & Definitions";
-        }
-      }
-
-      /***************************************************
-       * Self-Assessment Checklist Functions
-       ***************************************************/
-      function submitAssessment() {
-        const checklist = document.querySelectorAll('.self-assessment-section input[type="checkbox"]');
-        let checkedCount = 0;
-        checklist.forEach(box => {
-          if (box.checked) checkedCount++;
-        });
-        const totalItems = checklist.length;
-        let resultText = `You checked ${checkedCount} out of ${totalItems} items. `;
-        if (checkedCount === totalItems) {
-          resultText += "🎉 Master Replay Mod Reviewer: Excellent work!";
-          confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
-        } else if (checkedCount >= totalItems * 0.75) {
-          resultText += "Great job! You're nearly there.";
-        } else {
-          resultText += "Keep refining your shot for that cinematic masterpiece.";
-        }
-        document.getElementById("assessmentResult").innerText = resultText;
-      }
-
-      /***************************************************
-       * Cinematic Magic Easter Egg Function
-       ***************************************************/
-      function triggerCinematicMagic() {
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        const cinematicQuotes = [
-          "“Every frame is a canvas.” – Unknown",
-          "“Magic happens when the camera moves.” – Unknown",
-          "“Let your shot tell the story.” – Unknown",
-          "“A pause can speak louder than motion.” – Unknown",
-          "“Capture the moment, create the magic.” – Unknown"
+        
+        // Categories for evaluation
+        const categories = [
+            { name: 'composition', label: 'Composition & Framing' },
+            { name: 'camera', label: 'Camera Movement & Stability' },
+            { name: 'timing', label: 'Shot Timing & Pacing' },
+            { name: 'lighting', label: 'Lighting, Color & Atmosphere' },
+            { name: 'technical', label: 'Technical Quality & Clarity' },
+            { name: 'angles', label: 'Creative Angles & Perspectives' },
+            { name: 'impact', label: 'Overall Cinematic Impact' }
         ];
-        const randomIndex = Math.floor(Math.random() * cinematicQuotes.length);
-        alert(cinematicQuotes[randomIndex]);
-      }
-
-      /***************************************************
-       * Easter Egg Shortcut (Alt+E)
-       ***************************************************/
-      document.addEventListener("keydown", function(e) {
-        if (e.altKey && e.key.toLowerCase() === "e") {
-          triggerCinematicMagic();
+        
+        // Initialize variables
+        let totalScore = 0;
+        const categoryScores = {};
+        const maxPossibleScore = 35; // 7 categories × 5 maximum points
+        
+        // Add event listeners for real-time score updates
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateScores);
+        });
+        
+        // Reset button
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            // Reset form
+            document.getElementById('replay-evaluation-form').reset();
+            
+            // Reset scores
+            totalScore = 0;
+            for (const category of categories) {
+                categoryScores[category.name] = 0;
+                document.getElementById(`${category.name}-score`).textContent = 'Not rated';
+            }
+            
+            // Update display
+            document.getElementById('total-score').textContent = '0';
+            document.getElementById('rating-indicator').textContent = 'Not rated';
+            document.getElementById('rating-indicator').className = 'rating-indicator';
+            
+            // Hide results section
+            document.getElementById('result-section').style.display = 'none';
+        });
+        
+        // Update scores in real-time
+        function updateScores() {
+            totalScore = 0;
+            let allCategoriesRated = true;
+            let ratedCategories = 0;
+            
+            // Calculate score for each category
+            categories.forEach(category => {
+                const selectedRadio = document.querySelector(`input[name="${category.name}"]:checked`);
+                
+                if (selectedRadio) {
+                    const score = parseInt(selectedRadio.value);
+                    categoryScores[category.name] = score;
+                    totalScore += score;
+                    ratedCategories++;
+                    
+                    // Update individual category score display
+                    const scoreDisplay = document.getElementById(`${category.name}-score`);
+                    scoreDisplay.textContent = `${score}/5`;
+                } else {
+                    allCategoriesRated = false;
+                    document.getElementById(`${category.name}-score`).textContent = 'Not rated';
+                }
+            });
+            
+            // Update total score
+            document.getElementById('total-score').textContent = totalScore;
+            
+            // Update rating (even if not all categories are rated)
+            const ratingIndicator = document.getElementById('rating-indicator');
+            if (ratedCategories > 0) {
+                let rating;
+                if (totalScore >= 31) {
+                    rating = 'Outstanding';
+                    ratingIndicator.className = 'rating-indicator rating-outstanding';
+                } else if (totalScore >= 24) {
+                    rating = 'Excellent';
+                    ratingIndicator.className = 'rating-indicator rating-excellent';
+                } else if (totalScore >= 17) {
+                    rating = 'Great';
+                    ratingIndicator.className = 'rating-indicator rating-great';
+                } else {
+                    rating = 'Good';
+                    ratingIndicator.className = 'rating-indicator rating-good';
+                }
+                ratingIndicator.textContent = rating;
+            } else {
+                ratingIndicator.textContent = 'Not rated';
+                ratingIndicator.className = 'rating-indicator';
+            }
+            
+            // Show detailed results if all categories are rated
+            if (allCategoriesRated) {
+                displayResults();
+            }
         }
-      });
+        
+        // Display detailed results
+        function displayResults() {
+            // Set the final score
+            document.getElementById('result-score').textContent = `${totalScore}/${maxPossibleScore}`;
+            
+            // Set the rating
+            const resultRating = document.getElementById('result-rating');
+            let rating;
+            if (totalScore >= 31) {
+                rating = 'Outstanding';
+                resultRating.className = 'result-rating rating-outstanding';
+            } else if (totalScore >= 24) {
+                rating = 'Excellent';
+                resultRating.className = 'result-rating rating-excellent';
+            } else if (totalScore >= 17) {
+                rating = 'Great';
+                resultRating.className = 'result-rating rating-great';
+            } else {
+                rating = 'Good';
+                resultRating.className = 'result-rating rating-good';
+            }
+            resultRating.textContent = rating;
+            
+            // Populate category breakdown
+            const resultCategories = document.getElementById('result-categories');
+            resultCategories.innerHTML = '';
+            
+            categories.forEach(category => {
+                const score = categoryScores[category.name];
+                let categoryRating;
+                
+                if (score >= 5) categoryRating = 'Outstanding';
+                else if (score >= 4) categoryRating = 'Excellent';
+                else if (score >= 3) categoryRating = 'Great';
+                else categoryRating = 'Good';
+                
+                const categoryItem = document.createElement('div');
+                categoryItem.className = 'result-category-item';
+                categoryItem.innerHTML = `
+                    <div class="result-category-name">${category.label}</div>
+                    <div class="result-category-score">
+                        <span class="result-category-value">${score}/5</span>
+                        <span class="result-category-rating">${categoryRating}</span>
+                    </div>
+                `;
+                resultCategories.appendChild(categoryItem);
+            });
+            
+            // Show results section
+            document.getElementById('result-section').style.display = 'block';
+            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Export functionality
+        document.getElementById('export-btn').addEventListener('click', () => {
+            // Create a CSV representation of the rubric
+            let csvContent = "Category,Rating,Score,Max Score\n";
+            
+            categories.forEach(category => {
+                const score = categoryScores[category.name] || 0;
+                let rating = "Not Rated";
+                
+                if (score >= 5) rating = "Outstanding";
+                else if (score >= 4) rating = "Excellent";
+                else if (score >= 3) rating = "Great";
+                else if (score >= 2) rating = "Good";
+                
+                csvContent += `"${category.label}","${rating}",${score},5\n`;
+            });
+            
+            // Add overall score
+            let overallRating = "Not Rated";
+            if (totalScore >= 31) overallRating = "Outstanding";
+            else if (totalScore >= 24) overallRating = "Excellent";
+            else if (totalScore >= 17) overallRating = "Great";
+            else if (totalScore > 0) overallRating = "Good";
+            
+            csvContent += `"Overall","${overallRating}",${totalScore},${maxPossibleScore}\n`;
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'replay_evaluation.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+        
+        // Copy results
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            let resultText = "REPLAY QUALITY ASSESSMENT\n\n";
+            
+            // Overall score
+            let overallRating = "Not Rated";
+            if (totalScore >= 31) overallRating = "Outstanding";
+            else if (totalScore >= 24) overallRating = "Excellent";
+            else if (totalScore >= 17) overallRating = "Great";
+            else if (totalScore > 0) overallRating = "Good";
+            
+            resultText += `Overall Score: ${totalScore}/${maxPossibleScore} (${overallRating})\n\n`;
+            resultText += "Category Breakdown:\n";
+            
+            // Add each category
+            categories.forEach(category => {
+                const score = categoryScores[category.name] || 0;
+                let rating = "Not Rated";
+                
+                if (score >= 5) rating = "Outstanding";
+                else if (score >= 4) rating = "Excellent";
+                else if (score >= 3) rating = "Great";
+                else if (score >= 2) rating = "Good";
+                
+                resultText += `- ${category.label}: ${score}/5 (${rating})\n`;
+            });
+            
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    alert("Results copied to clipboard!");
+                })
+                .catch(err => {
+                    console.error("Failed to copy results: ", err);
+                    alert("Failed to copy results. Please try again.");
+                });
+        });
+        
+        // Email results
+        document.getElementById('email-btn').addEventListener('click', () => {
+            let subject = "Replay Quality Assessment Results";
+            
+            let body = "REPLAY QUALITY ASSESSMENT%0D%0A%0D%0A";
+            
+            // Overall score
+            let overallRating = "Not Rated";
+            if (totalScore >= 31) overallRating = "Outstanding";
+            else if (totalScore >= 24) overallRating = "Excellent";
+            else if (totalScore >= 17) overallRating = "Great";
+            else if (totalScore > 0) overallRating = "Good";
+            
+            body += `Overall Score: ${totalScore}/${maxPossibleScore} (${overallRating})%0D%0A%0D%0A`;
+            body += "Category Breakdown:%0D%0A";
+            
+            // Add each category
+            categories.forEach(category => {
+                const score = categoryScores[category.name] || 0;
+                let rating = "Not Rated";
+                
+                if (score >= 5) rating = "Outstanding";
+                else if (score >= 4) rating = "Excellent";
+                else if (score >= 3) rating = "Great";
+                else if (score >= 2) rating = "Good";
+                
+                body += `- ${category.label}: ${score}/5 (${rating})%0D%0A`;
+            });
+            
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
+        });
+        
+        // Initialize score display with animation to make it more engaging
+        document.addEventListener('DOMContentLoaded', () => {
+            // Stagger the animation of each category row
+            const categoryRows = document.querySelectorAll('.category-row');
+            categoryRows.forEach(row => {
+                const delay = parseInt(row.getAttribute('data-delay')) || 0;
+                setTimeout(() => {
+                    row.style.opacity = 0;
+                    row.style.animation = 'slideIn 0.5s ease-out forwards';
+                }, delay);
+            });
+        });
     </script>
-  </body>
+</body>
 </html>
