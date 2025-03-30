@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gaming Video Editing Review Rubric</title>
+    <title>Video Editing Rubric | [Your Team Name]</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -19,46 +19,54 @@
     <style>
         /* CSS Variables & Base Styles */
         :root {
-            --primary-light: #4facfe;
-            --accent-light: #00f2fe;
-            --bg-light: #f9fafb;
-            --text-light: #1e293b;
-            --panel-light: rgba(255, 255, 255, 0.96);
-            --border-light: rgba(0, 0, 0, 0.1); /* Adjusted for better visibility */
-            --header-bg-light: rgba(255, 255, 255, 0.85); /* Header slightly more opaque */
-            --table-header-bg-light: rgba(243, 244, 246, 0.9); /* Standard header bg */
-            --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-            --table-cell-hover-light: rgba(239, 246, 255, 0.9); /* Subtle hover */
-            --selected-highlight: rgba(79, 172, 254, 0.3); /* Use primary color with alpha */
-            --selected-border: var(--primary-light);
-            --input-border-light: #e2e8f0;
+            --primary-light: #4facfe; /* Light Blue */
+            --accent-light: #00f2fe;  /* Cyan */
+            --primary-rgb: 79, 172, 254; /* RGB for rgba() usage */
+            --accent-rgb: 0, 242, 254;   /* RGB for rgba() usage */
+
+            --bg-light: #f9fafb; /* Very light grey */
+            --text-light: #1f2937; /* Dark grey-blue */
+            --panel-light: rgba(255, 255, 255, 0.9); /* Slightly less opaque panel */
+            --border-light: rgba(0, 0, 0, 0.08); /* Softer border */
+            --header-bg-light: rgba(255, 255, 255, 0.88);
+            --table-header-bg-light: rgba(249, 250, 251, 0.9); /* Lighter table header */
+            --table-cell-bg-light: rgba(255, 255, 255, 0.9);
+            --table-cell-hover-light: rgba(var(--primary-rgb), 0.05); /* Subtle blue hover */
+            --selected-highlight-light: rgba(var(--primary-rgb), 0.15); /* Clearer selected bg */
+            --selected-border-light: var(--primary-light);
+            --input-bg-light: #ffffff;
+            --input-border-light: #d1d5db; /* Grey border */
             --input-focus-border-light: var(--primary-light);
-            --input-focus-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+            --input-focus-shadow-light: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
             --placeholder-text-light: #9ca3af;
 
             /* Dark Mode Overrides */
-            --bg-dark: #1f1f1f;
-            --text-dark: #f3f3f3;
-            --panel-dark: rgba(30, 30, 30, 0.98);
-            --border-dark: rgba(255, 255, 255, 0.15);
-            --header-bg-dark: rgba(30, 30, 30, 0.9);
-            --table-header-bg-dark: rgba(40, 40, 40, 0.9);
-            --table-cell-bg-dark: rgba(50, 50, 50, 0.85);
-            --table-cell-hover-dark: rgba(60, 60, 60, 0.9);
-            --input-border-dark: #4b5563;
+            --bg-dark: #111827; /* Dark blue-grey */
+            --text-dark: #e5e7eb; /* Light grey */
+            --panel-dark: rgba(31, 41, 55, 0.92); /* Dark panel bg */
+            --border-dark: rgba(255, 255, 255, 0.12); /* Softer dark border */
+            --header-bg-dark: rgba(17, 24, 39, 0.9); /* Darker header */
+            --table-header-bg-dark: rgba(31, 41, 55, 0.9); /* Match panel */
+            --table-cell-bg-dark: rgba(55, 65, 81, 0.88); /* Slightly lighter cells */
+            --table-cell-hover-dark: rgba(var(--accent-rgb), 0.1); /* Subtle cyan hover */
+            --selected-highlight-dark: rgba(var(--accent-rgb), 0.2); /* Clearer selected bg */
+            --selected-border-dark: var(--accent-light);
+            --input-bg-dark: #1f2937; /* Match text color base */
+            --input-border-dark: #4b5563; /* Mid-grey border */
             --input-focus-border-dark: var(--accent-light);
-            --input-focus-shadow-dark: 0 0 0 3px rgba(0, 242, 254, 0.2);
-             --placeholder-text-dark: #6b7280;
+            --input-focus-shadow-dark: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
+            --placeholder-text-dark: #6b7280;
 
-            --shadow: 0 6px 24px rgba(31, 38, 135, 0.08);
-            --transition: all 0.2s ease-in-out;
-            --radius: 12px; /* Slightly smaller radius */
+            /* Shared variables */
+            --shadow: 0 6px 24px rgba(31, 38, 135, 0.06); /* Softer shadow */
+            --transition: all 0.25s ease-in-out; /* Slightly smoother transition */
+            --radius: 10px; /* Slightly smaller radius */
             --gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-            --spacing: 1rem;
+            --spacing: 1rem; /* Base spacing unit */
             --font-base: 'Roboto', sans-serif;
         }
 
-        /* Apply light theme by default */
+        /* Apply theme variables */
         html {
             --bg: var(--bg-light);
             --text: var(--text-light);
@@ -68,12 +76,15 @@
             --table-header-bg: var(--table-header-bg-light);
             --table-cell-bg: var(--table-cell-bg-light);
             --table-cell-hover: var(--table-cell-hover-light);
+            --selected-highlight: var(--selected-highlight-light);
+            --selected-border: var(--selected-border-light);
+            --input-bg: var(--input-bg-light);
             --input-border: var(--input-border-light);
             --input-focus-border: var(--input-focus-border-light);
+            --input-focus-shadow: var(--input-focus-shadow-light);
             --placeholder-text: var(--placeholder-text-light);
         }
 
-        /* Apply dark theme when attribute is present */
         html[data-theme="dark"] {
             --bg: var(--bg-dark);
             --text: var(--text-dark);
@@ -83,36 +94,42 @@
             --table-header-bg: var(--table-header-bg-dark);
             --table-cell-bg: var(--table-cell-bg-dark);
             --table-cell-hover: var(--table-cell-hover-dark);
+            --selected-highlight: var(--selected-highlight-dark);
+            --selected-border: var(--selected-border-dark);
+            --input-bg: var(--input-bg-dark);
             --input-border: var(--input-border-dark);
             --input-focus-border: var(--input-focus-border-dark);
+            --input-focus-shadow: var(--input-focus-shadow-dark);
             --placeholder-text: var(--placeholder-text-dark);
-            --input-focus-shadow: var(--input-focus-shadow-dark); /* Correct shadow variable for dark mode */
         }
 
         /* Base styles */
+        *, *::before, *::after { box-sizing: border-box; }
+
         body {
             margin: 0;
             padding: 0;
             font-family: var(--font-base);
             background-color: var(--bg);
-            /* Optional subtle pattern */
-            background-image: radial-gradient(circle, rgba(128, 128, 128, 0.05) 1px, transparent 1px);
-            background-size: 25px 25px;
             color: var(--text);
-            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
-            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6; /* Improved default line height */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        button:focus,
-        input:focus,
-        textarea:focus,
-        [tabindex]:focus {
-            outline: 2px solid var(--accent-light);
-            outline-offset: 2px;
-        }
-        *:focus-visible { /* More modern focus state */
-             outline: 2px solid var(--accent-light);
+        /* Improved Focus States */
+        *:focus-visible {
+             outline: 2px solid transparent; /* Remove default outline */
              outline-offset: 2px;
+             box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent-light); /* More visible focus ring */
+             border-radius: 3px; /* Optional: round the focus indicator slightly */
+        }
+        /* Specific focus for inputs/textarea for consistency */
+        input:focus-visible, textarea:focus-visible {
+             outline: none; /* Remove default */
+             border-color: var(--input-focus-border);
+             box-shadow: var(--input-focus-shadow); /* Use variable defined focus shadow */
         }
 
 
@@ -122,9 +139,9 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px); /* Keep blur subtle */
-            padding: calc(var(--spacing) * 1.5); /* Slightly more padding */
-            margin-bottom: var(--spacing);
+            backdrop-filter: blur(12px); /* Slightly more blur */
+            padding: calc(var(--spacing) * 1.8); /* Increased padding */
+            margin-bottom: calc(var(--spacing) * 1.5); /* Increased bottom margin */
             transition: var(--transition);
         }
 
@@ -132,20 +149,21 @@
         .analyzer-header {
             position: sticky;
             top: 0;
-            z-index: 1000; /* Ensure it's above content */
-            padding: var(--spacing) calc(var(--spacing) * 1.5);
-            margin-bottom: var(--spacing);
+            z-index: 1000;
+            padding: var(--spacing) calc(var(--spacing) * 1.8); /* Match panel padding */
+            margin-bottom: calc(var(--spacing) * 1.5);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            gap: var(--spacing);
-            background: var(--header-bg); /* Use specific header background */
+            flex-wrap: wrap;
+            gap: calc(var(--spacing) * 1.5); /* Increased gap */
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border); /* Add subtle bottom border */
         }
 
-        .header-left { display: flex; flex-direction: column; gap: 0.25rem; }
-        .site-title { font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-        .site-title i { color: var(--primary-light); } /* Use primary color for icon */
+        .header-left { display: flex; flex-direction: column; gap: 0.35rem; } /* Slightly more gap */
+        .site-title { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; }
+        .site-title i { color: var(--primary-light); }
 
         .total-score {
             font-size: 1.1rem;
@@ -154,333 +172,303 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            position: relative; /* Needed for pseudo-element */
+            position: relative;
             cursor: default;
         }
-         /* Tooltip for score - Simplified */
-        .total-score::after {
-            content: attr(data-tooltip); /* Use a data attribute for the text */
-            position: absolute;
-            background: rgba(0, 0, 0, 0.85);
-            color: #fff;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            top: 120%; /* Position below */
-            left: 50%;
-            transform: translateX(-50%); /* Center align */
-            white-space: nowrap;
-            font-size: 0.8rem;
-            z-index: 10;
-            opacity: 0; /* Hidden by default */
-            visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
+        .total-score::after { /* Tooltip styling */
+             content: attr(data-tooltip);
+             position: absolute;
+             background: var(--text); /* Match theme text color base */
+             color: var(--bg); /* Match theme bg color base */
+             padding: 0.5rem 0.9rem;
+             border-radius: 6px;
+             top: 130%; /* Position further below */
+             left: 50%;
+             transform: translateX(-50%);
+             white-space: nowrap;
+             font-size: 0.8rem;
+             font-weight: 500;
+             z-index: 10;
+             opacity: 0;
+             visibility: hidden;
+             transition: opacity 0.2s ease, visibility 0.2s ease, top 0.2s ease; /* Smooth appearance */
+             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .total-score:hover::after,
-        .total-score:focus::after { /* Show on hover or focus */
-            opacity: 1;
-            visibility: visible;
+        .total-score:focus-visible::after { /* Show tooltip on hover/focus */
+             opacity: 1;
+             visibility: visible;
+             top: 120%; /* Move slightly up */
         }
 
-        .status-indicator { font-weight: 600; font-size: 0.9rem; opacity: 0.8; }
+        .status-indicator { font-weight: 500; font-size: 0.95rem; opacity: 0.9; }
         .header-right { display: flex; align-items: center; gap: var(--spacing); flex-wrap: wrap; }
 
         /* Buttons */
         .btn {
             background: var(--gradient);
-            color: #fff;
+            color: #ffffff;
             border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--radius);
+            padding: 0.7rem 1.4rem; /* Slightly larger padding */
+            border-radius: 8px; /* Match input radius */
             cursor: pointer;
-            font-weight: 500; /* Slightly less bold */
+            font-weight: 500;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-            text-decoration: none; /* For potential <a> elements styled as buttons */
+            gap: 0.6rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            text-decoration: none;
+            line-height: 1;
         }
         .btn:hover, .btn:focus-visible {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px) scale(1.02); /* Add subtle scale */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
         }
-        .btn i { line-height: 1; } /* Align Font Awesome icons better */
+        .btn:active {
+            transform: translateY(0px) scale(1); /* Reset transform on click */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .btn i { line-height: 1; }
 
         /* Dark Mode Slider */
-        .dark-mode-label { cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .dark-mode-slider {
-            position: relative;
-            width: 50px; /* Smaller slider */
-            height: 26px;
-            background-color: #ccc; /* Default light grey */
-            border-radius: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 4px;
-            transition: background-color 0.3s ease;
+        .dark-mode-label { cursor: pointer; display: inline-flex; align-items: center; gap: 0.6rem; }
+        .dark-mode-slider { /* Styles mostly unchanged, visually fine */
+             position: relative; width: 50px; height: 26px; background-color: #ccc; border-radius: 13px;
+             display: flex; align-items: center; justify-content: space-between; padding: 0 4px; transition: background-color 0.3s ease;
         }
-        html[data-theme="dark"] .dark-mode-slider { background-color: #555; } /* Dark mode background */
-
+        html[data-theme="dark"] .dark-mode-slider { background-color: #555; }
         .dark-mode-slider .mode-icon { font-size: 14px; color: #fff; }
         .dark-mode-slider .slider-thumb {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%;
+            top: 2px; left: 2px; transition: transform 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
-        input#darkModeToggle { display: none; } /* Hide checkbox */
-
-        input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-            transform: translateX(24px); /* Adjust translation distance */
-        }
-        input#darkModeToggle:checked + .dark-mode-slider {
-            background-color: var(--primary-light); /* Use primary color when active */
-        }
+        input#darkModeToggle { opacity: 0; width: 0; height: 0; position: absolute; } /* Better hiding */
+        input#darkModeToggle:checked + .dark-mode-slider .slider-thumb { transform: translateX(24px); }
+        input#darkModeToggle:checked + .dark-mode-slider { background-color: var(--primary-light); }
 
         /* Main Content */
         main { margin: var(--spacing) auto; max-width: 1600px; padding: 0 var(--spacing); }
-        .analyzer-container { padding: var(--spacing); }
+        .analyzer-container { padding: 0; } /* Remove padding here, handled by panels */
+
+         /* Section Styling */
+        .content-section { /* Apply to video info, rubric, feedback, legend sections */
+            margin-bottom: calc(var(--spacing) * 1.5);
+            background: var(--panel); /* Use panel bg directly on sections */
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: calc(var(--spacing) * 1.8); /* Consistent padding */
+        }
+         /* Adjust headings within sections */
+         .content-section h2 {
+             margin-top: 0;
+             margin-bottom: calc(var(--spacing) * 1.2); /* More space below heading */
+             font-size: 1.25rem; /* Standardized section heading size */
+             font-weight: 600;
+             padding-bottom: 0.5rem;
+             border-bottom: 1px solid var(--border); /* Subtle separator */
+         }
 
          /* Video Info Section */
-        .video-info-panel { margin-bottom: calc(var(--spacing) * 1.5); }
-        .video-info-panel h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem; }
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing); }
-        .info-grid label { font-weight: 500; display: block; margin-bottom: 0.3rem; font-size: 0.9rem; }
+        .info-grid {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+             gap: calc(var(--spacing) * 1.2); /* Increased gap */
+        }
+        .info-grid label { font-weight: 500; display: block; margin-bottom: 0.4rem; font-size: 0.9rem; }
         .info-grid input[type="text"],
         .info-grid input[type="url"] {
             width: 100%;
-            padding: 0.6rem 0.8rem;
+            padding: 0.7rem 1rem; /* Increased padding */
             border: 1px solid var(--input-border);
-            border-radius: 8px; /* Consistent radius */
+            border-radius: 8px;
             font-size: 1rem;
-            background-color: var(--bg); /* Match body background */
+            background-color: var(--input-bg);
             color: var(--text);
             transition: var(--transition);
             box-sizing: border-box;
         }
-        .info-grid input[type="text"]:focus,
-        .info-grid input[type="url"]:focus {
-            outline: none;
-            border-color: var(--input-focus-border);
-            box-shadow: var(--input-focus-shadow);
-        }
+        /* input focus handled by global *:focus-visible */
 
         /* Rubric Table */
-        .rubric-section { margin-bottom: calc(var(--spacing) * 1.5); }
-        .rubric-section h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem; }
-        .rubric-table-wrapper { overflow-x: auto; } /* Allow horizontal scrolling on small screens */
+        .rubric-table-wrapper { overflow-x: auto; margin-top: var(--spacing); }
         .modern-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
             font-family: var(--font-base);
-            box-shadow: var(--shadow);
-            border-radius: var(--radius);
-            overflow: hidden; /* Clip shadows/borders to radius */
+            /* removed shadow/radius here, handled by wrapper section */
             transition: var(--transition);
         }
         .modern-table thead th {
-            padding: 0.8rem 1.2rem; /* Adjusted padding */
+            padding: 0.9rem 1.3rem; /* Increased padding */
             font-weight: 600;
             position: sticky;
-            top: 0; /* Stick to top when scrolling */
+            top: 0;
             background: var(--table-header-bg);
-            backdrop-filter: blur(5px); /* Subtle blur for sticky header */
+            backdrop-filter: blur(6px);
             z-index: 10;
             text-align: left;
-            border-bottom: 2px solid var(--border); /* Stronger bottom border */
-            color: var(--text); /* Use standard text color */
-            white-space: nowrap; /* Prevent wrapping */
+            border-bottom: 2px solid var(--border);
+            color: var(--text);
+            white-space: nowrap;
+            transition: var(--transition);
         }
-        /* Style first header column differently */
-        .modern-table thead th:first-child {
+        .modern-table thead th:first-child { /* Category Header */
             background: var(--gradient);
-            color: #fff;
-            position: sticky; /* Make category sticky horizontally too */
+            color: #ffffff;
+            position: sticky;
             left: 0;
-            z-index: 11; /* Above other header cells */
+            z-index: 11;
+            border-right: 1px solid var(--border); /* Add separator */
         }
-
-        /* Color coded headers (simplified) */
+        /* Rating Column Headers */
         .modern-table thead th[data-col-rating="1"] { background-color: #f87171; color: #fff; }
         .modern-table thead th[data-col-rating="2"] { background-color: #fb923c; color: #fff; }
         .modern-table thead th[data-col-rating="3"] { background-color: #facc15; color: #fff; }
         .modern-table thead th[data-col-rating="4"] { background-color: #4ade80; color: #fff; }
 
-
         .modern-table tbody td {
-            padding: 0.8rem 1.2rem;
+            padding: 0.9rem 1.3rem; /* Match header padding */
             border-bottom: 1px solid var(--border);
             transition: var(--transition);
             vertical-align: top;
             cursor: pointer;
             background: var(--table-cell-bg);
+            line-height: 1.7; /* Improved line height for readability */
         }
-         /* Style first body column to match sticky header */
-        .modern-table tbody td:first-child {
+        .modern-table tbody td:first-child { /* Sticky Category Name Column */
             position: sticky;
             left: 0;
-            background: var(--table-cell-bg); /* Ensure background matches */
-            z-index: 5; /* Above other body cells in the row */
+            background: var(--table-cell-bg);
+            z-index: 5;
             font-weight: 500;
+             border-right: 1px solid var(--border); /* Add separator */
         }
-        /* Last row no border */
-         .modern-table tbody tr:last-child td { border-bottom: none; }
+        .modern-table tbody tr:last-child td { border-bottom: none; }
 
         .modern-table tbody tr:hover td { background-color: var(--table-cell-hover); }
-         /* Keep sticky column background consistent on hover */
-        .modern-table tbody tr:hover td:first-child { background-color: var(--table-cell-hover); }
+        .modern-table tbody tr:hover td:first-child { background-color: var(--table-cell-hover); } /* Ensure sticky hover matches */
 
         .modern-table td.selected {
-            background: var(--selected-highlight) !important; /* Use variable, !important to override hover */
-            box-shadow: inset 3px 0 0 var(--selected-border); /* Use variable for border */
+            background: var(--selected-highlight) !important;
+            box-shadow: inset 3px 0 0 var(--selected-border);
         }
-        /* Ensure sticky selected cell also gets styles */
-         .modern-table td:first-child.selected {
+        .modern-table td:first-child.selected { /* Ensure sticky selected style */
              background: var(--selected-highlight) !important;
              box-shadow: inset 3px 0 0 var(--selected-border);
-         }
+        }
+         /* Subtle click effect */
+        .modern-table td[data-rating]:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
 
-        .category-header { font-weight: 500; } /* Make category names slightly bolder */
+        .category-header strong { font-weight: 700; } /* Make category title slightly bolder */
 
         /* Section headers for groups */
         .section-header td {
-            background: var(--table-header-bg); /* Use header background */
+            background: var(--table-header-bg);
             color: var(--text);
-            text-align: center;
-            font-size: 1.1rem;
+            text-align: left; /* Align left for consistency */
+            font-size: 1.05rem; /* Slightly smaller */
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            padding: 0.6rem; /* Less padding for section headers */
-            border-bottom: 2px solid var(--border); /* Match header border */
+            padding: 0.8rem 1.3rem; /* Adjusted padding */
+            border-bottom: 2px solid var(--border);
         }
-         .section-header:hover td { background-color: var(--table-cell-hover); } /* Use cell hover color */
-         .section-header td i { margin-left: 8px; transition: transform 0.3s ease; }
+         .section-header:hover td { background-color: var(--table-cell-hover); }
+         .section-header td i {
+            margin-left: 10px;
+            transition: transform 0.3s ease-out; /* Smoother transition */
+            display: inline-block; /* Needed for transform */
+         }
          .section-header.collapsed td i { transform: rotate(-90deg); }
 
 
         /* Collapsed Row Styling */
-        tr.collapsed-row {
-           display: none; /* Simpler way to hide */
-        }
+        tr.collapsed-row { display: none; }
 
         /* Feedback Panel */
-        .feedback-panel { margin-bottom: calc(var(--spacing) * 1.5); }
-        .feedback-panel h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem;}
         .feedback-panel label {
             font-weight: 500;
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 0.95rem; /* Slightly larger label */
         }
         .feedback-input {
             display: block;
             width: 100%;
             box-sizing: border-box;
-            min-height: 120px; /* Taller text area */
-            padding: 0.8rem;
+            min-height: 140px; /* Even taller text area */
+            padding: 0.9rem 1.1rem; /* More padding */
             border: 1px solid var(--input-border);
             border-radius: 8px;
             font-size: 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
             transition: var(--transition);
-            background-color: var(--bg);
+            background-color: var(--input-bg);
             color: var(--text);
-            margin-bottom: var(--spacing); /* Space between textareas */
-            resize: vertical; /* Allow vertical resize */
+            margin-bottom: calc(var(--spacing) * 1.5); /* More space below */
+            resize: vertical;
         }
         .feedback-input::placeholder { color: var(--placeholder-text); }
-        .feedback-input:focus {
-            outline: none;
-            border-color: var(--input-focus-border);
-            box-shadow: var(--input-focus-shadow);
-        }
+        /* input focus handled by global *:focus-visible */
 
         /* Legend & Definitions */
-        .legend-panel { margin-bottom: calc(var(--spacing) * 1.5); }
-        .legend-panel h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem; }
         #legend {
             font-size: 0.9rem;
-            line-height: 1.5;
-            background: var(--panel); /* Use panel background */
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: var(--spacing);
-            box-shadow: var(--shadow); /* Consistent shadow */
-            /* Removed display: none; Make legend visible by default */
+            line-height: 1.6; /* Improved line height */
+            /* Styles like background, border, padding now handled by .content-section wrapper */
         }
-        #legend h4 { margin-top: 0; margin-bottom: 0.5rem; font-weight: 600; }
+        #legend h4 { margin-top: 0; margin-bottom: 0.6rem; font-weight: 600; }
         #legend p { margin-bottom: 0.8rem; }
         #legend p:last-child { margin-bottom: 0; }
-        #legend strong { font-weight: 600; }
+        #legend strong { font-weight: 700; } /* Bolder legend keywords */
 
         /* Modal Styles using <dialog> */
-        .how-to-modal {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: calc(var(--spacing) * 1.5);
-            max-width: 600px; /* Limit width */
-            background: var(--panel);
-            color: var(--text);
+        .how-to-modal { /* Styles seem fine, maybe slightly larger padding */
+             border: 1px solid var(--border); border-radius: var(--radius);
+             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Slightly softer modal shadow */
+             padding: calc(var(--spacing) * 2); /* More modal padding */
+             max-width: 650px; background: var(--panel); color: var(--text);
         }
-         /* Style the backdrop */
-        .how-to-modal::backdrop {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
-        }
-        .how-to-modal h2 { margin-top: 0; color: var(--primary-light); }
+        .how-to-modal::backdrop { background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(4px); }
+        .how-to-modal h2 { margin-top: 0; margin-bottom: 1.2rem; color: var(--primary-light); border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
         .how-to-modal .modal-content { line-height: 1.7; }
+        .how-to-modal .modal-content ol { padding-left: 1.5rem; }
+         .how-to-modal .modal-content li { margin-bottom: 0.8rem; }
         .how-to-modal .close-btn {
-            float: right; /* Simple float for close button */
-            background: transparent;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text);
-            cursor: pointer;
-            padding: 0.2rem;
-            line-height: 1;
-            opacity: 0.7;
+            float: right; background: transparent; border: none; font-size: 1.6rem; color: var(--text);
+            cursor: pointer; padding: 0.2rem; line-height: 1; opacity: 0.6; transition: opacity 0.2s ease;
         }
         .how-to-modal .close-btn:hover { opacity: 1; }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .analyzer-header { flex-direction: column; align-items: flex-start; }
-            .header-right { width: 100%; justify-content: space-between; }
-            .info-grid { grid-template-columns: 1fr; } /* Stack info inputs */
-            .modern-table thead th { padding: 0.6rem 0.8rem; }
-            .modern-table tbody td { padding: 0.6rem 0.8rem; }
-             /* Ensure sticky columns still work visually on mobile if table scrolls */
-            .modern-table thead th:first-child {
-                background: var(--gradient); /* Ensure gradient on first head */
-                color: #fff; /* Text color for gradient */
+            .analyzer-header { flex-direction: column; align-items: flex-start; gap: var(--spacing); }
+            .header-right { width: 100%; justify-content: flex-start; } /* Align buttons left */
+            .info-grid { grid-template-columns: 1fr; }
+            .modern-table thead th { padding: 0.8rem 1rem; }
+            .modern-table tbody td { padding: 0.8rem 1rem; }
+
+            /* Ensure sticky columns still work visually on mobile */
+            .modern-table thead th:first-child,
+            .modern-table tbody td:first-child {
                 background-clip: padding-box; /* Prevent bg bleed under border */
             }
-             .modern-table tbody td:first-child {
-                 background: var(--table-cell-bg); /* Body cells match theme */
-                 color: var(--text);
-             }
-            .modern-table tbody tr:hover td:first-child {
-                background-color: var(--table-cell-hover);
-            }
-            .modern-table td:first-child.selected {
-                 background: var(--selected-highlight) !important;
-            }
+             .modern-table thead th:first-child { background: var(--gradient); color: #fff; }
+             .modern-table tbody td:first-child { background: var(--table-cell-bg); color: var(--text); }
+             .modern-table tbody tr:hover td:first-child { background-color: var(--table-cell-hover); }
+             .modern-table td:first-child.selected { background: var(--selected-highlight) !important; }
         }
 
     </style>
 </head>
 <body>
-    <header class="analyzer-header glass-panel">
-        <div class="header-left">
+    <header class="analyzer-header"> <div class="header-left">
             <div class="site-title">
                 <i class="fas fa-film" aria-hidden="true"></i>
                 <span>Gaming Video Review</span>
@@ -514,7 +502,7 @@
     <main>
         <div class="analyzer-container">
 
-            <section class="video-info-panel glass-panel" aria-labelledby="videoInfoHeading">
+            <section class="content-section video-info-panel" aria-labelledby="videoInfoHeading">
                 <h2 id="videoInfoHeading">Video Information</h2>
                 <div class="info-grid">
                     <div>
@@ -532,7 +520,7 @@
                 </div>
             </section>
 
-            <section class="rubric-section" aria-labelledby="masterRubricHeading">
+            <section class="content-section rubric-section" aria-labelledby="masterRubricHeading">
                  <h2 id="masterRubricHeading">Editing Review Rubric</h2>
                  <div class="rubric-table-wrapper">
                     <table class="modern-table" id="masterTable">
@@ -704,7 +692,7 @@
                 </div>
             </section>
 
-             <section class="feedback-panel glass-panel" aria-labelledby="feedbackHeading">
+             <section class="content-section feedback-panel" aria-labelledby="feedbackHeading">
                 <h2 id="feedbackHeading">Review Feedback</h2>
                 <div class="feedback-entry">
                     <label for="specificFeedback">Specific Feedback (Mention Category or Timestamp):</label>
@@ -724,7 +712,7 @@
                 </div>
             </section>
 
-            <section class="legend-panel" aria-labelledby="legendHeading">
+            <section class="content-section legend-panel" aria-labelledby="legendHeading">
                 <h2 id="legendHeading">Rating Legend</h2>
                 <div id="legend">
                     <p><strong>Needs Improvement (1pt):</strong> Major issues hindering viewer experience or retention. Requires significant revision.</p>
@@ -776,9 +764,7 @@
 
             // --- Configuration ---
             const MAX_SCORE_PER_CATEGORY = 4;
-            // Corrected Total Categories based on original HTML (0-18)
-            const TOTAL_CATEGORIES = masterTable.querySelectorAll('tbody tr[data-category-id]').length; // Should be 19
-             // Corrected Max Possible Score
+            const TOTAL_CATEGORIES = 19; // Categories 0-18
             const MAX_POSSIBLE_SCORE = TOTAL_CATEGORIES * MAX_SCORE_PER_CATEGORY; // 19 * 4 = 76
 
             // Register dialog polyfill if needed
@@ -798,58 +784,53 @@
                 let currentTotal = 0;
                 let categoriesScored = 0;
 
-                masterTable.querySelectorAll('tbody td.selected').forEach(cell => {
-                    const rating = parseInt(cell.dataset.rating, 10);
-                    currentTotal += rating;
-                    // Only count if the category ID exists in our state management
-                    const categoryId = cell.dataset.category;
-                    if (scores.hasOwnProperty(categoryId) && scores[categoryId] > 0) {
-                         categoriesScored++;
-                    }
-                });
-                 // Ensure categoriesScored doesn't exceed total available categories
-                 categoriesScored = Math.min(categoriesScored, TOTAL_CATEGORIES);
+                // Iterate through defined categories (0-18) to ensure count is accurate
+                 for (let i = 0; i < TOTAL_CATEGORIES; i++) {
+                     const categoryId = i.toString();
+                     if (scores.hasOwnProperty(categoryId) && scores[categoryId] > 0) {
+                        currentTotal += scores[categoryId];
+                        categoriesScored++;
+                     }
+                 }
 
                  // Update score text in header
                 scoreTotalEl.textContent = currentTotal;
-                 // Update main score text and tooltip with correct max score
-                scoreTextEl.textContent = `Overall (${currentTotal}/${MAX_POSSIBLE_SCORE})`;
-                scoreDisplayEl.setAttribute('data-tooltip', `Overall Score (${currentTotal}/${MAX_POSSIBLE_SCORE})`);
+                scoreTextEl.textContent = `Overall (<span class="math-inline">\{currentTotal\}/</span>{MAX_POSSIBLE_SCORE})`;
+                scoreDisplayEl.setAttribute('data-tooltip', `Overall Score (<span class="math-inline">\{currentTotal\}/</span>{MAX_POSSIBLE_SCORE})`);
 
                 // Determine label and ranking
                 let label = 'Needs Work';
                 let ranking = 'Incomplete';
                 const percentage = MAX_POSSIBLE_SCORE > 0 ? (currentTotal / MAX_POSSIBLE_SCORE) * 100 : 0;
 
-                if (categoriesScored === TOTAL_CATEGORIES) { // Check if all categories are scored
+                if (categoriesScored === TOTAL_CATEGORIES) { // Check if all 19 categories are scored
                      ranking = `Final Score: ${percentage.toFixed(0)}% - `;
-                     if (percentage >= 90) { // 90%+ Outstanding
+                     if (percentage >= 90) {
                         label = 'Outstanding';
                         ranking += 'Excellent - Ready to Publish!';
-                        if (!confettiShown) { // Trigger confetti only once when reaching outstanding
+                        if (!confettiShown) {
                            triggerConfetti();
                            confettiShown = true;
                         }
-                    } else if (percentage >= 75) { // 75-89% Good
+                    } else if (percentage >= 75) {
                         label = 'Good';
                          ranking += 'Solid - Minor tweaks optional.';
-                         confettiShown = false; // Reset confetti flag if score drops
-                    } else if (percentage >= 50) { // 50-74% Fair
+                         confettiShown = false;
+                    } else if (percentage >= 50) {
                         label = 'Fair';
                          ranking += 'Okay - Consider revisions.';
                          confettiShown = false;
-                    } else { // Below 50% Needs Work
+                    } else {
                         label = 'Needs Work';
                         ranking += 'Needs Significant Improvement.';
                         confettiShown = false;
                     }
                 } else if (categoriesScored > 0) {
-                     ranking = `In Progress (${categoriesScored}/${TOTAL_CATEGORIES} rated)`;
-                     // Keep label based on partial score trend
+                     ranking = `In Progress (<span class="math-inline">\{categoriesScored\}/</span>{TOTAL_CATEGORIES} rated)`;
                       if (percentage >= 75) label = 'Good';
                       else if (percentage >= 50) label = 'Fair';
                       else label = 'Needs Work';
-                      confettiShown = false; // Reset confetti if incomplete
+                      confettiShown = false;
                  } else {
                      label = 'Not Started';
                      ranking = 'Incomplete';
@@ -860,38 +841,25 @@
                 scoreLabelEl.textContent = label;
                 rankingEl.textContent = ranking;
 
-                 // Save current state
                  saveState();
              }
 
              // Handle Cell Click
             function handleCellClick(event) {
-                const target = event.target.closest('td'); // Ensure we get the TD
-                if (!target || !target.dataset.category || !target.dataset.rating) {
-                    return; // Exit if not a rating cell
-                }
+                const target = event.target.closest('td');
+                if (!target || !target.dataset.category || !target.dataset.rating) return;
 
                  const categoryId = target.dataset.category;
                  const rating = parseInt(target.dataset.rating, 10);
                  const row = target.parentElement;
-
-                 // If clicking the already selected cell, deselect it (optional, uncomment if desired)
-                // if (target.classList.contains('selected')) {
-                //     target.classList.remove('selected');
-                //     scores[categoryId] = 0; // Set score to 0 if deselected
-                //     calculateAndUpdateScore();
-                //     return; // Stop further processing
-                // }
-
 
                 // Deselect other cells in the same row
                  row.querySelectorAll('td[data-rating]').forEach(cell => {
                     cell.classList.remove('selected');
                  });
 
-                 // Select the clicked cell
                  target.classList.add('selected');
-                 scores[categoryId] = rating; // Update score state
+                 scores[categoryId] = rating;
 
                  calculateAndUpdateScore();
             }
@@ -899,92 +867,69 @@
              // Reset Function
             function resetAll() {
                 if (!confirm('Are you sure you want to reset all scores and feedback?')) return;
-
-                 scores = {}; // Clear score state
-                 // Initialize scoreData for all categories to 0
-                 for (let i = 0; i < TOTAL_CATEGORIES; i++) {
-                     scores[i.toString()] = 0;
-                 }
+                 initializeScores(); // Reset scores object correctly
 
                  masterTable.querySelectorAll('tbody td.selected').forEach(cell => {
                      cell.classList.remove('selected');
                  });
-                 // Clear text inputs/areas
                  videoTitleInput.value = '';
                  videoUrlInput.value = '';
                  reviewerNameInput.value = '';
                  specificFeedback.value = '';
                  overallFeedback.value = '';
-                 confettiShown = false; // Reset confetti flag
+                 confettiShown = false;
 
-                 calculateAndUpdateScore(); // Update display to zero/initial state
-                 localStorage.removeItem('reviewAppState'); // Clear saved state
+                 calculateAndUpdateScore();
+                 localStorage.removeItem('reviewAppState');
              }
 
             // Export as PNG
             function exportPNG() {
-                const mainElement = document.querySelector('main'); // Capture the main content area
-                 const headerElement = document.querySelector('.analyzer-header'); // Capture header too
+                const mainElement = document.querySelector('main');
+                 const headerElement = document.querySelector('.analyzer-header');
 
-                 // Options for html2canvas
                  const options = {
-                     scale: 1.5, // Increase scale for better resolution
-                     useCORS: true, // If using external images/fonts
-                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff', // Use current theme bg
-                     logging: false, // Disable console logging from html2canvas
-                     windowWidth: 1400, // Define a width to handle potential layout issues
-                     windowHeight: document.documentElement.scrollHeight // Use full height
+                     scale: 1.5, useCORS: true,
+                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff',
+                     logging: false, windowWidth: 1400, windowHeight: document.documentElement.scrollHeight
                  };
 
-                 // Temporarily make everything visible for capture if sections are collapsed
                  const collapsedSections = document.querySelectorAll('.section-header.collapsed');
                  collapsedSections.forEach(header => toggleSection(header, true)); // Force expand
 
-                 // Create a temporary container to hold both header and main for export
                  const exportContainer = document.createElement('div');
-                 exportContainer.style.padding = '1rem'; // Add padding around the captured area
+                 exportContainer.style.padding = '1rem';
                  exportContainer.style.backgroundColor = options.backgroundColor;
-                 // Clone header and main content
                  const clonedHeader = headerElement.cloneNode(true);
                  const clonedMain = mainElement.cloneNode(true);
                  exportContainer.appendChild(clonedHeader);
                  exportContainer.appendChild(clonedMain);
 
-
-                 // Append to body temporarily to render, but position off-screen
                  exportContainer.style.position = 'absolute';
                  exportContainer.style.left = '-9999px';
                  exportContainer.style.top = '-9999px';
-                 exportContainer.style.width = `${options.windowWidth}px`; // Set width for rendering
+                 exportContainer.style.width = `${options.windowWidth}px`;
                  document.body.appendChild(exportContainer);
 
-                 // Ensure styles are applied before capture
-                 setTimeout(() => {
+                 setTimeout(() => { // Timeout helps ensure styles are rendered for capture
                      html2canvas(exportContainer, options).then(canvas => {
                          const link = document.createElement('a');
                          const timestamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
                          const title = (videoTitleInput.value || 'video-review').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                         link.download = `${title}_review_${timestamp}.png`;
+                         link.download = `<span class="math-inline">\{title\}\_review\_</span>{timestamp}.png`;
                          link.href = canvas.toDataURL('image/png');
                          link.click();
-
-                          // Clean up the temporary container
-                          document.body.removeChild(exportContainer);
-
-                          // Restore collapsed sections
-                         collapsedSections.forEach(header => toggleSection(header, false)); // Restore original state
+                         document.body.removeChild(exportContainer);
+                         collapsedSections.forEach(header => toggleSection(header, false));
                      }).catch(err => {
                          console.error("Error exporting PNG:", err);
                          alert("Could not export PNG. See console for details.");
-                          // Clean up the temporary container even on error
-                          if (document.body.contains(exportContainer)) {
-                              document.body.removeChild(exportContainer);
-                          }
-                          // Restore collapsed sections
+                         if (document.body.contains(exportContainer)) {
+                             document.body.removeChild(exportContainer);
+                         }
                          collapsedSections.forEach(header => toggleSection(header, false));
                      });
-                 }, 100); // Small delay to allow rendering
-
+                 }, 150); // Increased delay slightly
             }
 
             // Toggle Dark/Light Theme
@@ -1000,39 +945,22 @@
 
              // Trigger Confetti
              function triggerConfetti() {
-                 if (typeof confetti === "function") { // Check if confetti library loaded
-                     confetti({
-                         particleCount: 150,
-                         spread: 90,
-                         origin: { y: 0.6 }
-                     });
+                 if (typeof confetti === "function") {
+                     confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
                  }
              }
 
              // Modal Handling
-            function openHowTo() {
-                 howToModal.showModal();
-             }
-            function closeHowTo() {
-                 howToModal.close();
-             }
+            function openHowTo() { howToModal.showModal(); }
+            function closeHowTo() { howToModal.close(); }
 
               // Section Collapse/Expand
             function toggleSection(headerElement, forceExpand = null) {
                  const group = headerElement.dataset.group;
                  if (!group) return;
-
                  const rowsToToggle = masterTable.querySelectorAll(`tbody tr[data-group="${group}"]:not(.section-header)`);
-                 const icon = headerElement.querySelector('i.fa-chevron-down, i.fa-chevron-right'); // Select correct icon
-
-                 let isCollapsed;
-
-                 if (forceExpand !== null) {
-                     isCollapsed = !forceExpand; // If forcing expand, treat as if it was collapsed
-                 } else {
-                     isCollapsed = headerElement.classList.contains('collapsed');
-                 }
-
+                 const icon = headerElement.querySelector('i.fa-chevron-down, i.fa-chevron-right');
+                 let isCollapsed = (forceExpand !== null) ? !forceExpand : headerElement.classList.contains('collapsed');
 
                  if (isCollapsed) { // Expand
                     headerElement.classList.remove('collapsed');
@@ -1050,18 +978,11 @@
              // --- State Persistence (localStorage) ---
              function saveState() {
                  const state = {
-                     scores: scores,
-                     videoTitle: videoTitleInput.value,
-                     videoUrl: videoUrlInput.value,
-                     reviewerName: reviewerNameInput.value,
-                     specificFeedback: specificFeedback.value,
-                     overallFeedback: overallFeedback.value
+                     scores: scores, videoTitle: videoTitleInput.value, videoUrl: videoUrlInput.value,
+                     reviewerName: reviewerNameInput.value, specificFeedback: specificFeedback.value, overallFeedback: overallFeedback.value
                  };
-                 try {
-                     localStorage.setItem('reviewAppState', JSON.stringify(state));
-                 } catch (e) {
-                     console.error("Could not save state to localStorage:", e);
-                 }
+                 try { localStorage.setItem('reviewAppState', JSON.stringify(state)); }
+                 catch (e) { console.error("Could not save state:", e); }
              }
 
              function loadState() {
@@ -1069,10 +990,13 @@
                  if (savedState) {
                      try {
                         const state = JSON.parse(savedState);
-                         // Initialize scores object before loading
-                         scores = {};
-                         for (let i = 0; i < TOTAL_CATEGORIES; i++) {
-                             scores[i.toString()] = state.scores ? (state.scores[i.toString()] || 0) : 0;
+                         initializeScores(); // Initialize scores object first
+                         // Load scores from saved state
+                         if (state.scores) {
+                             for (let i = 0; i < TOTAL_CATEGORIES; i++) {
+                                 const categoryId = i.toString();
+                                 scores[categoryId] = state.scores[categoryId] || 0;
+                             }
                          }
 
                          videoTitleInput.value = state.videoTitle || '';
@@ -1081,38 +1005,28 @@
                          specificFeedback.value = state.specificFeedback || '';
                          overallFeedback.value = state.overallFeedback || '';
 
-                         // Re-apply selections to the table
                          masterTable.querySelectorAll('tbody td[data-category][data-rating]').forEach(cell => {
                              const categoryId = cell.dataset.category;
                              const rating = parseInt(cell.dataset.rating, 10);
-                             if (scores[categoryId] === rating) {
-                                 cell.classList.add('selected');
-                             } else {
-                                 cell.classList.remove('selected');
-                             }
+                             cell.classList.toggle('selected', scores[categoryId] === rating);
                          });
-
-                         calculateAndUpdateScore(); // Update score display based on loaded state
-
+                         calculateAndUpdateScore();
                      } catch (e) {
-                         console.error("Error loading saved state:", e);
-                         localStorage.removeItem('reviewAppState'); // Clear corrupted state
-                         initializeScores(); // Initialize scores if loading failed
-                         calculateAndUpdateScore(); // Calculate initial score
+                         console.error("Error loading state:", e);
+                         localStorage.removeItem('reviewAppState');
+                         initializeScores();
+                         calculateAndUpdateScore();
                      }
                  } else {
-                     initializeScores(); // Initialize scores if no state saved
-                     calculateAndUpdateScore(); // Calculate initial score
+                     initializeScores();
+                     calculateAndUpdateScore();
                  }
              }
 
-             // Helper to initialize the scores object
              function initializeScores() {
                  scores = {};
-                 for (let i = 0; i < TOTAL_CATEGORIES; i++) {
-                     scores[i.toString()] = 0;
-                 }
-                 confettiShown = false; // Reset confetti flag on init
+                 for (let i = 0; i < TOTAL_CATEGORIES; i++) { scores[i.toString()] = 0; }
+                 confettiShown = false;
              }
 
 
@@ -1122,72 +1036,11 @@
             exportButton.addEventListener('click', exportPNG);
             howToButton.addEventListener('click', openHowTo);
             closeModalButton.addEventListener('click', closeHowTo);
+            howToModal.addEventListener('click', (event) => { if (event.target === howToModal) closeHowTo(); });
+            darkModeToggle.addEventListener('change', (event) => toggleTheme(event.target.checked));
 
-             // Close modal on backdrop click
-             howToModal.addEventListener('click', (event) => {
-                if (event.target === howToModal) {
-                     closeHowTo();
-                }
-             });
-
-            // Dark mode
-             darkModeToggle.addEventListener('change', (event) => {
-                toggleTheme(event.target.checked);
-             });
-
-             // Section collapse/expand
-             masterTable.querySelectorAll('.section-header').forEach(header => {
+            masterTable.querySelectorAll('.section-header').forEach(header => {
                  header.addEventListener('click', () => toggleSection(header));
-                 header.addEventListener('keydown', (event) => { // Add keyboard support
-                     if (event.key === 'Enter' || event.key === ' ') {
-                         event.preventDefault(); // Prevent page scroll on space
-                         toggleSection(header);
-                     }
-                 });
-                 // Initialize icons based on default state (expanded unless explicitly collapsed)
-                 const icon = header.querySelector('i.fa-chevron-down, i.fa-chevron-right');
-                  if (icon) {
-                      if (header.classList.contains('collapsed')) {
-                          icon.classList.replace('fa-chevron-down','fa-chevron-right');
-                          header.setAttribute('aria-expanded', 'false');
-                           // Ensure rows start collapsed if header has class
-                           toggleSection(header);
-                      } else {
-                           icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
-                           header.setAttribute('aria-expanded', 'true');
-                      }
-                  }
-
-             });
-
-
-             // Save state on input changes
-             [videoTitleInput, videoUrlInput, reviewerNameInput, specificFeedback, overallFeedback].forEach(input => {
-                 input.addEventListener('input', saveState);
-             });
-
-
-            // --- Initialization ---
-            // Set initial theme based on preference/localStorage
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-            const savedTheme = localStorage.getItem('theme');
-
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark.matches)) {
-                darkModeToggle.checked = true;
-                toggleTheme(true);
-            } else {
-                darkModeToggle.checked = false;
-                toggleTheme(false);
-            }
-
-             // Update max score in UI text
-             scoreTextEl.textContent = `Overall (0/${MAX_POSSIBLE_SCORE})`;
-             scoreDisplayEl.setAttribute('data-tooltip', `Overall Score (0/${MAX_POSSIBLE_SCORE})`);
-
-             // Load saved state (scores, feedback, etc.)
-             loadState(); // This now also initializes scores if no state found
-
-        }); // End DOMContentLoaded
-    </script>
-</body>
-</html>
+                 header.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleSection(header); }});
+                 // Initialize icons correctly
+                 const icon
