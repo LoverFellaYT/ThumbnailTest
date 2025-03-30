@@ -1,1436 +1,1193 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editing Review Pro+ (Unified Table)</title>
+    <title>Gaming Video Editing Review Rubric</title>
 
-    <!-- Font Awesome for editing icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      integrity="sha512-Fo3rlrZj/k7ujTnH/PRRZ9i6Lkxy/lK+Ad+Qw3PweIIsXgTn5N2sA3ZgP6L6YKn42pPZLNSQNkI3b7HlFj5pAg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Roboto Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 
-    <!-- html2canvas for PNG Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Canvas Confetti for Outstanding Score Effect -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/dialog-polyfill/dist/dialog-polyfill.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/dialog-polyfill/dist/dialog-polyfill.css" />
 
     <style>
-      /* CSS Variables & Base Styles */
-      :root {
-        --primary-light: #4facfe;
-        --accent-light: #00f2fe;
-        --bg-light: #f9fafb;
-        --text-light: #1e293b;
-        --panel-light: rgba(255, 255, 255, 0.96);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-        --transition: all 0.2s ease;
-        --radius: 14px;
-        --gradient-light: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
-        --spacing: 1rem;
-        --font-base: 'Roboto', sans-serif;
-        --table-cell-bg-light: rgba(255, 255, 255, 0.85);
-      }
+        /* CSS Variables & Base Styles */
+        :root {
+            --primary-light: #4facfe;
+            --accent-light: #00f2fe;
+            --bg-light: #f9fafb;
+            --text-light: #1e293b;
+            --panel-light: rgba(255, 255, 255, 0.96);
+            --border-light: rgba(0, 0, 0, 0.1); /* Adjusted for better visibility */
+            --header-bg-light: rgba(255, 255, 255, 0.85); /* Header slightly more opaque */
+            --table-header-bg-light: rgba(243, 244, 246, 0.9); /* Standard header bg */
+            --table-cell-bg-light: rgba(255, 255, 255, 0.85);
+            --table-cell-hover-light: rgba(239, 246, 255, 0.9); /* Subtle hover */
+            --selected-highlight: rgba(79, 172, 254, 0.3); /* Use primary color with alpha */
+            --selected-border: var(--primary-light);
+            --input-border-light: #e2e8f0;
+            --input-focus-border-light: var(--primary-light);
+            --input-focus-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+            --placeholder-text-light: #9ca3af;
 
-      /* Dark Mode Variables */
-      html[data-theme="dark"] {
-        --bg-light: #1f1f1f;
-        --text-light: #f3f3f3;
-        --panel-light: rgba(18, 18, 18, 0.98);
-        --border-light: rgba(255, 255, 255, 0.2);
-        --gradient-light: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --table-cell-bg-light: rgba(30, 30, 30, 0.85);
-      }
+            /* Dark Mode Overrides */
+            --bg-dark: #1f1f1f;
+            --text-dark: #f3f3f3;
+            --panel-dark: rgba(30, 30, 30, 0.98);
+            --border-dark: rgba(255, 255, 255, 0.15);
+            --header-bg-dark: rgba(30, 30, 30, 0.9);
+            --table-header-bg-dark: rgba(40, 40, 40, 0.9);
+            --table-cell-bg-dark: rgba(50, 50, 50, 0.85);
+            --table-cell-hover-dark: rgba(60, 60, 60, 0.9);
+            --input-border-dark: #4b5563;
+            --input-focus-border-dark: var(--accent-light);
+            --input-focus-shadow-dark: 0 0 0 3px rgba(0, 242, 254, 0.2);
+             --placeholder-text-dark: #6b7280;
 
-      /* Base styles */
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: var(--font-base);
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), var(--bg-light);
-        background-size: 30px 30px;
-        color: var(--text-light);
-        transition: var(--transition);
-      }
+            --shadow: 0 6px 24px rgba(31, 38, 135, 0.08);
+            --transition: all 0.2s ease-in-out;
+            --radius: 12px; /* Slightly smaller radius */
+            --gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+            --spacing: 1rem;
+            --font-base: 'Roboto', sans-serif;
+        }
 
-      button:focus,
-      [tabindex]:focus {
-        outline: 2px solid var(--accent-light);
-      }
+        /* Apply light theme by default */
+        html {
+            --bg: var(--bg-light);
+            --text: var(--text-light);
+            --panel: var(--panel-light);
+            --border: var(--border-light);
+            --header-bg: var(--header-bg-light);
+            --table-header-bg: var(--table-header-bg-light);
+            --table-cell-bg: var(--table-cell-bg-light);
+            --table-cell-hover: var(--table-cell-hover-light);
+            --input-border: var(--input-border-light);
+            --input-focus-border: var(--input-focus-border-light);
+            --placeholder-text: var(--placeholder-text-light);
+        }
 
-      /* Panels */
-      .glass-panel {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        padding: var(--spacing);
-        margin-bottom: var(--spacing);
-      }
+        /* Apply dark theme when attribute is present */
+        html[data-theme="dark"] {
+            --bg: var(--bg-dark);
+            --text: var(--text-dark);
+            --panel: var(--panel-dark);
+            --border: var(--border-dark);
+            --header-bg: var(--header-bg-dark);
+            --table-header-bg: var(--table-header-bg-dark);
+            --table-cell-bg: var(--table-cell-bg-dark);
+            --table-cell-hover: var(--table-cell-hover-dark);
+            --input-border: var(--input-border-dark);
+            --input-focus-border: var(--input-focus-border-dark);
+            --placeholder-text: var(--placeholder-text-dark);
+            --input-focus-shadow: var(--input-focus-shadow-dark); /* Correct shadow variable for dark mode */
+        }
 
-      /* HEADER */
-      header.analyzer-header {
-        position: sticky;
-        top: 0;
-        z-index: 2000;
-        padding: 1.5rem 2rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-base);
+            background-color: var(--bg);
+            /* Optional subtle pattern */
+            background-image: radial-gradient(circle, rgba(128, 128, 128, 0.05) 1px, transparent 1px);
+            background-size: 25px 25px;
+            color: var(--text);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+            line-height: 1.6;
+        }
 
-      .header-left {
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-      }
+        button:focus,
+        input:focus,
+        textarea:focus,
+        [tabindex]:focus {
+            outline: 2px solid var(--accent-light);
+            outline-offset: 2px;
+        }
+        *:focus-visible { /* More modern focus state */
+             outline: 2px solid var(--accent-light);
+             outline-offset: 2px;
+        }
 
-      .site-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .site-title i {
-        color: var(--accent-light);
-      }
 
-      .total-score {
-        font-size: 1.2rem;
-        font-weight: 600;
-        background: var(--gradient-light);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        position: relative;
-        cursor: default;
-        transition: var(--transition);
-      }
-      .total-score:hover::after {
-        content: "Overall (0/84)";
-        position: absolute;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 4px;
-        top: 110%;
-        left: 0;
-        white-space: pre-line;
-        font-size: 0.85rem;
-        z-index: 1000;
-      }
-      .status-indicator {
-        font-weight: 600;
-      }
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-      .header-right .group {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
+        /* Panels */
+        .glass-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px); /* Keep blur subtle */
+            padding: calc(var(--spacing) * 1.5); /* Slightly more padding */
+            margin-bottom: var(--spacing);
+            transition: var(--transition);
+        }
 
-      .btn {
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: 600;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.2);
-      }
-      .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(126, 34, 206, 0.4);
-      }
+        /* HEADER */
+        .analyzer-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000; /* Ensure it's above content */
+            padding: var(--spacing) calc(var(--spacing) * 1.5);
+            margin-bottom: var(--spacing);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: var(--spacing);
+            background: var(--header-bg); /* Use specific header background */
+        }
 
-      /* Dark Mode Slider */
-      .dark-mode { }
-      .toggle-label.dark-mode-label {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-      }
-      .dark-mode-slider {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        background-color: #e0e0e0;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5px;
-        transition: background-color 0.3s;
-      }
-      .dark-mode-slider .mode-label {
-        font-size: 16px;
-      }
-      .dark-mode-slider .slider-thumb {
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s;
-      }
-      input#darkModeToggle { display: none; }
-      input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
-        transform: translateX(30px);
-      }
-      input#darkModeToggle:checked + .dark-mode-slider {
-        background-color: var(--primary-light);
-      }
+        .header-left { display: flex; flex-direction: column; gap: 0.25rem; }
+        .site-title { font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        .site-title i { color: var(--primary-light); } /* Use primary color for icon */
 
-      /* Quote Section (Top) */
-      .quote-section {
-        text-align: center;
-        margin: 1rem auto;
-        font-style: italic;
-        padding: 0.5rem;
-        background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.8s ease-in-out;
-        max-width: 800px;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
+        .total-score {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative; /* Needed for pseudo-element */
+            cursor: default;
+        }
+         /* Tooltip for score - Simplified */
+        .total-score::after {
+            content: attr(data-tooltip); /* Use a data attribute for the text */
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            top: 120%; /* Position below */
+            left: 50%;
+            transform: translateX(-50%); /* Center align */
+            white-space: nowrap;
+            font-size: 0.8rem;
+            z-index: 10;
+            opacity: 0; /* Hidden by default */
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .total-score:hover::after,
+        .total-score:focus::after { /* Show on hover or focus */
+            opacity: 1;
+            visibility: visible;
+        }
 
-      /* Main Content */
-      main {
-        margin: var(--spacing) auto;
-      }
-      .analyzer-container {
-        width: 95%;
-        max-width: 1400px;
-        margin: 2rem auto;
-        padding: 0 var(--spacing) 2rem;
-      }
+        .status-indicator { font-weight: 600; font-size: 0.9rem; opacity: 0.8; }
+        .header-right { display: flex; align-items: center; gap: var(--spacing); flex-wrap: wrap; }
 
-      /* Rubric Table */
-      .rubric-table {
-        margin-bottom: var(--spacing);
-        overflow-x: auto;
-      }
-      .modern-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        font-family: var(--font-base);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: var(--radius);
-        overflow: hidden;
-        transition: var(--transition);
-      }
-      .modern-table thead th {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        position: sticky;
-        top: 0;
-        backdrop-filter: blur(10px);
-        z-index: 10;
-        text-align: left;
-      }
-      /* Revert to the original table header colors */
-      .modern-table thead th:first-child {
-        background: var(--gradient-light);
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(2) {
-        background: #f87171;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(3) {
-        background: #fb923c;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(4) {
-        background: #facc15;
-        color: #fff;
-      }
-      .modern-table thead th:nth-child(5) {
-        background: #4ade80;
-        color: #fff;
-      }
+        /* Buttons */
+        .btn {
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 500; /* Slightly less bold */
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            text-decoration: none; /* For potential <a> elements styled as buttons */
+        }
+        .btn:hover, .btn:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+        .btn i { line-height: 1; } /* Align Font Awesome icons better */
 
-      .modern-table tbody td {
-        padding: 0.75rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        transition: var(--transition);
-        vertical-align: top;
-        cursor: pointer;
-        background: var(--table-cell-bg-light);
-      }
-      .modern-table tbody td:hover {
-        transform: scale(1.01);
-        background-color: rgba(224, 231, 255, 0.3);
-      }
-      .modern-table tbody tr:hover td {
-        background-color: rgba(0, 0, 0, 0.03);
-      }
-      .modern-table td.selected {
-        background: rgba(224, 231, 255, 0.5) !important;
-        box-shadow: inset 4px 0 0 var(--primary-light);
-      }
+        /* Dark Mode Slider */
+        .dark-mode-label { cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .dark-mode-slider {
+            position: relative;
+            width: 50px; /* Smaller slider */
+            height: 26px;
+            background-color: #ccc; /* Default light grey */
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4px;
+            transition: background-color 0.3s ease;
+        }
+        html[data-theme="dark"] .dark-mode-slider { background-color: #555; } /* Dark mode background */
 
-      .category-header {
-        font-weight: normal;
-      }
+        .dark-mode-slider .mode-icon { font-size: 14px; color: #fff; }
+        .dark-mode-slider .slider-thumb {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        input#darkModeToggle { display: none; } /* Hide checkbox */
 
-      /* Section headers for groups */
-      .section-header {
-        background: white;
-        color: #000;
-        text-align: center;
-        font-size: 1.1rem;
-        cursor: pointer;
-        transition: background-color 0.5s ease;
-      }
-      tr.collapsed {
-        opacity: 0;
-        pointer-events: none;
-        height: 0px;
-        transition: all 0.3s ease;
-      }
-      tr.collapsed td {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        border: 0 !important;
-        line-height: 0 !important;
-      }
+        input#darkModeToggle:checked + .dark-mode-slider .slider-thumb {
+            transform: translateX(24px); /* Adjust translation distance */
+        }
+        input#darkModeToggle:checked + .dark-mode-slider {
+            background-color: var(--primary-light); /* Use primary color when active */
+        }
 
-      /* Feedback Panel */
-      .feedback-panel h3 { margin-top: 0; }
-      .feedback-panel .feedback-entry { margin-bottom: var(--spacing); }
-      .feedback-panel label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 0.3rem;
-      }
-      .feedback-input {
-        display: block;
-        width: 100%;
-        max-width: 600px;
-        box-sizing: border-box;
-        min-height: 80px;
-        padding: var(--spacing);
-        border: 2px solid #e2e8f0;
-        border-radius: var(--radius);
-        font-size: 1rem;
-        transition: var(--transition);
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow: auto;
-      }
-      .feedback-input:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
-      }
-      .feedback-input:empty::before {
-        content: attr(data-placeholder);
-        color: #9ca3af;
-      }
+        /* Main Content */
+        main { margin: var(--spacing) auto; max-width: 1600px; padding: 0 var(--spacing); }
+        .analyzer-container { padding: var(--spacing); }
 
-      /* Legend & Definitions */
-      #toggleLegend {
-        margin: var(--spacing) 0;
-        padding: 0.4rem 0.8rem;
-        background: var(--gradient-light);
-        color: #fff;
-        border: none;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: var(--transition);
-      }
-      #toggleLegend:hover { opacity: 0.9; }
-      #legend {
-        display: none;
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        padding: var(--spacing);
-      }
-      #legend h4 { margin-top: 0; }
+         /* Video Info Section */
+        .video-info-panel { margin-bottom: calc(var(--spacing) * 1.5); }
+        .video-info-panel h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing); }
+        .info-grid label { font-weight: 500; display: block; margin-bottom: 0.3rem; font-size: 0.9rem; }
+        .info-grid input[type="text"],
+        .info-grid input[type="url"] {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px; /* Consistent radius */
+            font-size: 1rem;
+            background-color: var(--bg); /* Match body background */
+            color: var(--text);
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+        .info-grid input[type="text"]:focus,
+        .info-grid input[type="url"]:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            box-shadow: var(--input-focus-shadow);
+        }
 
-      /* Review Checklist Section */
-      .review-checklist {
-        background: var(--panel-light);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: var(--spacing);
-        margin: 2rem auto 1rem;
-        max-width: 800px;
-      }
-      .review-checklist h3 {
-        text-align: center;
-        margin-top: 0;
-      }
-      .review-checklist ul {
-        list-style: none;
-        padding-left: 0;
-      }
-      .review-checklist li {
-        margin: 0.75rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .review-checklist input[type="checkbox"] {
-        transform: scale(1.2);
-        cursor: pointer;
-      }
-      .assessment-result {
-        text-align: center;
-        font-weight: bold;
-        margin-top: var(--spacing);
-      }
+        /* Rubric Table */
+        .rubric-section { margin-bottom: calc(var(--spacing) * 1.5); }
+        .rubric-section h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem; }
+        .rubric-table-wrapper { overflow-x: auto; } /* Allow horizontal scrolling on small screens */
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-family: var(--font-base);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            overflow: hidden; /* Clip shadows/borders to radius */
+            transition: var(--transition);
+        }
+        .modern-table thead th {
+            padding: 0.8rem 1.2rem; /* Adjusted padding */
+            font-weight: 600;
+            position: sticky;
+            top: 0; /* Stick to top when scrolling */
+            background: var(--table-header-bg);
+            backdrop-filter: blur(5px); /* Subtle blur for sticky header */
+            z-index: 10;
+            text-align: left;
+            border-bottom: 2px solid var(--border); /* Stronger bottom border */
+            color: var(--text); /* Use standard text color */
+            white-space: nowrap; /* Prevent wrapping */
+        }
+        /* Style first header column differently */
+        .modern-table thead th:first-child {
+            background: var(--gradient);
+            color: #fff;
+            position: sticky; /* Make category sticky horizontally too */
+            left: 0;
+            z-index: 11; /* Above other header cells */
+        }
 
-      /* Fun Fact Section (Bottom) */
-      .fun-fact-section {
-        text-align: center;
-        margin: 1rem auto;
-        font-style: italic;
-        padding: 0.5rem;
-        background: var(--panel-light);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        animation: fadeIn 0.8s ease-in-out;
-        max-width: 800px;
-      }
+        /* Color coded headers (simplified) */
+        .modern-table thead th[data-col-rating="1"] { background-color: #f87171; color: #fff; }
+        .modern-table thead th[data-col-rating="2"] { background-color: #fb923c; color: #fff; }
+        .modern-table thead th[data-col-rating="3"] { background-color: #facc15; color: #fff; }
+        .modern-table thead th[data-col-rating="4"] { background-color: #4ade80; color: #fff; }
 
-      /* Disney Magic Easter Egg Icon */
-      #disneyMagic {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        cursor: pointer;
-        font-size: 2em;
-        z-index: 10000;
-        animation: pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
-      }
 
-      /* Modal Styles – Using semantic <dialog> for better accessibility */
-      .modal-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: var(--spacing);
-      }
-      .modal-bg.show {
-        display: flex;
-        animation: fadeIn 0.3s ease-in-out;
-      }
-      .modal-content {
-        position: relative;
-        background: #fff;
-        border-radius: var(--radius);
-        max-width: 90%;
-        max-height: 90%;
-        overflow-y: auto;
-        padding: 1.5rem;
-      }
-      .close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .close-btn:hover {
-        background: rgba(255, 255, 255, 1);
-      }
+        .modern-table tbody td {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+            vertical-align: top;
+            cursor: pointer;
+            background: var(--table-cell-bg);
+        }
+         /* Style first body column to match sticky header */
+        .modern-table tbody td:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--table-cell-bg); /* Ensure background matches */
+            z-index: 5; /* Above other body cells in the row */
+            font-weight: 500;
+        }
+        /* Last row no border */
+         .modern-table tbody tr:last-child td { border-bottom: none; }
 
-      /* Responsive */
-      @media (max-width: 992px) {
-        .analyzer-container { padding: 0 1rem 2rem; }
-      }
+        .modern-table tbody tr:hover td { background-color: var(--table-cell-hover); }
+         /* Keep sticky column background consistent on hover */
+        .modern-table tbody tr:hover td:first-child { background-color: var(--table-cell-hover); }
+
+        .modern-table td.selected {
+            background: var(--selected-highlight) !important; /* Use variable, !important to override hover */
+            box-shadow: inset 3px 0 0 var(--selected-border); /* Use variable for border */
+        }
+        /* Ensure sticky selected cell also gets styles */
+         .modern-table td:first-child.selected {
+             background: var(--selected-highlight) !important;
+             box-shadow: inset 3px 0 0 var(--selected-border);
+         }
+
+        .category-header { font-weight: 500; } /* Make category names slightly bolder */
+
+        /* Section headers for groups */
+        .section-header td {
+            background: var(--table-header-bg); /* Use header background */
+            color: var(--text);
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            padding: 0.6rem; /* Less padding for section headers */
+            border-bottom: 2px solid var(--border); /* Match header border */
+        }
+         .section-header:hover td { background-color: var(--table-cell-hover); } /* Use cell hover color */
+         .section-header td i { margin-left: 8px; transition: transform 0.3s ease; }
+         .section-header.collapsed td i { transform: rotate(-90deg); }
+
+
+        /* Collapsed Row Styling */
+        tr.collapsed-row {
+           display: none; /* Simpler way to hide */
+        }
+
+        /* Feedback Panel */
+        .feedback-panel { margin-bottom: calc(var(--spacing) * 1.5); }
+        .feedback-panel h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem;}
+        .feedback-panel label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .feedback-input {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 120px; /* Taller text area */
+            padding: 0.8rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            line-height: 1.5;
+            transition: var(--transition);
+            background-color: var(--bg);
+            color: var(--text);
+            margin-bottom: var(--spacing); /* Space between textareas */
+            resize: vertical; /* Allow vertical resize */
+        }
+        .feedback-input::placeholder { color: var(--placeholder-text); }
+        .feedback-input:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            box-shadow: var(--input-focus-shadow);
+        }
+
+        /* Legend & Definitions */
+        .legend-panel { margin-bottom: calc(var(--spacing) * 1.5); }
+        .legend-panel h2 { margin-top: 0; margin-bottom: var(--spacing); font-size: 1.3rem; }
+        #legend {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: var(--panel); /* Use panel background */
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: var(--spacing);
+            box-shadow: var(--shadow); /* Consistent shadow */
+            /* Removed display: none; Make legend visible by default */
+        }
+        #legend h4 { margin-top: 0; margin-bottom: 0.5rem; font-weight: 600; }
+        #legend p { margin-bottom: 0.8rem; }
+        #legend p:last-child { margin-bottom: 0; }
+        #legend strong { font-weight: 600; }
+
+        /* Modal Styles using <dialog> */
+        .how-to-modal {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: calc(var(--spacing) * 1.5);
+            max-width: 600px; /* Limit width */
+            background: var(--panel);
+            color: var(--text);
+        }
+         /* Style the backdrop */
+        .how-to-modal::backdrop {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+        }
+        .how-to-modal h2 { margin-top: 0; color: var(--primary-light); }
+        .how-to-modal .modal-content { line-height: 1.7; }
+        .how-to-modal .close-btn {
+            float: right; /* Simple float for close button */
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.2rem;
+            line-height: 1;
+            opacity: 0.7;
+        }
+        .how-to-modal .close-btn:hover { opacity: 1; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .analyzer-header { flex-direction: column; align-items: flex-start; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .info-grid { grid-template-columns: 1fr; } /* Stack info inputs */
+            .modern-table thead th { padding: 0.6rem 0.8rem; }
+            .modern-table tbody td { padding: 0.6rem 0.8rem; }
+             /* Ensure sticky columns still work visually on mobile if table scrolls */
+            .modern-table thead th:first-child {
+                background: var(--gradient); /* Ensure gradient on first head */
+                color: #fff; /* Text color for gradient */
+                background-clip: padding-box; /* Prevent bg bleed under border */
+            }
+             .modern-table tbody td:first-child {
+                 background: var(--table-cell-bg); /* Body cells match theme */
+                 color: var(--text);
+             }
+            .modern-table tbody tr:hover td:first-child {
+                background-color: var(--table-cell-hover);
+            }
+            .modern-table td:first-child.selected {
+                 background: var(--selected-highlight) !important;
+            }
+        }
+
     </style>
-  </head>
-  <body>
-    <!-- HEADER -->
+</head>
+<body>
     <header class="analyzer-header glass-panel">
-      <div class="header-left">
-        <div class="site-title">
-          <i class="fas fa-film" aria-hidden="true"></i>
-          <span>Editing Review Pro+</span>
-        </div>
-        <div class="total-score" id="scoreDisplay" tabindex="0">
-          Overall (<span id="scoreTotal">0</span>/84) – <span id="scoreLabel">Needs Work</span>
-        </div>
-        <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
-      </div>
-      <div class="header-right">
-        <div class="group">
-          <button class="btn" onclick="resetScores()" aria-label="Reset Scores">🔄 Reset</button>
-          <button class="btn" onclick="exportPNG()" aria-label="Export as PNG">🖼️ Export PNG</button>
-          <button class="btn" onclick="openHowTo()" aria-label="How To Use">❓ How To</button>
-          <!-- Renamed 'Rubrics' to 'Home' -->
-          <button class="btn" onclick="window.open('https://loverfellayt.github.io/ThumbnailTest/my-video-rubrics#rubrics','_blank');" aria-label="Home">
-            <i class="fas fa-home"></i> Home
-          </button>
-        </div>
-        <!-- Dark Mode Toggle -->
-        <div class="dark-mode">
-          <label class="toggle-label dark-mode-label" for="darkModeToggle">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme(this)" aria-label="Toggle Dark Mode" />
-            <div class="dark-mode-slider">
-              <span class="mode-label mode-light">☀️</span>
-              <span class="mode-label mode-dark">🌙</span>
-              <div class="slider-thumb"></div>
+        <div class="header-left">
+            <div class="site-title">
+                <i class="fas fa-film" aria-hidden="true"></i>
+                <span>Gaming Video Review</span>
             </div>
-          </label>
+            <div class="total-score" id="scoreDisplay" tabindex="0" data-tooltip="Overall Score (0/76)">
+                 <span id="scoreText">Overall (<span id="scoreTotal">0</span>/76)</span> – <span id="scoreLabel">Needs Work</span>
+            </div>
+            <div class="status-indicator" id="ranking" aria-live="polite">Incomplete</div>
         </div>
-      </div>
+        <div class="header-right">
+            <button class="btn" id="resetButton" aria-label="Reset Scores and Feedback">
+                <i class="fas fa-sync-alt" aria-hidden="true"></i> Reset
+            </button>
+            <button class="btn" id="exportButton" aria-label="Export as PNG">
+                <i class="fas fa-image" aria-hidden="true"></i> Export PNG
+            </button>
+            <button class="btn" id="howToButton" aria-label="How To Use">
+                <i class="fas fa-question-circle" aria-hidden="true"></i> How To
+            </button>
+            <label class="toggle-label dark-mode-label" for="darkModeToggle" title="Toggle Dark/Light Mode">
+                <input type="checkbox" id="darkModeToggle" aria-label="Toggle Dark Mode" />
+                <div class="dark-mode-slider">
+                    <span class="mode-icon">☀️</span>
+                    <span class="mode-icon">🌙</span>
+                    <div class="slider-thumb"></div>
+                </div>
+            </label>
+        </div>
     </header>
 
-    <!-- QUOTE OF WISDOM SECTION (Top) -->
-    <div class="quote-section glass-panel" id="quoteSection" role="note" aria-live="polite">
-      <!-- A random inspirational quote will appear here -->
-    </div>
-
     <main>
-      <div class="analyzer-container">
-        <!-- Rubric Table -->
-        <section class="rubric-table glass-panel" aria-labelledby="masterRubricHeading">
-          <h2 id="masterRubricHeading">Editing Review Rubric</h2>
-          <table class="modern-table" id="masterTable">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Needs Improvement</th>
-                <th>Fair</th>
-                <th>Good</th>
-                <th>Outstanding</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Section 1: Story & Structure (Categories 0-4) -->
-              <tr class="section-header" data-group="g1">
-                <td colspan="5">Story &amp; Structure</td>
-              </tr>
-              <!-- 0: Hook & Opening Impact -->
-              <tr data-group="g1">
-                <td data-category="0" class="category-header"><strong>Hook &amp; Opening Impact</strong></td>
-                <td data-category="0" data-rating="1">
-                  Opens with a slow, generic intro or idle footage<br>
-                  No clear reference to title/thumbnail promise<br>
-                  Viewers lack incentive to watch
-                </td>
-                <td data-category="0" data-rating="2">
-                  Some attempt to mention the premise but takes 20–30 seconds<br>
-                  Hook is present but weakly tied to title/thumbnail
-                </td>
-                <td data-category="0" data-rating="3">
-                  Clearly states or shows the challenge in the first 10–15 seconds<br>
-                  Uses a brief flash-forward or intriguing question
-                </td>
-                <td data-category="0" data-rating="4">
-                  Grabs attention immediately (within 5–10 seconds)<br>
-                  Perfectly aligns with the title/thumbnail promise and creates a strong curiosity gap
-                </td>
-              </tr>
-              <!-- 1: Pacing & Momentum -->
-              <tr data-group="g1">
-                <td data-category="1" class="category-header"><strong>Pacing &amp; Momentum</strong></td>
-                <td data-category="1" data-rating="1">
-                  Long, uncut or boring segments<br>
-                  Extended silence/filler that drags
-                </td>
-                <td data-category="1" data-rating="2">
-                  Some cuts remove dead air but pacing remains uneven<br>
-                  Noticeable slow spots
-                </td>
-                <td data-category="1" data-rating="3">
-                  Frequent cuts eliminate most dull parts<br>
-                  Generally maintains viewer engagement with minor dips
-                </td>
-                <td data-category="1" data-rating="4">
-                  Tight, purposeful editing throughout with minimal filler<br>
-                  Smoothly alternates fast action with brief breathers for contrast
-                </td>
-              </tr>
-              <!-- 2: Progression & Urgency -->
-              <tr data-group="g1">
-                <td data-category="2" class="category-header"><strong>Progression &amp; Urgency</strong></td>
-                <td data-category="2" data-rating="1">
-                  No clear sense of progress or stakes<br>
-                  Feels aimless with random gameplay
-                </td>
-                <td data-category="2" data-rating="2">
-                  States a goal but it's introduced late or not emphasized<br>
-                  Occasional updates that lack urgency
-                </td>
-                <td data-category="2" data-rating="3">
-                  Clearly introduces a challenge early<br>
-                  Regularly shows progress or setbacks
-                </td>
-                <td data-category="2" data-rating="4">
-                  Instantly establishes stakes with a “hero’s journey” narrative<br>
-                  Uses open loops and twists to sustain high viewer interest
-                </td>
-              </tr>
-              <!-- 3: Transitions & Flow -->
-              <tr data-group="g1">
-                <td data-category="3" class="category-header"><strong>Transitions &amp; Flow</strong></td>
-                <td data-category="3" data-rating="1">
-                  Abrupt, confusing cuts<br>
-                  Time jumps with no explanation, disrupting immersion
-                </td>
-                <td data-category="3" data-rating="2">
-                  Standard cuts that work most times but occasionally feel rough<br>
-                  Lacks context for major jumps
-                </td>
-                <td data-category="3" data-rating="3">
-                  Smooth transitions (cutting on action or sound)<br>
-                  Uses simple text or fades to clarify time skips
-                </td>
-                <td data-category="3" data-rating="4">
-                  Seamless transitions that enhance the narrative<br>
-                  Masterfully uses J-cuts, L-cuts, or bridging text for full immersion
-                </td>
-              </tr>
-              <!-- 4: Timing & Beat -->
-              <tr data-group="g1">
-                <td data-category="4" class="category-header"><strong>Timing &amp; Beat</strong></td>
-                <td data-category="4" data-rating="1">
-                  Poor timing; key moments cut off or linger awkwardly<br>
-                  No discernible rhythm
-                </td>
-                <td data-category="4" data-rating="2">
-                  Some well-timed moments but overall inconsistency<br>
-                  Occasional issues with comedic or dramatic pacing
-                </td>
-                <td data-category="4" data-rating="3">
-                  Generally good rhythm with effective comedic/dramatic beats<br>
-                  Uses brief breathers after intense sequences
-                </td>
-                <td data-category="4" data-rating="4">
-                  Masterful timing that perfectly synchronizes edits with action and audio<br>
-                  Allows moments to breathe for maximum impact
-                </td>
-              </tr>
+        <div class="analyzer-container">
 
-              <!-- Section 2: Visual Engagement (Categories 5-7) -->
-              <tr class="section-header" data-group="g2">
-                <td colspan="5">Visual Engagement</td>
-              </tr>
-              <!-- 5: Visual Engagement & Graphics -->
-              <tr data-group="g2">
-                <td data-category="5" class="category-header"><strong>Visual Engagement &amp; Graphics</strong></td>
-                <td data-category="5" data-rating="1">
-                  Over- or underuse of on-screen elements<br>
-                  Distracting or missing text/graphics
-                </td>
-                <td data-category="5" data-rating="2">
-                  Some overlays or memes present but timing is off<br>
-                  Enhancements are inconsistent
-                </td>
-                <td data-category="5" data-rating="3">
-                  Uses purposeful on-screen text, memes, or emojis<br>
-                  Enhances key points without overwhelming
-                </td>
-                <td data-category="5" data-rating="4">
-                  Perfectly timed visual overlays that add clarity and humor<br>
-                  No clutter; every element serves the narrative
-                </td>
-              </tr>
-              <!-- 6: B-Roll & Cutaways -->
-              <tr data-group="g2">
-                <td data-category="6" class="category-header"><strong>B‑Roll &amp; Cutaways</strong></td>
-                <td data-category="6" data-rating="1">
-                  Stays on one continuous shot too long<br>
-                  No variety or illustrative inserts
-                </td>
-                <td data-category="6" data-rating="2">
-                  Occasional cutaways, but feels sporadic and random
-                </td>
-                <td data-category="6" data-rating="3">
-                  Regularly inserts relevant B‑roll or screenshots<br>
-                  Effectively clarifies commentary and breaks monotony
-                </td>
-                <td data-category="6" data-rating="4">
-                  Skillfully uses B‑roll as pattern interrupts<br>
-                  Great variety that enhances both comprehension and entertainment
-                </td>
-              </tr>
-              <!-- 7: Zooms & Movement -->
-              <tr data-group="g2">
-                <td data-category="7" class="category-header"><strong>Zooms &amp; Movement</strong></td>
-                <td data-category="7" data-rating="1">
-                  Static gameplay with no camera movement<br>
-                  Misses opportunities for emphasis
-                </td>
-                <td data-category="7" data-rating="2">
-                  Occasional zoom-ins or pans but timing is weak<br>
-                  Movements feel random
-                </td>
-                <td data-category="7" data-rating="3">
-                  Uses zooms effectively to highlight key or funny details<br>
-                  Generally smooth and purposeful
-                </td>
-                <td data-category="7" data-rating="4">
-                  Masterful use of camera movement and zooms for dramatic or comedic effect<br>
-                  Always directs viewer attention with precision
-                </td>
-              </tr>
+            <section class="video-info-panel glass-panel" aria-labelledby="videoInfoHeading">
+                <h2 id="videoInfoHeading">Video Information</h2>
+                <div class="info-grid">
+                    <div>
+                        <label for="videoTitle">Video Title:</label>
+                        <input type="text" id="videoTitle" name="videoTitle" placeholder="Enter the video title">
+                    </div>
+                    <div>
+                        <label for="videoUrl">Video URL:</label>
+                        <input type="url" id="videoUrl" name="videoUrl" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+                    <div>
+                        <label for="reviewerName">Reviewer Name:</label>
+                        <input type="text" id="reviewerName" name="reviewerName" placeholder="Your name">
+                    </div>
+                </div>
+            </section>
 
-              <!-- Section 3: Audio (Categories 8-11) -->
-              <tr class="section-header" data-group="g3">
-                <td colspan="5">Audio</td>
-              </tr>
-              <!-- 8: Audio – Music & Sound Design -->
-              <tr data-group="g3">
-                <td data-category="8" class="category-header"><strong>Audio – Music &amp; Sound Design</strong></td>
-                <td data-category="8" data-rating="1">
-                  No music or mismatched tracks<br>
-                  Large volume imbalances and jarring audio cuts
-                </td>
-                <td data-category="8" data-rating="2">
-                  Some background music present<br>
-                  Transitions are abrupt; commentary occasionally drowned out
-                </td>
-                <td data-category="8" data-rating="3">
-                  Well-chosen music that fits the mood<br>
-                  Balanced levels and smooth audio transitions
-                </td>
-                <td data-category="8" data-rating="4">
-                  Perfectly integrated music and sound effects<br>
-                  Expert volume mixing that heightens every scene
-                </td>
-              </tr>
-              <!-- 9: Emotional Cues & Reactions -->
-              <tr data-group="g3">
-                <td data-category="9" class="category-header"><strong>Emotional Cues &amp; Reactions</strong></td>
-                <td data-category="9" data-rating="1">
-                  Flat or overly scripted commentary<br>
-                  No genuine reactions shown
-                </td>
-                <td data-category="9" data-rating="2">
-                  Some natural reactions present but not emphasized<br>
-                  Creator’s personality is underutilized
-                </td>
-                <td data-category="9" data-rating="3">
-                  Clearly shows genuine excitement, frustration, or humor<br>
-                  Facecam integrated effectively for real-time reactions
-                </td>
-                <td data-category="9" data-rating="4">
-                  Strong, authentic emotional engagement<br>
-                  Editing amplifies reactions for a deep viewer connection
-                </td>
-              </tr>
-              <!-- 10: Music Choice & Impact -->
-              <tr data-group="g3">
-                <td data-category="10" class="category-header"><strong>Music Choice &amp; Impact</strong></td>
-                <td data-category="10" data-rating="1">
-                  Music does not match the tone; one track looped endlessly
-                </td>
-                <td data-category="10" data-rating="2">
-                  Basic background music that somewhat fits<br>
-                  Rarely changes for scene shifts
-                </td>
-                <td data-category="10" data-rating="3">
-                  Uses multiple tracks to reflect mood changes<br>
-                  Smooth transitions reinforce tension or excitement
-                </td>
-                <td data-category="10" data-rating="4">
-                  Each segment’s music is perfectly curated to elevate emotion<br>
-                  Seamless transitions that feel cinematic
-                </td>
-              </tr>
-              <!-- 11: Sound FX & Audio Highlights -->
-              <tr data-group="g3">
-                <td data-category="11" class="category-header"><strong>Sound FX &amp; Audio Highlights</strong></td>
-                <td data-category="11" data-rating="1">
-                  No sound effects or overuse of random, distracting sounds
-                </td>
-                <td data-category="11" data-rating="2">
-                  Minimal SFX usage; timing and volume are inconsistent
-                </td>
-                <td data-category="11" data-rating="3">
-                  Fitting SFX boost key moments and humor<br>
-                  Balanced with overall audio
-                </td>
-                <td data-category="11" data-rating="4">
-                  Expertly placed sound effects that punctuate action<br>
-                  Create memorable, engaging audio highlights
-                </td>
-              </tr>
+            <section class="rubric-section" aria-labelledby="masterRubricHeading">
+                 <h2 id="masterRubricHeading">Editing Review Rubric</h2>
+                 <div class="rubric-table-wrapper">
+                    <table class="modern-table" id="masterTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Category</th>
+                                <th scope="col" data-col-rating="1">1: Needs Improvement</th>
+                                <th scope="col" data-col-rating="2">2: Fair</th>
+                                <th scope="col" data-col-rating="3">3: Good</th>
+                                <th scope="col" data-col-rating="4">4: Outstanding</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="section-header" data-group="g1" aria-expanded="true" tabindex="0">
+                                <td colspan="5">Story & Structure <i class="fas fa-chevron-down" aria-hidden="true"></i></td>
+                            </tr>
+                            <tr data-group="g1" data-category-id="0">
+                                <td data-category="0" class="category-header" scope="row"><strong>Hook & Opening Impact</strong></td>
+                                <td data-category="0" data-rating="1">Opens with a slow, generic intro or idle footage<br>No clear reference to title/thumbnail promise<br>Viewers lack incentive to watch</td>
+                                <td data-category="0" data-rating="2">Some attempt to mention the premise but takes 20–30 seconds<br>Hook is present but weakly tied to title/thumbnail</td>
+                                <td data-category="0" data-rating="3">Clearly states or shows the challenge in the first 10–15 seconds<br>Uses a brief flash-forward or intriguing question</td>
+                                <td data-category="0" data-rating="4">Grabs attention immediately (within 5–10 seconds)<br>Perfectly aligns with the title/thumbnail promise and creates a strong curiosity gap</td>
+                            </tr>
+                            <tr data-group="g1" data-category-id="1">
+                                <td data-category="1" class="category-header" scope="row"><strong>Pacing & Momentum</strong></td>
+                                <td data-category="1" data-rating="1">Long, uncut or boring segments<br>Extended silence/filler that drags</td>
+                                <td data-category="1" data-rating="2">Some cuts remove dead air but pacing remains uneven<br>Noticeable slow spots</td>
+                                <td data-category="1" data-rating="3">Frequent cuts eliminate most dull parts<br>Generally maintains viewer engagement with minor dips</td>
+                                <td data-category="1" data-rating="4">Tight, purposeful editing throughout with minimal filler<br>Smoothly alternates fast action with brief breathers for contrast</td>
+                            </tr>
+                            <tr data-group="g1" data-category-id="2">
+                                <td data-category="2" class="category-header" scope="row"><strong>Progression & Urgency</strong></td>
+                                <td data-category="2" data-rating="1">No clear sense of progress or stakes<br>Feels aimless with random gameplay</td>
+                                <td data-category="2" data-rating="2">States a goal but it's introduced late or not emphasized<br>Occasional updates that lack urgency</td>
+                                <td data-category="2" data-rating="3">Clearly introduces a challenge early<br>Regularly shows progress or setbacks</td>
+                                <td data-category="2" data-rating="4">Instantly establishes stakes with a “hero’s journey” narrative<br>Uses open loops and twists to sustain high viewer interest</td>
+                            </tr>
+                            <tr data-group="g1" data-category-id="3">
+                                <td data-category="3" class="category-header" scope="row"><strong>Transitions & Flow</strong></td>
+                                <td data-category="3" data-rating="1">Abrupt, confusing cuts<br>Time jumps with no explanation, disrupting immersion</td>
+                                <td data-category="3" data-rating="2">Standard cuts that work most times but occasionally feel rough<br>Lacks context for major jumps</td>
+                                <td data-category="3" data-rating="3">Smooth transitions (cutting on action or sound)<br>Uses simple text or fades to clarify time skips</td>
+                                <td data-category="3" data-rating="4">Seamless transitions that enhance the narrative<br>Masterfully uses J-cuts, L-cuts, or bridging text for full immersion</td>
+                            </tr>
+                             <tr data-group="g1" data-category-id="4">
+                                <td data-category="4" class="category-header" scope="row"><strong>Timing & Beat</strong></td>
+                                <td data-category="4" data-rating="1">Poor timing; key moments cut off or linger awkwardly<br>No discernible rhythm</td>
+                                <td data-category="4" data-rating="2">Some well-timed moments but overall inconsistency<br>Occasional issues with comedic or dramatic pacing</td>
+                                <td data-category="4" data-rating="3">Generally good rhythm with effective comedic/dramatic beats<br>Uses brief breathers after intense sequences</td>
+                                <td data-category="4" data-rating="4">Masterful timing that perfectly synchronizes edits with action and audio<br>Allows moments to breathe for maximum impact</td>
+                            </tr>
 
-              <!-- Section 4: Retention & Pattern (Categories 12-14) -->
-              <tr class="section-header" data-group="g4">
-                <td colspan="5">Retention &amp; Pattern</td>
-              </tr>
-              <!-- 12: Retention Techniques -->
-              <tr data-group="g4">
-                <td data-category="12" class="category-header"><strong>Retention Techniques</strong></td>
-                <td data-category="12" data-rating="1">
-                  No strong hook; dull segments with no re-engagement<br>
-                  Weak ending with no payoff
-                </td>
-                <td data-category="12" data-rating="2">
-                  Decent intro but mid-video interest drops<br>
-                  Rarely uses open loops or foreshadowing
-                </td>
-                <td data-category="12" data-rating="3">
-                  Solid start with a teased payoff<br>
-                  Some mid-video twist or re-hook present
-                </td>
-                <td data-category="12" data-rating="4">
-                  Aggressive retention strategy with strong hook, multiple curiosity gaps<br>
-                  Climactic and rewarding ending
-                </td>
-              </tr>
-              <!-- 13: Pattern Interrupt & Layers -->
-              <tr data-group="g4">
-                <td data-category="13" class="category-header"><strong>Pattern Interrupt &amp; Layers</strong></td>
-                <td data-category="13" data-rating="1">
-                  Long stretches without any visual or auditory change<br>
-                  Repetitive content that bores the viewer
-                </td>
-                <td data-category="13" data-rating="2">
-                  Occasional interrupts (zoom, meme) but predictable<br>
-                  Variety is present but not frequent
-                </td>
-                <td data-category="13" data-rating="3">
-                  Regular use of cuts, text, or memes that refresh viewer attention<br>
-                  Switches between gameplay and reaction effectively
-                </td>
-                <td data-category="13" data-rating="4">
-                  Masterful layering of interrupts (camera changes, SFX, on-screen captions)<br>
-                  Ensures no 20–30 second span goes without something fresh
-                </td>
-              </tr>
-              <!-- 14: Teasers / Open Loops -->
-              <tr data-group="g4">
-                <td data-category="14" class="category-header"><strong>Teasers / Open Loops</strong></td>
-                <td data-category="14" data-rating="1">
-                  No hint of upcoming highlights<br>
-                  No reason for viewers to stay
-                </td>
-                <td data-category="14" data-rating="2">
-                  Brief mention of future excitement but underplayed<br>
-                  Payoff feels disconnected or delayed
-                </td>
-                <td data-category="14" data-rating="3">
-                  Sets up curiosity early and teases key moments<br>
-                  Delivers on the promise later in the video
-                </td>
-                <td data-category="14" data-rating="4">
-                  Multiple, well-timed teases and flash-forwards<br>
-                  Hook and re-engage viewers until the climactic payoff
-                </td>
-              </tr>
+                            <tr class="section-header" data-group="g2" aria-expanded="true" tabindex="0">
+                                <td colspan="5">Visual Engagement <i class="fas fa-chevron-down" aria-hidden="true"></i></td>
+                            </tr>
+                             <tr data-group="g2" data-category-id="5">
+                                <td data-category="5" class="category-header" scope="row"><strong>Visual Engagement & Graphics</strong></td>
+                                <td data-category="5" data-rating="1">Over- or underuse of on-screen elements<br>Distracting or missing text/graphics</td>
+                                <td data-category="5" data-rating="2">Some overlays or memes present but timing is off<br>Enhancements are inconsistent</td>
+                                <td data-category="5" data-rating="3">Uses purposeful on-screen text, memes, or emojis<br>Enhances key points without overwhelming</td>
+                                <td data-category="5" data-rating="4">Perfectly timed visual overlays that add clarity and humor<br>No clutter; every element serves the narrative</td>
+                            </tr>
+                             <tr data-group="g2" data-category-id="6">
+                                <td data-category="6" class="category-header" scope="row"><strong>B‑Roll & Cutaways</strong></td>
+                                <td data-category="6" data-rating="1">Stays on one continuous shot too long<br>No variety or illustrative inserts</td>
+                                <td data-category="6" data-rating="2">Occasional cutaways, but feels sporadic and random</td>
+                                <td data-category="6" data-rating="3">Regularly inserts relevant B‑roll or screenshots<br>Effectively clarifies commentary and breaks monotony</td>
+                                <td data-category="6" data-rating="4">Skillfully uses B‑roll as pattern interrupts<br>Great variety that enhances both comprehension and entertainment</td>
+                            </tr>
+                            <tr data-group="g2" data-category-id="7">
+                                <td data-category="7" class="category-header" scope="row"><strong>Zooms & Movement</strong></td>
+                                <td data-category="7" data-rating="1">Static gameplay with no camera movement<br>Misses opportunities for emphasis</td>
+                                <td data-category="7" data-rating="2">Occasional zoom-ins or pans but timing is weak<br>Movements feel random</td>
+                                <td data-category="7" data-rating="3">Uses zooms effectively to highlight key or funny details<br>Generally smooth and purposeful</td>
+                                <td data-category="7" data-rating="4">Masterful use of camera movement and zooms for dramatic or comedic effect<br>Always directs viewer attention with precision</td>
+                            </tr>
 
-              <!-- Section 5: Overall Polish (Categories 15-18) -->
-              <tr class="section-header" data-group="g5">
-                <td colspan="5">Overall Polish</td>
-              </tr>
-              <!-- 15: Overall Engagement & Polish -->
-              <tr data-group="g5">
-                <td data-category="15" class="category-header"><strong>Overall Engagement &amp; Polish</strong></td>
-                <td data-category="15" data-rating="1">
-                  Video loses interest quickly; obvious editing gaps<br>
-                  Feels like raw footage with minimal polish
-                </td>
-                <td data-category="15" data-rating="2">
-                  Watchable but lacks a “wow” factor<br>
-                  Minor technical issues or rough transitions present
-                </td>
-                <td data-category="15" data-rating="3">
-                  Smooth, cohesive video with good storytelling and technical polish<br>
-                  Minimal errors and a professional feel
-                </td>
-                <td data-category="15" data-rating="4">
-                  Engrossing from start to finish; technically flawless<br>
-                  Exudes a high-end, “pro YouTuber” production quality
-                </td>
-              </tr>
-              <!-- 16: Surprise & Unexpected -->
-              <tr data-group="g5">
-                <td data-category="16" class="category-header"><strong>Surprise &amp; Unexpected</strong></td>
-                <td data-category="16" data-rating="1">
-                  Predictable flow with no unexpected edits or twists
-                </td>
-                <td data-category="16" data-rating="2">
-                  Occasional surprises, but nothing that stands out
-                </td>
-                <td data-category="16" data-rating="3">
-                  Deliberate inclusion of small surprises or comedic inserts<br>
-                  Keeps the video feeling fresh
-                </td>
-                <td data-category="16" data-rating="4">
-                  Packed with well-timed, organic surprises that reignite viewer excitement throughout
-                </td>
-              </tr>
-              <!-- 17: Tone & Style Fit -->
-              <tr data-group="g5">
-                <td data-category="17" class="category-header"><strong>Tone &amp; Style Fit</strong></td>
-                <td data-category="17" data-rating="1">
-                  Editing style clashes with the channel’s personality<br>
-                  Overly dramatic or too bland
-                </td>
-                <td data-category="17" data-rating="2">
-                  Somewhat aligned but inconsistently executed<br>
-                  Minor mismatches in tone
-                </td>
-                <td data-category="17" data-rating="3">
-                  Editing style complements the content and creator’s personality<br>
-                  Consistent mood throughout
-                </td>
-                <td data-category="17" data-rating="4">
-                  Cohesive and unmistakable style that perfectly suits the content<br>
-                  Viewers instantly recognize the polished brand identity
-                </td>
-              </tr>
-              <!-- 18: Technical Polish & Finishing -->
-              <tr data-group="g5">
-                <td data-category="18" class="category-header"><strong>Technical Polish &amp; Finishing</strong></td>
-                <td data-category="18" data-rating="1">
-                  Frequent audio pops, glitchy transitions, and inconsistent color/volume<br>
-                  Looks like a rough draft
-                </td>
-                <td data-category="18" data-rating="2">
-                  Basic corrections applied but minor issues remain<br>
-                  Some synchronization or export flaws
-                </td>
-                <td data-category="18" data-rating="3">
-                  Clean, error-free timeline with proper color correction and audio mixing<br>
-                  High-resolution export that looks professional
-                </td>
-                <td data-category="18" data-rating="4">
-                  Impeccable finishing: zero stray frames, perfect crossfades, and flawless technical polish<br>
-                  Expert use of editing tools for a refined final product
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                             <tr class="section-header" data-group="g3" aria-expanded="true" tabindex="0">
+                                <td colspan="5">Audio <i class="fas fa-chevron-down" aria-hidden="true"></i></td>
+                            </tr>
+                            <tr data-group="g3" data-category-id="8">
+                                <td data-category="8" class="category-header" scope="row"><strong>Audio – Music & Sound Design</strong></td>
+                                <td data-category="8" data-rating="1">No music or mismatched tracks<br>Large volume imbalances and jarring audio cuts</td>
+                                <td data-category="8" data-rating="2">Some background music present<br>Transitions are abrupt; commentary occasionally drowned out</td>
+                                <td data-category="8" data-rating="3">Well-chosen music that fits the mood<br>Balanced levels and smooth audio transitions</td>
+                                <td data-category="8" data-rating="4">Perfectly integrated music and sound effects<br>Expert volume mixing that heightens every scene</td>
+                            </tr>
+                            <tr data-group="g3" data-category-id="9">
+                                <td data-category="9" class="category-header" scope="row"><strong>Emotional Cues & Reactions</strong></td>
+                                <td data-category="9" data-rating="1">Flat or overly scripted commentary<br>No genuine reactions shown</td>
+                                <td data-category="9" data-rating="2">Some natural reactions present but not emphasized<br>Creator’s personality is underutilized</td>
+                                <td data-category="9" data-rating="3">Clearly shows genuine excitement, frustration, or humor<br>Facecam integrated effectively for real-time reactions</td>
+                                <td data-category="9" data-rating="4">Strong, authentic emotional engagement<br>Editing amplifies reactions for a deep viewer connection</td>
+                            </tr>
+                             <tr data-group="g3" data-category-id="10">
+                                <td data-category="10" class="category-header" scope="row"><strong>Music Choice & Impact</strong></td>
+                                <td data-category="10" data-rating="1">Music does not match the tone; one track looped endlessly</td>
+                                <td data-category="10" data-rating="2">Basic background music that somewhat fits<br>Rarely changes for scene shifts</td>
+                                <td data-category="10" data-rating="3">Uses multiple tracks to reflect mood changes<br>Smooth transitions reinforce tension or excitement</td>
+                                <td data-category="10" data-rating="4">Each segment’s music is perfectly curated to elevate emotion<br>Seamless transitions that feel cinematic</td>
+                            </tr>
+                            <tr data-group="g3" data-category-id="11">
+                                <td data-category="11" class="category-header" scope="row"><strong>Sound FX & Audio Highlights</strong></td>
+                                <td data-category="11" data-rating="1">No sound effects or overuse of random, distracting sounds</td>
+                                <td data-category="11" data-rating="2">Minimal SFX usage; timing and volume are inconsistent</td>
+                                <td data-category="11" data-rating="3">Fitting SFX boost key moments and humor<br>Balanced with overall audio</td>
+                                <td data-category="11" data-rating="4">Expertly placed sound effects that punctuate action<br>Create memorable, engaging audio highlights</td>
+                            </tr>
 
-          <button id="toggleLegend" onclick="toggleLegend()">Show Legend &amp; Definitions</button>
-          <div id="legend">
-            <h4>Legend &amp; Definitions</h4>
-            <p><strong>Grouped by Section:</strong></p>
-            <ul>
-              <li><strong>Section 1: Story &amp; Structure (0–4)</strong></li>
-              <li><strong>Section 2: Visual Engagement (5–7)</strong></li>
-              <li><strong>Section 3: Audio (8–11)</strong></li>
-              <li><strong>Section 4: Retention &amp; Pattern (12–14)</strong></li>
-              <li><strong>Section 5: Overall Polish (15–18)</strong></li>
-            </ul>
-            <p>Click on a cell in each row that best describes the current level (1–4).</p>
-            <h5>Rating Levels</h5>
-            <ul>
-              <li><strong>Needs Improvement (1):</strong> Major shortcomings.</li>
-              <li><strong>Fair (2):</strong> Basic or acceptable.</li>
-              <li><strong>Good (3):</strong> Solid quality.</li>
-              <li><strong>Outstanding (4):</strong> Perfect performance.</li>
-            </ul>
-          </div>
-        </section>
+                            <tr class="section-header" data-group="g4" aria-expanded="true" tabindex="0">
+                                <td colspan="5">Retention & Pattern <i class="fas fa-chevron-down" aria-hidden="true"></i></td>
+                            </tr>
+                            <tr data-group="g4" data-category-id="12">
+                                <td data-category="12" class="category-header" scope="row"><strong>Retention Techniques</strong></td>
+                                <td data-category="12" data-rating="1">No strong hook; dull segments with no re-engagement<br>Weak ending with no payoff</td>
+                                <td data-category="12" data-rating="2">Decent intro but mid-video interest drops<br>Rarely uses open loops or foreshadowing</td>
+                                <td data-category="12" data-rating="3">Solid start with a teased payoff<br>Some mid-video twist or re-hook present</td>
+                                <td data-category="12" data-rating="4">Aggressive retention strategy with strong hook, multiple curiosity gaps<br>Climactic and rewarding ending</td>
+                            </tr>
+                             <tr data-group="g4" data-category-id="13">
+                                <td data-category="13" class="category-header" scope="row"><strong>Pattern Interrupt & Layers</strong></td>
+                                <td data-category="13" data-rating="1">Long stretches without any visual or auditory change<br>Repetitive content that bores the viewer</td>
+                                <td data-category="13" data-rating="2">Occasional interrupts (zoom, meme) but predictable<br>Variety is present but not frequent</td>
+                                <td data-category="13" data-rating="3">Regular use of cuts, text, or memes that refresh viewer attention<br>Switches between gameplay and reaction effectively</td>
+                                <td data-category="13" data-rating="4">Masterful layering of interrupts (camera changes, SFX, on-screen captions)<br>Ensures no 20–30 second span goes without something fresh</td>
+                             </tr>
+                              <tr data-group="g4" data-category-id="14">
+                                <td data-category="14" class="category-header" scope="row"><strong>Teasers / Open Loops</strong></td>
+                                <td data-category="14" data-rating="1">No hint of upcoming highlights<br>No reason for viewers to stay</td>
+                                <td data-category="14" data-rating="2">Brief mention of future excitement but underplayed<br>Payoff feels disconnected or delayed</td>
+                                <td data-category="14" data-rating="3">Sets up curiosity early and teases key moments<br>Delivers on the promise later in the video</td>
+                                <td data-category="14" data-rating="4">Multiple, well-timed teases and flash-forwards<br>Hook and re-engage viewers until the climactic payoff</td>
+                            </tr>
 
-        <!-- FEEDBACK PANEL -->
-        <section class="feedback-panel glass-panel" aria-labelledby="feedbackHeading">
-          <h3 id="feedbackHeading">Feedback</h3>
-          <div class="feedback-entry">
-            <label for="humanFeedback">Human Feedback</label>
-            <div id="humanFeedback" class="feedback-input" contenteditable="true" data-placeholder="Enter your human feedback here..." aria-label="Human Feedback"></div>
-          </div>
-        </section>
-      </div>
+                            <tr class="section-header" data-group="g5" aria-expanded="true" tabindex="0">
+                                <td colspan="5">Overall Polish <i class="fas fa-chevron-down" aria-hidden="true"></i></td>
+                            </tr>
+                            <tr data-group="g5" data-category-id="15">
+                                <td data-category="15" class="category-header" scope="row"><strong>Overall Engagement & Polish</strong></td>
+                                <td data-category="15" data-rating="1">Video loses interest quickly; obvious editing gaps<br>Feels like raw footage with minimal polish</td>
+                                <td data-category="15" data-rating="2">Watchable but lacks a “wow” factor<br>Minor technical issues or rough transitions present</td>
+                                <td data-category="15" data-rating="3">Smooth, cohesive video with good storytelling and technical polish<br>Minimal errors and a professional feel</td>
+                                <td data-category="15" data-rating="4">Engrossing from start to finish; technically flawless<br>Exudes a high-end, “pro YouTuber” production quality</td>
+                             </tr>
+                             <tr data-group="g5" data-category-id="16">
+                                <td data-category="16" class="category-header" scope="row"><strong>Surprise & Unexpected</strong></td>
+                                <td data-category="16" data-rating="1">Predictable flow with no unexpected edits or twists</td>
+                                <td data-category="16" data-rating="2">Occasional surprises, but nothing that stands out</td>
+                                <td data-category="16" data-rating="3">Deliberate inclusion of small surprises or comedic inserts<br>Keeps the video feeling fresh</td>
+                                <td data-category="16" data-rating="4">Packed with well-timed, organic surprises that reignite viewer excitement throughout</td>
+                             </tr>
+                             <tr data-group="g5" data-category-id="17">
+                                <td data-category="17" class="category-header" scope="row"><strong>Tone & Style Fit</strong></td>
+                                <td data-category="17" data-rating="1">Editing style clashes with the channel’s personality<br>Overly dramatic or too bland</td>
+                                <td data-category="17" data-rating="2">Somewhat aligned but inconsistently executed<br>Minor mismatches in tone</td>
+                                <td data-category="17" data-rating="3">Editing style complements the content and creator’s personality<br>Consistent mood throughout</td>
+                                <td data-category="17" data-rating="4">Cohesive and unmistakable style that perfectly suits the content<br>Viewers instantly recognize the polished brand identity</td>
+                             </tr>
+                             <tr data-group="g5" data-category-id="18">
+                                <td data-category="18" class="category-header" scope="row"><strong>Technical Polish & Finishing</strong></td>
+                                <td data-category="18" data-rating="1">Frequent audio pops, glitchy transitions, and inconsistent color/volume<br>Looks like a rough draft</td>
+                                <td data-category="18" data-rating="2">Basic corrections applied but minor issues remain<br>Some synchronization or export flaws</td>
+                                <td data-category="18" data-rating="3">Clean, error-free timeline with proper color correction and audio mixing<br>High-resolution export that looks professional</td>
+                                <td data-category="18" data-rating="4">Impeccable finishing: zero stray frames, perfect crossfades, and flawless technical polish<br>Expert use of editing tools for a refined final product</td>
+                             </tr>
 
-      <!-- Review Checklist Section -->
-      <section class="review-checklist" aria-labelledby="reviewChecklistHeading">
-        <h3 id="reviewChecklistHeading">Review Checklist</h3>
-        <ul>
-          <li>
-            <input type="checkbox" id="check1">
-            <label for="check1">Does the opening grab attention and set the tone effectively?</label>
-          </li>
-          <li>
-            <input type="checkbox" id="check2">
-            <label for="check2">Is the pacing balanced with smooth transitions and clear progression?</label>
-          </li>
-          <li>
-            <input type="checkbox" id="check3">
-            <label for="check3">Are visual elements (on‑screen text, graphics, cutaways) clear and engaging?</label>
-          </li>
-          <li>
-            <input type="checkbox" id="check4">
-            <label for="check4">Does the audio (music and sound effects) complement the visuals and narrative?</label>
-          </li>
-          <li>
-            <input type="checkbox" id="check5">
-            <label for="check5">Is the overall narrative coherent with a strong flow?</label>
-          </li>
-          <li>
-            <input type="checkbox" id="check6">
-            <label for="check6">Are creative techniques used effectively to enhance viewer engagement?</label>
-          </li>
-          <li>
-            <input type="checkbox" id="check7">
-            <label for="check7">Is the technical quality (editing, resolution, color grading) top‑notch?</label>
-          </li>
-        </ul>
-        <button class="btn" onclick="submitAssessment()">Submit Review Checklist</button>
-        <div class="assessment-result" id="assessmentResult" aria-live="polite"></div>
-      </section>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-      <!-- FUN FACT SECTION (Bottom) -->
-      <div class="fun-fact-section glass-panel" id="funFactSection" role="note" aria-live="polite">
-        <!-- A random fun fact or tip will appear here -->
-      </div>
-    </main>
+             <section class="feedback-panel glass-panel" aria-labelledby="feedbackHeading">
+                <h2 id="feedbackHeading">Review Feedback</h2>
+                <div class="feedback-entry">
+                    <label for="specificFeedback">Specific Feedback (Mention Category or Timestamp):</label>
+                    <textarea
+                        id="specificFeedback"
+                        class="feedback-input"
+                        placeholder="e.g., 'Hook (0:05): Could be faster.' or 'Audio (3:10): Music too loud here.'"
+                    ></textarea>
+                </div>
+                 <div class="feedback-entry">
+                    <label for="overallFeedback">Overall Summary & Suggestions:</label>
+                    <textarea
+                        id="overallFeedback"
+                        class="feedback-input"
+                        placeholder="General thoughts, main strengths, key areas for improvement..."
+                    ></textarea>
+                </div>
+            </section>
 
-    <!-- HOW-TO MODAL -->
-    <dialog class="modal-bg" id="howToModal" aria-labelledby="howToHeading" aria-modal="true">
-      <div class="modal-content">
-        <button class="close-btn" onclick="closeHowTo()" aria-label="Close How To">&times;</button>
-        <h2 id="howToHeading">How to Use Editing Review Pro+</h2>
-        <ul>
-          <li>Click on the appropriate rating cell for each row in the rubric table.</li>
-          <li>Your total score updates automatically (out of 84 maximum points).</li>
-          <li>If any item is rated 1, the overall result is "Rejected."</li>
-          <li>Read the daily Quote of Wisdom for inspiration.</li>
-          <li>Provide additional feedback in the Human Feedback box.</li>
-          <li>Use the Review Checklist to evaluate overall quality.</li>
-          <li>When finished, you can reset scores or export the review as a PNG.</li>
-        </ul>
-      </div>
+            <section class="legend-panel" aria-labelledby="legendHeading">
+                <h2 id="legendHeading">Rating Legend</h2>
+                <div id="legend">
+                    <p><strong>Needs Improvement (1pt):</strong> Major issues hindering viewer experience or retention. Requires significant revision.</p>
+                    <p><strong>Fair (2pts):</strong> Functional but lacks polish or impact. Meets minimum expectations but doesn't excel.</p>
+                    <p><strong>Good (3pts):</strong> Solid execution, meets expectations well. Minor areas for improvement may exist.</p>
+                    <p><strong>Outstanding (4pts):</strong> Exceeds expectations, demonstrates strong skill and polish. Highly effective and engaging.</p>
+                </div>
+            </section>
+
+        </div></main>
+
+    <dialog id="howToModal" class="how-to-modal">
+         <button class="close-btn" id="closeModalButton" aria-label="Close dialog">×</button>
+        <h2>How To Use This Rubric</h2>
+        <div class="modal-content">
+            <ol>
+                <li>Fill in the <strong>Video Information</strong> section (Title, URL, Reviewer).</li>
+                <li>Review the video content based on the criteria in the <strong>Editing Review Rubric</strong> table.</li>
+                <li>Click the cell in each row that best describes the video's performance for that category (Needs Improvement, Fair, Good, or Outstanding). The score automatically updates.</li>
+                 <li>Use the <i class="fas fa-chevron-down"></i> icons on section headers (like "Story & Structure") to collapse/expand groups of criteria if needed.</li>
+                <li>Provide detailed notes in the <strong>Review Feedback</strong> section. Use "Specific Feedback" for targeted comments and "Overall Summary" for general thoughts.</li>
+                <li>The <strong>Total Score</strong> (out of 76) and <strong>Ranking</strong> update automatically in the header.</li>
+                <li>Use the <strong>Reset</strong> button to clear all selections and feedback.</li>
+                <li>Use the <strong>Export PNG</strong> button to save an image of the review (including video info, rubric selections, and feedback).</li>
+                 <li>Toggle <strong>Dark/Light Mode</strong> using the ☀️/🌙 switch.</li>
+            </ol>
+        </div>
     </dialog>
 
-    <!-- TUTORIAL MODAL -->
-    <dialog class="modal-bg" id="tutorialModal" aria-labelledby="tutorialHeading" aria-modal="true">
-      <div class="modal-content">
-        <button class="close-btn" onclick="closeTutorial()" aria-label="Close Tutorial">&times;</button>
-        <div id="tutorialContent"></div>
-      </div>
-    </dialog>
-
-    <!-- Hidden Audio Elements for Sound Effects -->
-    <audio id="victorySound" src="victory.mp3"></audio>
-    <audio id="wompSound" src="womp.mp3"></audio>
-
-    <!-- DISNEY MAGIC EASTER EGG ICON -->
-    <div id="disneyMagic" title="Click for a little Disney Magic!">✨</div>
-
-    <!-- JAVASCRIPT -->
     <script>
-      /***************************************************
-       * Global Variables & Emoji Mapping
-       ***************************************************/
-      let scoreData = {};
-      let confettiShown = false;
-      // Updated total categories to 19 (categories 0 to 18)
-      const maxCategories = 19;
-      const maxPoints = 84;
+        document.addEventListener('DOMContentLoaded', () => {
+            const masterTable = document.getElementById('masterTable');
+            const scoreTotalEl = document.getElementById('scoreTotal');
+            const scoreLabelEl = document.getElementById('scoreLabel');
+            const scoreDisplayEl = document.getElementById('scoreDisplay');
+            const scoreTextEl = document.getElementById('scoreText');
+            const rankingEl = document.getElementById('ranking');
+            const resetButton = document.getElementById('resetButton');
+            const exportButton = document.getElementById('exportButton');
+            const howToButton = document.getElementById('howToButton');
+            const closeModalButton = document.getElementById('closeModalButton');
+            const howToModal = document.getElementById('howToModal');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const specificFeedback = document.getElementById('specificFeedback');
+            const overallFeedback = document.getElementById('overallFeedback');
+            const videoTitleInput = document.getElementById('videoTitle');
+            const videoUrlInput = document.getElementById('videoUrl');
+            const reviewerNameInput = document.getElementById('reviewerName');
 
-      // Reduced emoji mapping for categories 0..18
-      const categoryEmojis = {
-        0: '⚡',
-        1: '🚀',
-        2: '⏭️',
-        3: '🎞️',
-        4: '⏱️',
-        5: '🖼️',
-        6: '🧩',
-        7: '🔍',
-        8: '🎶',
-        9: '💬',
-        10: '🎵',
-        11: '🔊',
-        12: '📈',
-        13: '📢',
-        14: '❓',
-        15: '💎',
-        16: '🤯',
-        17: '✨',
-        18: '🎬'
-      };
+            // --- Configuration ---
+            const MAX_SCORE_PER_CATEGORY = 4;
+            // Corrected Total Categories based on original HTML (0-18)
+            const TOTAL_CATEGORIES = masterTable.querySelectorAll('tbody tr[data-category-id]').length; // Should be 19
+             // Corrected Max Possible Score
+            const MAX_POSSIBLE_SCORE = TOTAL_CATEGORIES * MAX_SCORE_PER_CATEGORY; // 19 * 4 = 76
 
-      // Returns the overall rating label and color for overall score
-      function getRatingLabel(overallTotal) {
-        if (overallTotal < 25) {
-          return { scoreLabel: "Needs Work", rankingText: "Needs Work 🔴", color: "#ef4444" };
-        } else if (overallTotal < 50) {
-          return { scoreLabel: "Good", rankingText: "Good 🟢", color: "#22c55e" };
-        } else if (overallTotal < 70) {
-          return { scoreLabel: "Great", rankingText: "Great 🟡", color: "#eab308" };
-        } else if (overallTotal < 80) {
-          return { scoreLabel: "Excellent", rankingText: "Excellent 🟣", color: "#8b5cf6" };
-        } else {
-          return { scoreLabel: "Outstanding", rankingText: "Outstanding 🔵", color: "#3b82f6" };
-        }
-      }
+            // Register dialog polyfill if needed
+             if (typeof dialogPolyfill !== 'undefined') {
+                 dialogPolyfill.registerDialog(howToModal);
+             }
 
-      // Determine section rating based on average rating of the section
-      function getSectionRating(average) {
-        if (average < 2) {
-          return { label: "Good", color: "#f87171" };
-        } else if (average < 3) {
-          return { label: "Great", color: "#fb923c" };
-        } else if (average < 4) {
-          return { label: "Excellent", color: "#facc15" };
-        } else {
-          return { label: "Outstanding", color: "#4ade80" };
-        }
-      }
+             // --- State ---
+            let scores = {}; // Stores { categoryId: rating }
+            let confettiShown = false; // Track if confetti has been shown for the current score
 
-      // Helper: convert hex color to rgba with given alpha
-      function hexToRGBA(hex, alpha) {
-        let r = parseInt(hex.slice(1, 3), 16);
-        let g = parseInt(hex.slice(3, 5), 16);
-        let b = parseInt(hex.slice(5, 7), 16);
-        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
-      }
 
-      /***************************************************
-       * Initialization on DOMContentLoaded
-       ***************************************************/
-      document.addEventListener('DOMContentLoaded', function() {
-        // Initialize scoreData for categories 0 to 18
-        for (let i = 0; i < maxCategories; i++) {
-          scoreData[i] = 0;
-        }
-        
-        // Add click listeners to all rating cells
-        const ratingCells = document.querySelectorAll('td[data-rating]');
-        ratingCells.forEach(cell => {
-          cell.addEventListener('click', handleCellClick);
-        });
-        
-        // Insert emojis into category header cells
-        initEmojis();
-        
-        // Store original header text for each section header for later updates
-        initSectionHeaders();
-        
-        // Call updateScore so that scores display immediately
-        updateScore();
-        
-        // Set a random inspirational quote and fun fact
-        randomQuote();
-        randomFunFact();
-        
-        // Add a click listener to the Disney Magic icon
-        document.getElementById('disneyMagic').addEventListener('click', onClickDisneyMagic);
-      });
+            // --- Functions ---
 
-      /***************************************************
-       * Event Handlers & UI Functions
-       ***************************************************/
-      
-      // When a rating cell is clicked:
-      function handleCellClick(event) {
-        const cell = event.currentTarget;
-        const category = cell.getAttribute('data-category');
-        const rating = parseInt(cell.getAttribute('data-rating'));
-        
-        // Remove 'selected' from other cells in this row
-        const row = cell.parentElement;
-        const cells = row.querySelectorAll('td[data-rating]');
-        cells.forEach(c => c.classList.remove('selected'));
-        
-        // Mark this cell as selected and update scoreData
-        cell.classList.add('selected');
-        scoreData[category] = rating;
-        
-        updateScore();
-      }
+            // Calculate and Update Score Display
+            function calculateAndUpdateScore() {
+                let currentTotal = 0;
+                let categoriesScored = 0;
 
-      // Recalculate and update the overall score and section scores
-      function updateScore() {
-        let overallTotal = 0;
-        for (let key in scoreData) {
-          overallTotal += parseInt(scoreData[key]) || 0;
-        }
-        document.getElementById('scoreTotal').innerText = overallTotal;
-        
-        const ratingInfo = getRatingLabel(overallTotal);
-        document.getElementById('scoreLabel').innerText = ratingInfo.scoreLabel;
-        const rankingElem = document.getElementById('ranking');
-        rankingElem.innerText = ratingInfo.rankingText;
-        rankingElem.style.color = ratingInfo.color;
-        
-        // Update section scores
-        updateSectionScores();
-        
-        // Launch confetti and play sound if overall score >= 80
-        if (overallTotal >= 80 && !confettiShown) {
-          launchConfetti();
-          const victorySound = document.getElementById('victorySound');
-          if (victorySound) {
-            victorySound.play().catch(() => {});
-          }
-          confettiShown = true;
-        } else if (overallTotal < 80) {
-          confettiShown = false;
-        }
-      }
+                masterTable.querySelectorAll('tbody td.selected').forEach(cell => {
+                    const rating = parseInt(cell.dataset.rating, 10);
+                    currentTotal += rating;
+                    // Only count if the category ID exists in our state management
+                    const categoryId = cell.dataset.category;
+                    if (scores.hasOwnProperty(categoryId) && scores[categoryId] > 0) {
+                         categoriesScored++;
+                    }
+                });
+                 // Ensure categoriesScored doesn't exceed total available categories
+                 categoriesScored = Math.min(categoriesScored, TOTAL_CATEGORIES);
 
-      // Clear all selections and reset the score
-      function resetScores() {
-        for (let i = 0; i < maxCategories; i++) {
-          scoreData[i] = 0;
-        }
-        const ratingCells = document.querySelectorAll('td[data-rating]');
-        ratingCells.forEach(cell => cell.classList.remove('selected'));
-        updateScore();
-        
-        const wompSound = document.getElementById('wompSound');
-        if (wompSound) {
-          wompSound.play().catch(() => {});
-        }
-      }
+                 // Update score text in header
+                scoreTotalEl.textContent = currentTotal;
+                 // Update main score text and tooltip with correct max score
+                scoreTextEl.textContent = `Overall (${currentTotal}/${MAX_POSSIBLE_SCORE})`;
+                scoreDisplayEl.setAttribute('data-tooltip', `Overall Score (${currentTotal}/${MAX_POSSIBLE_SCORE})`);
 
-      // Export the review section as a PNG image using html2canvas
-      function exportPNG() {
-        const container = document.querySelector('.analyzer-container');
-        if (!container) return;
-        html2canvas(container).then(canvas => {
-          const link = document.createElement('a');
-          link.download = 'editing-review.png';
-          link.href = canvas.toDataURL();
-          link.click();
-        }).catch(err => {
-          console.error('Error exporting PNG:', err);
-        });
-      }
+                // Determine label and ranking
+                let label = 'Needs Work';
+                let ranking = 'Incomplete';
+                const percentage = MAX_POSSIBLE_SCORE > 0 ? (currentTotal / MAX_POSSIBLE_SCORE) * 100 : 0;
 
-      // Toggle the display of the Legend & Definitions section
-      function toggleLegend() {
-        const legend = document.getElementById('legend');
-        const toggleBtn = document.getElementById('toggleLegend');
-        if (legend.style.display === 'block') {
-          legend.style.display = 'none';
-          toggleBtn.innerText = 'Show Legend & Definitions';
-        } else {
-          legend.style.display = 'block';
-          toggleBtn.innerText = 'Hide Legend & Definitions';
-        }
-      }
+                if (categoriesScored === TOTAL_CATEGORIES) { // Check if all categories are scored
+                     ranking = `Final Score: ${percentage.toFixed(0)}% - `;
+                     if (percentage >= 90) { // 90%+ Outstanding
+                        label = 'Outstanding';
+                        ranking += 'Excellent - Ready to Publish!';
+                        if (!confettiShown) { // Trigger confetti only once when reaching outstanding
+                           triggerConfetti();
+                           confettiShown = true;
+                        }
+                    } else if (percentage >= 75) { // 75-89% Good
+                        label = 'Good';
+                         ranking += 'Solid - Minor tweaks optional.';
+                         confettiShown = false; // Reset confetti flag if score drops
+                    } else if (percentage >= 50) { // 50-74% Fair
+                        label = 'Fair';
+                         ranking += 'Okay - Consider revisions.';
+                         confettiShown = false;
+                    } else { // Below 50% Needs Work
+                        label = 'Needs Work';
+                        ranking += 'Needs Significant Improvement.';
+                        confettiShown = false;
+                    }
+                } else if (categoriesScored > 0) {
+                     ranking = `In Progress (${categoriesScored}/${TOTAL_CATEGORIES} rated)`;
+                     // Keep label based on partial score trend
+                      if (percentage >= 75) label = 'Good';
+                      else if (percentage >= 50) label = 'Fair';
+                      else label = 'Needs Work';
+                      confettiShown = false; // Reset confetti if incomplete
+                 } else {
+                     label = 'Not Started';
+                     ranking = 'Incomplete';
+                     confettiShown = false;
+                 }
 
-      // Toggle between dark mode and light mode
-      function toggleTheme(checkbox) {
-        if (checkbox.checked) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-          document.documentElement.removeAttribute('data-theme');
-        }
-      }
 
-      // Open the How-To modal dialog
-      function openHowTo() {
-        const modal = document.getElementById('howToModal');
-        if (modal.showModal) {
-          modal.showModal();
-        } else {
-          modal.style.display = 'flex';
-        }
-      }
+                scoreLabelEl.textContent = label;
+                rankingEl.textContent = ranking;
 
-      // Close the How-To modal dialog
-      function closeHowTo() {
-        const modal = document.getElementById('howToModal');
-        if (modal.close) {
-          modal.close();
-        } else {
-          modal.style.display = 'none';
-        }
-      }
+                 // Save current state
+                 saveState();
+             }
 
-      // Close the Tutorial modal dialog
-      function closeTutorial() {
-        const modal = document.getElementById('tutorialModal');
-        if (modal.close) {
-          modal.close();
-        } else {
-          modal.style.display = 'none';
-        }
-      }
+             // Handle Cell Click
+            function handleCellClick(event) {
+                const target = event.target.closest('td'); // Ensure we get the TD
+                if (!target || !target.dataset.category || !target.dataset.rating) {
+                    return; // Exit if not a rating cell
+                }
 
-      // Handle review checklist submission
-      function submitAssessment() {
-        const checkboxes = document.querySelectorAll('.review-checklist input[type="checkbox"]');
-        let allChecked = true;
-        checkboxes.forEach(cb => {
-          if (!cb.checked) { allChecked = false; }
-        });
-        const resultElem = document.getElementById('assessmentResult');
-        if (allChecked) {
-          resultElem.innerText = 'Review Checklist Complete! Great job!';
-          resultElem.style.color = 'green';
-        } else {
-          resultElem.innerText = 'Please complete all items in the review checklist.';
-          resultElem.style.color = 'red';
-        }
-      }
+                 const categoryId = target.dataset.category;
+                 const rating = parseInt(target.dataset.rating, 10);
+                 const row = target.parentElement;
 
-      // Prepend emoji for each category header based on its data-category attribute
-      function initEmojis() {
-        const categoryHeaders = document.querySelectorAll('td.category-header');
-        categoryHeaders.forEach(cell => {
-          const category = cell.getAttribute('data-category');
-          const emoji = categoryEmojis[category] || '';
-          if (!cell.innerHTML.includes(emoji)) {
-            cell.innerHTML = emoji + ' ' + cell.innerHTML;
-          }
-        });
-      }
+                 // If clicking the already selected cell, deselect it (optional, uncomment if desired)
+                // if (target.classList.contains('selected')) {
+                //     target.classList.remove('selected');
+                //     scores[categoryId] = 0; // Set score to 0 if deselected
+                //     calculateAndUpdateScore();
+                //     return; // Stop further processing
+                // }
 
-      // Store the original header text for each section header for later updates
-      function initSectionHeaders() {
-        const sectionHeaders = document.querySelectorAll('tr.section-header');
-        sectionHeaders.forEach(row => {
-          const cell = row.querySelector('td');
-          cell.dataset.original = cell.innerText.trim();
-        });
-      }
 
-      // Update section headers with section scores and background colors
-      function updateSectionScores() {
-        const sectionHeaders = document.querySelectorAll('tr.section-header');
-        sectionHeaders.forEach(headerRow => {
-          const group = headerRow.getAttribute('data-group');
-          const groupRows = document.querySelectorAll('tr[data-group="' + group + '"]:not(.section-header)');
-          let sectionScore = 0;
-          groupRows.forEach(row => {
-            const catCell = row.querySelector('td.category-header');
-            if (catCell) {
-              const cat = catCell.getAttribute('data-category');
-              sectionScore += parseInt(scoreData[cat]) || 0;
+                // Deselect other cells in the same row
+                 row.querySelectorAll('td[data-rating]').forEach(cell => {
+                    cell.classList.remove('selected');
+                 });
+
+                 // Select the clicked cell
+                 target.classList.add('selected');
+                 scores[categoryId] = rating; // Update score state
+
+                 calculateAndUpdateScore();
             }
-          });
-          const numberOfRows = groupRows.length;
-          const maxForSection = numberOfRows * 4;
-          let sectionLabel;
-          if (sectionScore === 0) {
-            sectionLabel = "Incomplete";
-            headerRow.style.backgroundColor = "white";
-          } else {
-            const average = sectionScore / numberOfRows;
-            const sectionRating = getSectionRating(average);
-            sectionLabel = sectionRating.label;
-            headerRow.style.backgroundColor = hexToRGBA(sectionRating.color, 0.3);
-          }
-          const headerCell = headerRow.querySelector('td');
-          headerCell.innerHTML =
-            '<strong>' + headerCell.dataset.original + '</strong> ' +
-            '<span style="font-weight:normal;">(Score: ' + sectionScore + '/' + maxForSection + ' - ' + sectionLabel + ')</span>';
-        });
-      }
 
-      // Display a random inspirational quote in the Quote section
-      function randomQuote() {
-        const quoteSection = document.getElementById('quoteSection');
-        const randomIndex = Math.floor(Math.random() * editorQuotes.length);
-        quoteSection.innerText = editorQuotes[randomIndex];
-      }
+             // Reset Function
+            function resetAll() {
+                if (!confirm('Are you sure you want to reset all scores and feedback?')) return;
 
-      // Display a random fun fact in the Fun Fact section
-      function randomFunFact() {
-        const funFacts = [
-          "Did you know? The first film edit was done by physically cutting and splicing film.",
-          "Fun Fact: Walter Murch, a legendary editor, also worked as a sound mixer!",
-          "Tip: Sometimes less is more—trim your edits for a tighter story.",
-          "Did you know? The famous 'montage' technique was popularized in Soviet cinema.",
-          "Editing can change the story. A single cut can evoke deep emotions."
-        ];
-        const funFactSection = document.getElementById('funFactSection');
-        const randomIndex = Math.floor(Math.random() * funFacts.length);
-        funFactSection.innerText = funFacts[randomIndex];
-      }
+                 scores = {}; // Clear score state
+                 // Initialize scoreData for all categories to 0
+                 for (let i = 0; i < TOTAL_CATEGORIES; i++) {
+                     scores[i.toString()] = 0;
+                 }
 
-      // When the Disney Magic icon is clicked, launch confetti and show an alert
-      function onClickDisneyMagic() {
-        launchConfetti();
-        alert("Disney Magic activated! ✨");
-      }
+                 masterTable.querySelectorAll('tbody td.selected').forEach(cell => {
+                     cell.classList.remove('selected');
+                 });
+                 // Clear text inputs/areas
+                 videoTitleInput.value = '';
+                 videoUrlInput.value = '';
+                 reviewerNameInput.value = '';
+                 specificFeedback.value = '';
+                 overallFeedback.value = '';
+                 confettiShown = false; // Reset confetti flag
 
-      // Launch confetti using the canvas-confetti library
-      function launchConfetti() {
-        if (typeof confetti === "function") {
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-        }
-      }
+                 calculateAndUpdateScore(); // Update display to zero/initial state
+                 localStorage.removeItem('reviewAppState'); // Clear saved state
+             }
 
-      // Editor quotes array
-      const editorQuotes = [
-        "“In film editing, it's not about what you add, it's about what you leave out.” – Walter Murch",
-        "“Cutting is rewriting.” – Thelma Schoonmaker",
-        "“Editing is where the magic happens.” – Unknown",
-        "“Good editing is invisible; great editing is felt.” – Unknown",
-        "“In editing, less is often more.” – Unknown",
-        "“All our dreams can come true if we have the courage to pursue them.” – Walt Disney",
-        "“It's kind of fun to do the impossible.” – Walt Disney",
-        "“The past can hurt. But the way I see it, you can either run from it, or learn from it.” – Rafiki, The Lion King",
-        "“Cinema is truth at 24 frames per second.” – Jean-Luc Godard",
-        "“The secret to film editing is knowing when to cut.” – Unknown",
-        "“Every cut tells a story.” – Unknown",
-        "“Editing is the craft of transforming raw footage into art.” – Unknown",
-        "“A good cut is a silent hero.” – Unknown",
-        "“When you're editing, you're not just cutting footage; you're sculpting a story.” – Unknown",
-        "“The technique of film editing is to be invisible.” – Walter Murch",
-        "“The art of editing is the art of omission.” – Elia Kazan",
-        "“I’m convinced that nothing happens in the editing room.” – Francis Ford Coppola",
-        "“May your edits be as magical as pixie dust.” – Inspired by Disney",
-        "“If you can dream it, you can do it.” – Walt Disney"
-      ];
+            // Export as PNG
+            function exportPNG() {
+                const mainElement = document.querySelector('main'); // Capture the main content area
+                 const headerElement = document.querySelector('.analyzer-header'); // Capture header too
+
+                 // Options for html2canvas
+                 const options = {
+                     scale: 1.5, // Increase scale for better resolution
+                     useCORS: true, // If using external images/fonts
+                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff', // Use current theme bg
+                     logging: false, // Disable console logging from html2canvas
+                     windowWidth: 1400, // Define a width to handle potential layout issues
+                     windowHeight: document.documentElement.scrollHeight // Use full height
+                 };
+
+                 // Temporarily make everything visible for capture if sections are collapsed
+                 const collapsedSections = document.querySelectorAll('.section-header.collapsed');
+                 collapsedSections.forEach(header => toggleSection(header, true)); // Force expand
+
+                 // Create a temporary container to hold both header and main for export
+                 const exportContainer = document.createElement('div');
+                 exportContainer.style.padding = '1rem'; // Add padding around the captured area
+                 exportContainer.style.backgroundColor = options.backgroundColor;
+                 // Clone header and main content
+                 const clonedHeader = headerElement.cloneNode(true);
+                 const clonedMain = mainElement.cloneNode(true);
+                 exportContainer.appendChild(clonedHeader);
+                 exportContainer.appendChild(clonedMain);
+
+
+                 // Append to body temporarily to render, but position off-screen
+                 exportContainer.style.position = 'absolute';
+                 exportContainer.style.left = '-9999px';
+                 exportContainer.style.top = '-9999px';
+                 exportContainer.style.width = `${options.windowWidth}px`; // Set width for rendering
+                 document.body.appendChild(exportContainer);
+
+                 // Ensure styles are applied before capture
+                 setTimeout(() => {
+                     html2canvas(exportContainer, options).then(canvas => {
+                         const link = document.createElement('a');
+                         const timestamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+                         const title = (videoTitleInput.value || 'video-review').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                         link.download = `${title}_review_${timestamp}.png`;
+                         link.href = canvas.toDataURL('image/png');
+                         link.click();
+
+                          // Clean up the temporary container
+                          document.body.removeChild(exportContainer);
+
+                          // Restore collapsed sections
+                         collapsedSections.forEach(header => toggleSection(header, false)); // Restore original state
+                     }).catch(err => {
+                         console.error("Error exporting PNG:", err);
+                         alert("Could not export PNG. See console for details.");
+                          // Clean up the temporary container even on error
+                          if (document.body.contains(exportContainer)) {
+                              document.body.removeChild(exportContainer);
+                          }
+                          // Restore collapsed sections
+                         collapsedSections.forEach(header => toggleSection(header, false));
+                     });
+                 }, 100); // Small delay to allow rendering
+
+            }
+
+            // Toggle Dark/Light Theme
+            function toggleTheme(isDark) {
+                if (isDark) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+
+             // Trigger Confetti
+             function triggerConfetti() {
+                 if (typeof confetti === "function") { // Check if confetti library loaded
+                     confetti({
+                         particleCount: 150,
+                         spread: 90,
+                         origin: { y: 0.6 }
+                     });
+                 }
+             }
+
+             // Modal Handling
+            function openHowTo() {
+                 howToModal.showModal();
+             }
+            function closeHowTo() {
+                 howToModal.close();
+             }
+
+              // Section Collapse/Expand
+            function toggleSection(headerElement, forceExpand = null) {
+                 const group = headerElement.dataset.group;
+                 if (!group) return;
+
+                 const rowsToToggle = masterTable.querySelectorAll(`tbody tr[data-group="${group}"]:not(.section-header)`);
+                 const icon = headerElement.querySelector('i.fa-chevron-down, i.fa-chevron-right'); // Select correct icon
+
+                 let isCollapsed;
+
+                 if (forceExpand !== null) {
+                     isCollapsed = !forceExpand; // If forcing expand, treat as if it was collapsed
+                 } else {
+                     isCollapsed = headerElement.classList.contains('collapsed');
+                 }
+
+
+                 if (isCollapsed) { // Expand
+                    headerElement.classList.remove('collapsed');
+                    headerElement.setAttribute('aria-expanded', 'true');
+                    if(icon) icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
+                    rowsToToggle.forEach(row => row.classList.remove('collapsed-row'));
+                 } else { // Collapse
+                     headerElement.classList.add('collapsed');
+                     headerElement.setAttribute('aria-expanded', 'false');
+                     if(icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-right');
+                     rowsToToggle.forEach(row => row.classList.add('collapsed-row'));
+                 }
+            }
+
+             // --- State Persistence (localStorage) ---
+             function saveState() {
+                 const state = {
+                     scores: scores,
+                     videoTitle: videoTitleInput.value,
+                     videoUrl: videoUrlInput.value,
+                     reviewerName: reviewerNameInput.value,
+                     specificFeedback: specificFeedback.value,
+                     overallFeedback: overallFeedback.value
+                 };
+                 try {
+                     localStorage.setItem('reviewAppState', JSON.stringify(state));
+                 } catch (e) {
+                     console.error("Could not save state to localStorage:", e);
+                 }
+             }
+
+             function loadState() {
+                 const savedState = localStorage.getItem('reviewAppState');
+                 if (savedState) {
+                     try {
+                        const state = JSON.parse(savedState);
+                         // Initialize scores object before loading
+                         scores = {};
+                         for (let i = 0; i < TOTAL_CATEGORIES; i++) {
+                             scores[i.toString()] = state.scores ? (state.scores[i.toString()] || 0) : 0;
+                         }
+
+                         videoTitleInput.value = state.videoTitle || '';
+                         videoUrlInput.value = state.videoUrl || '';
+                         reviewerNameInput.value = state.reviewerName || '';
+                         specificFeedback.value = state.specificFeedback || '';
+                         overallFeedback.value = state.overallFeedback || '';
+
+                         // Re-apply selections to the table
+                         masterTable.querySelectorAll('tbody td[data-category][data-rating]').forEach(cell => {
+                             const categoryId = cell.dataset.category;
+                             const rating = parseInt(cell.dataset.rating, 10);
+                             if (scores[categoryId] === rating) {
+                                 cell.classList.add('selected');
+                             } else {
+                                 cell.classList.remove('selected');
+                             }
+                         });
+
+                         calculateAndUpdateScore(); // Update score display based on loaded state
+
+                     } catch (e) {
+                         console.error("Error loading saved state:", e);
+                         localStorage.removeItem('reviewAppState'); // Clear corrupted state
+                         initializeScores(); // Initialize scores if loading failed
+                         calculateAndUpdateScore(); // Calculate initial score
+                     }
+                 } else {
+                     initializeScores(); // Initialize scores if no state saved
+                     calculateAndUpdateScore(); // Calculate initial score
+                 }
+             }
+
+             // Helper to initialize the scores object
+             function initializeScores() {
+                 scores = {};
+                 for (let i = 0; i < TOTAL_CATEGORIES; i++) {
+                     scores[i.toString()] = 0;
+                 }
+                 confettiShown = false; // Reset confetti flag on init
+             }
+
+
+            // --- Event Listeners ---
+            masterTable.querySelector('tbody').addEventListener('click', handleCellClick);
+            resetButton.addEventListener('click', resetAll);
+            exportButton.addEventListener('click', exportPNG);
+            howToButton.addEventListener('click', openHowTo);
+            closeModalButton.addEventListener('click', closeHowTo);
+
+             // Close modal on backdrop click
+             howToModal.addEventListener('click', (event) => {
+                if (event.target === howToModal) {
+                     closeHowTo();
+                }
+             });
+
+            // Dark mode
+             darkModeToggle.addEventListener('change', (event) => {
+                toggleTheme(event.target.checked);
+             });
+
+             // Section collapse/expand
+             masterTable.querySelectorAll('.section-header').forEach(header => {
+                 header.addEventListener('click', () => toggleSection(header));
+                 header.addEventListener('keydown', (event) => { // Add keyboard support
+                     if (event.key === 'Enter' || event.key === ' ') {
+                         event.preventDefault(); // Prevent page scroll on space
+                         toggleSection(header);
+                     }
+                 });
+                 // Initialize icons based on default state (expanded unless explicitly collapsed)
+                 const icon = header.querySelector('i.fa-chevron-down, i.fa-chevron-right');
+                  if (icon) {
+                      if (header.classList.contains('collapsed')) {
+                          icon.classList.replace('fa-chevron-down','fa-chevron-right');
+                          header.setAttribute('aria-expanded', 'false');
+                           // Ensure rows start collapsed if header has class
+                           toggleSection(header);
+                      } else {
+                           icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
+                           header.setAttribute('aria-expanded', 'true');
+                      }
+                  }
+
+             });
+
+
+             // Save state on input changes
+             [videoTitleInput, videoUrlInput, reviewerNameInput, specificFeedback, overallFeedback].forEach(input => {
+                 input.addEventListener('input', saveState);
+             });
+
+
+            // --- Initialization ---
+            // Set initial theme based on preference/localStorage
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+            const savedTheme = localStorage.getItem('theme');
+
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark.matches)) {
+                darkModeToggle.checked = true;
+                toggleTheme(true);
+            } else {
+                darkModeToggle.checked = false;
+                toggleTheme(false);
+            }
+
+             // Update max score in UI text
+             scoreTextEl.textContent = `Overall (0/${MAX_POSSIBLE_SCORE})`;
+             scoreDisplayEl.setAttribute('data-tooltip', `Overall Score (0/${MAX_POSSIBLE_SCORE})`);
+
+             // Load saved state (scores, feedback, etc.)
+             loadState(); // This now also initializes scores if no state found
+
+        }); // End DOMContentLoaded
     </script>
-  </body>
+</body>
 </html>
