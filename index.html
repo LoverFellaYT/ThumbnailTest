@@ -992,8 +992,9 @@
         </section>
 
         <section class="glass-panel">
-  <h3>📋 Bucket Checklist (Title & Thumbnail Alignment)</h3>
-  <table class="modern-table">
+  <h3>📋 Select Your Bucket (Title & Thumbnail Alignment)</h3>
+  <p style="margin-bottom: 1rem;">Click the bucket that best matches your video. Selected bucket will highlight!</p>
+  <table class="modern-table" id="bucketTable">
     <thead>
       <tr>
         <th style="background: var(--gradient-light); color: #fff;">Bucket Name</th>
@@ -1002,42 +1003,42 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>Minecraft but Money = ___</strong></td>
         <td>Title: "Minecraft but Money = X"<br>Thumbnail: Player with progressively upgraded gear or block</td>
         <td>✅ Clear progression<br>✅ Contrasting value tiers<br>✅ High-emotion reaction to final upgrade</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>I Secretly Invaded ___</strong></td>
         <td>Title: "I secretly lived under X’s base"<br>Thumbnail: Two bases + hidden spy POV</td>
         <td>✅ Dual conflict<br>✅ Suspicious glances or spying<br>✅ Strong narrative tease</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>I Tested ___ in Minecraft</strong></td>
         <td>Title: "I Tested the Worst ___"<br>Thumbnail: Face + rating or broken meter</td>
         <td>✅ 1-star review style<br>✅ Clear facial emotion (disgust/confusion)<br>✅ Big object with issue</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>I Survived 100 Days as ___</strong></td>
         <td>Title: "100 Days as a Villain"<br>Thumbnail: Character glow-up in 3 steps</td>
         <td>✅ Days counter<br>✅ Transformation evolution<br>✅ Epic final pose</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>One Block = ___</strong></td>
         <td>Title: "Minecraft One Block but it Evolves"<br>Thumbnail: 3–4 block stages</td>
         <td>✅ Block sequence<br>✅ Visual evolution<br>✅ Color contrast per block</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>I Tricked My Friend Into ___</strong></td>
         <td>Title: "I Tricked My Friend into Building a Trap"<br>Thumbnail: Friend surprised + POV deception</td>
         <td>✅ Social element<br>✅ Facial reactions<br>✅ Clear trick mechanic</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>I Opened ___ Mystery Eggs</strong></td>
         <td>Title: "I Opened 100 Mystery Eggs"<br>Thumbnail: Big egg + shocked face + glowing prize</td>
         <td>✅ Mystery<br>✅ Strong face lighting<br>✅ Prize object with glow</td>
       </tr>
-      <tr>
+      <tr onclick="selectBucket(this)">
         <td><strong>Upgrading ___ Until It’s Broken</strong></td>
         <td>Title: "Upgrading Swords Until They Break Reality"<br>Thumbnail: Sword glow + world tearing</td>
         <td>✅ Object glow up<br>✅ Final frame = absurd power<br>✅ Clear upgrade pacing</td>
@@ -1048,6 +1049,17 @@
     Not in a bucket? Reformat or pitch differently before production.
   </p>
 </section>
+
+<script>
+  function selectBucket(row) {
+    document.querySelectorAll('#bucketTable tbody tr').forEach(tr => {
+      tr.style.backgroundColor = '';
+      tr.style.outline = '';
+    });
+    row.style.backgroundColor = 'rgba(34,197,94,0.15)';
+    row.style.outline = '2px solid #22c55e';
+  }
+</script>
 
         <!-- Feedback Panel -->
         <section class="feedback-panel glass-panel">
