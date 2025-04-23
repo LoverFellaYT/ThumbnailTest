@@ -1,0 +1,44 @@
+<!-- Rapid Filter Rubric HTML -->
+<section id="score" class="tab glass-panel">
+  <h2>📊 Rapid Filter Rubric</h2>
+  <p>Total Weighted Score: <span id="totalScore">0</span></p>
+  <div class="rubric-table">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Category (Weight)</th>
+          <th>Poor (1)</th>
+          <th>Fair (2)</th>
+          <th>Good (3)</th>
+          <th>Excellent (4)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tooltip">🧪 Work Sample <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="0"><span class="tooltiptext">Quality and relevance of the submitted test (target score ≥ 70)</span></td>
+          <td data-category="0" data-rating="1">Unusable or incomplete</td>
+          <td data-category="0" data-rating="2">Basic attempt but flawed or off-brief</td>
+          <td data-category="0" data-rating="3">Solid, meets expectations</td>
+          <td data-category="0" data-rating="4">Outstanding polish, publish-ready</td>
+        </tr>
+        <tr>
+          <td class="tooltip">💬 Culture Response <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="1"><span class="tooltiptext">Honesty, reflection, and alignment in the "least-fit value" answer</span></td>
+          <td data-category="1" data-rating="1">Generic, evasive, or red-flag values</td>
+          <td data-category="1" data-rating="2">Safe answer with limited insight</td>
+          <td data-category="1" data-rating="3">Thoughtful, shows self-awareness</td>
+          <td data-category="1" data-rating="4">Deep reflection, aligns with culture</td>
+        </tr>
+        <tr>
+          <td class="tooltip">🔎 Background Check <input type="number" step="0.1" min="0.5" max="2" value="1" class="weight" data-category="2"><span class="tooltiptext">Scan of resume, socials, and professional tone</span></td>
+          <td data-category="2" data-rating="1">Major red flags (inconsistencies, unprofessional posts)</td>
+          <td data-category="2" data-rating="2">Minor concerns but not deal-breaking</td>
+          <td data-category="2" data-rating="3">Clean, consistent, and professional</td>
+          <td data-category="2" data-rating="4">Outstanding professional presence</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <button class="btn" onclick="undo()">Undo</button>
+  <button class="btn" onclick="redo()">Redo</button>
+  <button class="btn" onclick="showTab('feedback')">Next: Feedback & Interview Decision</button>
+</section>
